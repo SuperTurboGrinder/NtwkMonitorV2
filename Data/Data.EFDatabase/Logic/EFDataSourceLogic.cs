@@ -191,6 +191,8 @@ public static class EFDataSourceLogic {
         Profile newProfile = new Profile {
             ID = 0,
             Name = profile.Name,
+            MonitoringStartTime = profile.MonitoringStartTime,
+            MonitoringEndTime = profile.MonitoringEndTime,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
             DepthMonitoring = profile.DepthMonitoring,
             MonitorInterval = profile.MonitorInterval
@@ -581,6 +583,8 @@ public static class EFDataSourceLogic {
     ) {
         Profile profile = await context.Profiles.FindAsync(newProfileData.ID);
         profile.Name = newProfileData.Name;
+        profile.MonitoringStartTime = newProfileData.MonitoringStartTime;
+        profile.MonitoringEndTime = newProfileData.MonitoringEndTime;
         profile.StartMonitoringOnLaunch = newProfileData.StartMonitoringOnLaunch;
         profile.DepthMonitoring = newProfileData.DepthMonitoring;
         profile.MonitorInterval = newProfileData.MonitorInterval;

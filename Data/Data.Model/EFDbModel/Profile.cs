@@ -9,6 +9,8 @@ public class Profile {
 
     public ICollection<MonitoringSession> MonitoringSessions { get; set; }
     public ICollection<ProfileSelectedTag> FilterTagSelection { get; set; }
+    public int MonitoringStartTime { get; set; }
+    public int MonitoringEndTime { get; set; }
     //will start monitor service with DefaultDisplayTag
     public bool StartMonitoringOnLaunch { get; set; }
     //will skip children if there is no response from the parent

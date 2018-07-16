@@ -48,21 +48,7 @@ static class ViewModelValidationExtensions {
         }
         return ValidationResult.Valid;
     }
-
-    static ValidationResult GetValidation(
-        this Network val
-    ) {
-        if(ValidationUtils.IsValidName(val.Name)) {
-            return ValidationResult.Invalid($"Invalid network name format.\n({ValidationUtils.NamesFormatMessage})");
-        }
-        bool IsMonitorIntervalValid = 
-            val.MonitorInterval > 0 && val.MonitorInterval < 120;
-        if(!IsMonitorIntervalValid) {
-            return ValidationResult.Invalid("Invalid monitor interval value.\n(Should be between 0 and 120)");
-        }
-        return ValidationResult.Valid;
-    }
-
+    
     static ValidationResult GetValidation(
         this NodeTag val
     ) {

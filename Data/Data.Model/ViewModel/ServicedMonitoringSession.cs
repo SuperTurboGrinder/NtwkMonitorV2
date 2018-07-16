@@ -1,3 +1,5 @@
+using System;
+
 namespace Data.Model.ViewModel {
 
 //Session can not be created from this class,
@@ -5,10 +7,10 @@ namespace Data.Model.ViewModel {
 //So no validation needed.
 public class MonitoringSession {
     public int ID;
-    public int MonitorinGroupTagID;
+    public int CreatedByProfileID;
     public int ParticipatingNodesNum;
-    public string CreationTime;
-    public string LastPulseTime;
+    public DateTime CreationTime;
+    public DateTime LastPulseTime;
 }
 
 }
