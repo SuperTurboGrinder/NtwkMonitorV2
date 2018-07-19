@@ -78,7 +78,7 @@ class EFModelToViewModelConverter : IEFModelToViewModelConverter {
     
     public MonitoringMessage Convert(EFDbModel.MonitoringMessage message) {
         return new MonitoringMessage() {
-            MessageType = message.MessageType,
+            MessageType = nameof(message.MessageType),
             MessageSourceNodeName = message.MessageSourceNodeName,
             NumSkippedChildren = message.NumSkippedChildren
         };

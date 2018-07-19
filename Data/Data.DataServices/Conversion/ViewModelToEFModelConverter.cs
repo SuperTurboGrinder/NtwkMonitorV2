@@ -1,6 +1,9 @@
+using System;
+
 using Data.Abstract.Converters;
 using EFDbModel = Data.Model.EFDbModel;
 using Data.Model.ViewModel;
+using Data.Model.Enums;
 
 namespace Data.DataServices.Conversion {
 
@@ -53,9 +56,6 @@ class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
     
     public EFDbModel.MonitoringPulseResult Convert(MonitoringPulseResult pulse) {
         return new EFDbModel.MonitoringPulseResult() {
-            CreationTime = ConversionUtils.JSDateTimeFromDateTime(
-                pulse.CreationTime
-            ),
             Responded = pulse.Responded,
             Silent = pulse.Silent,
             Skipped = pulse.Skipped
@@ -63,8 +63,11 @@ class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
     }
     
     public EFDbModel.MonitoringMessage Convert(MonitoringMessage message) {
+        MonitoringMessageType mt;
+        //should already be validated to convert
+        Enum.TryParse(message.MessageType, out mt);
         return new EFDbModel.MonitoringMessage() {
-            MessageType = message.MessageType,
+            MessageType = mt,
             MessageSourceNodeName = message.MessageSourceNodeName,
             NumSkippedChildren = message.NumSkippedChildren
         };
