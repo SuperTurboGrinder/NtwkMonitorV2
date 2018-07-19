@@ -10,7 +10,6 @@ namespace Data.Abstract.DataAccessServices {
 //model convertion
 //reporting errors through DataActionResult
 public interface ISettingsProfileDataService {
-    Task<DataActionResult<bool>> CheckIfProfileExists(int profileID);
     Task<DataActionResult<IEnumerable<Profile>>> GetAllProfiles();
     Task<DataActionResult<Profile>> CreateProfile(Profile profile);
     Task<DataActionVoidResult> SetProfileViewTagsSelection(int profileID, IEnumerable<int> tagIDs);

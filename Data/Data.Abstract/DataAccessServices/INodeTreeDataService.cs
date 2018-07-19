@@ -9,17 +9,7 @@ namespace Data.Abstract.DataAccessServices {
 //input data validation
 //model convertion
 //reporting errors through DataActionResult
-public interface INetworkDataService {
-    
-    //for input validation
-    Task<DataActionResult<bool>> HasChildren(int nodeID);
-    Task<DataActionResult<bool>> CheckIfNodeExists(int nodeID);
-    Task<DataActionResult<bool>> CheckIfTagExists(int tagID);
-    Task<DataActionResult<bool>> CheckIfTagNameExists(string name);
-    Task<DataActionResult<bool>> CheckIfNodeNameExists(string name);
-    Task<DataActionResult<bool>> CheckIfCWSNameExists(string name);
-    Task<DataActionResult<bool>> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
-
+public interface INodeTreeDataService {
     Task<DataActionVoidResult> MoveNodesSubtree(int nodeID, int newParentID);
     Task<DataActionResult<IEnumerable<NtwkNode>>> GetAllNodes();
     Task<DataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID);
