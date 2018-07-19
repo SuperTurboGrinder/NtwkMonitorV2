@@ -471,7 +471,6 @@ public static class EFDataSourceLogic {
         context.RemoveRange(toRemove);
 
         if((toStay.Count() + currentWithoutFlag_ToSet.Count()) < tagIDs.Count()) {
-            throw new Exception($"toStay:{toStay.Count()}, toSet:{currentWithoutFlag_ToSet.Count()}, tags:{tagIDs.Count()}");
             IEnumerable<int> alreadySetTags = new [] {
                 toStay,
                 currentWithoutFlag_ToSet.Select(pst => pst.TagID),
