@@ -4,10 +4,10 @@ using Data.Model.ViewModel;
 
 namespace Data.DataServices.Conversion {
 
-class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
+class EFModelToViewModelConverter : IEFModelToViewModelConverter {
 
-    public EFDbModel.CustomWebService Convert(CustomWebService cws) {
-        return new EFDbModel.CustomWebService() {
+    public CustomWebService Convert(EFDbModel.CustomWebService cws) {
+        return new CustomWebService() {
             ID = cws.ID,
             ServiceName = cws.ServiceName,
             ServiceStr = cws.ServiceStr,
@@ -17,8 +17,8 @@ class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
         };
     }
 
-    public EFDbModel.Profile Convert(Profile profile) {
-        return new EFDbModel.Profile() {
+    public Profile Convert(EFDbModel.Profile profile) {
+        return new Profile() {
             ID = profile.ID,
             Name = profile.Name,
             SendMonitoringAlarm = profile.SendMonitoringAlarm,
@@ -31,29 +31,43 @@ class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
         };
     }
     
-    public EFDbModel.NtwkNode Convert(NtwkNode node) {
-        return new EFDbModel.NtwkNode() {
+    public NtwkNode Convert(EFDbModel.NtwkNode node) {
+        return new NtwkNode() {
             ID = node.ID,
             ParentID = node.ParentID,
             ParentPort = node.ParentPort,
             Name = node.Name,
-            ip = Conversion.ConversionUtils.IPStrToUInt32(node.ipStr),
-            OpenPing = node.IsOpenPing,
-            OpenTelnet = node.IsOpenTelnet,
-            OpenSSH = node.IsOpenSSH
+            ipStr = Conversion.ConversionUtils.UInt32ToIPStr(node.ip),
+            IsOpenPing = node.OpenPing,
+            IsOpenTelnet = node.OpenTelnet,
+            IsOpenSSH = node.OpenSSH
         };
     }
     
-    public EFDbModel.NodeTag Convert(NodeTag tag) {
-        return new EFDbModel.NodeTag() {
+    public NodeTag Convert(EFDbModel.NodeTag tag) {
+        return new NodeTag() {
             ID = tag.ID,
             Name = tag.Name
         };
     }
+
+    public MonitoringSession Convert(EFDbModel.MonitoringSession session) {
+        return new MonitoringSession() {
+            ID = session.ID,
+            CreatedByProfileID = session.CreatedByProfileID,
+            ParticipatingNodesNum = session.ParticipatingNodesNum,
+            CreationTime = ConversionUtils.DateTimeFromJSDateTime(
+                session.CreationTime
+            ),
+            LastPulseTime = ConversionUtils.DateTimeFromJSDateTime(
+                session.LastPulseTime
+            )
+        };
+    }
     
-    public EFDbModel.MonitoringPulseResult Convert(MonitoringPulseResult pulse) {
-        return new EFDbModel.MonitoringPulseResult() {
-            CreationTime = ConversionUtils.JSDateTimeFromDateTime(
+    public MonitoringPulseResult Convert(EFDbModel.MonitoringPulseResult pulse) {
+        return new MonitoringPulseResult() {
+            CreationTime = ConversionUtils.DateTimeFromJSDateTime(
                 pulse.CreationTime
             ),
             Responded = pulse.Responded,
@@ -62,8 +76,8 @@ class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
         };
     }
     
-    public EFDbModel.MonitoringMessage Convert(MonitoringMessage message) {
-        return new EFDbModel.MonitoringMessage() {
+    public MonitoringMessage Convert(EFDbModel.MonitoringMessage message) {
+        return new MonitoringMessage() {
             MessageType = message.MessageType,
             MessageSourceNodeName = message.MessageSourceNodeName,
             NumSkippedChildren = message.NumSkippedChildren

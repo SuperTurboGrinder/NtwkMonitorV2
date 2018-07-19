@@ -3,7 +3,7 @@ using Data.Model.ViewModel;
 
 namespace Data.Abstract.Converters {
 
-interface IEFModelToViewModelConverter {
+public interface IEFModelToViewModelConverter {
     CustomWebService Convert(EFDbModel.CustomWebService cws);
     Profile Convert(EFDbModel.Profile profile);
     NtwkNode Convert(EFDbModel.NtwkNode node);
