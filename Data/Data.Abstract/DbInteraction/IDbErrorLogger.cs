@@ -1,8 +1,9 @@
+using System;
 
 namespace Data.Abstract.DbInteraction {
 
 public interface IDbErrorLogger {
-    void LogError(string error);
+    void LogException(Exception ex);
 }
 
 }

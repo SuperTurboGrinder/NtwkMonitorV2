@@ -10,9 +10,11 @@ namespace Data.EFDatabase {
 
 class EFDataSource : IEFDbDataSource {
     readonly NtwkDBContext context;
+    readonly IDbErrorLogger errorLogger;
 
-    EFDataSource(NtwkDBContext _context) {
+    EFDataSource(NtwkDBContext _context, IDbErrorLogger _errorLogger) {
         context = _context;
+        errorLogger = _errorLogger;
     }
 
     public async Task<MonitoringSession> GetNewSession(
