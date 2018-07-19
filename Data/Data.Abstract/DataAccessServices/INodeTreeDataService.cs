@@ -8,45 +8,45 @@ namespace Data.Abstract.DataAccessServices {
 
 //input data validation
 //model convertion
-//reporting errors through IDataActionResult
+//reporting errors through DataActionResult
 public interface INetworkDataService {
     
     //for input validation
-    Task<IDataActionResult<bool>> HasChildren(int nodeID);
-    Task<IDataActionResult<bool>> CheckIfNodeExists(int nodeID);
-    Task<IDataActionResult<bool>> CheckIfTagExists(int tagID);
-    Task<IDataActionResult<bool>> CheckIfTagNameExists(string name);
-    Task<IDataActionResult<bool>> CheckIfNodeNameExists(string name);
-    Task<IDataActionResult<bool>> CheckIfCWSNameExists(string name);
-    Task<IDataActionResult<bool>> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
+    Task<DataActionResult<bool>> HasChildren(int nodeID);
+    Task<DataActionResult<bool>> CheckIfNodeExists(int nodeID);
+    Task<DataActionResult<bool>> CheckIfTagExists(int tagID);
+    Task<DataActionResult<bool>> CheckIfTagNameExists(string name);
+    Task<DataActionResult<bool>> CheckIfNodeNameExists(string name);
+    Task<DataActionResult<bool>> CheckIfCWSNameExists(string name);
+    Task<DataActionResult<bool>> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
 
-    Task<IDataActionVoidResult> MoveNodesSubtree(int nodeID, int newParentID);
-    Task<IDataActionResult<IEnumerable<NtwkNode>>> GetAllNodes();
-    Task<IDataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID);
-    Task<IDataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
-    Task<IDataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
-    Task<IDataActionResult<IEnumerable<NodeTag>>> GetAllTags();
-    Task<IDataActionResult<IEnumerable<CustomWebService>>> GetAllCVS();
+    Task<DataActionVoidResult> MoveNodesSubtree(int nodeID, int newParentID);
+    Task<DataActionResult<IEnumerable<NtwkNode>>> GetAllNodes();
+    Task<DataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID);
+    Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
+    Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
+    Task<DataActionResult<IEnumerable<NodeTag>>> GetAllTags();
+    Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCVS();
     
 
-    Task<IDataActionResult<NtwkNode>> CreateNodeOnRoot(NtwkNode node);
-    Task<IDataActionResult<NtwkNode>> CreateNodeWithParent(NtwkNode node, int parentID);
-    Task<IDataActionResult<NodeTag>> CreateTag(NodeTag tag);
-    Task<IDataActionVoidResult> CreateWebServiceBinding(int nodeID, int cwsID,
+    Task<DataActionResult<NtwkNode>> CreateNodeOnRoot(NtwkNode node);
+    Task<DataActionResult<NtwkNode>> CreateNodeWithParent(NtwkNode node, int parentID);
+    Task<DataActionResult<NodeTag>> CreateTag(NodeTag tag);
+    Task<DataActionVoidResult> CreateWebServiceBinding(int nodeID, int cwsID,
         string param1, string param2, string param3);
-    Task<IDataActionResult<CustomWebService>> CreateCustomWebService(CustomWebService cws);
+    Task<DataActionResult<CustomWebService>> CreateCustomWebService(CustomWebService cws);
 
-    Task<IDataActionVoidResult> SetNodeTags(int nodeID, IEnumerable<int> tagIDs);
+    Task<DataActionVoidResult> SetNodeTags(int nodeID, IEnumerable<int> tagIDs);
 
-    Task<IDataActionVoidResult> UpdateNode(NtwkNode node);
-    Task<IDataActionVoidResult> UpdateCustomWebService(CustomWebService cws);
-    Task<IDataActionVoidResult> UpdateWebServiceBinding(int nodeID, int cwsID,
+    Task<DataActionVoidResult> UpdateNode(NtwkNode node);
+    Task<DataActionVoidResult> UpdateCustomWebService(CustomWebService cws);
+    Task<DataActionVoidResult> UpdateWebServiceBinding(int nodeID, int cwsID,
         string param1, string param2, string param3);
 
-    Task<IDataActionResult<NtwkNode>> RemoveNode(int nodeID);
-    Task<IDataActionResult<NodeTag>> RemoveTag(int nodeID);
-    Task<IDataActionResult<CustomWebService>> RemoveCustomWebService(int cwsID);
-    Task<IDataActionVoidResult> RemoveWebServiceBinding(int nodeID, int cwsID);
+    Task<DataActionResult<NtwkNode>> RemoveNode(int nodeID);
+    Task<DataActionResult<NodeTag>> RemoveTag(int nodeID);
+    Task<DataActionResult<CustomWebService>> RemoveCustomWebService(int cwsID);
+    Task<DataActionVoidResult> RemoveWebServiceBinding(int nodeID, int cwsID);
 }
 
 }

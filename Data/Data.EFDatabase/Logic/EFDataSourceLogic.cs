@@ -1,5 +1,5 @@
-//I thought this kind of separation of logic will help with
-//unit testing. I'm not sure it did in this case.
+//I thought this kind of separation of logic will help with testing.
+//I'm not sure it did in this case.
 
 using System;
 using System.Collections.Generic;
@@ -12,18 +12,12 @@ using Data.Model.Enums;
 
 namespace Data.EFDatabase.Logic {
 
-//This whole class exists for unit testing db access logic
 public static class EFDataSourceLogic {
+
     static double JSDateTimeNow() {
         return DateTime.UtcNow
                .Subtract(new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc))
                .TotalMilliseconds;
-    }
-
-    static DateTime DateTimeFromJSDataTime(long jsDateTime) {
-        DateTime baseDateTime = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
-        TimeSpan time = TimeSpan.FromMilliseconds(jsDateTime);
-        return baseDateTime + time;
     }
 
     public static async Task<MonitoringSession> GetNewSession_Logic(
@@ -48,7 +42,6 @@ public static class EFDataSourceLogic {
         context.MonitoringSessions.Add(newSession);
         await context.SaveChangesAsync();
         context.Entry(newSession).State = EntityState.Detached;
-        newSession.CreatedByProfile = null;
         return newSession;
     }
 
@@ -96,8 +89,7 @@ public static class EFDataSourceLogic {
     ) {
         return await context.MonitoringSessions
             .AsNoTracking()
-            .Include(s => s.CreatedByProfile)
-            .Where(s => s.CreatedByProfile.ID == profileID)
+            .Where(s => s.CreatedByProfileID == profileID)
             .OrderByDescending(s => s.CreationTime)
             .ToListAsync();
     }
@@ -191,8 +183,10 @@ public static class EFDataSourceLogic {
         Profile newProfile = new Profile {
             ID = 0,
             Name = profile.Name,
-            MonitoringStartTime = profile.MonitoringStartTime,
-            MonitoringEndTime = profile.MonitoringEndTime,
+            MonitoringAlarmEmail = profile.MonitoringAlarmEmail,
+            SendMonitoringAlarm = profile.SendMonitoringAlarm,
+            MonitoringStartHour = profile.MonitoringStartHour,
+            MonitoringEndHour = profile.MonitoringEndHour,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
             DepthMonitoring = profile.DepthMonitoring,
             MonitorInterval = profile.MonitorInterval
@@ -583,8 +577,10 @@ public static class EFDataSourceLogic {
     ) {
         Profile profile = await context.Profiles.FindAsync(newProfileData.ID);
         profile.Name = newProfileData.Name;
-        profile.MonitoringStartTime = newProfileData.MonitoringStartTime;
-        profile.MonitoringEndTime = newProfileData.MonitoringEndTime;
+        profile.SendMonitoringAlarm = newProfileData.SendMonitoringAlarm;
+        profile.MonitoringAlarmEmail = newProfileData.MonitoringAlarmEmail;
+        profile.MonitoringStartHour = newProfileData.MonitoringStartHour;
+        profile.MonitoringEndHour = newProfileData.MonitoringEndHour;
         profile.StartMonitoringOnLaunch = newProfileData.StartMonitoringOnLaunch;
         profile.DepthMonitoring = newProfileData.DepthMonitoring;
         profile.MonitorInterval = newProfileData.MonitorInterval;

@@ -3,12 +3,11 @@ using Data.Model.ViewModel;
 
 namespace Data.Abstract.Converters {
 
-interface IViewModelToEFModelConverter {
+public interface IViewModelToEFModelConverter {
     EFDbModel.CustomWebService Convert(CustomWebService cws);
-    //EFDbModel.Network Convert(Network network);
+    EFDbModel.Profile Convert(Profile profile);
     EFDbModel.NtwkNode Convert(NtwkNode node);
     EFDbModel.NodeTag Convert(NodeTag tag);
-    EFDbModel.MonitoringSession Convert(MonitoringSession session);
     EFDbModel.MonitoringPulseResult Convert(MonitoringPulseResult pulse);
     EFDbModel.MonitoringMessage Convert(MonitoringMessage message);
 }

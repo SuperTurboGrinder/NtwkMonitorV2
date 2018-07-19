@@ -2,8 +2,6 @@ using Data.Abstract.Enum;
 
 namespace Data.Abstract.DbInteraction {
 
-public enum VoidResult {};
-
 public class DbOperationResult<TDbModel> {
     public DbOperationResult(TDbModel result, bool success) {
         Success = success;
@@ -14,7 +12,9 @@ public class DbOperationResult<TDbModel> {
 }
 
 public class DbOperationVoidResult : DbOperationResult<VoidResult> {
-    public DbOperationVoidResult(bool success) : base(new VoidResult(), success) {}
+    static readonly VoidResult Void = new VoidResult();
+
+    public DbOperationVoidResult(bool success) : base(Void, success) {}
 }
 
 }

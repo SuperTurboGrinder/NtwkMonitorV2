@@ -5,7 +5,7 @@ namespace Data.Abstract.Converters {
 
 interface IEFModelToViewModelConverter {
     CustomWebService Convert(EFDbModel.CustomWebService cws);
-    //Network Convert(EFDbModel.Network network);
+    Profile Convert(EFDbModel.Profile profile);
     NtwkNode Convert(EFDbModel.NtwkNode node);
     NodeTag Convert(EFDbModel.NodeTag tag);
     MonitoringSession Convert(EFDbModel.MonitoringSession session);

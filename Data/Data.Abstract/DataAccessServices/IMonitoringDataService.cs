@@ -11,20 +11,20 @@ namespace Data.Abstract.DataAccessServices {
 //reporting errors through IDataActionResult
 public interface IMonitoringDataService {
     
-    Task<IDataActionResult<MonitoringSession>> GetNewSession(
+    Task<DataActionResult<MonitoringSession>> GetNewSession(
         int profileID,
         IEnumerable<int> monitoredTagsIDList
     );
-    Task<IDataActionResult<MonitoringPulseResult>> SavePulseResult(
+    Task<DataActionResult<MonitoringPulseResult>> SavePulseResult(
         int sessionID,
         MonitoringPulseResult pulseResult,
         IEnumerable<MonitoringMessage> messages
     );
-    Task<IDataActionVoidResult> ClearEmptySessions();
+    Task<DataActionVoidResult> ClearEmptySessions();
 
-    Task<IDataActionResult<IEnumerable<MonitoringSession>>> GetSessionsForProfile(int profileID);
+    Task<DataActionResult<IEnumerable<MonitoringSession>>> GetSessionsForProfile(int profileID);
     //includes messages
-    Task<IDataActionResult<IEnumerable<MonitoringPulseResult>>> GetSessionReport(int monitoringSessionID);
+    Task<DataActionResult<IEnumerable<MonitoringPulseResult>>> GetSessionReport(int monitoringSessionID);
 
 }
 
