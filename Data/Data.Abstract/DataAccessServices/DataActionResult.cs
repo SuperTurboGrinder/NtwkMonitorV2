@@ -7,7 +7,7 @@ public class DataActionResult<TViewModel> {
     public DataActionResult(
         TViewModel convertedDbOpResult,
         bool success,
-        string errorString
+        string errorString = null
     ) {
         Result = convertedDbOpResult;
         Success = success;
@@ -22,7 +22,7 @@ public class DataActionResult<TViewModel> {
 public class DataActionVoidResult : DataActionResult<VoidResult> {
     static readonly VoidResult Void = new VoidResult();
 
-    DataActionVoidResult(
+    public DataActionVoidResult(
         bool success,
         string errorString
     ) : base(Void, success, errorString) {}

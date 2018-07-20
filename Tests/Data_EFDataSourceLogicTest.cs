@@ -615,6 +615,41 @@ public class Data_EFDataSourceLogicTest {
         Assert.False(nonExistingTags);
     }
 
+    
+
+    [Fact]
+    public async void CheckIfTagsExist_WillReturnTrueOnlyIfAllTheSpecifiedTagsExist() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        bool existingTags =
+            await EFDataSourceLogic.CheckIfTagsExist_Logic(
+                context, new [] { IDSet.Tag1ID , IDSet.Tag2ID, IDSet.Tag3ID}
+            );
+        bool nonExistingTags =
+            await EFDataSourceLogic.CheckIfTagsExist_Logic(
+                context,
+                new [] {
+                    IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID,
+                    IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+1,
+                    IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+2
+                }
+            );
+        bool mixedTags = 
+            await EFDataSourceLogic.CheckIfTagsExist_Logic(
+                context,
+                new [] {
+                    IDSet.Tag1ID , IDSet.Tag2ID,
+                    IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+2
+                }
+            );
+        
+        Assert.True(existingTags);
+        Assert.False(nonExistingTags);
+        Assert.False(mixedTags);
+    }
+
     [Fact]
     public async void CheckIfNodeExists_WillReturnTrueOnlyIfSpecifiedNodeExists() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
@@ -879,7 +914,7 @@ public class Data_EFDataSourceLogicTest {
     }
     
     [Fact]
-    public async void SetProfileViewTagsSelectionToProfileMonitorFlagsSelection_WillSetAllViewTagSelectionsToCurrentMonitorTagsSelections() {
+    public async void SetProfileViewTagsSelectionToProfileMonitorTagsSelection_WillSetAllViewTagSelectionsToCurrentMonitorTagsSelections() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
@@ -898,7 +933,7 @@ public class Data_EFDataSourceLogicTest {
         var set1MonitorBefore = monitorSelection.ToList();
         var set1ViewBefore = viewSelection.ToList();
         await EFDataSourceLogic
-            .SetProfileViewTagsSelectionToProfileMonitorFlagsSelection_Logic(
+            .SetProfileViewTagsSelectionToProfileMonitorTagsSelection_Logic(
                 context, IDSet.ProfileID
             );
         var set1MonitorAfter = monitorSelection.ToList();
@@ -908,7 +943,7 @@ public class Data_EFDataSourceLogicTest {
         var set2MonitorBefore = monitorSelection.ToList();
         var set2ViewBefore = viewSelection.ToList();
         await EFDataSourceLogic
-            .SetProfileViewTagsSelectionToProfileMonitorFlagsSelection_Logic(
+            .SetProfileViewTagsSelectionToProfileMonitorTagsSelection_Logic(
                 context, IDSet.ProfileID
             );
         var set2MonitorAfter = monitorSelection.ToList();

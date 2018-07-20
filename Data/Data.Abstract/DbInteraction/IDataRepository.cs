@@ -30,6 +30,7 @@ public interface IDataRopository {
     Task<DbOperationResult<bool>> CheckIfNodeExists(int nodeID);
     Task<DbOperationResult<bool>> CheckIfProfileExists(int profileID);
     Task<DbOperationResult<bool>> CheckIfTagExists(int tagID);
+    Task<DbOperationResult<bool>> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<DbOperationResult<bool>> CheckIfTagNameExists(string name);
     Task<DbOperationResult<bool>> CheckIfNodeNameExists(string name);
     Task<DbOperationResult<bool>> CheckIfCWSNameExists(string name);
@@ -55,7 +56,7 @@ public interface IDataRopository {
 
     Task<DbOperationVoidResult> SetNodeTags(int nodeID, IEnumerable<int> tagIDs);
     Task<DbOperationVoidResult> SetProfileViewTagsSelection(int profileID, IEnumerable<int> tagIDs);
-    Task<DbOperationVoidResult> SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID);
+    Task<DbOperationVoidResult> SetProfileViewTagsSelectionToProfileMonitorTagsSelection(int profileID);
     Task<DbOperationVoidResult> SetProfileMonitorTagsSelection(int profileID, IEnumerable<int> tagIDs);
     Task<DbOperationVoidResult> SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID);
 

@@ -56,6 +56,10 @@ class EFDataSource : IEFDbDataSource {
     public async Task<bool> CheckIfTagExists(int tagID) {
         return await CheckIfTagExists_Logic(context, tagID);
     }
+
+    public async Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs) {
+        return await CheckIfTagsExist_Logic(context, tagsIDs);
+    }
     
     public async Task<bool> CheckIfNodeExists(int nodeID) {
         return await CheckIfNodeExists_Logic(context, nodeID);
@@ -155,8 +159,8 @@ class EFDataSource : IEFDbDataSource {
     }
 
     
-    public async Task SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID) {
-        await SetProfileViewTagsSelectionToProfileMonitorFlagsSelection_Logic(
+    public async Task SetProfileViewTagsSelectionToProfileMonitorTagsSelection(int profileID) {
+        await SetProfileViewTagsSelectionToProfileMonitorTagsSelection_Logic(
             context, profileID);
     }
 

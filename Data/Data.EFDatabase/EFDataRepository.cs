@@ -247,9 +247,9 @@ class EFDataReporitory : IDataRopository {
         );
     }
     
-    public async Task<DbOperationVoidResult> SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID) {
+    public async Task<DbOperationVoidResult> SetProfileViewTagsSelectionToProfileMonitorTagsSelection(int profileID) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
-            await efDataSource.SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(profileID)
+            await efDataSource.SetProfileViewTagsSelectionToProfileMonitorTagsSelection(profileID)
         );
     }
     

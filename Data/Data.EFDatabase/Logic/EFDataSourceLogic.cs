@@ -313,6 +313,14 @@ public static class EFDataSourceLogic {
         return await context.Tags.AnyAsync(n => n.ID == tagID);
     }
 
+    public static async Task<bool> CheckIfTagsExist_Logic(
+        NtwkDBContext context,
+        IEnumerable<int> tagsIDs
+    ) {
+        return tagsIDs.Count() == 
+            await context.Tags.Where(t => tagsIDs.Contains(t.ID)).CountAsync();
+    }
+
     public static async Task<bool> CheckIfNodeExists_Logic(
         NtwkDBContext context,
         int nodeID
@@ -531,7 +539,7 @@ public static class EFDataSourceLogic {
         await context.SaveChangesAsync();
     }
 
-    public static async Task SetProfileViewTagsSelectionToProfileMonitorFlagsSelection_Logic(
+    public static async Task SetProfileViewTagsSelectionToProfileMonitorTagsSelection_Logic(
         NtwkDBContext context,
         int profileID
     ) {

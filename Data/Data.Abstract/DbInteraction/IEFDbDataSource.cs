@@ -29,6 +29,7 @@ public interface IEFDbDataSource {
     Task<bool> CheckIfNodeExists(int nodeID);
     Task<bool> CheckIfProfileExists(int profileID);
     Task<bool> CheckIfTagExists(int tagID);
+    Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<bool> CheckIfTagNameExists(string name);
     Task<bool> CheckIfNodeNameExists(string name);
     Task<bool> CheckIfCWSNameExists(string name);
@@ -54,7 +55,7 @@ public interface IEFDbDataSource {
 
     Task SetNodeTags(int nodeID, IEnumerable<int> tagIDs);
     Task SetProfileViewTagsSelection(int profileID, IEnumerable<int> tagIDs);
-    Task SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID);
+    Task SetProfileViewTagsSelectionToProfileMonitorTagsSelection(int profileID);
     Task SetProfileMonitorTagsSelection(int profileID, IEnumerable<int> tagIDs);
     Task SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID);
 
