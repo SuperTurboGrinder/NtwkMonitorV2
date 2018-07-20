@@ -11,10 +11,7 @@ namespace Data.Abstract.DataAccessServices {
 //reporting errors through IDataActionResult
 public interface IMonitoringDataService {
     
-    Task<DataActionResult<MonitoringSession>> GetNewSession(
-        int profileID,
-        IEnumerable<int> monitoredTagsIDList
-    );
+    Task<DataActionResult<MonitoringSession>> GetNewSession(int profileID);
     Task<DataActionResult<MonitoringPulseResult>> SavePulseResult(
         int sessionID,
         MonitoringPulseResult pulseResult,

@@ -18,10 +18,9 @@ class EFDataSource : IEFDbDataSource {
     }
 
     public async Task<MonitoringSession> GetNewSession(
-        int profileID,
-        IEnumerable<int> monitoredTagsIDList
+        int profileID
     ) {
-        return await GetNewSession_Logic(context, profileID, monitoredTagsIDList);
+        return await GetNewSession_Logic(context, profileID);
     }
 
     public async Task<MonitoringPulseResult> SavePulseResult(
@@ -51,6 +50,10 @@ class EFDataSource : IEFDbDataSource {
 
     public async Task<bool> CheckIfProfileExists(int profileID) {
         return await CheckIfProfileExists_Logic(context, profileID);
+    }
+
+    public async Task<bool> CheckIfSessionExists(int sessionID) {
+        return await CheckIfSessionExists_Logic(context, sessionID);
     }
 
     public async Task<bool> CheckIfTagExists(int tagID) {

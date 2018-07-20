@@ -10,8 +10,7 @@ namespace Data.Abstract.DbInteraction {
 //no exception handling
 public interface IEFDbDataSource {
     Task<MonitoringSession> GetNewSession(
-        int profileID,
-        IEnumerable<int> monitoredTagsIDList
+        int profileID
     );
     Task<MonitoringPulseResult> SavePulseResult(
         int sessionID,
@@ -28,6 +27,7 @@ public interface IEFDbDataSource {
     Task<bool> HasChildren(int nodeID);
     Task<bool> CheckIfNodeExists(int nodeID);
     Task<bool> CheckIfProfileExists(int profileID);
+    Task<bool> CheckIfSessionExists(int sessionID);
     Task<bool> CheckIfTagExists(int tagID);
     Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<bool> CheckIfTagNameExists(string name);

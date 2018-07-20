@@ -22,14 +22,15 @@ public static class EFDataSourceLogic {
 
     public static async Task<MonitoringSession> GetNewSession_Logic(
         NtwkDBContext context,
-        int profileID,
-        IEnumerable<int> monitoredTagsIDList
+        int profileID
     ) {
-        int monitoredNodesNum = await context.Tags
-            .Where(t => monitoredTagsIDList.Contains(t.ID))
-            .Include(t => t.Attachments)
-            .ThenInclude(ta => ta.Node)
-            .SelectMany(t => t.Attachments.Select(ta => ta.Node.ID))
+        int monitoredNodesNum = await context.ProfilesTagSelection
+            .Where(pts => pts.BindedProfileID == profileID &&
+                          ProfileSelectedTagFlags.Monitor ==
+                            (pts.Flags & ProfileSelectedTagFlags.Monitor))
+            .Include(pts => pts.Tag)
+                .ThenInclude(t => t.Attachments)
+            .SelectMany(pts => pts.Tag.Attachments.Select(ta => ta.NodeID))
             .Distinct()
             .CountAsync();
         MonitoringSession newSession = new MonitoringSession {
@@ -304,6 +305,13 @@ public static class EFDataSourceLogic {
         int profileID
     ) {
         return await context.Profiles.AnyAsync(n => n.ID == profileID);
+    }
+
+    public static async Task<bool> CheckIfSessionExists_Logic(
+        NtwkDBContext context,
+        int sessionID
+    ) {
+        return await context.MonitoringSessions.AnyAsync(n => n.ID == sessionID);
     }
 
     public static async Task<bool> CheckIfTagExists_Logic(

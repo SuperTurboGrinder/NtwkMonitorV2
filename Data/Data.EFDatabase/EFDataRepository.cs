@@ -8,11 +8,11 @@ using Data.Model.EFDbModel;
 
 namespace Data.EFDatabase {
 
-class EFDataReporitory : IDataRopository {
+class EFDataRepository : IDataRepository {
     IEFDbDataSource efDataSource;
     IDbErrorLogger logger;
 
-    public EFDataReporitory(IEFDbDataSource dataSource, IDbErrorLogger _logger) {
+    public EFDataRepository(IEFDbDataSource dataSource, IDbErrorLogger _logger) {
         efDataSource = dataSource;
         logger = _logger;
     }
@@ -59,11 +59,10 @@ class EFDataReporitory : IDataRopository {
     }
 
     public async Task<DbOperationResult<MonitoringSession>> GetNewSession(
-        int profileID,
-        IEnumerable<int> monitoredTagsIDList
+        int profileID
     ) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
-            await efDataSource.GetNewSession(profileID, monitoredTagsIDList)
+            await efDataSource.GetNewSession(profileID)
         );
     }
 
@@ -115,10 +114,22 @@ class EFDataReporitory : IDataRopository {
             await efDataSource.CheckIfProfileExists(profileID)
         );
     }
+
+    public async Task<DbOperationResult<bool>> CheckIfSessionExists(int sessionID) {
+        return await PerformDbOperationAndLogDbUpdateException(async () =>
+            await efDataSource.CheckIfSessionExists(sessionID)
+        );
+    }
     
     public async Task<DbOperationResult<bool>> CheckIfTagExists(int tagID) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
             await efDataSource.CheckIfTagExists(tagID)
+        );
+    }
+
+    public async Task<DbOperationResult<bool>> CheckIfTagsExist(IEnumerable<int> tagsIDs) {
+        return await PerformDbOperationAndLogDbUpdateException(async () =>
+            await efDataSource.CheckIfTagsExist(tagsIDs)
         );
     }
     

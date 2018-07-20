@@ -26,8 +26,9 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
+        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(context, IDSet);
 
-        var createdSession = await EFDataSourceLogic.GetNewSession_Logic(context, IDSet.ProfileID, new []{ IDSet.Tag2ID });
+        var createdSession = await EFDataSourceLogic.GetNewSession_Logic(context, IDSet.ProfileID);
         var sessionWithInclude = context.MonitoringSessions
             .AsNoTracking()
             .Include(s => s.CreatedByProfile)
@@ -35,7 +36,7 @@ public class Data_EFDataSourceLogicTest {
             .Single(s => s.ID == createdSession.ID);
 
         Assert.Equal(IDSet.ProfileID, sessionWithInclude.CreatedByProfile.ID);
-        Assert.Equal(1, sessionWithInclude.ParticipatingNodesNum);
+        Assert.Equal(2, sessionWithInclude.ParticipatingNodesNum);
         Assert.Empty(sessionWithInclude.Pulses);
     }
 
@@ -582,6 +583,22 @@ public class Data_EFDataSourceLogicTest {
         
         Assert.True(existingProfile);
         Assert.False(nonExistingProfile);
+    }
+
+    [Fact]
+    public async void CheckIfSessionExists_WillReturnTrueOnlyIfSpecifiedMonitoringSessionExists() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+        int ExistingSessionID = context.MonitoringSessions.First().ID;
+
+        bool existingSession = await EFDataSourceLogic
+            .CheckIfSessionExists_Logic(context, ExistingSessionID);
+        bool nonExistingSession = await EFDataSourceLogic
+            .CheckIfSessionExists_Logic(context, ExistingSessionID+199);
+        
+        Assert.True(existingSession);
+        Assert.False(nonExistingSession);
     }
 
     [Fact]

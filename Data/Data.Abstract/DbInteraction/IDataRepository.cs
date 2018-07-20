@@ -8,11 +8,8 @@ namespace Data.Abstract.DbInteraction {
 
 //logging db operations exceptions from lower level IDbDataSource
 //reporting status but not the error through DbOperationResult
-public interface IDataRopository {
-    Task<DbOperationResult<MonitoringSession>> GetNewSession(
-        int profileID,
-        IEnumerable<int> monitoredTagsIDList
-    );
+public interface IDataRepository {
+    Task<DbOperationResult<MonitoringSession>> GetNewSession(int profileID);
     
     Task<DbOperationResult<MonitoringPulseResult>> SavePulseResult(
         int sessionID,
@@ -29,6 +26,7 @@ public interface IDataRopository {
     Task<DbOperationResult<bool>> HasChildren(int nodeID);
     Task<DbOperationResult<bool>> CheckIfNodeExists(int nodeID);
     Task<DbOperationResult<bool>> CheckIfProfileExists(int profileID);
+    Task<DbOperationResult<bool>> CheckIfSessionExists(int sessionID);
     Task<DbOperationResult<bool>> CheckIfTagExists(int tagID);
     Task<DbOperationResult<bool>> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<DbOperationResult<bool>> CheckIfTagNameExists(string name);
