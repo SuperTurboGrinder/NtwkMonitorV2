@@ -313,7 +313,7 @@ public class Data_EFDataSourceLogicTest {
             .AsNoTracking()
             .ToList();
 
-        Assert.Equal(1, profilesBefore.Count);
+        Assert.Single(profilesBefore);
         Assert.Equal(3, networksAfter.Count);
         Assert.DoesNotContain(profilesBefore, n => n.Name == newProfile1Name);
         Assert.DoesNotContain(profilesBefore, n => n.Name == newProfile2Name);
@@ -1043,7 +1043,7 @@ public class Data_EFDataSourceLogicTest {
         int cwsCoundAfter = context.WebServices.Count();
 
         Assert.Equal(1, cwsCoundAfter - cwsCoundBefore);
-        Assert.Equal(createdCWS.ServiceName, "Web Interface On Custom Port");
+        Assert.Equal("Web Interface On Custom Port", createdCWS.ServiceName);
     }
 
     [Fact]
