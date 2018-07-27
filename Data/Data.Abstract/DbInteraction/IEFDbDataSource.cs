@@ -33,7 +33,9 @@ public interface IEFDbDataSource {
     Task<bool> CheckIfTagNameExists(string name);
     Task<bool> CheckIfNodeNameExists(string name);
     Task<bool> CheckIfCWSNameExists(string name);
+    Task<bool> CheckIfProfileNameExists(string name);
     Task<bool> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
+    Task<int> GetCWSParamNumber(int cwsID); //-1 if cws does not exist
 
     Task MoveNodesSubtree(int nodeID, int newParentID);
     Task<IEnumerable<Profile>> GetAllProfiles();
@@ -42,7 +44,7 @@ public interface IEFDbDataSource {
     Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
     Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
     Task<IEnumerable<NodeTag>> GetAllTags();
-    Task<IEnumerable<CustomWebService>> GetAllCVS();
+    Task<IEnumerable<CustomWebService>> GetAllCWS();
     
 
     Task<Profile> CreateProfile(Profile profile);

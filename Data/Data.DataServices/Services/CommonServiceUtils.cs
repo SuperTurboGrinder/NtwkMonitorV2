@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,41 +31,105 @@ class CommonServiceUtils {
         return new DataActionVoidResult(false, error);
     }
 
-
-    public async Task<string> ValidateProfileID(int profileID) {
-        DbOperationResult<bool> ProfileIDIsOk =
-            await repo.CheckIfProfileExists(profileID);
-        if(!ProfileIDIsOk.Success) {
-            return "Unable to check existance of profileID.";
+    async Task<string> ValidateID(
+        Func<Task<DbOperationResult<bool>>> validator,
+        string identity
+    ) {
+        DbOperationResult<bool> IDIsOk =
+            await validator();
+        if(!IDIsOk.Success) {
+            return $"Unable to check existance of {identity} ID.";
         }
-        else if(!ProfileIDIsOk.Result) {
-            return "Invalid profile id.";
+        else if(!IDIsOk.Result) {
+            return $"Invalid {identity} id.";
         }
         return null;
     }
 
-    public async Task<string> ValidateTagsIDs(IEnumerable<int> tagsIDs) {
-        DbOperationResult<bool> TagIDsAreOk =
-            await repo.CheckIfTagsExist(tagsIDs);
-        if(!TagIDsAreOk.Success) {
-            return "Unable to check existance of tag IDs.";
+    async Task<string> ValidateMultipleID(
+        Func<Task<DbOperationResult<bool>>> validator,
+        string identity
+    ) {
+        DbOperationResult<bool> IDIsOk =
+            await validator();
+        if(!IDIsOk.Success) {
+            return $"Unable to check existance of {identity} IDs.";
         }
-        else if(!TagIDsAreOk.Result) {
-            return "Invalid tag IDs.";
+        else if(!IDIsOk.Result) {
+            return $"Invalid {identity} IDs.";
         }
         return null;
+    }
+
+    public async Task<string> ValidateProfileID(int profileID) {
+        return await ValidateID(
+            async () => await repo.CheckIfProfileExists(profileID),
+            "profile"
+        );
     }
     
     public async Task<string> ValidateSessionID(int sessionID) {
-        DbOperationResult<bool> SessionIDIsOk =
-            await repo.CheckIfSessionExists(sessionID);
-        if(!SessionIDIsOk.Success) {
-            return "Unable to check existance of sessionID.";
+        return await ValidateID(
+            async () => await repo.CheckIfSessionExists(sessionID),
+            "session"
+        );
+    }
+
+    public async Task<string> ValidateTagID(int tagID) {
+        return await ValidateID(
+            async () => await repo.CheckIfTagExists(tagID),
+            "tag"
+        );
+    }
+
+    public async Task<string> ValidateTagsIDs(IEnumerable<int> tagsIDs) {
+        return await ValidateMultipleID(
+            async () => await repo.CheckIfTagsExist(tagsIDs),
+            "tags"
+        );
+    }
+
+    public async Task<string> ValidateNodeID(int nodeID) {
+        return await ValidateID(
+            async () => await repo.CheckIfNodeExists(nodeID),
+            "node"
+        );
+    }
+
+    async Task<string> ErrorIfNameExists(Func<Task<DbOperationResult<bool>>> doesNameExist) {
+        DbOperationResult<bool> nameExists =
+            await doesNameExist();
+        if(!nameExists.Success) {
+            return "Unable to check existance of a name.";
         }
-        else if(!SessionIDIsOk.Result) {
-            return "Invalid session id.";
+        else if(nameExists.Result) {
+            return "Name already claimed.";
         }
         return null;
+    }
+
+    public async Task<string> ErrorIfNodeNameExists(string name) {
+        return await ErrorIfNameExists(async () => 
+            await repo.CheckIfNodeNameExists(name)
+        );
+    }
+
+    public async Task<string> ErrorIfTagNameExists(string name) {
+        return await ErrorIfNameExists(async () => 
+            await repo.CheckIfTagNameExists(name)
+        );
+    }
+
+    public async Task<string> ErrorIfCWSNameExists(string name) {
+        return await ErrorIfNameExists(async () => 
+            await repo.CheckIfCWSNameExists(name)
+        );
+    }
+
+    public async Task<string> ErrorIfProfileNameExists(string name) {
+        return await ErrorIfNameExists(async () => 
+            await repo.CheckIfProfileNameExists(name)
+        );
     }
 
 }

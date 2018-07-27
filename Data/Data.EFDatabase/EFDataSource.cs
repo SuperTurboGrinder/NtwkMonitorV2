@@ -52,6 +52,10 @@ class EFDataSource : IEFDbDataSource {
         return await CheckIfProfileExists_Logic(context, profileID);
     }
 
+    public async Task<int> GetCWSParamNumber(int cwsID) {
+        return await GetCWSParamNumber_Logic(context, cwsID);
+    }
+
     public async Task<bool> CheckIfSessionExists(int sessionID) {
         return await CheckIfSessionExists_Logic(context, sessionID);
     }
@@ -78,6 +82,10 @@ class EFDataSource : IEFDbDataSource {
 
     public async Task<bool> CheckIfCWSNameExists(string name) {
         return await CheckIfCWSNameExists_Logic(context, name);
+    }
+
+    public async Task<bool> CheckIfProfileNameExists(string name) {
+        return await CheckIfProfileNameExists_Logic(context, name);
     }
 
     public async Task<bool> CheckIfNodeInSubtree(
@@ -120,8 +128,8 @@ class EFDataSource : IEFDbDataSource {
         return await GetAllTags_Logic(context);
     }
     
-    public async Task<IEnumerable<CustomWebService>> GetAllCVS() {
-        return await GetAllCVS_Logic(context);
+    public async Task<IEnumerable<CustomWebService>> GetAllCWS() {
+        return await GetAllCWS_Logic(context);
     }
     
     

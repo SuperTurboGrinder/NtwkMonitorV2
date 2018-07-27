@@ -51,6 +51,10 @@ class SettingProfilesDataSerivce : ISettingsProfileDataService {
         if(errorStr != null) {
             return utils.FailActResult<Profile>(errorStr);
         }
+        string nameExistsError = await utils.ErrorIfProfileNameExists(profile.Name);
+        if(nameExistsError != null) {
+            return utils.FailActResult<Profile>(nameExistsError);
+        }
         EFDbModel.Profile converted = viewToEFConverter.Convert(profile);
         DbOperationResult<EFDbModel.Profile> dbOpResult =
             await repo.CreateProfile(converted);

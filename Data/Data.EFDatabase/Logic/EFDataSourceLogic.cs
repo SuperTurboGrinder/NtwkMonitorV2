@@ -170,7 +170,7 @@ public static class EFDataSourceLogic {
             .ToListAsync();
     }
     
-    public static async Task<IEnumerable<CustomWebService>> GetAllCVS_Logic(NtwkDBContext context) {
+    public static async Task<IEnumerable<CustomWebService>> GetAllCWS_Logic(NtwkDBContext context) {
         return await context.WebServices
             .AsNoTracking()
             .OrderByDescending(cvs => cvs.ID)
@@ -307,6 +307,21 @@ public static class EFDataSourceLogic {
         return await context.Profiles.AnyAsync(n => n.ID == profileID);
     }
 
+    public static async Task<int> GetCWSParamNumber_Logic(
+        NtwkDBContext context,
+        int cwsID
+    ) {
+        CustomWebService cws = await context.WebServices
+            .SingleOrDefaultAsync(ws => ws.ID == cwsID);
+        return (cws == null) ? (-1) : (
+            (cws.Parametr3Name != null) ? (3) : (
+                (cws.Parametr2Name != null) ? (2) : (
+                    (cws.Parametr1Name != null) ? (1) : (0)
+                )
+            )
+        );
+    }
+
     public static async Task<bool> CheckIfSessionExists_Logic(
         NtwkDBContext context,
         int sessionID
@@ -375,6 +390,17 @@ public static class EFDataSourceLogic {
         return await __CheckIfNameExists(
             context.WebServices.AsNoTracking(),
             t => t.ServiceName,
+            name
+        );
+    }
+
+    public static async Task<bool> CheckIfProfileNameExists_Logic(
+        NtwkDBContext context,
+        string name
+    ) {
+        return await __CheckIfNameExists(
+            context.Profiles.AsNoTracking(),
+            t => t.Name,
             name
         );
     }

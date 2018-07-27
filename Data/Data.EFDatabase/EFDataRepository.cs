@@ -114,6 +114,12 @@ class EFDataRepository : IDataRepository {
             await efDataSource.CheckIfProfileExists(profileID)
         );
     }
+    
+    public async Task<DbOperationResult<int>> GetCWSParamNumber(int cwsID) {
+        return await PerformDbOperationAndLogDbUpdateException(async () =>
+            await efDataSource.GetCWSParamNumber(cwsID)
+        );
+    }
 
     public async Task<DbOperationResult<bool>> CheckIfSessionExists(int sessionID) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
@@ -142,6 +148,12 @@ class EFDataRepository : IDataRepository {
     public async Task<DbOperationResult<bool>> CheckIfNodeNameExists(string name) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
             await efDataSource.CheckIfNodeNameExists(name)
+        );
+    }
+    
+    public async Task<DbOperationResult<bool>> CheckIfProfileNameExists(string name) {
+        return await PerformDbOperationAndLogDbUpdateException(async () =>
+            await efDataSource.CheckIfProfileNameExists(name)
         );
     }
     
@@ -200,9 +212,9 @@ class EFDataRepository : IDataRepository {
         );
     }
     
-    public async Task<DbOperationResult<IEnumerable<CustomWebService>>> GetAllCVS() {
+    public async Task<DbOperationResult<IEnumerable<CustomWebService>>> GetAllCWS() {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
-            await efDataSource.GetAllCVS()
+            await efDataSource.GetAllCWS()
         );
     }
     

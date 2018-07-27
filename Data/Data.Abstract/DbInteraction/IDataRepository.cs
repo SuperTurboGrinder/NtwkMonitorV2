@@ -29,10 +29,12 @@ public interface IDataRepository {
     Task<DbOperationResult<bool>> CheckIfSessionExists(int sessionID);
     Task<DbOperationResult<bool>> CheckIfTagExists(int tagID);
     Task<DbOperationResult<bool>> CheckIfTagsExist(IEnumerable<int> tagsIDs);
+    Task<DbOperationResult<bool>> CheckIfProfileNameExists(string name);
     Task<DbOperationResult<bool>> CheckIfTagNameExists(string name);
     Task<DbOperationResult<bool>> CheckIfNodeNameExists(string name);
     Task<DbOperationResult<bool>> CheckIfCWSNameExists(string name);
     Task<DbOperationResult<bool>> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
+    Task<DbOperationResult<int>> GetCWSParamNumber(int profileID);
 
     Task<DbOperationVoidResult> MoveNodesSubtree(int nodeID, int newParentID);
     Task<DbOperationResult<IEnumerable<Profile>>> GetAllProfiles();
@@ -41,7 +43,7 @@ public interface IDataRepository {
     Task<DbOperationResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
     Task<DbOperationResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
     Task<DbOperationResult<IEnumerable<NodeTag>>> GetAllTags();
-    Task<DbOperationResult<IEnumerable<CustomWebService>>> GetAllCVS();
+    Task<DbOperationResult<IEnumerable<CustomWebService>>> GetAllCWS();
     
 
     Task<DbOperationResult<Profile>> CreateProfile(Profile profile);

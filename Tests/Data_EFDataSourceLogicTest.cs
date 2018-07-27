@@ -280,7 +280,7 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        var cvsList = await EFDataSourceLogic.GetAllCVS_Logic(context);
+        var cvsList = await EFDataSourceLogic.GetAllCWS_Logic(context);
 
         Assert.Single(cvsList);
         Assert.Equal(utils.WebInterfaceOn8080Name, cvsList.First().ServiceName);
@@ -586,6 +586,21 @@ public class Data_EFDataSourceLogicTest {
     }
 
     [Fact]
+    public async void CheckIfCWSExists_WillReturnTrueOnlyIfSpecifiedCWSExists() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        int existingCWS = await EFDataSourceLogic
+            .GetCWSParamNumber_Logic(context, IDSet.WebServiceID);
+        int nonExistingCWS = await EFDataSourceLogic
+            .GetCWSParamNumber_Logic(context, IDSet.WebServiceID+199);
+        
+        Assert.Equal(0, existingCWS);
+        Assert.Equal(-1, nonExistingCWS);
+    }
+
+    [Fact]
     public async void CheckIfSessionExists_WillReturnTrueOnlyIfSpecifiedMonitoringSessionExists() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
@@ -783,6 +798,31 @@ public class Data_EFDataSourceLogicTest {
         
         Assert.True(ExistingCWSName);
         Assert.False(NonExistingCWSNames);
+    }
+
+    [Fact]
+    public async void CheckIfProfileNameExists_WillReturnTrueOnlyIfProfileWithSpecifiedNameIsAlreadyInTheDatabase() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        bool ExistingProfileName =
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, context.Profiles.First().Name
+            );
+        bool NonExistingProfileNames =
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, "TestNodeNonexistantName1"
+            ) ||
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, "Shvabra Cadabra"
+            ) ||
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, "1234321"
+            );
+        
+        Assert.True(ExistingProfileName);
+        Assert.False(NonExistingProfileNames);
     }
 
     [Fact]

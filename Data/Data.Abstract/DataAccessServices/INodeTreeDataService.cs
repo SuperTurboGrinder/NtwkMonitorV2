@@ -16,7 +16,7 @@ public interface INodeTreeDataService {
     Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
     Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
     Task<DataActionResult<IEnumerable<NodeTag>>> GetAllTags();
-    Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCVS();
+    Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCWS();
     
 
     Task<DataActionResult<NtwkNode>> CreateNodeOnRoot(NtwkNode node);
@@ -34,7 +34,7 @@ public interface INodeTreeDataService {
         string param1, string param2, string param3);
 
     Task<DataActionResult<NtwkNode>> RemoveNode(int nodeID);
-    Task<DataActionResult<NodeTag>> RemoveTag(int nodeID);
+    Task<DataActionResult<NodeTag>> RemoveTag(int tagID);
     Task<DataActionResult<CustomWebService>> RemoveCustomWebService(int cwsID);
     Task<DataActionVoidResult> RemoveWebServiceBinding(int nodeID, int cwsID);
 }
