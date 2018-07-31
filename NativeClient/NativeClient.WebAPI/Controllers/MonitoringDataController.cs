@@ -19,40 +19,30 @@ public class MonitoringDataController : BaseDataController {
     }
 
     // GET api/monitoring/sessionsForProfile/1
-    [HttpGet("/sessionsForProfile/{profileID}")]
+    [HttpGet("/sessionsForProfile/{profileID:int}")]
     public async Task<ActionResult> GetSessionsForProfile(int profileID) {
         return await GetDbData(async () =>
             await data.GetSessionsForProfile(profileID)
         );
     }
 
-    // GET api/monitoring/sessionReoprts/1
-    [HttpPost("/sessionReports/{sessionID}")]
-    public async Task<ActionResult> GetSessionReport(int sessionID) {
+    // POST api/monitoring/newSession
+    [HttpPost("/newSession")]
+    public async Task<ActionResult> GetNewSessions(int profileID) {
         return await GetDbData(async () =>
-            await data.GetSessionReport(sessionID)
+            await data.GetNewSession(profileID)
         );
     }
 
-    // GET api/monitoring/5
-    [HttpGet("{id}")]
-    public string Get(int id) {
-        return "value";
-    }
-
-    // POST api/monitoring
-    [HttpPost]
-    public void Post([FromBody]string value) {
-    }
-
-    // PUT api/monitoring/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody]string value) {
-    }
-
-    // DELETE api/monitoring/5
-    [HttpDelete("{id}")]
-    public void Delete(int id) {
+    // POST api/monitoring/newSession
+    [HttpPost("/savePulse/{sessionID:int}")]
+    public async Task<ActionResult> SavePulseResult(
+        int sessionID,
+        MonitoringPulseResult pulseResult
+    ) {
+        return await GetDbData(async () =>
+            await data.SavePulseResult(sessionID, pulseResult, pulseResult.Messages)
+        );
     }
 }
 
