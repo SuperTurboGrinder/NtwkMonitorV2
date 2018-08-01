@@ -45,6 +45,36 @@ class SettingProfilesDataSerivce : ISettingsProfileDataService {
         return utils.SuccActResult(converted);
         
     }
+    
+    public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID) {
+        string pValidationError = await utils.ValidateProfileID(profileID);
+        if(pValidationError != null) {
+            return utils.FailActResult<IEnumerable<int>>(pValidationError);
+        }
+        DbOperationResult<IEnumerable<int>> dbOpResult =
+            await repo.GetIDsOfNodesBySelectedTagsInProfileView(profileID);
+        if(!dbOpResult.Success) {
+            return utils.FailActResult<IEnumerable<int>>(
+                "Unable to get profile view nodes IDs from database."
+            );
+        }
+        return utils.SuccActResult(dbOpResult.Result);
+    }
+    
+    public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID) {
+        string pValidationError = await utils.ValidateProfileID(profileID);
+        if(pValidationError != null) {
+            return utils.FailActResult<IEnumerable<int>>(pValidationError);
+        }
+        DbOperationResult<IEnumerable<int>> dbOpResult =
+            await repo.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID);
+        if(!dbOpResult.Success) {
+            return utils.FailActResult<IEnumerable<int>>(
+                "Unable to get profile monitor nodes IDs from database."
+            );
+        }
+        return utils.SuccActResult(dbOpResult.Result);
+    }
 
     public async Task<DataActionResult<Profile>> CreateProfile(Profile profile) {
         string errorStr = validator.Validate(profile);

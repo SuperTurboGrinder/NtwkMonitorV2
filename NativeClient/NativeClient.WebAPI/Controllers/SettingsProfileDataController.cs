@@ -25,6 +25,22 @@ public class SettingsProfileDataController : BaseDataController {
             await data.GetAllProfiles()
         );
     }
+    
+    // GET api/settingsProfiles/mainViewNodesIDs
+    [HttpGet("/mainViewNodesIDs")]
+    public async Task<ActionResult> GetIDsOfNodesBySelectedTagsInProfileView(int profileID) {
+        return await GetDbData(async () =>
+            await data.GetIDsOfNodesBySelectedTagsInProfileView(profileID)
+        );
+    }
+
+    // GET api/settingsProfiles/monitorNodesIDs
+    [HttpGet("/monitorNodesIDs")]
+    public async Task<ActionResult> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID) {
+        return await GetDbData(async () =>
+            await data.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID)
+        );
+    }
 
     // POST api/settingsProfiles/new
     [HttpPost("/new")]
@@ -65,7 +81,7 @@ public class SettingsProfileDataController : BaseDataController {
     }
 
     // POST api/settingsProfiles/1/setMonitorTagsToViewTags
-    [HttpGet("/{profileID:int}/setViewTagsToMonitorTags")]
+    [HttpGet("/{profileID:int}/setMonitorTagsToViewTags")]
     public async Task<ActionResult> SetProfileMonitorTagsToViewTags(int profileID) {
         return await PerformDBOperation(async () =>
             await data.SetProfileMonitorTagsSelectionToProfileViewTagsSelection(profileID)
