@@ -18,41 +18,32 @@ public class NodeTreeDataController : BaseDataController {
         data = _data;
     }
 
-    // GET api/network/nodes
-    [HttpGet("/nodes")]
+    // GET api/nodes
+    [HttpGet]
     public async Task<ActionResult> GetAllNodes() {
         return await GetDbData(async () =>
             await data.GetAllNodes()
         );
     }
-
-    // GET api/network/webServices
-    //[HttpGet("/nodes/withTag/{tagID:int}")]
-    //public async Task<ActionResult> GetTaggedNodesIDs(int tagID) {
-    //    return await GetDbData(async () =>
-    //        await data.GetTaggedNodesIDs(tagID)
-    //    );
-    //}
-
     
-    // POST api/network/nodes/new
-    [HttpPost("/nodes/new")]
+    // POST api/nodes/new
+    [HttpPost("/new")]
     public async Task<ActionResult> CreateNodeOnRoot(NtwkNode node) {
         return await GetDbData(async () =>
             await data.CreateNodeOnRoot(node)
         );
     }
 
-    // POST api/network/nodes/new/1
-    [HttpPost("/nodes/new/{parentID:int}")]
+    // POST api/nodes/new/1
+    [HttpPost("/new/{parentID:int}")]
     public async Task<ActionResult> CreateNodeWithParent(int parentID, NtwkNode node) {
         return await GetDbData(async () =>
             await data.CreateNodeWithParent(node, parentID)
         );
     }
 
-    // POST api/network/nodes/1/setTags
-    [HttpPost("/nodes/{nodeID:int}/setTags")]
+    // POST api/nodes/1/setTags
+    [HttpPost("/{nodeID:int}/setTags")]
     public async Task<ActionResult> SetNodeTags(
         int nodeID,
         IEnumerable<int> tagsIDs
@@ -62,16 +53,16 @@ public class NodeTreeDataController : BaseDataController {
         );
     }
 
-    // PUT api/network/nodes/1/changeParent
-    [HttpPut("/nodes/{nodeID:int}/changeParent")]
+    // PUT api/nodes/1/changeParent
+    [HttpPut("/{nodeID:int}/changeParent")]
     public async Task<ActionResult> MoveNodesSubtree(int nodeID, int newParentID) {
         return await PerformDBOperation(async () =>
             await data.MoveNodesSubtree(nodeID, newParentID)
         );
     }
 
-    // PUT api/network/nodes/1/update
-    [HttpPut("/nodes/{nodeID:int}/update")]
+    // PUT api/nodes/1/update
+    [HttpPut("/{nodeID:int}/update")]
     public async Task<ActionResult> UpdateNode(int nodeID, NtwkNode node) {
         node.ID = nodeID;
         return await PerformDBOperation(async () =>
@@ -79,8 +70,8 @@ public class NodeTreeDataController : BaseDataController {
         );
     }
 
-    // DELETE api/network/nodes/1/delete
-    [HttpDelete("/nodes/{nodeID:int}/delete")]
+    // DELETE api/nodes/1/delete
+    [HttpDelete("/{nodeID:int}/delete")]
     public async Task<ActionResult> RemoveNode(int nodeID) {
         return await GetDbData(async () =>
             await data.RemoveNode(nodeID)
