@@ -10,7 +10,7 @@ using Data.Abstract.DataAccessServices;
 
 namespace NativeClient.WebAPI.Controllers {
 
-[Route("api/monitoring")]
+[Route("api/monitorSessions")]
 public class MonitoringDataController : BaseDataController {
     readonly IMonitoringDataService data;
 
@@ -18,24 +18,24 @@ public class MonitoringDataController : BaseDataController {
         data = _data;
     }
 
-    // GET api/monitoring/sessionsForProfile/1
-    [HttpGet("/sessionsForProfile/{profileID:int}")]
+    // GET api/monitorSessions/forProfile/1
+    [HttpGet("/forProfile/{profileID:int}")]
     public async Task<ActionResult> GetSessionsForProfile(int profileID) {
         return await GetDbData(async () =>
             await data.GetSessionsForProfile(profileID)
         );
     }
 
-    // POST api/monitoring/newSession
-    [HttpPost("/newSession")]
+    // POST api/monitorSessions/new
+    [HttpPost("/new")]
     public async Task<ActionResult> GetNewSessions(int profileID) {
         return await GetDbData(async () =>
             await data.GetNewSession(profileID)
         );
     }
 
-    // POST api/monitoring/newSession
-    [HttpPost("/savePulse/{sessionID:int}")]
+    // POST api/monitorSessions/1/addPulse
+    [HttpPost("/{sessionID:int}/addPulse")]
     public async Task<ActionResult> SavePulseResult(
         int sessionID,
         MonitoringPulseResult pulseResult
