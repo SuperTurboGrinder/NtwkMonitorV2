@@ -12,11 +12,11 @@ using NativeClient.WebAPI.Abstract;
 namespace NativeClient.WebAPI.Controllers {
 
 [Route("api/services")]
-public class ServicesController : Controller {
+public class NodeServicesController : Controller {
     readonly INodesIPsDataService data;
     readonly IPingService pingService;
 
-    ServicesController(INodesIPsDataService _data, IPingService _pingService) {
+    NodeServicesController(INodesIPsDataService _data, IPingService _pingService) {
         data = _data;
         pingService = _pingService;
     }
