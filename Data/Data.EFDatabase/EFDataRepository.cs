@@ -187,6 +187,12 @@ class EFDataRepository : IDataRepository {
             await efDataSource.GetAllNodes()
         );
     }
+
+    public async Task<DbOperationResult<uint>> GetNodeIP(int nodeID) {
+        return await PerformDbOperationAndLogDbUpdateException(async () =>
+            await efDataSource.GetNodeIP(nodeID)
+        );
+    }
     
     public async Task<DbOperationResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>

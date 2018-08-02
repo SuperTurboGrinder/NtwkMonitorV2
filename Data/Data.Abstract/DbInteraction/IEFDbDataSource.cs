@@ -40,6 +40,7 @@ public interface IEFDbDataSource {
     Task MoveNodesSubtree(int nodeID, int newParentID);
     Task<IEnumerable<Profile>> GetAllProfiles();
     Task<IEnumerable<NtwkNode>> GetAllNodes();
+    Task<uint> GetNodeIP(int nodeID);
     Task<IEnumerable<int>> GetTaggedNodesIDs(int tagID);
     Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
     Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);

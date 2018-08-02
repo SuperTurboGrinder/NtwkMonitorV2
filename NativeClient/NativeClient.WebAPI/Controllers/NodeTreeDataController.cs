@@ -7,6 +7,7 @@ using System.Net;
 
 using Data.Model.ViewModel;
 using Data.Abstract.DataAccessServices;
+using NativeClient.WebAPI.Abstract;
 
 namespace NativeClient.WebAPI.Controllers {
 

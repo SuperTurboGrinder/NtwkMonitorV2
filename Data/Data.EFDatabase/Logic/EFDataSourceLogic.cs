@@ -119,6 +119,16 @@ public static class EFDataSourceLogic {
     ) {
         return await context.Nodes.AsNoTracking().ToListAsync();
     }
+
+    public static async Task<uint> GetNodeIP_Logic(
+        NtwkDBContext context,
+        int nodeID
+    ) {
+        return (
+            await context.Nodes.AsNoTracking()
+                .SingleAsync(n => n.ID == nodeID)
+        ).ip;
+    }
     
     public static async Task<IEnumerable<int>> GetTaggedNodesIDs_Logic(
         NtwkDBContext context,

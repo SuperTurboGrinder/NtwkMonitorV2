@@ -107,6 +107,10 @@ class EFDataSource : IEFDbDataSource {
     public async Task<IEnumerable<NtwkNode>> GetAllNodes() {
         return await GetAllNodes_Logic(context);
     }
+
+    public async Task<uint> GetNodeIP(int nodeID) {
+        return await GetNodeIP_Logic(context, nodeID);
+    }
     
     public async Task<IEnumerable<int>> GetTaggedNodesIDs(int tagID) {
         return await GetTaggedNodesIDs_Logic(context, tagID);

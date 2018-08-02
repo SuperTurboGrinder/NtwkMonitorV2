@@ -203,6 +203,17 @@ public class Data_EFDataSourceLogicTest {
     }
 
     [Fact]
+    public async void GetNodeIP_GetsNodeIPFromDB() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        var ip = await EFDataSourceLogic.GetNodeIP_Logic(context, IDSet.Node1ID);
+
+        Assert.Equal(context.Nodes.Single(n => n.ID == IDSet.Node1ID).ip, ip);
+    }
+
+    [Fact]
     public async void GetTaggedNodesIDs_GetsOnlyAllTheNodesIDsForNodesWithSpecificTag() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();

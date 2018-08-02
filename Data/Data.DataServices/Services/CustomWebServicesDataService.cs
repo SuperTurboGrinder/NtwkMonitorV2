@@ -43,7 +43,9 @@ class CustomWebServicesDataService : ICustomWebServicesDataService {
         return utils.SuccActResult(dbOpResult.Result
             .Select(cws => EFToViewConverter.Convert(cws))
         );
-    }async Task<DataActionResult<int>> GetCWSParamNumber(int cwsID) {
+    }
+    
+    async Task<DataActionResult<int>> GetCWSParamNumber(int cwsID) {
         DbOperationResult<int> paramNum =
             await repo.GetCWSParamNumber(cwsID);
         if(!paramNum.Success) {
