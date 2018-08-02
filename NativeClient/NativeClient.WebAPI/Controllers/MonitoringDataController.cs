@@ -26,6 +26,14 @@ public class MonitoringDataController : BaseDataController {
         );
     }
 
+    // GET api/monitorSessions/1/report
+    [HttpGet("/{sessionID:int}/report")]
+    public async Task<ActionResult> GetSessionReport(int sessionID) {
+        return await GetDbData(async () =>
+            await data.GetSessionReport(sessionID)
+        );
+    }
+
     // POST api/monitorSessions/new
     [HttpPost("/new")]
     public async Task<ActionResult> GetNewSessions(int profileID) {

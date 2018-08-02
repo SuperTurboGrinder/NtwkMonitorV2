@@ -42,8 +42,8 @@ public class NodeTreeDataController : BaseDataController {
         );
     }
 
-    // POST api/nodes/1/setTags
-    [HttpPost("/{nodeID:int}/setTags")]
+    // PUT api/nodes/1/setTags
+    [HttpPut("/{nodeID:int}/setTags")]
     public async Task<ActionResult> SetNodeTags(
         int nodeID,
         IEnumerable<int> tagsIDs

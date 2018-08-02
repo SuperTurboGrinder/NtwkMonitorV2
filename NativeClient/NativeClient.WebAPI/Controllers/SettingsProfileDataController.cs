@@ -51,7 +51,7 @@ public class SettingsProfileDataController : BaseDataController {
     }
 
     // POST api/settingsProfiles/1/setViewTags
-    [HttpGet("/{profileID:int}/setViewTags")]
+    [HttpPost("/{profileID:int}/setViewTags")]
     public async Task<ActionResult> SetProfileViewTagsSelection(
         int profileID,
         IEnumerable<int> tagIDs
@@ -62,7 +62,7 @@ public class SettingsProfileDataController : BaseDataController {
     }
 
     // POST api/settingsProfiles/1/setMonitorTags
-    [HttpGet("/{profileID:int}/setMonitorTags")]
+    [HttpPost("/{profileID:int}/setMonitorTags")]
     public async Task<ActionResult> SetProfileMonitorTagsSelection(
         int profileID,
         IEnumerable<int> tagIDs
@@ -72,24 +72,24 @@ public class SettingsProfileDataController : BaseDataController {
         );
     }
 
-    // POST api/settingsProfiles/1/setViewTagsToMonitorTags
-    [HttpGet("/{profileID:int}/setViewTagsToMonitorTags")]
+    // PUT api/settingsProfiles/1/setViewTagsToMonitorTags
+    [HttpPut("/{profileID:int}/setViewTagsToMonitorTags")]
     public async Task<ActionResult> SetProfileViewTagsToMonitorTags(int profileID) {
         return await PerformDBOperation(async () =>
             await data.SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(profileID)
         );
     }
 
-    // POST api/settingsProfiles/1/setMonitorTagsToViewTags
-    [HttpGet("/{profileID:int}/setMonitorTagsToViewTags")]
+    // PUT api/settingsProfiles/1/setMonitorTagsToViewTags
+    [HttpPut("/{profileID:int}/setMonitorTagsToViewTags")]
     public async Task<ActionResult> SetProfileMonitorTagsToViewTags(int profileID) {
         return await PerformDBOperation(async () =>
             await data.SetProfileMonitorTagsSelectionToProfileViewTagsSelection(profileID)
         );
     }
 
-    // POST api/settingsProfiles/update/1
-    [HttpPost("/update/{profileID:int}")]
+    // POST api/settingsProfiles/1/update
+    [HttpPost("/{profileID:int}/update")]
     public async Task<ActionResult> UpdateProfile(int profileID, Profile profile) {
         profile.ID = profileID;
         return await PerformDBOperation(async () =>
@@ -97,8 +97,8 @@ public class SettingsProfileDataController : BaseDataController {
         );
     }
 
-    // POST api/settingsProfiles/remove/1
-    [HttpPost("/remove/{profileID:int}")]
+    // DELETE api/settingsProfiles/1/remove
+    [HttpDelete("/{profileID:int}/remove")]
     public async Task<ActionResult> RemoveProfile(int profileID) {
         return await GetDbData(async () =>
             await data.RemoveProfile(profileID)
