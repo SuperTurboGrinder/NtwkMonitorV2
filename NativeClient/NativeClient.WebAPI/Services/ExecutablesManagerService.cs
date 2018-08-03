@@ -2,13 +2,22 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Net;
 
 using NativeClient.WebAPI.Services.Model;
 
 namespace NativeClient.WebAPI.Services {
 
+//SINGLETON SERVICE
 class ExecutablesManagerService {
-    Dictionary<string, string> serviceFilesPaths;
+    class ServiceData {
+        public string filePath;
+        public string strSearchKey;
+        //public int port;
+    }
+
+    Dictionary<ExecutableServicesTypes, ServiceData> servicesData;
 
     struct FilePathData {
         public string fullPath;
@@ -16,20 +25,27 @@ class ExecutablesManagerService {
     }
 
     public ExecutablesManagerService() {
-        serviceFilesPaths["ssh"] = null;
-        serviceFilesPaths["telnet"] = null;
+        lock(servicesData) {
+            servicesData[ExecutableServicesTypes.SSH] = new ServiceData();
+            servicesData[ExecutableServicesTypes.Telnet] = new ServiceData();
+            servicesData[ExecutableServicesTypes.SSH].strSearchKey = "ssh";
+            //servicesData[ExecutableServicesTypes.SSH].port = 22;
+            servicesData[ExecutableServicesTypes.Telnet].strSearchKey = "telnet";
+            //servicesData[ExecutableServicesTypes.Telnet].port = 23;
+        }
     }
 
-    string FindAndSetPath(string key, FilePathData[] paths) {
+    string FindAndSetPath(ExecutableServicesTypes key, FilePathData[] paths) {
+        string strKey = servicesData[key].strSearchKey;
         IEnumerable<FilePathData> candidates =
-            paths.Where(f => f.filename.Contains(key));
+            paths.Where(f => f.filename.Contains(strKey));
         if(candidates.Count() == 0) {
-            return $"No {key} service found in bin directory.";
+            return $"No {strKey} service found in bin directory.";
         }
         else if(candidates.Count() > 1) {
-            return $"Too many candidates for {key} service in bin directory.";
+            return $"Too many candidates for {strKey} service in bin directory.";
         }
-        serviceFilesPaths[key] = candidates.Single().fullPath;
+        servicesData[key].filePath = candidates.Single().fullPath;
         return null;
     }
 
@@ -52,26 +68,50 @@ class ExecutablesManagerService {
         catch(IOException) {
             return "Unkonown IO error while trying to find executable services.";
         }
-        string error = FindAndSetPath("ssh", files);
+        string error = FindAndSetPath(ExecutableServicesTypes.SSH, files);
         if(error != null) return error;
 
-        FindAndSetPath("telnet", files);
+        error = FindAndSetPath(ExecutableServicesTypes.Telnet, files);
         if(error != null) return error;
 
         return null;
     }
 
-    string GetFilePath(string key, out string error) {
-        string path = serviceFilesPaths[key];
-        error = null;
-        if(path == null || !File.Exists(path)) {
-            error = UpdateFilePaths();
-            if(error != null) {
-                return null;
+    string GetFilePath(ExecutableServicesTypes key, out string error) {
+        string path = null;
+        lock(servicesData) {
+            path = servicesData[key].filePath;
+            error = null;
+            if(path == null || !File.Exists(path)) {
+                error = UpdateFilePaths();
+                if(error != null) {
+                    return null;
+                }
             }
+            path = servicesData[key].filePath;
         }
-        path = serviceFilesPaths[key];
         return path;
+    }
+
+    public string ExecuteService(ExecutableServicesTypes serviceType, IPAddress address) {
+        string executableSearchError = null;
+        string path = GetFilePath(serviceType, out executableSearchError);
+        if(executableSearchError != null) {
+            return executableSearchError;
+        }
+        var psi = new ProcessStartInfo(
+            path,
+            address.ToString()
+        ){
+            UseShellExecute = true,
+        };
+        try {
+            Process.Start(psi);
+        }
+        catch(Exception) {
+            return $"Executable service start error.\n({path})";
+        }
+        return null;
     }
 }
 

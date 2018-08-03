@@ -8,6 +8,7 @@ using System.Net;
 using Data.Model.ViewModel;
 using Data.Abstract.DataAccessServices;
 using NativeClient.WebAPI.Abstract;
+using NativeClient.WebAPI.Services.Model;
 
 namespace NativeClient.WebAPI.Controllers {
 
@@ -15,29 +16,82 @@ namespace NativeClient.WebAPI.Controllers {
 public class NodeServicesController : Controller {
     readonly INodesIPsDataService data;
     readonly IPingService pingService;
+    readonly IExecutablesManagerService execServices;
 
-    NodeServicesController(INodesIPsDataService _data, IPingService _pingService) {
+    NodeServicesController(
+        INodesIPsDataService _data,
+        IPingService _pingService,
+        IExecutablesManagerService _execServices
+    ) {
         data = _data;
         pingService = _pingService;
+        execServices = _execServices;
     }
-    
-    // GET api/services/ping/1
-    [HttpGet("/ping/{nodeID:int}")]
-    public async Task<ActionResult> GetNodePing(int nodeID) {
+
+    async Task<ActionResult> AsyncOperationWithIP(
+        int nodeID,
+        Func<IPAddress, Task<ActionResult>> operation
+    ) {
         DataActionResult<uint> rawNodeIP = await data.GetNodeIP(nodeID);
         if(!rawNodeIP.Success) {
             return BadRequest(rawNodeIP.Error);
         }
         IPAddress ip = new IPAddress(rawNodeIP.Result);
-        Services.Model.PingTestData pingResult =
-            await pingService.TestConnectionAsync(ip);
-        if(
-            pingResult.error != null &&
-            (pingResult.num - pingResult.failed) == 0
-        ) {
-            return BadRequest(pingResult.error);
+        return await operation(ip);
+    }
+
+    async Task<ActionResult> OperationWithIP(
+        int nodeID,
+        Func<IPAddress, ActionResult> operation
+    ) {
+        DataActionResult<uint> rawNodeIP = await data.GetNodeIP(nodeID);
+        if(!rawNodeIP.Success) {
+            return BadRequest(rawNodeIP.Error);
         }
-        return Ok(pingResult);
+        IPAddress ip = new IPAddress(rawNodeIP.Result);
+        return operation(ip);
+    }
+
+    async Task<ActionResult> OpenExecutableService(
+        int nodeID,
+        ExecutableServicesTypes serviceType
+    ) {
+        return await OperationWithIP(nodeID, (IPAddress ip) => {
+            string serviceExecutionError =
+                execServices.ExecuteService(serviceType, ip);
+            if(serviceExecutionError != null) {
+                return BadRequest(serviceExecutionError);
+            }
+            return Ok();
+        });
+    }
+    
+    // GET api/services/ping/1
+    [HttpGet("/ping/{nodeID:int}")]
+    public async Task<ActionResult> GetNodePing(int nodeID) {
+        return await AsyncOperationWithIP(nodeID, async (IPAddress ip) => {
+            Services.Model.PingTestData pingResult =
+            await pingService.TestConnectionAsync(ip);
+            if(
+                pingResult.error != null &&
+                (pingResult.num - pingResult.failed) == 0
+            ) {
+                return BadRequest(pingResult.error);
+            }
+            return Ok(pingResult);
+        });
+    }
+
+    //GET api/services/ssh/1
+    [HttpGet("/ssh/{nodeID:int}")]
+    public async Task<ActionResult> OpenSSHService(int nodeID) {
+        return await OpenExecutableService(nodeID, ExecutableServicesTypes.SSH);
+    }
+
+    //GET api/services/telnet/1
+    [HttpGet("/telnet/{nodeID:int}")]
+    public async Task<ActionResult> OpenTelnetService(int nodeID) {
+        return await OpenExecutableService(nodeID, ExecutableServicesTypes.Telnet);
     }
 }
 
