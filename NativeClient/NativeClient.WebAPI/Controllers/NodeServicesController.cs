@@ -28,7 +28,7 @@ public class NodeServicesController : Controller {
         execServices = _execServices;
     }
 
-    async Task<ActionResult> AsyncOperationWithIP(
+    async Task<ActionResult> OperationWithIP(
         int nodeID,
         Func<IPAddress, Task<ActionResult>> operation
     ) {
@@ -40,23 +40,11 @@ public class NodeServicesController : Controller {
         return await operation(ip);
     }
 
-    async Task<ActionResult> OperationWithIP(
-        int nodeID,
-        Func<IPAddress, ActionResult> operation
-    ) {
-        DataActionResult<uint> rawNodeIP = await data.GetNodeIP(nodeID);
-        if(!rawNodeIP.Success) {
-            return BadRequest(rawNodeIP.Error);
-        }
-        IPAddress ip = new IPAddress(rawNodeIP.Result);
-        return operation(ip);
-    }
-
     async Task<ActionResult> OpenExecutableService(
         int nodeID,
         ExecutableServicesTypes serviceType
     ) {
-        return await OperationWithIP(nodeID, (IPAddress ip) => {
+        return await OperationWithIP(nodeID, async (IPAddress ip) => {
             string serviceExecutionError =
                 execServices.ExecuteService(serviceType, ip);
             if(serviceExecutionError != null) {
@@ -69,12 +57,12 @@ public class NodeServicesController : Controller {
     // GET api/services/ping/1
     [HttpGet("/ping/{nodeID:int}")]
     public async Task<ActionResult> GetNodePing(int nodeID) {
-        return await AsyncOperationWithIP(nodeID, async (IPAddress ip) => {
+        return await OperationWithIP(nodeID, async (IPAddress ip) => {
             Services.Model.PingTestData pingResult =
-            await pingService.TestConnectionAsync(ip);
+                await pingService.TestConnectionAsync(ip);
             if(
                 pingResult.error != null &&
-                (pingResult.num - pingResult.failed) == 0
+                pingResult.num == pingResult.failed
             ) {
                 return BadRequest(pingResult.error);
             }
