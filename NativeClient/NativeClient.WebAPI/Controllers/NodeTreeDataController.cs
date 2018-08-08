@@ -21,9 +21,9 @@ public class NodeTreeDataController : BaseDataController {
 
     // GET api/nodes
     [HttpGet]
-    public async Task<ActionResult> GetAllNodes() {
+    public async Task<ActionResult> GetAllNodesGroupedByDepth() {
         return await GetDbData(async () =>
-            await data.GetAllNodes()
+            await data.GetAllNodesGroupedByDepth()
         );
     }
     

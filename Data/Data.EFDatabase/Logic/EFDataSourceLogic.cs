@@ -1,5 +1,5 @@
 //I thought this kind of separation of logic will help with testing.
-//I'm not sure it did in this case.
+//There was nothing to separate in this case.
 
 using System;
 using System.Text;
@@ -115,10 +115,15 @@ public static class EFDataSourceLogic {
             .ToListAsync();
     }
 
-    public static async Task<IEnumerable<NtwkNode>> GetAllNodes_Logic(
+    public static async Task<IEnumerable<IEnumerable<NtwkNode>>> GetAllNodesGroupedByDepth_Logic(
         NtwkDBContext context
     ) {
-        return await context.Nodes.AsNoTracking().ToListAsync();
+        return await context.NodesClosureTable.AsNoTracking()
+            .Where(cl => cl.AncestorID == null) //uniqe nodes
+            .Include(cl => cl.Descendant)
+            .GroupBy(cl => cl.Distance) //by depth layer
+            .Select(group => group.Select(cl => cl.Descendant))
+            .ToListAsync();
     }
 
     public static async Task<uint> GetNodeIP_Logic(

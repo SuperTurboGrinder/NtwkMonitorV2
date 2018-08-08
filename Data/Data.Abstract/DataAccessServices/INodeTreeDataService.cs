@@ -10,7 +10,7 @@ namespace Data.Abstract.DataAccessServices {
 //model convertion
 //reporting errors through DataActionResult
 public interface INodeTreeDataService {
-    Task<DataActionResult<IEnumerable<NtwkNode>>> GetAllNodes();
+    Task<DataActionResult<IEnumerable<IEnumerable<NtwkNode>>>> GetAllNodesGroupedByDepth();
     Task<DataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID);
 
     Task<DataActionResult<NtwkNode>> CreateNodeOnRoot(NtwkNode node);

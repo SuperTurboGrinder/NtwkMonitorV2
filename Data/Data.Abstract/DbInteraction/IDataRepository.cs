@@ -38,7 +38,7 @@ public interface IDataRepository {
 
     Task<DbOperationVoidResult> MoveNodesSubtree(int nodeID, int newParentID);
     Task<DbOperationResult<IEnumerable<Profile>>> GetAllProfiles();
-    Task<DbOperationResult<IEnumerable<NtwkNode>>> GetAllNodes();
+    Task<DbOperationResult<IEnumerable<IEnumerable<NtwkNode>>>> GetAllNodesGroupedByDepth();
     Task<DbOperationResult<uint>> GetNodeIP(int nodeID);
     Task<DbOperationResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID);
     Task<DbOperationResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);

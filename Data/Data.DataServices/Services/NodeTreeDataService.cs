@@ -32,16 +32,16 @@ class NodeTreeDataService : INodeTreeDataService {
         utils = new CommonServiceUtils(repo);
     }
 
-    public async Task<DataActionResult<IEnumerable<NtwkNode>>> GetAllNodes() {
-        DbOperationResult<IEnumerable<EFDbModel.NtwkNode>> dbOpResult =
-            await repo.GetAllNodes();
+    public async Task<DataActionResult<IEnumerable<IEnumerable<NtwkNode>>>> GetAllNodesGroupedByDepth() {
+        DbOperationResult<IEnumerable<IEnumerable<EFDbModel.NtwkNode>>> dbOpResult =
+            await repo.GetAllNodesGroupedByDepth();
         if(!dbOpResult.Success) {
-            return utils.FailActResult<IEnumerable<NtwkNode>>(
+            return utils.FailActResult<IEnumerable<IEnumerable<NtwkNode>>>(
                 "Unable to get all nodes list from database."
             );
         }
         return utils.SuccActResult(dbOpResult.Result
-            .Select(n => EFToViewConverter.Convert(n))
+            .Select(group => group.Select(n => EFToViewConverter.Convert(n)))
         );
     }
     
