@@ -192,14 +192,20 @@ public class Data_EFDataSourceLogicTest {
     }
 
     [Fact]
-    public async void GetAllNodes_GetsAllNodesInDB() {
+    public async void GetAllNodesGroupedByDepth_GetsAllNodesInDBGroupedByTreeDepth() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
+        utils.CreateClosuresForTestNodes(context, IDSet);
 
-        var nodes = await EFDataSourceLogic.GetAllNodes_Logic(context);
-
-        Assert.Equal(context.Nodes.Count(), nodes.Count());
+        var treeLayers = await EFDataSourceLogic.GetAllNodesGroupedByDepth_Logic(context);
+    
+        Assert.Equal(2, treeLayers.Count());
+        Assert.Equal(2, treeLayers.First().Count());
+        Assert.Equal(1, treeLayers.Skip(1).First().Count());
+        Assert.NotEqual(null, treeLayers.First().SingleOrDefault(n => n.ID == IDSet.Node1ID));
+        Assert.NotEqual(null, treeLayers.First().SingleOrDefault(n => n.ID == IDSet.Node3ID));
+        Assert.NotEqual(null, treeLayers.Skip(1).First().SingleOrDefault(n => n.ID == IDSet.Node2ID));
     }
 
     [Fact]
