@@ -48,6 +48,7 @@ public interface IEFDbDataSource {
     Task<IEnumerable<NodeTag>> GetAllTags();
     Task<IEnumerable<CustomWebService>> GetAllCWS();
     Task<Data.Model.ViewModel.CWSBondExistanceMapping> GetCWSBondExistanceMapping();
+    Task<string> GetCWSBoundingString(int nodeID, int cwsID);
 
     Task<Profile> CreateProfile(Profile profile);
     Task<NtwkNode> CreateNodeOnRoot(NtwkNode node);

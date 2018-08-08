@@ -2,6 +2,7 @@
 //I'm not sure it did in this case.
 
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -216,6 +217,34 @@ public static class EFDataSourceLogic {
         };
     }
 
+    public static async Task<string> GetCWSBoundingString_Logic(
+        NtwkDBContext context,
+        int nodeID,
+        int cwsID
+    ) {
+        CustomWSBinding binding = await context.WebServiceBindings.AsNoTracking()
+            .Where(wsb => wsb.NodeID == nodeID && wsb.ServiceID == cwsID)
+            .Include(wsb => wsb.Service)
+            .Include(wsb => wsb.Node)
+            .SingleOrDefaultAsync();
+        if(binding == null) {
+            return null;
+        }
+        string rawServiceString = binding.Service.ServiceStr;
+        string ip = new System.Net.IPAddress(binding.Node.ip).ToString();
+        KeyValuePair<string, string>[] paramSwap = {
+            new KeyValuePair<string, string>("{param1}", binding.Param1),
+            new KeyValuePair<string, string>("{param2}", binding.Param2),
+            new KeyValuePair<string, string>("{param3}", binding.Param3),
+            new KeyValuePair<string, string>("{node_ip}", ip),
+        };
+        StringBuilder buildServiceStr = new StringBuilder(rawServiceString);
+        foreach(KeyValuePair<string, string> swapper in paramSwap) {
+            buildServiceStr.Replace(swapper.Key, swapper.Value);
+        }
+        return buildServiceStr.ToString();
+    }
+
     public static async Task<Profile> CreateProfile_Logic(
         NtwkDBContext context,
         Profile profile
@@ -346,6 +375,14 @@ public static class EFDataSourceLogic {
         return await context.Profiles.AnyAsync(n => n.ID == profileID);
     }
 
+    static int ParamNum(CustomWebService cws) {
+        return (cws.Parametr3Name != null) ? (3) : (
+            (cws.Parametr2Name != null) ? (2) : (
+                (cws.Parametr1Name != null) ? (1) : (0)
+            )
+        );
+    }
+
     public static async Task<int> GetCWSParamNumber_Logic(
         NtwkDBContext context,
         int cwsID
@@ -353,11 +390,7 @@ public static class EFDataSourceLogic {
         CustomWebService cws = await context.WebServices
             .SingleOrDefaultAsync(ws => ws.ID == cwsID);
         return (cws == null) ? (-1) : (
-            (cws.Parametr3Name != null) ? (3) : (
-                (cws.Parametr2Name != null) ? (2) : (
-                    (cws.Parametr1Name != null) ? (1) : (0)
-                )
-            )
+            ParamNum(cws)
         );
     }
 

@@ -6,11 +6,12 @@ using System.Diagnostics;
 using System.Net;
 
 using NativeClient.WebAPI.Services.Model;
+using NativeClient.WebAPI.Abstract;
 
 namespace NativeClient.WebAPI.Services {
 
 //SINGLETON SERVICE
-class ExecutablesManagerService {
+class ExecutablesManagerService : IExecutablesManagerService {
     class ServiceData {
         public string filePath;
         public string strSearchKey;

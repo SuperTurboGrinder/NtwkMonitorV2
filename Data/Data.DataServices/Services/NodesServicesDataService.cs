@@ -13,14 +13,14 @@ using EFDbModel = Data.Model.EFDbModel;
 
 namespace Data.DataServices.Services {
 
-public class NodesIPsDataService : INodesIPsDataService {
+public class NodesServicesDataService : INodesServicesDataService {
     readonly IDataRepository repo;
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
     readonly CommonServiceUtils utils;
 
-    public NodesIPsDataService(
+    public NodesServicesDataService(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,
@@ -44,6 +44,31 @@ public class NodesIPsDataService : INodesIPsDataService {
             return utils.FailActResult<IPAddress>("Unable to get node IP address from database.");
         }
         return utils.SuccActResult(new IPAddress(nodeIP.Result));
+    }
+
+    public async Task<DataActionResult<string>> GetCWSBoundingString(int nodeID, int cwsID) {
+        string nValidationError = await utils.ValidateNodeID(nodeID);
+        if(nValidationError != null) {
+            return utils.FailActResult<string>(nValidationError);
+        }
+        DbOperationResult<int> paramNum =
+            await repo.GetCWSParamNumber(cwsID);
+        if(!paramNum.Success) {
+            return utils.FailActResult<string>("Unable to get CWS parameter number from database.");
+        }
+        else if(paramNum.Result == -1) {
+            return utils.FailActResult<string>("Invalid CWS ID.");
+        }
+        DbOperationResult<string> serviceString =
+            await repo.GetCWSBoundingString(nodeID, cwsID);
+        if(!serviceString.Success) {
+            return utils.FailActResult<string>(
+                "Unable to get node web service string from database."
+            );
+        }
+        return utils.SuccActResult<string>(
+            serviceString.Result
+        );
     }
 }
 

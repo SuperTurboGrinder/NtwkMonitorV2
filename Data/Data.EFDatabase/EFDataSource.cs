@@ -144,6 +144,10 @@ class EFDataSource : IEFDbDataSource {
         return await GetCWSBondExistanceMapping_Logic(context);
     }
 
+    public  async Task<string> GetCWSBoundingString(int nodeID, int cwsID) {
+        return await GetCWSBoundingString_Logic(context, nodeID, cwsID);
+    }
+
 
     public async Task<Profile> CreateProfile(Profile profile) {
         return await CreateProfile_Logic(context, profile);

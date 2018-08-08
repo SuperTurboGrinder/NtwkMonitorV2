@@ -50,7 +50,7 @@ class CustomWebServicesDataService : ICustomWebServicesDataService {
             await repo.GetCWSBondExistanceMapping();
         if(!servicesMapping.Success) {
             return utils.FailActResult<CWSBondExistanceMapping>(
-                "Unable to get node web service binding from database."
+                "Unable to get web service bindings mapping from database."
             );
         }
         return utils.SuccActResult<CWSBondExistanceMapping>(

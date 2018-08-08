@@ -14,18 +14,21 @@ namespace NativeClient.WebAPI.Controllers {
 
 [Route("api/services")]
 public class NodeServicesController : Controller {
-    readonly INodesIPsDataService data;
+    readonly INodesServicesDataService data;
     readonly IPingService pingService;
     readonly IExecutablesManagerService execServices;
+    readonly IWebServiceLauncherService webServices;
 
     NodeServicesController(
-        INodesIPsDataService _data,
+        INodesServicesDataService _data,
         IPingService _pingService,
-        IExecutablesManagerService _execServices
+        IExecutablesManagerService _execServices,
+        IWebServiceLauncherService _webServices
     ) {
         data = _data;
         pingService = _pingService;
         execServices = _execServices;
+        webServices = _webServices;
     }
 
     async Task<ActionResult> OperationWithIP(
@@ -79,6 +82,25 @@ public class NodeServicesController : Controller {
     [HttpGet("/telnet/{nodeID:int}")]
     public async Task<ActionResult> OpenTelnetService(int nodeID) {
         return await OpenExecutableService(nodeID, ExecutableServicesTypes.Telnet);
+    }
+    
+    //GET api/services/customWebService/1/1
+    [HttpGet("/customWebService/{nodeID:int}/{cwsID:int}")]
+    public async Task<ActionResult> OpenTelnetService(int nodeID, int cwsID) {
+        DataActionResult<string> webServiceString =
+            await data.GetCWSBoundingString(nodeID, cwsID);
+        if(!webServiceString.Success) {
+            return BadRequest(webServiceString.Error);
+        }
+        if(webServiceString.Result == null) {
+            return BadRequest("Web service binding not found.");
+        }
+        string serviceStartError =
+            webServices.Start(webServiceString.Result);
+        if(serviceStartError != null) {
+            return BadRequest(serviceStartError);
+        }
+        return Ok();
     }
 }
 
