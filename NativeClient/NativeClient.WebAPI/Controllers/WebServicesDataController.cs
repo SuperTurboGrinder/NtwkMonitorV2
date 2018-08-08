@@ -26,6 +26,14 @@ public class WebServicesController : BaseDataController {
         );
     }
 
+    // GET api/webServices/mapping
+    [HttpGet("/mapping")]
+    public async Task<ActionResult> GetCWSBondExistanceMapping() {
+        return await GetDbData(async () =>
+            await data.GetCWSBondExistanceMapping()
+        );
+    }
+
     // POST api/webServices/new
     [HttpPost("/new")]
     public async Task<ActionResult> CreateCustomWebService(CustomWebService cws) {

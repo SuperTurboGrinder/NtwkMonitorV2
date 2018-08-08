@@ -60,6 +60,10 @@ class EFDataSource : IEFDbDataSource {
         return await CheckIfSessionExists_Logic(context, sessionID);
     }
 
+    public async Task<bool> CheckIfCWSBindingExists(int nodeID, int cwsID) {
+        return await CheckIfCWSBindingExists_Logic(context, nodeID, cwsID);
+    }
+
     public async Task<bool> CheckIfTagExists(int tagID) {
         return await CheckIfTagExists_Logic(context, tagID);
     }
@@ -136,7 +140,10 @@ class EFDataSource : IEFDbDataSource {
         return await GetAllCWS_Logic(context);
     }
     
-    
+    public async Task<Data.Model.ViewModel.CWSBondExistanceMapping> GetCWSBondExistanceMapping() {
+        return await GetCWSBondExistanceMapping_Logic(context);
+    }
+
 
     public async Task<Profile> CreateProfile(Profile profile) {
         return await CreateProfile_Logic(context, profile);

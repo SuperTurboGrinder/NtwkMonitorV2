@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Net;
 
 using Data.Abstract.DataAccessServices;
 using Data.Abstract.DbInteraction;
@@ -32,17 +33,17 @@ public class NodesIPsDataService : INodesIPsDataService {
         utils = new CommonServiceUtils(repo);
     }
 
-    public async Task<DataActionResult<uint>> GetNodeIP(int nodeID) {
+    public async Task<DataActionResult<IPAddress>> GetNodeIP(int nodeID) {
         string nValidationError = await utils.ValidateNodeID(nodeID);
         if(nValidationError != null) {
-            return utils.FailActResult<uint>(nValidationError);
+            return utils.FailActResult<IPAddress>(nValidationError);
         }
         DbOperationResult<uint> nodeIP =
             await repo.GetNodeIP(nodeID);
         if(!nodeIP.Success) {
-            return utils.FailActResult<uint>("Unable to get node IP address from database.");
+            return utils.FailActResult<IPAddress>("Unable to get node IP address from database.");
         }
-        return utils.SuccActResult(nodeIP.Result);
+        return utils.SuccActResult(new IPAddress(nodeIP.Result));
     }
 }
 

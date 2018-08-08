@@ -32,12 +32,11 @@ public class NodeServicesController : Controller {
         int nodeID,
         Func<IPAddress, Task<ActionResult>> operation
     ) {
-        DataActionResult<uint> rawNodeIP = await data.GetNodeIP(nodeID);
+        DataActionResult<IPAddress> rawNodeIP = await data.GetNodeIP(nodeID);
         if(!rawNodeIP.Success) {
             return BadRequest(rawNodeIP.Error);
         }
-        IPAddress ip = new IPAddress(rawNodeIP.Result);
-        return await operation(ip);
+        return await operation(rawNodeIP.Result);
     }
 
     async Task<ActionResult> OpenExecutableService(

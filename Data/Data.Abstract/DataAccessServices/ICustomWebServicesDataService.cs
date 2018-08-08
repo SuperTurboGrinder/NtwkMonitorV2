@@ -11,6 +11,7 @@ namespace Data.Abstract.DataAccessServices {
 //reporting errors through DataActionResult
 public interface ICustomWebServicesDataService {
     Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCWS();
+    Task<DataActionResult<CWSBondExistanceMapping>> GetCWSBondExistanceMapping();
 
     Task<DataActionResult<CustomWebService>> CreateCustomWebService(CustomWebService cws);
     Task<DataActionVoidResult> CreateWebServiceBinding(int nodeID, int cwsID,

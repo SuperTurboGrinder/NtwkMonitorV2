@@ -28,6 +28,7 @@ public interface IEFDbDataSource {
     Task<bool> CheckIfNodeExists(int nodeID);
     Task<bool> CheckIfProfileExists(int profileID);
     Task<bool> CheckIfSessionExists(int sessionID);
+    Task<bool> CheckIfCWSBindingExists(int nodeID, int cwsID);
     Task<bool> CheckIfTagExists(int tagID);
     Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<bool> CheckIfTagNameExists(string name);
@@ -46,7 +47,7 @@ public interface IEFDbDataSource {
     Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
     Task<IEnumerable<NodeTag>> GetAllTags();
     Task<IEnumerable<CustomWebService>> GetAllCWS();
-    
+    Task<Data.Model.ViewModel.CWSBondExistanceMapping> GetCWSBondExistanceMapping();
 
     Task<Profile> CreateProfile(Profile profile);
     Task<NtwkNode> CreateNodeOnRoot(NtwkNode node);

@@ -45,7 +45,7 @@ public interface IDataRepository {
     Task<DbOperationResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
     Task<DbOperationResult<IEnumerable<NodeTag>>> GetAllTags();
     Task<DbOperationResult<IEnumerable<CustomWebService>>> GetAllCWS();
-    
+    Task<DbOperationResult<Data.Model.ViewModel.CWSBondExistanceMapping>> GetCWSBondExistanceMapping();
 
     Task<DbOperationResult<Profile>> CreateProfile(Profile profile);
     Task<DbOperationResult<NtwkNode>> CreateNodeOnRoot(NtwkNode node);
