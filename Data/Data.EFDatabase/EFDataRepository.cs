@@ -8,7 +8,7 @@ using Data.Model.EFDbModel;
 
 namespace Data.EFDatabase {
 
-class EFDataRepository : IDataRepository {
+public class EFDataRepository : IDataRepository {
     IEFDbDataSource efDataSource;
     IDbErrorLogger logger;
 

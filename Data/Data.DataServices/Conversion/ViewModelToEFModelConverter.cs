@@ -8,7 +8,7 @@ using Data.Model.Enums;
 
 namespace Data.DataServices.Conversion {
 
-class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
+public class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
 
     public EFDbModel.CustomWebService Convert(CustomWebService cws) {
         return new EFDbModel.CustomWebService() {

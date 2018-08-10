@@ -4,7 +4,7 @@ using Data.Model.ViewModel;
 
 namespace Data.DataServices.Conversion {
 
-class EFModelToViewModelConverter : IEFModelToViewModelConverter {
+public class EFModelToViewModelConverter : IEFModelToViewModelConverter {
 
     public CustomWebService Convert(EFDbModel.CustomWebService cws) {
         return new CustomWebService() {

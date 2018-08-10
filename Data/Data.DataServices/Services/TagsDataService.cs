@@ -12,7 +12,7 @@ using EFDbModel = Data.Model.EFDbModel;
 
 namespace Data.DataServices.Services {
 
-class TagsDataService : ITagsDataService {
+public class TagsDataService : ITagsDataService {
     readonly IDataRepository repo;
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;

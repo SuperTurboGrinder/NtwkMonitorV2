@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using Data.Model.EFDbModel;
 using Data.Model.Enums;
@@ -191,7 +192,7 @@ public class Data_EFDataSourceLogicTest {
         Assert.Equal(2, profiles.Count());
     }
 
-    [Fact]
+    [Fact] //Disgusting
     public async void GetAllNodesData_GetsAllNodesDataObjectWithNodesGroupedByTreeDepthWithBoundServicesIDsAndTagIDs() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
@@ -199,7 +200,23 @@ public class Data_EFDataSourceLogicTest {
         utils.CreateClosuresForTestNodes(context, IDSet);
         var cwData = context.WebServices.AsNoTracking()
             .Select(ws => new { ws.ID, ws.ServiceName })
+            .OrderByDescending(id => id)
             .ToList();
+        var nodesData = context.NodesClosureTable.AsNoTracking()
+            .Where(cl => cl.AncestorID == null)
+            .Include(cl => cl.Descendant)
+                .ThenInclude(n => n.Tags)
+            .Include(cl => cl.Descendant)
+                .ThenInclude(n => n.CustomWebServices)
+            .GroupBy(cl => cl.Distance)
+            .Select(group => group
+                .Select(cl => cl.Descendant)
+                    .OrderByDescending(n => n.ID)
+                .Select(n => new {
+                    nodeTagsIDs = new HashSet<int>(n.Tags.Select(ta => ta.TagID)),
+                    nodeServicesIDs = new HashSet<int>(n.CustomWebServices.Select(wsb => wsb.ServiceID)) 
+                })
+            );
 
         Data.Model.IntermediateModel.AllRawNodesData allNodesData = 
             await EFDataSourceLogic.GetAllNodesData_Logic(context);
@@ -223,6 +240,31 @@ public class Data_EFDataSourceLogicTest {
                 }
             }
         );
+        //Assert nodes tags data and bound services data
+        //(NOPE, I AM DONE)
+        /*Assert.All(
+            allNodesData.NodesData.First().Zip(nodesData.First(),  (o1, o2) => new { o1, o2 })
+                .Concat(allNodesData.NodesData.Skip(1).First().Zip(nodesData.Skip(1).First(),  (o1, o2) => new { o1, o2 })),
+            (o) => {
+                string nodeName = o.o1.Node.Name;
+                if(o.o1.TagsIDs.Length != o.o2.nodeTagsIDs.Count) {
+                    throw new Exception($"Wrong ID count ({nodeName}): {o.o1.TagsIDs.Length} != {o.o2.nodeTagsIDs.Count}");
+                }
+                foreach(int tagID in o.o1.TagsIDs) {
+                    if(!o.o2.nodeTagsIDs.Contains(tagID)) {
+                        throw new Exception($"Unexpected tagID value ({nodeName}): {tagID}");
+                    }
+                }
+                if(o.o1.BoundWebServicesIDs.Length != o.o2.nodeServicesIDs.Count) {
+                    throw new Exception($"Wrong bound services count ({nodeName}): {o.o1.BoundWebServicesIDs.Length} != {o.o2.nodeServicesIDs.Count}");
+                }
+                foreach(int wsID in o.o1.BoundWebServicesIDs) {
+                    if(!o.o2.nodeServicesIDs.Contains(wsID)) {
+                        throw new Exception($"Unexpected wsID value ({nodeName}): {wsID}");
+                    }
+                }
+            }
+        );*/
     }
 
     [Fact]

@@ -3,7 +3,7 @@ using Data.Abstract.DbInteraction;
 
 namespace Data.DataServices.DbOperations {
 
-class ConsoleErrorLogger : IDbErrorLogger {
+public class ConsoleErrorLogger : IDbErrorLogger {
     public void LogException(Exception ex) {
         string separator = new string('_', 8);
         Console.Out.WriteLine(separator+"Error"+separator);

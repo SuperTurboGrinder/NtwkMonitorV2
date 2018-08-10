@@ -3,7 +3,7 @@ using System.Linq;
 
 using Data.Model.Enums;
 
-namespace Data.Model.ViewModel {
+namespace Data.DataServices.Validation {
 
 static class ValidationUtils {
     public const string NamesFormatMessage = "Names can only include letters, numbers and \"_\" character.";

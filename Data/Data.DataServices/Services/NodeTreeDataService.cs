@@ -12,7 +12,7 @@ using EFDbModel = Data.Model.EFDbModel;
 
 namespace Data.DataServices.Services {
 
-class NodeTreeDataService : INodeTreeDataService {
+public class NodeTreeDataService : INodeTreeDataService {
     readonly IDataRepository repo;
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;

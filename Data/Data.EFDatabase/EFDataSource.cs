@@ -8,11 +8,11 @@ using static Data.EFDatabase.Logic.EFDataSourceLogic;
 
 namespace Data.EFDatabase {
 
-class EFDataSource : IEFDbDataSource {
+public class EFDataSource : IEFDbDataSource {
     readonly NtwkDBContext context;
     readonly IDbErrorLogger errorLogger;
 
-    EFDataSource(NtwkDBContext _context, IDbErrorLogger _errorLogger) {
+    public EFDataSource(NtwkDBContext _context, IDbErrorLogger _errorLogger) {
         context = _context;
         errorLogger = _errorLogger;
     }

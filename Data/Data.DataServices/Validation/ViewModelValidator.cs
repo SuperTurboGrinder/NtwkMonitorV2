@@ -5,7 +5,7 @@ using Data.Abstract.Validation;
 
 namespace Data.DataServices.Validation {
 
-class ViewModelValidator : IViewModelValidator {
+public class ViewModelValidator : IViewModelValidator {
     public string Validate(
         CustomWebService val
     ) {

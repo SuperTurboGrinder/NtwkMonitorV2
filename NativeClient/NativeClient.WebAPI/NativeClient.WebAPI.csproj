@@ -13,13 +13,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.4" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version=" 2.1.0-preview1-final" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version=" 2.1.0-preview1-final" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Data.Model\Data.Model.csproj" />
     <ProjectReference Include="..\..\Data\Data.DataServices\Data.DataServices.csproj" />
     <ProjectReference Include="..\..\Data\Data.Abstract\Data.Abstract.csproj" />
+    <ProjectReference Include="..\..\Data\Data.EFDatabase\Data.EFDatabase.csproj" />
   </ItemGroup>
 
 </Project>

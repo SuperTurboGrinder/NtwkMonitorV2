@@ -10,11 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version=" 2.1.0-preview1-final" />
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version=" 2.1.0-preview1-final" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Data.Model\Data.Model.csproj" />
     <ProjectReference Include="..\Data.Abstract\Data.Abstract.csproj" />
   </ItemGroup>

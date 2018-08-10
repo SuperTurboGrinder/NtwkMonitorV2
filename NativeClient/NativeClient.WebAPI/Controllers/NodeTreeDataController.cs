@@ -15,7 +15,7 @@ namespace NativeClient.WebAPI.Controllers {
 public class NodeTreeDataController : BaseDataController {
     readonly INodeTreeDataService data;
 
-    NodeTreeDataController(INodeTreeDataService _data) {
+    public NodeTreeDataController(INodeTreeDataService _data) {
         data = _data;
     }
 

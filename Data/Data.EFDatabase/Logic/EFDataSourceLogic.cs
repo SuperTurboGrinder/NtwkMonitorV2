@@ -133,19 +133,20 @@ public static class EFDataSourceLogic {
                 .Include(cl => cl.Descendant)
                     .ThenInclude(n => n.CustomWebServices)
                         .ThenInclude(wsb => wsb.Service)
-                .GroupBy(cl => cl.Distance) //by depth layer
-                .Select(group => group.Select(cl => cl.Descendant))
                 .ToListAsync()
-        ).Select(group => group
-            .Select(n => new Model.IntermediateModel.RawNodeData() {
-                Node = n,
-                TagsIDs = n.Tags.Select(ta => ta.TagID).ToArray(),
-                BoundWebServicesIDs = n.CustomWebServices
-                    .Select(wsb => wsb.ServiceID)
-                    .OrderByDescending(id => id)
-                    .ToArray()
-            })
-        ).ToList();
+        )
+            .GroupBy(cl => cl.Distance) //by depth layer
+            .Select(group => group.Select(cl => cl.Descendant))
+            .Select(group => group
+                .Select(n => new Model.IntermediateModel.RawNodeData() {
+                    Node = n,
+                    TagsIDs = n.Tags.Select(ta => ta.TagID).ToArray(),
+                    BoundWebServicesIDs = n.CustomWebServices
+                        .Select(wsb => wsb.ServiceID)
+                        .OrderByDescending(id => id)
+                        .ToArray()
+                })
+            ).ToList();
 
         return new Model.IntermediateModel.AllRawNodesData() {
             WebServicesData = servicesData,

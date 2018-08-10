@@ -1,6 +1,6 @@
 namespace NativeClient.WebAPI.Services.Model {
 
-enum ExecutableServicesTypes {
+public enum ExecutableServicesTypes {
     SSH,
     Telnet
 }

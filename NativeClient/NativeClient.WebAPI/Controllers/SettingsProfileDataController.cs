@@ -14,7 +14,7 @@ namespace NativeClient.WebAPI.Controllers {
 public class SettingsProfileDataController : BaseDataController {
     readonly ISettingsProfileDataService data;
 
-    SettingsProfileDataController(ISettingsProfileDataService _data) {
+    public SettingsProfileDataController(ISettingsProfileDataService _data) {
         data = _data;
     }
 

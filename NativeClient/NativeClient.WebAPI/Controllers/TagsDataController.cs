@@ -14,7 +14,7 @@ namespace NativeClient.WebAPI.Controllers {
 public class TagsDataController : BaseDataController {
     readonly ITagsDataService data;
 
-    TagsDataController(ITagsDataService _data) {
+    public TagsDataController(ITagsDataService _data) {
         data = _data;
     }
 

@@ -19,7 +19,7 @@ public class NodeServicesController : Controller {
     readonly IExecutablesManagerService execServices;
     readonly IWebServiceLauncherService webServices;
 
-    NodeServicesController(
+    public NodeServicesController(
         INodesServicesDataService _data,
         IPingService _pingService,
         IExecutablesManagerService _execServices,

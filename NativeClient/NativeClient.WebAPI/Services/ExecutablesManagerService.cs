@@ -11,14 +11,14 @@ using NativeClient.WebAPI.Abstract;
 namespace NativeClient.WebAPI.Services {
 
 //SINGLETON SERVICE
-class ExecutablesManagerService : IExecutablesManagerService {
+public class ExecutablesManagerService : IExecutablesManagerService {
     class ServiceData {
         public string filePath;
         public string strSearchKey;
-        //public int port;
     }
 
-    Dictionary<ExecutableServicesTypes, ServiceData> servicesData;
+    Dictionary<ExecutableServicesTypes, ServiceData> servicesData =
+        new Dictionary<ExecutableServicesTypes, ServiceData>();
 
     struct FilePathData {
         public string fullPath;
@@ -30,9 +30,7 @@ class ExecutablesManagerService : IExecutablesManagerService {
             servicesData[ExecutableServicesTypes.SSH] = new ServiceData();
             servicesData[ExecutableServicesTypes.Telnet] = new ServiceData();
             servicesData[ExecutableServicesTypes.SSH].strSearchKey = "ssh";
-            //servicesData[ExecutableServicesTypes.SSH].port = 22;
             servicesData[ExecutableServicesTypes.Telnet].strSearchKey = "telnet";
-            //servicesData[ExecutableServicesTypes.Telnet].port = 23;
         }
     }
 

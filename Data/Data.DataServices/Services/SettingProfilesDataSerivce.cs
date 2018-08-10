@@ -12,14 +12,14 @@ using EFDbModel = Data.Model.EFDbModel;
 
 namespace Data.DataServices.Services {
 
-class SettingProfilesDataSerivce : ISettingsProfileDataService {
+public class SettingsProfilesDataSerivce : ISettingsProfileDataService {
     readonly IDataRepository repo;
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
     readonly CommonServiceUtils utils;
 
-    public SettingProfilesDataSerivce(
+    public SettingsProfilesDataSerivce(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,

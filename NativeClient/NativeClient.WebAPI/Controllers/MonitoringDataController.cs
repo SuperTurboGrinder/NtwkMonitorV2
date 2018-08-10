@@ -14,7 +14,7 @@ namespace NativeClient.WebAPI.Controllers {
 public class MonitoringDataController : BaseDataController {
     readonly IMonitoringDataService data;
 
-    MonitoringDataController(IMonitoringDataService _data) {
+    public MonitoringDataController(IMonitoringDataService _data) {
         data = _data;
     }
 

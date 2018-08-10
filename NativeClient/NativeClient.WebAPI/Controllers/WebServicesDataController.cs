@@ -14,7 +14,7 @@ namespace NativeClient.WebAPI.Controllers {
 public class WebServicesController : BaseDataController {
     readonly ICustomWebServicesDataService data;
 
-    WebServicesController(ICustomWebServicesDataService _data) {
+    public WebServicesController(ICustomWebServicesDataService _data) {
         data = _data;
     }
 

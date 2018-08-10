@@ -12,7 +12,7 @@ using EFDbModel = Data.Model.EFDbModel;
 
 namespace Data.DataServices.Services {
 
-class CustomWebServicesDataService : ICustomWebServicesDataService {
+public class CustomWebServicesDataService : ICustomWebServicesDataService {
     readonly IDataRepository repo;
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
