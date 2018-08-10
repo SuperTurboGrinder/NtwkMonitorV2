@@ -13,7 +13,7 @@ class ConversionUtils {
         return new IPAddress(BitConverter.GetBytes(addr)).ToString();
     }
 
-    public static DateTime DateTimeFromJSDateTime(double jsDateTime) {
+    /*public static DateTime DateTimeFromJSDateTime(double jsDateTime) {
         DateTime baseDateTime = new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc);
         TimeSpan time = TimeSpan.FromMilliseconds(jsDateTime);
         return baseDateTime + time;
@@ -23,7 +23,7 @@ class ConversionUtils {
         return dateTime
                .Subtract(new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc))
                .TotalMilliseconds;
-    }
+    }*/
 }
 
 }

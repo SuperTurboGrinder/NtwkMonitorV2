@@ -9,8 +9,8 @@ public class MonitoringSession {
     public int ID;
     public int CreatedByProfileID;
     public int ParticipatingNodesNum;
-    public DateTime CreationTime;
-    public DateTime LastPulseTime;
+    public double CreationTime;
+    public double LastPulseTime;
 }
 
 }

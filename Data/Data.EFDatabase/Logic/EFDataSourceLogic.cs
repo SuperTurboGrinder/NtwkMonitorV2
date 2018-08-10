@@ -115,15 +115,42 @@ public static class EFDataSourceLogic {
             .ToListAsync();
     }
 
-    public static async Task<IEnumerable<IEnumerable<NtwkNode>>> GetAllNodesGroupedByDepth_Logic(
+    public static async Task<Model.IntermediateModel.AllRawNodesData> GetAllNodesData_Logic(
         NtwkDBContext context
     ) {
-        return await context.NodesClosureTable.AsNoTracking()
-            .Where(cl => cl.AncestorID == null) //uniqe nodes
-            .Include(cl => cl.Descendant)
-            .GroupBy(cl => cl.Distance) //by depth layer
-            .Select(group => group.Select(cl => cl.Descendant))
+        List<Model.ViewModel.CWSData> servicesData = await context.WebServices.AsNoTracking()
+            .Select(ws => new Model.ViewModel.CWSData() {
+                ID = ws.ID,
+                Name = ws.ServiceName
+            })
+            .OrderByDescending(wsd => wsd.ID)
             .ToListAsync();
+        List<IEnumerable<Model.IntermediateModel.RawNodeData>> nodes = (
+            await context.NodesClosureTable.AsNoTracking()
+                .Where(cl => cl.AncestorID == null) //uniqe nodes
+                .Include(cl => cl.Descendant)
+                    .ThenInclude(n => n.Tags)
+                .Include(cl => cl.Descendant)
+                    .ThenInclude(n => n.CustomWebServices)
+                        .ThenInclude(wsb => wsb.Service)
+                .GroupBy(cl => cl.Distance) //by depth layer
+                .Select(group => group.Select(cl => cl.Descendant))
+                .ToListAsync()
+        ).Select(group => group
+            .Select(n => new Model.IntermediateModel.RawNodeData() {
+                Node = n,
+                TagsIDs = n.Tags.Select(ta => ta.TagID).ToArray(),
+                BoundWebServicesIDs = n.CustomWebServices
+                    .Select(wsb => wsb.ServiceID)
+                    .OrderByDescending(id => id)
+                    .ToArray()
+            })
+        ).ToList();
+
+        return new Model.IntermediateModel.AllRawNodesData() {
+            WebServicesData = servicesData,
+            NodesData = nodes
+        };
     }
 
     public static async Task<uint> GetNodeIP_Logic(

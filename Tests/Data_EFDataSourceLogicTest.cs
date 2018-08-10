@@ -192,20 +192,37 @@ public class Data_EFDataSourceLogicTest {
     }
 
     [Fact]
-    public async void GetAllNodesGroupedByDepth_GetsAllNodesInDBGroupedByTreeDepth() {
+    public async void GetAllNodesData_GetsAllNodesDataObjectWithNodesGroupedByTreeDepthWithBoundServicesIDsAndTagIDs() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
         utils.CreateClosuresForTestNodes(context, IDSet);
+        var cwData = context.WebServices.AsNoTracking()
+            .Select(ws => new { ws.ID, ws.ServiceName })
+            .ToList();
 
-        var treeLayers = await EFDataSourceLogic.GetAllNodesGroupedByDepth_Logic(context);
+        Data.Model.IntermediateModel.AllRawNodesData allNodesData = 
+            await EFDataSourceLogic.GetAllNodesData_Logic(context);
     
-        Assert.Equal(2, treeLayers.Count());
-        Assert.Equal(2, treeLayers.First().Count());
-        Assert.Equal(1, treeLayers.Skip(1).First().Count());
-        Assert.NotEqual(null, treeLayers.First().SingleOrDefault(n => n.ID == IDSet.Node1ID));
-        Assert.NotEqual(null, treeLayers.First().SingleOrDefault(n => n.ID == IDSet.Node3ID));
-        Assert.NotEqual(null, treeLayers.Skip(1).First().SingleOrDefault(n => n.ID == IDSet.Node2ID));
+        //Assert nodes groups structure
+        Assert.Equal(2, allNodesData.NodesData.Count());
+        Assert.Equal(2, allNodesData.NodesData.First().Count());
+        Assert.Equal(1, allNodesData.NodesData.Skip(1).First().Count());
+        Assert.NotEqual(null, allNodesData.NodesData.First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node1ID));
+        Assert.NotEqual(null, allNodesData.NodesData.First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node3ID));
+        Assert.NotEqual(null, allNodesData.NodesData.Skip(1).First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node2ID));
+        //Assert ws data
+        Assert.All(
+            allNodesData.WebServicesData.Zip(cwData,  (o1, o2) => new { o1, o2 }),
+            (o) => {
+                if(o.o1.ID != o.o2.ID) {
+                    throw new Exception($"Unexpected ID value: {o.o1.ID} != {o.o2.ID}");
+                }
+                if(o.o1.Name != o.o2.ServiceName) {
+                    throw new Exception($"Unexpected Name value: {o.o1.Name} != {o.o2.ServiceName}");
+                }
+            }
+        );
     }
 
     [Fact]

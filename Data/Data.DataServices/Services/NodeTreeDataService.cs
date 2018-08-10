@@ -32,17 +32,26 @@ class NodeTreeDataService : INodeTreeDataService {
         utils = new CommonServiceUtils(repo);
     }
 
-    public async Task<DataActionResult<IEnumerable<IEnumerable<NtwkNode>>>> GetAllNodesGroupedByDepth() {
-        DbOperationResult<IEnumerable<IEnumerable<EFDbModel.NtwkNode>>> dbOpResult =
-            await repo.GetAllNodesGroupedByDepth();
+    public async Task<DataActionResult<AllNodesData>> GetAllNodesData() {
+        DbOperationResult<Model.IntermediateModel.AllRawNodesData> dbOpResult =
+            await repo.GetAllNodesData();
         if(!dbOpResult.Success) {
-            return utils.FailActResult<IEnumerable<IEnumerable<NtwkNode>>>(
-                "Unable to get all nodes list from database."
+            return utils.FailActResult<AllNodesData>(
+                "Unable to get all data for all nodes from database."
             );
         }
-        return utils.SuccActResult(dbOpResult.Result
-            .Select(group => group.Select(n => EFToViewConverter.Convert(n)))
-        );
+        return utils.SuccActResult(new AllNodesData() {
+            WebServicesData = dbOpResult.Result.WebServicesData,
+            NodesData = dbOpResult.Result.NodesData
+                .Select(nd_group => nd_group
+                    .Select(nd => new NodeData() {
+                        Node = EFToViewConverter.Convert(nd.Node),
+                        BoundWebServicesIDs = nd.BoundWebServicesIDs,
+                        TagsIDs = nd.TagsIDs
+                    })
+                )
+                .ToList()
+        });
     }
     
     public async Task<DataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(

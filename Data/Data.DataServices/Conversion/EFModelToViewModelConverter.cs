@@ -56,20 +56,14 @@ class EFModelToViewModelConverter : IEFModelToViewModelConverter {
             ID = session.ID,
             CreatedByProfileID = session.CreatedByProfileID,
             ParticipatingNodesNum = session.ParticipatingNodesNum,
-            CreationTime = ConversionUtils.DateTimeFromJSDateTime(
-                session.CreationTime
-            ),
-            LastPulseTime = ConversionUtils.DateTimeFromJSDateTime(
-                session.LastPulseTime
-            )
+            CreationTime = session.CreationTime,
+            LastPulseTime = session.LastPulseTime
         };
     }
     
     public MonitoringPulseResult Convert(EFDbModel.MonitoringPulseResult pulse) {
         return new MonitoringPulseResult() {
-            CreationTime = ConversionUtils.DateTimeFromJSDateTime(
-                pulse.CreationTime
-            ),
+            CreationTime = pulse.CreationTime,
             Responded = pulse.Responded,
             Silent = pulse.Silent,
             Skipped = pulse.Skipped

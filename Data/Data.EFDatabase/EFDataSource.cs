@@ -108,8 +108,8 @@ class EFDataSource : IEFDbDataSource {
         return await GetAllProfiles_Logic(context);
     }
     
-    public async Task<IEnumerable<IEnumerable<NtwkNode>>> GetAllNodesGroupedByDepth() {
-        return await GetAllNodesGroupedByDepth_Logic(context);
+    public async Task<Model.IntermediateModel.AllRawNodesData> GetAllNodesData() {
+        return await GetAllNodesData_Logic(context);
     }
 
     public async Task<uint> GetNodeIP(int nodeID) {

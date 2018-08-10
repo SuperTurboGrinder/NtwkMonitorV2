@@ -182,9 +182,9 @@ class EFDataRepository : IDataRepository {
         );
     }
     
-    public async Task<DbOperationResult<IEnumerable<IEnumerable<NtwkNode>>>> GetAllNodesGroupedByDepth() {
+    public async Task<DbOperationResult<Model.IntermediateModel.AllRawNodesData>> GetAllNodesData() {
         return await PerformDbOperationAndLogDbUpdateException(async () =>
-            await efDataSource.GetAllNodesGroupedByDepth()
+            await efDataSource.GetAllNodesData()
         );
     }
 
