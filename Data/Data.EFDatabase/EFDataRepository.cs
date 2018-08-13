@@ -126,6 +126,12 @@ public class EFDataRepository : IDataRepository {
             await efDataSource.CheckIfSessionExists(sessionID)
         );
     }
+
+    public async Task<DbOperationResult<bool>> CheckIfCWSBindingExists(int cwsID, int nodeID) {
+        return await PerformDbOperationAndLogDbUpdateException(async () =>
+            await efDataSource.CheckIfCWSBindingExists(cwsID, nodeID)
+        );
+    }
     
     public async Task<DbOperationResult<bool>> CheckIfTagExists(int tagID) {
         return await PerformDbOperationAndLogDbUpdateException(async () =>

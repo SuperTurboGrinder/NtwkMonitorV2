@@ -409,8 +409,8 @@ public static class EFDataSourceLogic {
 
     public static async Task<bool> CheckIfCWSBindingExists_Logic(
         NtwkDBContext context,
-        int nodeID,
-        int webServiceID
+        int webServiceID,
+        int nodeID
     ) {
         return await context.WebServiceBindings
             .AnyAsync(wsb =>

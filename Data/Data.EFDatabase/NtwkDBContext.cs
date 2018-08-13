@@ -37,6 +37,10 @@ public class NtwkDBContext : DbContext {
             .HasOne(n => n.Parent)
             .WithMany(n => n.Children)
             .HasForeignKey(n => n.ParentID);
+        modelBuilder.Entity<NtwkNode>()
+            .HasMany(n => n.CustomWebServices)
+            .WithOne(wsb => wsb.Node)
+            .HasForeignKey(wsb => wsb.NodeID);
         modelBuilder.Entity<TagAttachment>()
             .HasOne(a => a.Tag)
             .WithMany(t => t.Attachments)
@@ -54,12 +58,8 @@ public class NtwkDBContext : DbContext {
             .WithMany(t => t.ProfilesFilterSelections)
             .HasForeignKey(pvst => pvst.TagID);
         modelBuilder.Entity<CustomWSBinding>()
-            .HasOne(wsb => wsb.Node)
-            .WithMany(n => n.CustomWebServices)
-            .HasForeignKey(wsb => wsb.NodeID);
-        modelBuilder.Entity<CustomWSBinding>()
             .HasOne(wsb => wsb.Service)
-            .WithMany(n => n.Bindings)
+            .WithMany(cws => cws.Bindings)
             .HasForeignKey(wsb => wsb.ServiceID);
         modelBuilder.Entity<MonitoringSession>()
             .HasOne(s => s.CreatedByProfile)

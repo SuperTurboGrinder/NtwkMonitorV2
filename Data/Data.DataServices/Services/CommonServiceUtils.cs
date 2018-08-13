@@ -132,6 +132,18 @@ class CommonServiceUtils {
         );
     }
 
+    public async Task<string> ErrorIfCWSBindingExists(int cwsID, int nodeID) {
+        DbOperationResult<bool> bindingExists =
+            await repo.CheckIfCWSBindingExists(cwsID, nodeID);
+        if(!bindingExists.Success) {
+            return "Unable to check existance of a web service binding.";
+        }
+        else if(bindingExists.Result) {
+            return "Binding between specified service and node already exists.";
+        }
+        return null;
+    }
+
 }
 
 }

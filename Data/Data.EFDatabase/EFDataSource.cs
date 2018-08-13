@@ -60,8 +60,8 @@ public class EFDataSource : IEFDbDataSource {
         return await CheckIfSessionExists_Logic(context, sessionID);
     }
 
-    public async Task<bool> CheckIfCWSBindingExists(int nodeID, int cwsID) {
-        return await CheckIfCWSBindingExists_Logic(context, nodeID, cwsID);
+    public async Task<bool> CheckIfCWSBindingExists(int cwsID, int nodeID) {
+        return await CheckIfCWSBindingExists_Logic(context, cwsID, nodeID);
     }
 
     public async Task<bool> CheckIfTagExists(int tagID) {

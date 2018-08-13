@@ -78,15 +78,15 @@ public class WebServicesController : BaseDataController {
     }
 
     // DELETE api/webServices/1/delete
-    [HttpDelete("{webServiceID:int}/delete")]
+    /*[HttpDelete("{webServiceID:int}/delete")]
     public async Task<ActionResult> RemoveCustomWebService(int webServiceID) {
         return await GetDbData(async () =>
             await data.RemoveCustomWebService(webServiceID)
         );
-    }
+    }*/
 
     // DELETE api/webServices/1/deleteBinding/1
-    [HttpDelete("{nodeID:int}/deleteBinding/{webServiceID:int}")]
+    [HttpDelete("{webServiceID:int}/deleteBinding/{nodeID:int}")]
     public async Task<ActionResult> RemoveWebServiceBinding(int webServiceID, int nodeID) {
         return await PerformDBOperation(async () =>
             await data.RemoveWebServiceBinding(nodeID, webServiceID)

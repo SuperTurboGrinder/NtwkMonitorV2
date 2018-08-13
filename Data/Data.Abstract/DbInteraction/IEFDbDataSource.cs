@@ -28,7 +28,7 @@ public interface IEFDbDataSource {
     Task<bool> CheckIfNodeExists(int nodeID);
     Task<bool> CheckIfProfileExists(int profileID);
     Task<bool> CheckIfSessionExists(int sessionID);
-    Task<bool> CheckIfCWSBindingExists(int nodeID, int cwsID);
+    Task<bool> CheckIfCWSBindingExists(int cwsID, int nodeID);
     Task<bool> CheckIfTagExists(int tagID);
     Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<bool> CheckIfTagNameExists(string name);

@@ -105,6 +105,10 @@ public class CustomWebServicesDataService : ICustomWebServicesDataService {
         if(!cwsWalidation.Success) {
             return utils.FailActVoid(cwsWalidation.Error);
         }
+        string bindingExistsError = await utils.ErrorIfCWSBindingExists(cwsID, nodeID);
+        if(bindingExistsError != null) {
+            return utils.FailActVoid(bindingExistsError);
+        }
         DbOperationVoidResult dbOpResult =
             await repo.CreateWebServiceBinding(nodeID, cwsID, param1, param2, param3);
         if(!dbOpResult.Success) {
@@ -215,8 +219,8 @@ public class CustomWebServicesDataService : ICustomWebServicesDataService {
         if(!paramNum.Success) {
             return utils.FailActVoid(paramNum.Error);
         }
-        DbOperationResult<EFDbModel.CustomWebService> dbOpResult =
-            await repo.RemoveCustomWebService(cwsID);
+        DbOperationVoidResult dbOpResult =
+            await repo.RemoveWebServiceBinding(nodeID, cwsID);
         if(!dbOpResult.Success) {
             return utils.FailActVoid(
                 "Unable to remove web service binding from database."

@@ -27,6 +27,10 @@ public interface IDataRepository {
     Task<DbOperationResult<bool>> CheckIfNodeExists(int nodeID);
     Task<DbOperationResult<bool>> CheckIfProfileExists(int profileID);
     Task<DbOperationResult<bool>> CheckIfSessionExists(int sessionID);
+    Task<DbOperationResult<bool>> CheckIfCWSBindingExists(
+        int nodeID,
+        int webServiceID
+    );
     Task<DbOperationResult<bool>> CheckIfTagExists(int tagID);
     Task<DbOperationResult<bool>> CheckIfTagsExist(IEnumerable<int> tagsIDs);
     Task<DbOperationResult<bool>> CheckIfProfileNameExists(string name);
