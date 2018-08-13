@@ -27,15 +27,15 @@ public class TagsDataController : BaseDataController {
     }
 
     // POST api/nodeTags/new
-    [HttpPost("/new")]
-    public async Task<ActionResult> CreateTag(NodeTag tag) {
+    [HttpPost("new")]
+    public async Task<ActionResult> CreateTag([FromBody] NodeTag tag) {
         return await GetDbData(async () =>
             await data.CreateTag(tag)
         );
     }
 
     // DELETE api/nodeTags/1/delete
-    [HttpDelete("/{tagID:int}/delete")]
+    [HttpDelete("{tagID:int}/delete")]
     public async Task<ActionResult> RemoveTag(int tagID) {
         return await GetDbData(async () =>
             await data.RemoveTag(tagID)

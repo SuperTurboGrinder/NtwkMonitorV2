@@ -221,35 +221,6 @@ public static class EFDataSourceLogic {
             .ToListAsync();
     }
 
-    public static async Task<Data.Model.ViewModel.CWSBondExistanceMapping> GetCWSBondExistanceMapping_Logic(
-        NtwkDBContext context
-    ) {
-        var bondWebServices = await context.WebServiceBindings.AsNoTracking()
-            .OrderByDescending(wsb => wsb.ServiceID)
-            .GroupBy(wsb => wsb.NodeID)
-            .Select(group => new {
-                group.First().NodeID,
-                binded = group.Select(wsb => wsb.ServiceID)
-            })
-            .ToListAsync();
-        int[] allServicesIDs = await context.WebServices.AsNoTracking()
-            .Select(ws => ws.ID)
-            .OrderByDescending(id => id)
-            .ToArrayAsync();
-        List<Data.Model.ViewModel.CWSBondExistanceData> bindings = bondWebServices
-            .Select(bws => new Data.Model.ViewModel.CWSBondExistanceData() {
-                nodeID = bws.NodeID,
-                bind = allServicesIDs
-                    .Select(wsID => bws.binded.Contains(wsID))
-                    .ToArray()
-            })
-            .ToList();
-        return new Data.Model.ViewModel.CWSBondExistanceMapping() {
-            cwsIDs = allServicesIDs,
-            bindings = bindings
-        };
-    }
-
     public static async Task<string> GetCWSBoundingString_Logic(
         NtwkDBContext context,
         int nodeID,

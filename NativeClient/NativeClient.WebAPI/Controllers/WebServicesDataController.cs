@@ -26,27 +26,19 @@ public class WebServicesController : BaseDataController {
         );
     }
 
-    // GET api/webServices/mapping
-    [HttpGet("/mapping")]
-    public async Task<ActionResult> GetCWSBondExistanceMapping() {
-        return await GetDbData(async () =>
-            await data.GetCWSBondExistanceMapping()
-        );
-    }
-
     // POST api/webServices/new
-    [HttpPost("/new")]
-    public async Task<ActionResult> CreateCustomWebService(CustomWebService cws) {
+    [HttpPost("new")]
+    public async Task<ActionResult> CreateCustomWebService([FromBody] CustomWebService cws) {
         return await GetDbData(async () =>
             await data.CreateCustomWebService(cws)
         );
     }
 
     // POST api/webServices/1/bind
-    [HttpPost("/{webServiceID:int}/bind")]
+    [HttpPost("{webServiceID:int}/bind")]
     public async Task<ActionResult> CreateWebServiceBinding(
         int webServiceID,
-        WebAPI.InputModel.WebServiceBinding bindingData
+        [FromBody] WebAPI.InputModel.WebServiceBinding bindingData
     ) {
         return await PerformDBOperation(async () =>
             await data.CreateWebServiceBinding(
@@ -60,18 +52,19 @@ public class WebServicesController : BaseDataController {
     }
 
     // PUT api/webServices/1/update
-    [HttpPut("/{webServiceID:int}/update")]
-    public async Task<ActionResult> UpdateCustomWebService(CustomWebService cws) {
+    [HttpPut("{webServiceID:int}/update")]
+    public async Task<ActionResult> UpdateCustomWebService(int webServiceID, [FromBody] CustomWebService cws) {
+        cws.ID = webServiceID;
         return await PerformDBOperation(async () =>
             await data.UpdateCustomWebService(cws)
         );
     }
 
     // PUT api/webServices/1/updateBinding
-    [HttpPut("/{webServiceID:int}/updateBinding")]
+    [HttpPut("{webServiceID:int}/updateBinding")]
     public async Task<ActionResult> UpdateWebServiceBinding(
         int webServiceID,
-        WebAPI.InputModel.WebServiceBinding bindingData
+        [FromBody] WebAPI.InputModel.WebServiceBinding bindingData
     ) {
         return await PerformDBOperation(async () =>
             await data.UpdateWebServiceBinding(
@@ -85,15 +78,15 @@ public class WebServicesController : BaseDataController {
     }
 
     // DELETE api/webServices/1/delete
-    [HttpDelete("/{webServiceID:int}/delete")]
+    [HttpDelete("{webServiceID:int}/delete")]
     public async Task<ActionResult> RemoveCustomWebService(int webServiceID) {
         return await GetDbData(async () =>
             await data.RemoveCustomWebService(webServiceID)
         );
     }
 
-    // DELETE api/webServices/1/deleteBinding
-    [HttpDelete("/{webServiceID:int}/deleteBinding")]
+    // DELETE api/webServices/1/deleteBinding/1
+    [HttpDelete("{nodeID:int}/deleteBinding/{webServiceID:int}")]
     public async Task<ActionResult> RemoveWebServiceBinding(int webServiceID, int nodeID) {
         return await PerformDBOperation(async () =>
             await data.RemoveWebServiceBinding(nodeID, webServiceID)

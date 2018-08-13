@@ -28,34 +28,34 @@ public class NodeTreeDataController : BaseDataController {
     }
     
     // POST api/nodes/new
-    [HttpPost("/new")]
-    public async Task<ActionResult> CreateNodeOnRoot(NtwkNode node) {
+    [HttpPost("new")]
+    public async Task<ActionResult> CreateNodeOnRoot([FromBody] NtwkNode node) {
         return await GetDbData(async () =>
             await data.CreateNodeOnRoot(node)
         );
     }
 
-    // POST api/nodes/new/1
-    [HttpPost("/new/{parentID:int}")]
-    public async Task<ActionResult> CreateNodeWithParent(int parentID, NtwkNode node) {
+    // POST api/nodes/1/new
+    [HttpPost("{parentID:int}/new")]
+    public async Task<ActionResult> CreateNodeWithParent(int parentID, [FromBody] NtwkNode node) {
         return await GetDbData(async () =>
             await data.CreateNodeWithParent(node, parentID)
         );
     }
 
     // PUT api/nodes/1/setTags
-    [HttpPut("/{nodeID:int}/setTags")]
+    [HttpPut("{nodeID:int}/setTags")]
     public async Task<ActionResult> SetNodeTags(
         int nodeID,
-        IEnumerable<int> tagsIDs
+        [FromBody] IEnumerable<int> tagsIDs
     ) {
         return await PerformDBOperation(async () =>
             await data.SetNodeTags(nodeID, tagsIDs)
         );
     }
 
-    // PUT api/nodes/1/changeParent
-    [HttpPut("/{nodeID:int}/changeParent")]
+    // PUT api/nodes/1/changeParentTo/2
+    [HttpPut("{nodeID:int}/changeParent/{newParentID:int}")]
     public async Task<ActionResult> MoveNodesSubtree(int nodeID, int newParentID) {
         return await PerformDBOperation(async () =>
             await data.MoveNodesSubtree(nodeID, newParentID)
@@ -63,8 +63,8 @@ public class NodeTreeDataController : BaseDataController {
     }
 
     // PUT api/nodes/1/update
-    [HttpPut("/{nodeID:int}/update")]
-    public async Task<ActionResult> UpdateNode(int nodeID, NtwkNode node) {
+    [HttpPut("{nodeID:int}/update")]
+    public async Task<ActionResult> UpdateNode(int nodeID, [FromBody] NtwkNode node) {
         node.ID = nodeID;
         return await PerformDBOperation(async () =>
             await data.UpdateNode(node)
@@ -72,7 +72,7 @@ public class NodeTreeDataController : BaseDataController {
     }
 
     // DELETE api/nodes/1/delete
-    [HttpDelete("/{nodeID:int}/delete")]
+    [HttpDelete("{nodeID:int}/delete")]
     public async Task<ActionResult> RemoveNode(int nodeID) {
         return await GetDbData(async () =>
             await data.RemoveNode(nodeID)

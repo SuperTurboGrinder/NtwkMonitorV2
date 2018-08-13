@@ -23,15 +23,15 @@ public class ViewModelValidator : IViewModelValidator {
         if(hasParam1) {
             Func<int, string> paramNameMessage = (int n) =>
                 $"Service paremeter{n} name is invalid.\n({ValidationUtils.NamesFormatMessage})";
-            if(ValidationUtils.IsValidName(val.Parametr1Name)) {
+            if(!ValidationUtils.IsValidName(val.Parametr1Name)) {
                 return paramNameMessage(1);
             }
             else if(hasParam2) {
-                if(ValidationUtils.IsValidName(val.Parametr2Name)) {
+                if(!ValidationUtils.IsValidName(val.Parametr2Name)) {
                     return paramNameMessage(2);
                 }
                 else if(hasParam3) {
-                    if(ValidationUtils.IsValidName(val.Parametr3Name)) {
+                    if(!ValidationUtils.IsValidName(val.Parametr3Name)) {
                         return paramNameMessage(3);
                     }
                 }
@@ -63,7 +63,7 @@ public class ViewModelValidator : IViewModelValidator {
     public string Validate(
         NtwkNode val
     ) {
-        if(ValidationUtils.IsValidName(val.Name)) {
+        if(!ValidationUtils.IsValidName(val.Name)) {
             return $"Invalid node name format.\n({ValidationUtils.NamesFormatMessage})";
         }
         string ipFormatError = null;
@@ -80,7 +80,7 @@ public class ViewModelValidator : IViewModelValidator {
     }
 
     public string Validate(Profile profile) {
-        if(ValidationUtils.IsValidName(profile.Name)) {
+        if(!ValidationUtils.IsValidName(profile.Name)) {
             return $"Invalid profile name format.\n({ValidationUtils.NamesFormatMessage})";
         }
         string emailAddrError = null;

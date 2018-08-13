@@ -44,19 +44,6 @@ public class CustomWebServicesDataService : ICustomWebServicesDataService {
             .Select(cws => EFToViewConverter.Convert(cws))
         );
     }
-
-    public async Task<DataActionResult<CWSBondExistanceMapping>> GetCWSBondExistanceMapping() {
-        DbOperationResult<CWSBondExistanceMapping> servicesMapping =
-            await repo.GetCWSBondExistanceMapping();
-        if(!servicesMapping.Success) {
-            return utils.FailActResult<CWSBondExistanceMapping>(
-                "Unable to get web service bindings mapping from database."
-            );
-        }
-        return utils.SuccActResult<CWSBondExistanceMapping>(
-            servicesMapping.Result
-        );
-    }
     
     async Task<DataActionResult<int>> GetCWSParamNumber(int cwsID) {
         DbOperationResult<int> paramNum =

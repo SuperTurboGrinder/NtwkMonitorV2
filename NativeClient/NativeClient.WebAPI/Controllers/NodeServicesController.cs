@@ -57,7 +57,7 @@ public class NodeServicesController : Controller {
     }
     
     // GET api/services/ping/1
-    [HttpGet("/ping/{nodeID:int}")]
+    [HttpGet("ping/{nodeID:int}")]
     public async Task<ActionResult> GetNodePing(int nodeID) {
         return await OperationWithIP(nodeID, async (IPAddress ip) => {
             Services.Model.PingTestData pingResult =
@@ -73,19 +73,19 @@ public class NodeServicesController : Controller {
     }
 
     //GET api/services/ssh/1
-    [HttpGet("/ssh/{nodeID:int}")]
+    [HttpGet("ssh/{nodeID:int}")]
     public async Task<ActionResult> OpenSSHService(int nodeID) {
         return await OpenExecutableService(nodeID, ExecutableServicesTypes.SSH);
     }
 
     //GET api/services/telnet/1
-    [HttpGet("/telnet/{nodeID:int}")]
+    [HttpGet("telnet/{nodeID:int}")]
     public async Task<ActionResult> OpenTelnetService(int nodeID) {
         return await OpenExecutableService(nodeID, ExecutableServicesTypes.Telnet);
     }
     
     //GET api/services/customWebService/1/1
-    [HttpGet("/customWebService/{nodeID:int}/{cwsID:int}")]
+    [HttpGet("customWebService/{nodeID:int}/{cwsID:int}")]
     public async Task<ActionResult> OpenTelnetService(int nodeID, int cwsID) {
         DataActionResult<string> webServiceString =
             await data.GetCWSBoundingString(nodeID, cwsID);

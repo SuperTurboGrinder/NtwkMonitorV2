@@ -224,12 +224,6 @@ public class EFDataRepository : IDataRepository {
         );
     }
 
-    public async Task<DbOperationResult<Data.Model.ViewModel.CWSBondExistanceMapping>> GetCWSBondExistanceMapping() {
-        return await PerformDbOperationAndLogDbUpdateException(async () =>
-            await efDataSource.GetCWSBondExistanceMapping()
-        );
-    }
-
     public async Task<DbOperationResult<string>> GetCWSBoundingString(
         int nodeID,
         int cwsID

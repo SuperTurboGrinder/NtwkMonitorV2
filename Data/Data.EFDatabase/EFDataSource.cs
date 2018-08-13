@@ -139,10 +139,6 @@ public class EFDataSource : IEFDbDataSource {
     public async Task<IEnumerable<CustomWebService>> GetAllCWS() {
         return await GetAllCWS_Logic(context);
     }
-    
-    public async Task<Data.Model.ViewModel.CWSBondExistanceMapping> GetCWSBondExistanceMapping() {
-        return await GetCWSBondExistanceMapping_Logic(context);
-    }
 
     public  async Task<string> GetCWSBoundingString(int nodeID, int cwsID) {
         return await GetCWSBoundingString_Logic(context, nodeID, cwsID);
