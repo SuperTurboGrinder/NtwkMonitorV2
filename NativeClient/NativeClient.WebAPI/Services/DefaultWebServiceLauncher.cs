@@ -13,7 +13,7 @@ namespace NativeClient.WebAPI.Services {
 //SINGLETON SERVICE
 class DefaultWebServiceLauncherService : IWebServiceLauncherService {
     public string Start(string uri) {
-        var psi = new ProcessStartInfo() {
+        var psi = new ProcessStartInfo(uri) {
             UseShellExecute = true,
         };
         try { //use default browser

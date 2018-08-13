@@ -55,7 +55,7 @@ public class NodeTreeDataController : BaseDataController {
     }
 
     // PUT api/nodes/1/changeParentTo/2
-    [HttpPut("{nodeID:int}/changeParent/{newParentID:int}")]
+    [HttpPut("{nodeID:int}/changeParentTo/{newParentID:int}")]
     public async Task<ActionResult> MoveNodesSubtree(int nodeID, int newParentID) {
         return await PerformDBOperation(async () =>
             await data.MoveNodesSubtree(nodeID, newParentID)

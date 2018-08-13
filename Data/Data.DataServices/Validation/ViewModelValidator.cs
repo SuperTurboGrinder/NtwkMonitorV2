@@ -16,13 +16,16 @@ public class ViewModelValidator : IViewModelValidator {
         bool hasParam2 = !string.IsNullOrEmpty(val.Parametr2Name);
         bool hasParam3 = !string.IsNullOrEmpty(val.Parametr3Name);
         bool AreParameterNamesInOrder =
-            !(!hasParam1)?(hasParam2 || hasParam3):(!hasParam2 || hasParam3);
+            (hasParam3)?(hasParam1 && hasParam2):(
+                (hasParam2)?(hasParam1):(true)
+            );
+            //(!hasParam1)?(hasParam2 || hasParam3):(!hasParam2 || hasParam3);
         if(!AreParameterNamesInOrder) {
             return "Paremeter names are not in order.";
         }
         if(hasParam1) {
             Func<int, string> paramNameMessage = (int n) =>
-                $"Service paremeter{n} name is invalid.\n({ValidationUtils.NamesFormatMessage})";
+                $"Service parameter{n} name is invalid.\n({ValidationUtils.NamesFormatMessage})";
             if(!ValidationUtils.IsValidName(val.Parametr1Name)) {
                 return paramNameMessage(1);
             }

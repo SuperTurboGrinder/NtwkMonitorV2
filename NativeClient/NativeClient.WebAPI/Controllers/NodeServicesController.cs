@@ -86,7 +86,7 @@ public class NodeServicesController : Controller {
     
     //GET api/services/customWebService/1/1
     [HttpGet("customWebService/{nodeID:int}/{cwsID:int}")]
-    public async Task<ActionResult> OpenTelnetService(int nodeID, int cwsID) {
+    public async Task<ActionResult> OpenWebService(int nodeID, int cwsID) {
         DataActionResult<string> webServiceString =
             await data.GetCWSBoundingString(nodeID, cwsID);
         if(!webServiceString.Success) {

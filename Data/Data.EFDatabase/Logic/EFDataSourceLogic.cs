@@ -111,7 +111,7 @@ public static class EFDataSourceLogic {
     public static async Task<IEnumerable<Profile>> GetAllProfiles_Logic(NtwkDBContext context) {
         return await context.Profiles
             .AsNoTracking()
-            .OrderByDescending(p => p.ID)
+            .OrderBy(p => p.ID)
             .ToListAsync();
     }
 
@@ -123,7 +123,7 @@ public static class EFDataSourceLogic {
                 ID = ws.ID,
                 Name = ws.ServiceName
             })
-            .OrderByDescending(wsd => wsd.ID)
+            .OrderBy(wsd => wsd.ID)
             .ToListAsync();
         List<IEnumerable<Model.IntermediateModel.RawNodeData>> nodes = (
             await context.NodesClosureTable.AsNoTracking()
@@ -136,14 +136,16 @@ public static class EFDataSourceLogic {
                 .ToListAsync()
         )
             .GroupBy(cl => cl.Distance) //by depth layer
-            .Select(group => group.Select(cl => cl.Descendant))
+            .OrderBy(group => group.Key)
+            .Select(group => group.Select(cl => cl.Descendant)
+            )
             .Select(group => group
                 .Select(n => new Model.IntermediateModel.RawNodeData() {
                     Node = n,
                     TagsIDs = n.Tags.Select(ta => ta.TagID).ToArray(),
                     BoundWebServicesIDs = n.CustomWebServices
                         .Select(wsb => wsb.ServiceID)
-                        .OrderByDescending(id => id)
+                        .OrderBy(id => id)
                         .ToArray()
                 })
             ).ToList();
@@ -210,14 +212,14 @@ public static class EFDataSourceLogic {
     public static async Task<IEnumerable<NodeTag>> GetAllTags_Logic(NtwkDBContext context) {
         return await context.Tags
             .AsNoTracking()
-            .OrderByDescending(t => t.ID)
+            .OrderBy(t => t.ID)
             .ToListAsync();
     }
     
     public static async Task<IEnumerable<CustomWebService>> GetAllCWS_Logic(NtwkDBContext context) {
         return await context.WebServices
             .AsNoTracking()
-            .OrderByDescending(cvs => cvs.ID)
+            .OrderBy(cvs => cvs.ID)
             .ToListAsync();
     }
 
@@ -439,58 +441,40 @@ public static class EFDataSourceLogic {
         return await context.Nodes.AnyAsync(n => n.ID == nodeID);
     }
 
-    static async Task<bool> __CheckIfNameExists<T>(
-        IQueryable<T> collection,
-        Func<T, string> namePred,
-        string name
-    ) {
-        return await collection
-            .Where(e => namePred(e) == name)
-            .AnyAsync();
-    }
-
     public static async Task<bool> CheckIfTagNameExists_Logic(
         NtwkDBContext context,
         string name
     ) {
-        return await __CheckIfNameExists(
-            context.Tags.AsNoTracking(),
-            t => t.Name,
-            name
-        );
+        return await context.Tags.AsNoTracking()
+            .Where(e => e.Name == name)
+            .AnyAsync();
     }
 
     public static async Task<bool> CheckIfNodeNameExists_Logic(
         NtwkDBContext context,
         string name
     ) {
-        return await __CheckIfNameExists(
-            context.Nodes.AsNoTracking(),
-            t => t.Name,
-            name
-        );
+        return await context.Nodes.AsNoTracking()
+            .Where(e => e.Name == name)
+            .AnyAsync();
     }
 
     public static async Task<bool> CheckIfCWSNameExists_Logic(
         NtwkDBContext context,
         string name
     ) {
-        return await __CheckIfNameExists(
-            context.WebServices.AsNoTracking(),
-            t => t.ServiceName,
-            name
-        );
+        return await context.WebServices.AsNoTracking()
+            .Where(e => e.ServiceName == name)
+            .AnyAsync();
     }
 
     public static async Task<bool> CheckIfProfileNameExists_Logic(
         NtwkDBContext context,
         string name
     ) {
-        return await __CheckIfNameExists(
-            context.Profiles.AsNoTracking(),
-            t => t.Name,
-            name
-        );
+        return await context.Profiles.AsNoTracking()
+            .Where(e => e.Name == name)
+            .AnyAsync();
     }
     
     public static async Task<NodeTag> CreateTag_Logic(
