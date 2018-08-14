@@ -105,13 +105,13 @@ public class ViewModelValidator : IViewModelValidator {
         if(emailAddrError != null) {
             return emailAddrError;
         }
-        if(profile.MonitoringStartHour >= 0 &&
-            profile.MonitoringStartHour < 24
+        if(profile.MonitoringStartHour < 0 ||
+            profile.MonitoringStartHour > 23
         ) {
             return "Monitoring start hour is out of 0-23 range.";
         }
-        if(profile.MonitoringEndHour >= 0 &&
-            profile.MonitoringEndHour < 24
+        if(profile.MonitoringEndHour < 0 ||
+            profile.MonitoringEndHour > 23
         ) {
             return "Monitoring end hour is out of 0-23 range.";
         }

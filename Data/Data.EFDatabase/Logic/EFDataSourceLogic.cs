@@ -186,8 +186,6 @@ public static class EFDataSourceLogic {
         return await context.ProfilesTagSelection.AsNoTracking()
             .Where(pst => pst.BindedProfileID == profileID &&
                         flag == (pst.Flags & flag))
-            .Include(pst => pst.Tag)
-                .ThenInclude(t => t.Attachments)
             .SelectMany(pst => pst.Tag.Attachments.Select(a => a.Node.ID))
             .Distinct()
             .ToListAsync();
