@@ -14,7 +14,7 @@ using NativeClient.WebAPI.Services.Model;
 namespace NativeClient.WebAPI.Controllers {
 
 [Route("api/services")]
-public class NodeServicesController : Controller {
+public class NodeServicesController : BaseDataController {
     readonly INodesServicesDataService data;
     readonly IPingService pingService;
     readonly IExecutablesManagerService execServices;
@@ -24,59 +24,57 @@ public class NodeServicesController : Controller {
         INodesServicesDataService _data,
         IPingService _pingService,
         IExecutablesManagerService _execServices,
-        IWebServiceLauncherService _webServices
-    ) {
+        IWebServiceLauncherService _webServices,
+        IErrorReportAssemblerService _errAssembler
+    ) : base(_errAssembler) {
         data = _data;
         pingService = _pingService;
         execServices = _execServices;
         webServices = _webServices;
     }
 
-    async Task<ActionResult> OperationWithIP(
+    async Task<ActionResult> ObserveAsyncDataOperationResultWithIP<T>(
         int nodeID,
-        Func<IPAddress, Task<ActionResult>> operation
+        Func<IPAddress, Task<DataActionResult<T>>> operation
     ) {
         DataActionResult<IPAddress> nodeIPResult = await data.GetNodeIP(nodeID);
         return nodeIPResult.Status.Failure()
             ? BadRequest(nodeIPResult.Status)
-            : await operation(nodeIPResult.Result);
+            : ObserveDataOperationResult(
+                await operation(nodeIPResult.Result)
+            );
+        
     }
 
-    async Task<ActionResult> SyncOperationWithIP(
+    async Task<ActionResult> ObserveDataOperationStatusWithIP(
         int nodeID,
-        Func<IPAddress, ActionResult> operation
+        Func<IPAddress, StatusMessage> operation
     ) {
         DataActionResult<IPAddress> nodeIPResult = await data.GetNodeIP(nodeID);
         return nodeIPResult.Status.Failure()
             ? BadRequest(nodeIPResult.Status)
-            : operation(nodeIPResult.Result);
+            : ObserveDataOperationStatus(
+                operation(nodeIPResult.Result)
+            );
     }
 
     async Task<ActionResult> OpenExecutableService(
         int nodeID,
         ExecutableServicesTypes serviceType
     ) {
-        return await SyncOperationWithIP(nodeID, (IPAddress ip) => {
-            StatusMessage serviceExecutionStatus =
-                execServices.ExecuteService(serviceType, ip);
-            if(serviceExecutionStatus.Failure()) {
-                return BadRequest(serviceExecutionStatus);
-            }
-            return Ok();
-        });
+        return await ObserveDataOperationStatusWithIP(
+            nodeID,
+            (IPAddress ip) => execServices.ExecuteService(serviceType, ip)
+        );
     }
     
     // GET api/services/ping/1
     [HttpGet("ping/{nodeID:int}")]
     public async Task<ActionResult> GetNodePing(int nodeID) {
-        return await OperationWithIP(nodeID, async (IPAddress ip) => {
-            DataActionResult<Services.Model.PingTestData> pingResult =
-                await pingService.TestConnectionAsync(ip);
-            if(pingResult.Status.Failure()) {
-                return BadRequest(pingResult.Status);
-            }
-            return Ok(pingResult.Result);
-        });
+        return await ObserveAsyncDataOperationResultWithIP(
+            nodeID,
+            async (IPAddress ip) => await pingService.TestConnectionAsync(ip)
+        );
     }
 
     //GET api/services/ssh/1
@@ -97,14 +95,11 @@ public class NodeServicesController : Controller {
         DataActionResult<string> webServiceStringResult =
             await data.GetCWSBoundingString(nodeID, cwsID);
         if(webServiceStringResult.Status.Failure()) {
-            return BadRequest(webServiceStringResult.Status);
+            return ObserveDataOperationStatus(webServiceStringResult.Status);
         }
-        StatusMessage serviceStartStatus =
-            webServices.Start(webServiceStringResult.Result);
-        if(serviceStartStatus.Failure()) {
-            return BadRequest(serviceStartStatus);
-        }
-        return Ok();
+        return ObserveDataOperationStatus(
+            webServices.Start(webServiceStringResult.Result)
+        );
     }
 }
 

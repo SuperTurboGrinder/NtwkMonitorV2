@@ -7,6 +7,7 @@ using System.Net;
 
 using Data.Model.ViewModel;
 using Data.Abstract.DataAccessServices;
+using NativeClient.WebAPI.Abstract;
 
 namespace NativeClient.WebAPI.Controllers {
 
@@ -14,14 +15,17 @@ namespace NativeClient.WebAPI.Controllers {
 public class MonitoringDataController : BaseDataController {
     readonly IMonitoringDataService data;
 
-    public MonitoringDataController(IMonitoringDataService _data) {
+    public MonitoringDataController(
+        IMonitoringDataService _data,
+        IErrorReportAssemblerService _errAssembler
+    ) : base(_errAssembler) {
         data = _data;
     }
 
     // GET api/monitorSessions/forProfile/1
     [HttpGet("forProfile/{profileID:int}")]
     public async Task<ActionResult> GetSessionsForProfile(int profileID) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.GetSessionsForProfile(profileID)
         );
     }
@@ -29,7 +33,7 @@ public class MonitoringDataController : BaseDataController {
     // GET api/monitorSessions/1/report
     [HttpGet("{sessionID:int}/report")]
     public async Task<ActionResult> GetSessionReport(int sessionID) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.GetSessionReport(sessionID)
         );
     }
@@ -37,7 +41,7 @@ public class MonitoringDataController : BaseDataController {
     // POST api/monitorSessions/newFromProfile/1
     [HttpPost("newFromProfile/{profileID:int}")]
     public async Task<ActionResult> GetNewSessions(int profileID) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.GetNewSession(profileID)
         );
     }
@@ -48,7 +52,7 @@ public class MonitoringDataController : BaseDataController {
         int sessionID,
         [FromBody] MonitoringPulseResult pulseResult
     ) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.SavePulseResult(sessionID, pulseResult, pulseResult.Messages)
         );
     }

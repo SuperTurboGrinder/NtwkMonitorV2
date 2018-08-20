@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
+using NativeClient.WebAPI.Abstract;
 using Data.Model.ViewModel;
 using Data.Abstract.DataAccessServices;
 
@@ -14,14 +15,17 @@ namespace NativeClient.WebAPI.Controllers {
 public class WebServicesController : BaseDataController {
     readonly ICustomWebServicesDataService data;
 
-    public WebServicesController(ICustomWebServicesDataService _data) {
+    public WebServicesController(
+        ICustomWebServicesDataService _data,
+        IErrorReportAssemblerService _errAssembler
+    ) : base(_errAssembler) {
         data = _data;
     }
 
     // GET api/webServices
     [HttpGet]
     public async Task<ActionResult> GetAllCWS() {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.GetAllCWS()
         );
     }
@@ -29,7 +33,7 @@ public class WebServicesController : BaseDataController {
     // POST api/webServices/new
     [HttpPost("new")]
     public async Task<ActionResult> CreateCustomWebService([FromBody] CustomWebService cws) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.CreateCustomWebService(cws)
         );
     }
@@ -40,7 +44,7 @@ public class WebServicesController : BaseDataController {
         int webServiceID,
         [FromBody] WebAPI.InputModel.WebServiceBinding bindingData
     ) {
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.CreateWebServiceBinding(
                 bindingData.nodeID,
                 webServiceID,
@@ -55,7 +59,7 @@ public class WebServicesController : BaseDataController {
     [HttpPut("{webServiceID:int}/update")]
     public async Task<ActionResult> UpdateCustomWebService(int webServiceID, [FromBody] CustomWebService cws) {
         cws.ID = webServiceID;
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.UpdateCustomWebService(cws)
         );
     }
@@ -66,7 +70,7 @@ public class WebServicesController : BaseDataController {
         int webServiceID,
         [FromBody] WebAPI.InputModel.WebServiceBinding bindingData
     ) {
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.UpdateWebServiceBinding(
                 bindingData.nodeID,
                 webServiceID,
@@ -78,17 +82,17 @@ public class WebServicesController : BaseDataController {
     }
 
     // DELETE api/webServices/1/delete
-    /*[HttpDelete("{webServiceID:int}/delete")]
+    [HttpDelete("{webServiceID:int}/delete")]
     public async Task<ActionResult> RemoveCustomWebService(int webServiceID) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.RemoveCustomWebService(webServiceID)
         );
-    }*/
+    }
 
-    // DELETE api/webServices/1/deleteBinding/1
-    [HttpDelete("{webServiceID:int}/deleteBinding/{nodeID:int}")]
+    // DELETE api/webServices/1/deleteBindingWithNode/1
+    [HttpDelete("{webServiceID:int}/deleteBindingWithNode/{nodeID:int}")]
     public async Task<ActionResult> RemoveWebServiceBinding(int webServiceID, int nodeID) {
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.RemoveWebServiceBinding(nodeID, webServiceID)
         );
     }

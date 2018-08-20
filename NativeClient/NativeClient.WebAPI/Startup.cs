@@ -63,6 +63,7 @@ namespace NativeClient.WebAPI
             services.AddTransient<IPingService, PingServiceAsync>();
             services.AddTransient<IWebServiceLauncherService, DefaultWebServiceLauncherService>();
             services.AddSingleton<IExecutablesManagerService, ExecutablesManagerService>();
+            services.AddSingleton<IErrorReportAssemblerService, ErrorReportAssemblerService>();
             
             services.AddMvc();
         }

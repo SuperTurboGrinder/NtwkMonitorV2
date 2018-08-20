@@ -5,29 +5,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
+using NativeClient.WebAPI.Abstract;
 using Data.Abstract.DataAccessServices;
 using Data.Model.ResultsModel;
 
 namespace NativeClient.WebAPI.Controllers {
 
 public class BaseDataController : Controller {
+    IErrorReportAssemblerService errAssembler;
 
-    protected async Task<ActionResult> GetDbData<T>(
-        Func<Task<DataActionResult<T>>> getter
-    ) {
-        DataActionResult<T> dbDataResult = await getter();
-        if(dbDataResult.Status.Failure()) {
-            return BadRequest(dbDataResult.Status);
-        }
-        return Ok(dbDataResult.Result);
+    protected  BaseDataController(IErrorReportAssemblerService _errAssembler) {
+        errAssembler = _errAssembler;
     }
 
-    protected async Task<ActionResult> PerformDBOperation(
-        Func<Task<StatusMessage>> operation
+    protected ActionResult ObserveDataOperationResult<T>(
+        DataActionResult<T> dataResult
     ) {
-        StatusMessage operationResultStatus = await operation();
-        if(operationResultStatus.Failure()) {
-            return BadRequest(operationResultStatus);
+        if(dataResult.Status.Failure()) {
+            return BadRequest(errAssembler.AssembleReport(dataResult.Status));
+        }
+        return Ok(dataResult.Result);
+    }
+
+    protected ActionResult ObserveDataOperationStatus(
+        StatusMessage status
+    ) {
+        if(status.Failure()) {
+            return BadRequest(errAssembler.AssembleReport(status));
         }
         return Ok();
     }

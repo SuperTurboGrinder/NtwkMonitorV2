@@ -15,14 +15,17 @@ namespace NativeClient.WebAPI.Controllers {
 public class NodeTreeDataController : BaseDataController {
     readonly INodeTreeDataService data;
 
-    public NodeTreeDataController(INodeTreeDataService _data) {
+    public NodeTreeDataController(
+        INodeTreeDataService _data,
+        IErrorReportAssemblerService _errAssembler
+    ) : base(_errAssembler) {
         data = _data;
     }
 
     // GET api/nodes
     [HttpGet]
     public async Task<ActionResult> GetAllNodesData() {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.GetAllNodesData()
         );
     }
@@ -30,7 +33,7 @@ public class NodeTreeDataController : BaseDataController {
     // POST api/nodes/new
     [HttpPost("new")]
     public async Task<ActionResult> CreateNodeOnRoot([FromBody] NtwkNode node) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.CreateNodeOnRoot(node)
         );
     }
@@ -38,7 +41,7 @@ public class NodeTreeDataController : BaseDataController {
     // POST api/nodes/1/new
     [HttpPost("{parentID:int}/new")]
     public async Task<ActionResult> CreateNodeWithParent(int parentID, [FromBody] NtwkNode node) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.CreateNodeWithParent(node, parentID)
         );
     }
@@ -49,7 +52,7 @@ public class NodeTreeDataController : BaseDataController {
         int nodeID,
         [FromBody] IEnumerable<int> tagsIDs
     ) {
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.SetNodeTags(nodeID, tagsIDs)
         );
     }
@@ -57,7 +60,7 @@ public class NodeTreeDataController : BaseDataController {
     // PUT api/nodes/1/changeParentTo/2
     [HttpPut("{nodeID:int}/changeParentTo/{newParentID:int}")]
     public async Task<ActionResult> MoveNodesSubtree(int nodeID, int newParentID) {
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.MoveNodesSubtree(nodeID, newParentID)
         );
     }
@@ -66,7 +69,7 @@ public class NodeTreeDataController : BaseDataController {
     [HttpPut("{nodeID:int}/update")]
     public async Task<ActionResult> UpdateNode(int nodeID, [FromBody] NtwkNode node) {
         node.ID = nodeID;
-        return await PerformDBOperation(async () =>
+        return ObserveDataOperationStatus(
             await data.UpdateNode(node)
         );
     }
@@ -74,7 +77,7 @@ public class NodeTreeDataController : BaseDataController {
     // DELETE api/nodes/1/delete
     [HttpDelete("{nodeID:int}/delete")]
     public async Task<ActionResult> RemoveNode(int nodeID) {
-        return await GetDbData(async () =>
+        return ObserveDataOperationResult(
             await data.RemoveNode(nodeID)
         );
     }
