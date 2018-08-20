@@ -7,6 +7,7 @@ using System.Net;
 
 using Data.Model.ViewModel;
 using Data.Abstract.DataAccessServices;
+using Data.Model.ResultsModel;
 using NativeClient.WebAPI.Abstract;
 using NativeClient.WebAPI.Services.Model;
 
@@ -35,22 +36,31 @@ public class NodeServicesController : Controller {
         int nodeID,
         Func<IPAddress, Task<ActionResult>> operation
     ) {
-        DataActionResult<IPAddress> rawNodeIP = await data.GetNodeIP(nodeID);
-        if(!rawNodeIP.Success) {
-            return BadRequest(rawNodeIP.Error);
-        }
-        return await operation(rawNodeIP.Result);
+        DataActionResult<IPAddress> nodeIPResult = await data.GetNodeIP(nodeID);
+        return nodeIPResult.Status.Failure()
+            ? BadRequest(nodeIPResult.Status)
+            : await operation(nodeIPResult.Result);
+    }
+
+    async Task<ActionResult> SyncOperationWithIP(
+        int nodeID,
+        Func<IPAddress, ActionResult> operation
+    ) {
+        DataActionResult<IPAddress> nodeIPResult = await data.GetNodeIP(nodeID);
+        return nodeIPResult.Status.Failure()
+            ? BadRequest(nodeIPResult.Status)
+            : operation(nodeIPResult.Result);
     }
 
     async Task<ActionResult> OpenExecutableService(
         int nodeID,
         ExecutableServicesTypes serviceType
     ) {
-        return await OperationWithIP(nodeID, async (IPAddress ip) => {
-            string serviceExecutionError =
+        return await SyncOperationWithIP(nodeID, (IPAddress ip) => {
+            StatusMessage serviceExecutionStatus =
                 execServices.ExecuteService(serviceType, ip);
-            if(serviceExecutionError != null) {
-                return BadRequest(serviceExecutionError);
+            if(serviceExecutionStatus.Failure()) {
+                return BadRequest(serviceExecutionStatus);
             }
             return Ok();
         });
@@ -60,15 +70,12 @@ public class NodeServicesController : Controller {
     [HttpGet("ping/{nodeID:int}")]
     public async Task<ActionResult> GetNodePing(int nodeID) {
         return await OperationWithIP(nodeID, async (IPAddress ip) => {
-            Services.Model.PingTestData pingResult =
+            DataActionResult<Services.Model.PingTestData> pingResult =
                 await pingService.TestConnectionAsync(ip);
-            if(
-                pingResult.error != null &&
-                pingResult.num == pingResult.failed
-            ) {
-                return BadRequest(pingResult.error);
+            if(pingResult.Status.Failure()) {
+                return BadRequest(pingResult.Status);
             }
-            return Ok(pingResult);
+            return Ok(pingResult.Result);
         });
     }
 
@@ -87,18 +94,15 @@ public class NodeServicesController : Controller {
     //GET api/services/customWebService/1/1
     [HttpGet("customWebService/{nodeID:int}/{cwsID:int}")]
     public async Task<ActionResult> OpenWebService(int nodeID, int cwsID) {
-        DataActionResult<string> webServiceString =
+        DataActionResult<string> webServiceStringResult =
             await data.GetCWSBoundingString(nodeID, cwsID);
-        if(!webServiceString.Success) {
-            return BadRequest(webServiceString.Error);
+        if(webServiceStringResult.Status.Failure()) {
+            return BadRequest(webServiceStringResult.Status);
         }
-        if(webServiceString.Result == null) {
-            return BadRequest("Web service binding not found.");
-        }
-        string serviceStartError =
-            webServices.Start(webServiceString.Result);
-        if(serviceStartError != null) {
-            return BadRequest(serviceStartError);
+        StatusMessage serviceStartStatus =
+            webServices.Start(webServiceStringResult.Result);
+        if(serviceStartStatus.Failure()) {
+            return BadRequest(serviceStartStatus);
         }
         return Ok();
     }

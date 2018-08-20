@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
+using Data.Model.ResultsModel;
 using NativeClient.WebAPI.Services.Model;
 using NativeClient.WebAPI.Abstract;
 
@@ -12,7 +13,7 @@ namespace NativeClient.WebAPI.Services {
 
 //SINGLETON SERVICE
 class DefaultWebServiceLauncherService : IWebServiceLauncherService {
-    public string Start(string uri) {
+    public StatusMessage Start(string uri) {
         var psi = new ProcessStartInfo(uri) {
             UseShellExecute = true,
         };
@@ -20,9 +21,9 @@ class DefaultWebServiceLauncherService : IWebServiceLauncherService {
             Process.Start(psi);
         }
         catch(Exception) {
-            return $"Custom web service start error.";
+            return StatusMessage.CustomWebServiceStartError;
         }
-        return null;
+        return StatusMessage.Ok;
     }
 }
 

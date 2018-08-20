@@ -9,189 +9,133 @@ using Data.Abstract.Validation;
 using Data.Abstract.Converters;
 using Data.Model.ViewModel;
 using EFDbModel = Data.Model.EFDbModel;
+using Data.Model.ResultsModel;
 
 namespace Data.DataServices.Services {
 
-public class SettingsProfilesDataSerivce : ISettingsProfileDataService {
-    readonly IDataRepository repo;
+public class SettingsProfilesDataSerivce
+    : BaseDataService, ISettingsProfileDataService {
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
-    readonly CommonServiceUtils utils;
 
     public SettingsProfilesDataSerivce(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,
         IEFModelToViewModelConverter _EFToViewConverter
-    ) {
-        repo = _repo;
+    ) : base(_repo) {
         validator = _validator;
         viewToEFConverter = _viewToEFConverter;
         EFToViewConverter = _EFToViewConverter;
-        utils = new CommonServiceUtils(repo);
     }
 
     public async Task<DataActionResult<IEnumerable<Profile>>> GetAllProfiles() {
-        DbOperationResult<IEnumerable<EFDbModel.Profile>> rawProfiles =
-            await repo.GetAllProfiles();
-        if(!rawProfiles.Success) {
-            return utils.FailActResult<IEnumerable<Profile>>(
-                "Unable to get profiles data from database."
-            );
-        }
-        IEnumerable<Profile> converted = rawProfiles.Result
-            .Select(rp => EFToViewConverter.Convert(rp));
-        return utils.SuccActResult(converted);
-        
+        return FailOrConvert(
+            await repo.GetAllProfiles(),
+            profiles => profiles.Select(p => EFToViewConverter.Convert(p))
+        );
     }
     
     public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActResult<IEnumerable<int>>(pValidationError);
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return DataActionResult<IEnumerable<int>>.Failed(profileIDValidationStatus);
         }
-        DbOperationResult<IEnumerable<int>> dbOpResult =
-            await repo.GetIDsOfNodesBySelectedTagsInProfileView(profileID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<IEnumerable<int>>(
-                "Unable to get profile view nodes IDs from database."
-            );
-        }
-        return utils.SuccActResult(dbOpResult.Result);
+        return await repo.GetIDsOfNodesBySelectedTagsInProfileView(profileID);
     }
     
     public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActResult<IEnumerable<int>>(pValidationError);
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return DataActionResult<IEnumerable<int>>.Failed(profileIDValidationStatus);
         }
-        DbOperationResult<IEnumerable<int>> dbOpResult =
-            await repo.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<IEnumerable<int>>(
-                "Unable to get profile monitor nodes IDs from database."
-            );
-        }
-        return utils.SuccActResult(dbOpResult.Result);
+        return await repo.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID);
     }
 
     public async Task<DataActionResult<Profile>> CreateProfile(Profile profile) {
-        string errorStr = validator.Validate(profile);
-        if(errorStr != null) {
-            return utils.FailActResult<Profile>(errorStr);
+        StatusMessage profileValidationStatus = validator.Validate(profile);
+        if(profileValidationStatus.Failure()) {
+            return DataActionResult<Profile>.Failed(profileValidationStatus);
         }
-        string nameExistsError = await utils.ErrorIfProfileNameExists(profile.Name);
-        if(nameExistsError != null) {
-            return utils.FailActResult<Profile>(nameExistsError);
+        StatusMessage nameExistsStatus = await FailIfProfileNameExists(profile.Name);
+        if(nameExistsStatus.Failure()) {
+            return DataActionResult<Profile>.Failed(nameExistsStatus);
         }
-        EFDbModel.Profile converted = viewToEFConverter.Convert(profile);
-        DbOperationResult<EFDbModel.Profile> dbOpResult =
-            await repo.CreateProfile(converted);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<Profile>("Unable to save profile to database.");
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.CreateProfile(viewToEFConverter.Convert(profile)),
+            p => EFToViewConverter.Convert(p)
+        );
     }
 
-    public async Task<DataActionVoidResult> SetProfileViewTagsSelection(
+    public async Task<StatusMessage> SetProfileViewTagsSelection(
         int profileID,
         IEnumerable<int> tagIDs
     ) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActVoid(pValidationError);
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return profileIDValidationStatus;
         }
-        string tValidationError = await utils.ValidateTagsIDs(tagIDs);
-        if(tValidationError != null) {
-            return utils.FailActVoid(tValidationError);
+        StatusMessage tagsIDsValidationStatus = await ValidateTagsIDs(tagIDs);
+        if(tagsIDsValidationStatus.Failure()) {
+            return tagsIDsValidationStatus;
         }
-        DbOperationVoidResult result = await repo.SetProfileViewTagsSelection(
-            profileID,
-            tagIDs
-        );
-        if(!result.Success) {
-            return utils.FailActVoid("Database operation error while attempting to set profile view tags selection.");
-        }
-        return utils.SuccActVoid();
+        return await repo.SetProfileViewTagsSelection(profileID, tagIDs);
     }
     
-    public async Task<DataActionVoidResult> SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActVoid(pValidationError);
+    public async Task<StatusMessage> SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID) {
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return profileIDValidationStatus;
         }
-        DbOperationVoidResult result = await repo.SetProfileViewTagsSelectionToProfileMonitorTagsSelection(
+        return await repo.SetProfileViewTagsSelectionToProfileMonitorTagsSelection(
             profileID
         );
-        if(!result.Success) {
-            return utils.FailActVoid("Database operation error while attempting to set profile view tags selection to monitor tags selection.");
-        }
-        return utils.SuccActVoid();
     }
     
-    public async Task<DataActionVoidResult> SetProfileMonitorTagsSelection(int profileID, IEnumerable<int> tagIDs) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActVoid(pValidationError);
+    public async Task<StatusMessage> SetProfileMonitorTagsSelection(int profileID, IEnumerable<int> tagIDs) {
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return profileIDValidationStatus;
         }
-        string tValidationError = await utils.ValidateTagsIDs(tagIDs);
-        if(tValidationError != null) {
-            return utils.FailActVoid(tValidationError);
+        StatusMessage tagsIDsValidationStatus = await ValidateTagsIDs(tagIDs);
+        if(tagsIDsValidationStatus.Failure()) {
+            return tagsIDsValidationStatus;
         }
-        DbOperationVoidResult result = await repo.SetProfileMonitorTagsSelection(
-            profileID,
-            tagIDs
-        );
-        if(!result.Success) {
-            return utils.FailActVoid("Database operation error while attempting to set profile monitor tags selection.");
-        }
-        return utils.SuccActVoid();
+        return await repo.SetProfileMonitorTagsSelection(profileID, tagIDs);
     }
     
-    public async Task<DataActionVoidResult> SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActVoid(pValidationError);
+    public async Task<StatusMessage> SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID) {
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return profileIDValidationStatus;
         }
-        DbOperationVoidResult result = await repo.SetProfileMonitorTagsSelectionToProfileViewTagsSelection(
+        return await repo.SetProfileMonitorTagsSelectionToProfileViewTagsSelection(
             profileID
         );
-        if(!result.Success) {
-            return utils.FailActVoid("Database operation error while attempting to set monitor tags selection to profile view tags selection.");
-        }
-        return utils.SuccActVoid();
     }
     
-    public async Task<DataActionVoidResult> UpdateProfile(Profile profile) {
-        string pValidationError = await utils.ValidateProfileID(profile.ID);
-        if(pValidationError != null) {
-            return utils.FailActVoid(pValidationError);
+    public async Task<StatusMessage> UpdateProfile(Profile profile) {
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profile.ID);
+        if(profileIDValidationStatus.Failure()) {
+            return profileIDValidationStatus;
         }
-        string errorStr = validator.Validate(profile);
-        if(errorStr != null) {
-            return utils.FailActVoid(errorStr);
+        StatusMessage profileValidationStatus = validator.Validate(profile);
+        if(profileValidationStatus.Failure()) {
+            return profileValidationStatus;
         }
-        EFDbModel.Profile converted = viewToEFConverter.Convert(profile);
-        DbOperationVoidResult dbOpResult =
-            await repo.UpdateProfile(converted);
-        if(!dbOpResult.Success) {
-            return utils.FailActVoid("Unable to save updated profile to database.");
-        }
-        return utils.SuccActVoid();
+        return await repo.UpdateProfile(viewToEFConverter.Convert(profile));
     }
     
     public async Task<DataActionResult<Profile>> RemoveProfile(int profileID) {
-        string pValidationError = await utils.ValidateProfileID(profileID);
-        if(pValidationError != null) {
-            return utils.FailActResult<Profile>(pValidationError);
+        StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
+        if(profileIDValidationStatus.Failure()) {
+            return DataActionResult<Profile>.Failed(profileIDValidationStatus);
         }
-        DbOperationResult<EFDbModel.Profile> dbOpResult =
-            await repo.RemoveProfile(profileID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<Profile>("Unable to remove profile from database.");
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.RemoveProfile(profileID),
+            p => EFToViewConverter.Convert(p)
+        );
     }
 }
 

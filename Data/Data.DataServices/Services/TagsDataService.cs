@@ -9,75 +9,59 @@ using Data.Abstract.Validation;
 using Data.Abstract.Converters;
 using Data.Model.ViewModel;
 using EFDbModel = Data.Model.EFDbModel;
+using Data.Model.ResultsModel;
 
 namespace Data.DataServices.Services {
 
-public class TagsDataService : ITagsDataService {
-    readonly IDataRepository repo;
+public class TagsDataService
+    : BaseDataService, ITagsDataService {
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
-    readonly CommonServiceUtils utils;
 
     public TagsDataService(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,
         IEFModelToViewModelConverter _EFToViewConverter
-    ) {
-        repo = _repo;
+    ) : base(_repo) {
         validator = _validator;
         viewToEFConverter = _viewToEFConverter;
         EFToViewConverter = _EFToViewConverter;
-        utils = new CommonServiceUtils(repo);
     }
 
     
     public async Task<DataActionResult<IEnumerable<NodeTag>>> GetAllTags() {
-        DbOperationResult<IEnumerable<EFDbModel.NodeTag>> dbOpResult =
-            await repo.GetAllTags();
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<IEnumerable<NodeTag>>(
-                "Unable to get all tags list from database."
-            );
-        }
-        return utils.SuccActResult(dbOpResult.Result
-            .Select(t => EFToViewConverter.Convert(t))
+        return FailOrConvert(
+            await repo.GetAllTags(),
+            tags => tags.Select(t => EFToViewConverter.Convert(t))
         );
     }
     
     public async Task<DataActionResult<NodeTag>> CreateTag(NodeTag tag) {
-        string errorStr = validator.Validate(tag);
-        if(errorStr != null) {
-            return utils.FailActResult<NodeTag>(errorStr);
+        StatusMessage tagValidationStatus = validator.Validate(tag);
+        if(tagValidationStatus.Failure()) {
+            return DataActionResult<NodeTag>.Failed(tagValidationStatus);
         }
-        string nameExistsError = await utils.ErrorIfTagNameExists(tag.Name);
-        if(nameExistsError != null) {
-            return utils.FailActResult<NodeTag>(nameExistsError);
+        StatusMessage nameExistsStatus = await FailIfTagNameExists(tag.Name);
+        if(nameExistsStatus.Failure()) {
+            return DataActionResult<NodeTag>.Failed(nameExistsStatus);
         }
-        DbOperationResult<EFDbModel.NodeTag> dbOpResult =
-            await repo.CreateTag(viewToEFConverter.Convert(tag));
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<NodeTag>(
-                "Unable to create tag in database."
-            );
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.CreateTag(viewToEFConverter.Convert(tag)),
+            t => EFToViewConverter.Convert(t)
+        );
     }
 
     public async Task<DataActionResult<NodeTag>> RemoveTag(int tagID) {
-        string nValidationError = await utils.ValidateTagID(tagID);
-        if(nValidationError != null) {
-            return utils.FailActResult<NodeTag>(nValidationError);
+        StatusMessage tagIDValidationStatus = await ValidateTagID(tagID);
+        if(tagIDValidationStatus.Failure()) {
+            return DataActionResult<NodeTag>.Failed(tagIDValidationStatus);
         }
-        DbOperationResult<EFDbModel.NodeTag> dbOpResult =
-            await repo.RemoveTag(tagID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<NodeTag>(
-                "Unable to remove tag from database."
-            );
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.RemoveTag(tagID),
+            t => EFToViewConverter.Convert(t)
+        );
     }
 }
 

@@ -9,212 +9,160 @@ using Data.Abstract.Validation;
 using Data.Abstract.Converters;
 using Data.Model.ViewModel;
 using EFDbModel = Data.Model.EFDbModel;
+using Data.Model.ResultsModel;
 
 namespace Data.DataServices.Services {
 
-public class NodeTreeDataService : INodeTreeDataService {
-    readonly IDataRepository repo;
+public class NodeTreeDataService
+    : BaseDataService, INodeTreeDataService {
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
-    readonly CommonServiceUtils utils;
 
     public NodeTreeDataService(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,
         IEFModelToViewModelConverter _EFToViewConverter
-    ) {
-        repo = _repo;
+    ) : base(_repo) {
         validator = _validator;
         viewToEFConverter = _viewToEFConverter;
         EFToViewConverter = _EFToViewConverter;
-        utils = new CommonServiceUtils(repo);
     }
 
     public async Task<DataActionResult<AllNodesData>> GetAllNodesData() {
-        DbOperationResult<Model.IntermediateModel.AllRawNodesData> dbOpResult =
-            await repo.GetAllNodesData();
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<AllNodesData>(
-                "Unable to get all data for all nodes from database."
-            );
-        }
-        return utils.SuccActResult(new AllNodesData() {
-            WebServicesData = dbOpResult.Result.WebServicesData,
-            NodesData = dbOpResult.Result.NodesData
-                .Select(nd_group => nd_group
-                    .Select(nd => new NodeData() {
-                        Node = EFToViewConverter.Convert(nd.Node),
-                        BoundWebServicesIDs = nd.BoundWebServicesIDs,
-                        TagsIDs = nd.TagsIDs
-                    })
-                )
-                .ToList()
-        });
+        return FailOrConvert(
+            await repo.GetAllNodesData(),
+            nodesData => new AllNodesData() {
+                WebServicesData = nodesData.WebServicesData,
+                NodesData = nodesData.NodesData
+                    .Select(nd_group => nd_group
+                        .Select(nd => new NodeData() {
+                            Node = EFToViewConverter.Convert(nd.Node),
+                            BoundWebServicesIDs = nd.BoundWebServicesIDs,
+                            TagsIDs = nd.TagsIDs
+                        })
+                    )
+                    .ToList()
+            }
+        );
     }
     
     public async Task<DataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(
         int tagID
     ) {
-        string tValidationError = await utils.ValidateTagID(tagID);
-        if(tValidationError != null) {
-            return utils.FailActResult<IEnumerable<int>>(tValidationError);
+        StatusMessage tagIDValidationStatus = await ValidateTagID(tagID);
+        if(tagIDValidationStatus.Failure()) {
+            return DataActionResult<IEnumerable<int>>.Failed(tagIDValidationStatus);
         }
-        DbOperationResult<IEnumerable<int>> dbOpResult =
-            await repo.GetTaggedNodesIDs(tagID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<IEnumerable<int>>(
-                "Unable to get tagged nodes list from database."
-            );
-        }
-        return utils.SuccActResult(dbOpResult.Result);
+        return await repo.GetTaggedNodesIDs(tagID);
     }
     
     
     public async Task<DataActionResult<NtwkNode>> CreateNodeOnRoot(NtwkNode node) {
-        string errorStr = validator.Validate(node);
-        if(errorStr != null) {
-            return utils.FailActResult<NtwkNode>(errorStr);
+        StatusMessage nodeValidationStatus = validator.Validate(node);
+        if(nodeValidationStatus.Failure()) {
+            return DataActionResult<NtwkNode>.Failed(nodeValidationStatus);
         }
-        string nameExistsError = await utils.ErrorIfNodeNameExists(node.Name);
-        if(nameExistsError != null) {
-            return utils.FailActResult<NtwkNode>(nameExistsError);
+        StatusMessage nameExistsStatus = await FailIfNodeNameExists(node.Name);
+        if(nameExistsStatus.Failure()) {
+            return DataActionResult<NtwkNode>.Failed(nameExistsStatus);
         }
-        DbOperationResult<EFDbModel.NtwkNode> dbOpResult =
-            await repo.CreateNodeOnRoot(viewToEFConverter.Convert(node));
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<NtwkNode>(
-                "Unable to create network node in database."
-            );
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.CreateNodeOnRoot(viewToEFConverter.Convert(node)),
+            n => EFToViewConverter.Convert(n)
+        );
     }
     
     public async Task<DataActionResult<NtwkNode>> CreateNodeWithParent(
         NtwkNode node,
         int parentID
     ) {
-        string pValidationError = await utils.ValidateNodeID(parentID);
-        if(pValidationError != null) {
-            return utils.FailActResult<NtwkNode>(pValidationError);
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(parentID);
+        if(nodeIDValidationStatus.Failure()) {
+            return DataActionResult<NtwkNode>.Failed(nodeIDValidationStatus);
         }
-        string errorStr = validator.Validate(node);
-        if(errorStr != null) {
-            return utils.FailActResult<NtwkNode>(errorStr);
+        StatusMessage nodeValidationStatus = validator.Validate(node);
+        if(nodeValidationStatus.Failure()) {
+            return DataActionResult<NtwkNode>.Failed(nodeValidationStatus);
         }
-        string nameExistsError = await utils.ErrorIfNodeNameExists(node.Name);
-        if(nameExistsError != null) {
-            return utils.FailActResult<NtwkNode>(nameExistsError);
+        StatusMessage nameExistsStatus = await FailIfNodeNameExists(node.Name);
+        if(nameExistsStatus.Failure()) {
+            return DataActionResult<NtwkNode>.Failed(nameExistsStatus);
         }
-        DbOperationResult<EFDbModel.NtwkNode> dbOpResult =
-            await repo.CreateNodeWithParent(viewToEFConverter.Convert(node), parentID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<NtwkNode>(
-                "Unable to create network node in database."
-            );
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.CreateNodeWithParent(viewToEFConverter.Convert(node), parentID),
+            n => EFToViewConverter.Convert(n)
+        );
     }
 
     
 
-    public async Task<DataActionVoidResult> MoveNodesSubtree(
+    public async Task<StatusMessage> MoveNodesSubtree(
         int nodeID,
         int newParentID
     ) {
-        string nValidationError = await utils.ValidateNodeID(nodeID);
-        if(nValidationError != null) {
-            return utils.FailActVoid(nValidationError);
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
+        if(nodeIDValidationStatus.Failure()) {
+            return nodeIDValidationStatus;
         }
-        nValidationError = await utils.ValidateNodeID(newParentID);
-        if(nValidationError != null) {
-            return utils.FailActVoid(nValidationError);
+        StatusMessage newParentIDValidationStatus =
+            await ValidateNodeID(newParentID);
+        if(nodeIDValidationStatus.Failure()) {
+            return nodeIDValidationStatus;
         }
-        DbOperationResult<bool> dbOpResult =
-            await repo.CheckIfNodeInSubtree(newParentID, nodeID);
-        if(!dbOpResult.Success) {
-            return utils.FailActVoid(
-                "Unable to verify if new parent is not in nodes subtree."
-            );
+        StatusMessage newParentIsInNodeSubtreeStatus =
+            await FailIfNodeInSubtree(newParentID, nodeID);
+        if(newParentIsInNodeSubtreeStatus.Failure()) {
+            return newParentIsInNodeSubtreeStatus;
         }
-        if(dbOpResult.Result) {
-            return utils.FailActVoid(
-                "New subtree parent can not be a part of the same subtree."
-            );
-        }
-        DbOperationVoidResult dbSubtreeMoveOpResult =
-            await repo.MoveNodesSubtree(nodeID, newParentID);
-        if(!dbSubtreeMoveOpResult.Success) {
-            return utils.FailActVoid(
-                "Unable to move subtree of nodes in database."
-            );
-        }
-        return utils.SuccActVoid();
+        return await repo.MoveNodesSubtree(nodeID, newParentID);
     }
 
-    public async Task<DataActionVoidResult> SetNodeTags(
+    public async Task<StatusMessage> SetNodeTags(
         int nodeID,
         IEnumerable<int> tagIDs
     ) {
-        string nValidationError = await utils.ValidateNodeID(nodeID);
-        if(nValidationError != null) {
-            return utils.FailActVoid(nValidationError);
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
+        if(nodeIDValidationStatus.Failure()) {
+            return nodeIDValidationStatus;
         }
-        string tValidationError = await utils.ValidateTagsIDs(tagIDs);
-        if(tValidationError != null) {
-            return utils.FailActVoid(tValidationError);
+        StatusMessage tagsIDsValidationStatus = await ValidateTagsIDs(tagIDs);
+        if(tagsIDsValidationStatus.Failure()) {
+            return tagsIDsValidationStatus;
         }
-        DbOperationVoidResult dbOpResult =
-            await repo.SetNodeTags(nodeID, tagIDs);
-        if(!dbOpResult.Success) {
-            return utils.FailActVoid(
-                "Unable to set node tags in database."
-            );
-        }
-        return utils.SuccActVoid();
+        return await repo.SetNodeTags(nodeID, tagIDs);
     }
     
 
-    public async Task<DataActionVoidResult> UpdateNode(
+    public async Task<StatusMessage> UpdateNode(
         NtwkNode node
     ) {
-        string nValidationError = await utils.ValidateNodeID(node.ID);
-        if(nValidationError != null) {
-            return utils.FailActVoid(nValidationError);
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(node.ID);
+        if(nodeIDValidationStatus.Failure()) {
+            return nodeIDValidationStatus;
         }
-        string errorStr = validator.Validate(node);
-        if(errorStr != null) {
-            return utils.FailActVoid(errorStr);
+        StatusMessage nodeValidationStatus = validator.Validate(node);
+        if(nodeValidationStatus.Failure()) {
+            return nodeValidationStatus;
         }
-        string nameExistsError = await utils.ErrorIfNodeNameExists(node.Name);
-        if(nameExistsError != null) {
-            return utils.FailActVoid(nameExistsError);
+        StatusMessage nameExistsStatus = await FailIfNodeNameExists(node.Name);
+        if(nameExistsStatus.Failure()) {
+            return nameExistsStatus;
         }
-        DbOperationVoidResult dbOpResult =
-            await repo.UpdateNode(viewToEFConverter.Convert(node));
-        if(!dbOpResult.Success) {
-            return utils.FailActVoid(
-                "Unable to update node in database."
-            );
-        }
-        return utils.SuccActVoid();
+        return await repo.UpdateNode(viewToEFConverter.Convert(node));
     }
     
 
     public async Task<DataActionResult<NtwkNode>> RemoveNode(int nodeID) {
-        string nValidationError = await utils.ValidateNodeID(nodeID);
-        if(nValidationError != null) {
-            return utils.FailActResult<NtwkNode>(nValidationError);
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
+        if(nodeIDValidationStatus.Failure()) {
+            return DataActionResult<NtwkNode>.Failed(nodeIDValidationStatus);
         }
-        DbOperationResult<EFDbModel.NtwkNode> dbOpResult =
-            await repo.RemoveNode(nodeID);
-        if(!dbOpResult.Success) {
-            return utils.FailActResult<NtwkNode>(
-                "Unable to remove network node from database."
-            );
-        }
-        return utils.SuccActResult(EFToViewConverter.Convert(dbOpResult.Result));
+        return FailOrConvert(
+            await repo.RemoveNode(nodeID),
+            n => EFToViewConverter.Convert(n)
+        );
     }
 }
 

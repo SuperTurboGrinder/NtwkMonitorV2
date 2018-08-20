@@ -10,65 +10,57 @@ using Data.Abstract.Validation;
 using Data.Abstract.Converters;
 using Data.Model.ViewModel;
 using EFDbModel = Data.Model.EFDbModel;
+using Data.Model.ResultsModel;
 
 namespace Data.DataServices.Services {
 
-public class NodesServicesDataService : INodesServicesDataService {
-    readonly IDataRepository repo;
+public class NodesServicesDataService
+    : BaseDataService, INodesServicesDataService {
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
-    readonly CommonServiceUtils utils;
 
     public NodesServicesDataService(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,
         IEFModelToViewModelConverter _EFToViewConverter
-    ) {
-        repo = _repo;
+    ) : base(_repo) {
         validator = _validator;
         viewToEFConverter = _viewToEFConverter;
         EFToViewConverter = _EFToViewConverter;
-        utils = new CommonServiceUtils(repo);
     }
 
     public async Task<DataActionResult<IPAddress>> GetNodeIP(int nodeID) {
-        string nValidationError = await utils.ValidateNodeID(nodeID);
-        if(nValidationError != null) {
-            return utils.FailActResult<IPAddress>(nValidationError);
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
+        if(nodeIDValidationStatus.Failure()) {
+            return DataActionResult<IPAddress>.Failed(nodeIDValidationStatus);
         }
-        DbOperationResult<uint> nodeIP =
-            await repo.GetNodeIP(nodeID);
-        if(!nodeIP.Success) {
-            return utils.FailActResult<IPAddress>("Unable to get node IP address from database.");
-        }
-        return utils.SuccActResult(new IPAddress(nodeIP.Result));
+        return FailOrConvert(
+            await repo.GetNodeIP(nodeID),
+            nIP => new IPAddress(nIP)
+        );
     }
 
-    public async Task<DataActionResult<string>> GetCWSBoundingString(int nodeID, int cwsID) {
-        string nValidationError = await utils.ValidateNodeID(nodeID);
-        if(nValidationError != null) {
-            return utils.FailActResult<string>(nValidationError);
+    public async Task<DataActionResult<string>> GetCWSBoundingString(
+        int nodeID,
+        int cwsID
+    ) {
+        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
+        if(nodeIDValidationStatus.Failure()) {
+            return DataActionResult<string>.Failed(nodeIDValidationStatus);
         }
-        DbOperationResult<int> paramNum =
-            await repo.GetCWSParamNumber(cwsID);
-        if(!paramNum.Success) {
-            return utils.FailActResult<string>("Unable to get CWS parameter number from database.");
+        StatusMessage cwsIDValidationStatus =
+            (await repo.GetCWSParamNumber(cwsID)).Status;
+        if(cwsIDValidationStatus.Failure()) {
+            return DataActionResult<string>.Failed(cwsIDValidationStatus);
         }
-        else if(paramNum.Result == -1) {
-            return utils.FailActResult<string>("Invalid CWS ID.");
+        StatusMessage cwsBindingExistsStatus =
+            await FailIfCWSBinding_DOES_NOT_Exist(nodeID, cwsID);
+        if(cwsBindingExistsStatus.Failure()) {
+            return DataActionResult<string>.Failed(cwsBindingExistsStatus);
         }
-        DbOperationResult<string> serviceString =
-            await repo.GetCWSBoundingString(nodeID, cwsID);
-        if(!serviceString.Success) {
-            return utils.FailActResult<string>(
-                "Unable to get node web service string from database."
-            );
-        }
-        return utils.SuccActResult<string>(
-            serviceString.Result
-        );
+        return await repo.GetCWSBoundingString(nodeID, cwsID);
     }
 }
 

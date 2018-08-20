@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Net;
 
 using Data.Model.ViewModel;
+using Data.Model.ResultsModel;
 
 namespace Data.Abstract.DataAccessServices {
 

@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 
 using Data.Model.ViewModel;
+using Data.Model.ResultsModel;
 
 namespace Data.Abstract.DataAccessServices {
 
@@ -17,7 +18,7 @@ public interface IMonitoringDataService {
         MonitoringPulseResult pulseResult,
         IEnumerable<MonitoringMessage> messages
     );
-    Task<DataActionVoidResult> ClearEmptySessions();
+    Task<StatusMessage> ClearEmptySessions();
 
     Task<DataActionResult<IEnumerable<MonitoringSession>>> GetSessionsForProfile(int profileID);
     //includes messages

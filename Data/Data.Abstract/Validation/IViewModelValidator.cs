@@ -1,14 +1,15 @@
 using Data.Model.ViewModel;
+using Data.Model.ResultsModel;
 
 namespace Data.Abstract.Validation {
 
 //will return error message or null if OK
 public interface IViewModelValidator {
-    string Validate(CustomWebService cws);
-    string Validate(Profile profile);
-    string Validate(NtwkNode node);
-    string Validate(NodeTag tag);
-    string Validate(MonitoringMessage message);
+    StatusMessage Validate(CustomWebService cws);
+    StatusMessage Validate(Profile profile);
+    StatusMessage Validate(NtwkNode node);
+    StatusMessage Validate(NodeTag tag);
+    StatusMessage Validate(MonitoringMessage message);
 }
 
 }

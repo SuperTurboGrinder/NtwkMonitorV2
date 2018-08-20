@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 
 using Data.Model.ViewModel;
+using Data.Model.ResultsModel;
 
 namespace Data.Abstract.DataAccessServices {
 
@@ -13,15 +14,15 @@ public interface ICustomWebServicesDataService {
     Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCWS();
 
     Task<DataActionResult<CustomWebService>> CreateCustomWebService(CustomWebService cws);
-    Task<DataActionVoidResult> CreateWebServiceBinding(int nodeID, int cwsID,
+    Task<StatusMessage> CreateWebServiceBinding(int nodeID, int cwsID,
         string param1, string param2, string param3);
 
-    Task<DataActionVoidResult> UpdateCustomWebService(CustomWebService cws);
-    Task<DataActionVoidResult> UpdateWebServiceBinding(int nodeID, int cwsID,
+    Task<StatusMessage> UpdateCustomWebService(CustomWebService cws);
+    Task<StatusMessage> UpdateWebServiceBinding(int nodeID, int cwsID,
         string param1, string param2, string param3);
 
     Task<DataActionResult<CustomWebService>> RemoveCustomWebService(int cwsID);
-    Task<DataActionVoidResult> RemoveWebServiceBinding(int nodeID, int cwsID);
+    Task<StatusMessage> RemoveWebServiceBinding(int nodeID, int cwsID);
 }
 
 }

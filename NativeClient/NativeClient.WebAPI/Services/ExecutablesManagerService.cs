@@ -7,23 +7,24 @@ using System.Net;
 
 using NativeClient.WebAPI.Services.Model;
 using NativeClient.WebAPI.Abstract;
+using Data.Model.ResultsModel;
 
 namespace NativeClient.WebAPI.Services {
 
 //SINGLETON SERVICE
 public class ExecutablesManagerService : IExecutablesManagerService {
     class ServiceData {
-        public string filePath;
+        public string filePathCache;
         public string strSearchKey;
     }
-
-    Dictionary<ExecutableServicesTypes, ServiceData> servicesData =
-        new Dictionary<ExecutableServicesTypes, ServiceData>();
 
     struct FilePathData {
         public string fullPath;
         public string filename;
     }
+
+    Dictionary<ExecutableServicesTypes, ServiceData> servicesData =
+        new Dictionary<ExecutableServicesTypes, ServiceData>();
 
     public ExecutablesManagerService() {
         lock(servicesData) {
@@ -34,21 +35,26 @@ public class ExecutablesManagerService : IExecutablesManagerService {
         }
     }
 
-    string FindAndSetPath(ExecutableServicesTypes key, FilePathData[] paths) {
-        string strKey = servicesData[key].strSearchKey;
+    static DataActionResult<string> FindServicePath(
+        string strKey,
+        FilePathData[] paths
+    ) {
         IEnumerable<FilePathData> candidates =
             paths.Where(f => f.filename.Contains(strKey));
         if(candidates.Count() == 0) {
-            return $"No {strKey} service found in bin directory.";
+            return DataActionResult<string>.Failed(
+                StatusMessage.NoSpecifiedExecServiceFoundInBinDirectory
+            );
         }
         else if(candidates.Count() > 1) {
-            return $"Too many candidates for {strKey} service in bin directory.";
+            return DataActionResult<string>.Failed(
+                StatusMessage.TooManyCandidatesForSpecefiedExecServiceInBinDirectory
+            );
         }
-        servicesData[key].filePath = candidates.Single().fullPath;
-        return null;
+        return DataActionResult<string>.Successful(candidates.Single().fullPath);
     }
 
-    string UpdateFilePaths() {
+    static DataActionResult<FilePathData[]> SearchBinDirectoryForFilePaths() {
         FilePathData[] files = null;
         try {
             files = Directory.GetFiles(Directory.GetCurrentDirectory()+@"/bin")
@@ -59,47 +65,59 @@ public class ExecutablesManagerService : IExecutablesManagerService {
                 .ToArray();
         }
         catch(UnauthorizedAccessException) {
-            return "Not enough OS rights to search for executable services.";
+            return DataActionResult<FilePathData[]>.Failed(
+                StatusMessage.NotEnoughOSRightsToSearchForExecServices
+            );
         }
         catch(DirectoryNotFoundException) {
-            return "Could not find bin directory while searching for executable services.";
+            return DataActionResult<FilePathData[]>.Failed(
+                StatusMessage.CouldNotFindBinDirectoryWhileSearchingForExecutableServices
+            );
         }
         catch(IOException) {
-            return "Unkonown IO error while trying to find executable services.";
+            return DataActionResult<FilePathData[]>.Failed(
+                StatusMessage.UnknownIOErrorWhileTryingToFindExecutableServices
+            );
         }
-        string error = FindAndSetPath(ExecutableServicesTypes.SSH, files);
-        if(error != null) return error;
-
-        error = FindAndSetPath(ExecutableServicesTypes.Telnet, files);
-        if(error != null) return error;
-
-        return null;
+        return DataActionResult<FilePathData[]>.Successful(files);
     }
 
-    string GetFilePath(ExecutableServicesTypes key, out string error) {
+    DataActionResult<string> GetFilePath(ExecutableServicesTypes key) {
         string path = null;
         lock(servicesData) {
-            path = servicesData[key].filePath;
-            error = null;
+            path = servicesData[key].filePathCache;
             if(path == null || !File.Exists(path)) {
-                error = UpdateFilePaths();
-                if(error != null) {
-                    return null;
+                DataActionResult<FilePathData[]> pathsSearchResult =
+                    SearchBinDirectoryForFilePaths();
+                if(pathsSearchResult.Status.Failure()) {
+                    return DataActionResult<string>.Failed(
+                        pathsSearchResult.Status
+                    );
                 }
+                DataActionResult<string> newServicePathResult =
+                    FindServicePath(
+                        servicesData[key].strSearchKey,
+                        pathsSearchResult.Result
+                    );
+                if(newServicePathResult.Status.Failure()) {
+                    return DataActionResult<string>.Failed(
+                        newServicePathResult.Status
+                    );
+                }
+                servicesData[key].filePathCache = newServicePathResult.Result;
+                path = newServicePathResult.Result;
             }
-            path = servicesData[key].filePath;
         }
-        return path;
+        return DataActionResult<string>.Successful(path);
     }
 
-    public string ExecuteService(ExecutableServicesTypes serviceType, IPAddress address) {
-        string executableSearchError = null;
-        string path = GetFilePath(serviceType, out executableSearchError);
-        if(executableSearchError != null) {
-            return executableSearchError;
+    public StatusMessage ExecuteService(ExecutableServicesTypes serviceType, IPAddress address) {
+        DataActionResult<string> pathResult = GetFilePath(serviceType);
+        if(pathResult.Status.Failure()) {
+            return pathResult.Status;
         }
         var psi = new ProcessStartInfo(
-            path,
+            pathResult.Result,
             address.ToString()
         ){
             UseShellExecute = true,
@@ -108,9 +126,9 @@ public class ExecutablesManagerService : IExecutablesManagerService {
             Process.Start(psi);
         }
         catch(Exception) {
-            return $"Executable service start error.\n({path})";
+            return StatusMessage.ExecutableServiceStartError;
         }
-        return null;
+        return StatusMessage.Ok;
     }
 }
 

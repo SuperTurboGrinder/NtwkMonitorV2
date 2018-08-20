@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 
 using Data.Model.ViewModel;
+using Data.Model.ResultsModel;
 
 namespace Data.Abstract.DataAccessServices {
 

@@ -1,132 +1,123 @@
 using System;
 using Data.Model.ViewModel;
 using Data.Model.Enums;
+using Data.Model.ResultsModel;
 using Data.Abstract.Validation;
 
 namespace Data.DataServices.Validation {
 
 public class ViewModelValidator : IViewModelValidator {
-    public string Validate(
-        CustomWebService val
-    ) {
-        if(!ValidationUtils.IsValidName(val.ServiceName)) {
-            return $"Invalid service name.\n({ValidationUtils.NamesFormatMessage}";
-        }
+    public StatusMessage Validate(CustomWebService val) {
+        StatusMessage nameValidationStatus =
+            ValidationUtils.IsValidName(val.ServiceName);
+        if(nameValidationStatus.Failure())
+            return nameValidationStatus;
         bool hasParam1 = !string.IsNullOrEmpty(val.Parametr1Name);
         bool hasParam2 = !string.IsNullOrEmpty(val.Parametr2Name);
         bool hasParam3 = !string.IsNullOrEmpty(val.Parametr3Name);
         bool AreParameterNamesInOrder =
-            (hasParam3)?(hasParam1 && hasParam2):(
-                (hasParam2)?(hasParam1):(true)
-            );
-            //(!hasParam1)?(hasParam2 || hasParam3):(!hasParam2 || hasParam3);
+            hasParam3
+                ? hasParam1 && hasParam2
+                : hasParam2
+                    ? hasParam1
+                    : true;
         if(!AreParameterNamesInOrder) {
-            return "Paremeter names are not in order.";
+            return StatusMessage.CWSParameterNamesAreNotInOrder;
         }
-        if(hasParam1) {
-            Func<int, string> paramNameMessage = (int n) =>
-                $"Service parameter{n} name is invalid.\n({ValidationUtils.NamesFormatMessage})";
-            if(!ValidationUtils.IsValidName(val.Parametr1Name)) {
-                return paramNameMessage(1);
-            }
-            else if(hasParam2) {
-                if(!ValidationUtils.IsValidName(val.Parametr2Name)) {
-                    return paramNameMessage(2);
-                }
-                else if(hasParam3) {
-                    if(!ValidationUtils.IsValidName(val.Parametr3Name)) {
-                        return paramNameMessage(3);
-                    }
-                }
-            }
-        }
+        StatusMessage paramNamesValidation =
+            hasParam1 && ValidationUtils.IsValidName(val.Parametr1Name).Failure()
+                ? StatusMessage.InvalidCWSParam1Name
+                : hasParam2 &&  ValidationUtils.IsValidName(val.Parametr2Name).Failure()
+                    ? StatusMessage.InvalidCWSParam2Name
+                    : hasParam3 && ValidationUtils.IsValidName(val.Parametr3Name).Failure()
+                        ? StatusMessage.InvalidCWSParam3Name
+                        : StatusMessage.Ok;
+        if(paramNamesValidation.Failure())
+            return paramNamesValidation;
         bool IsServiceStrValid = (
             (val.ServiceStr.StartsWith("http://") || val.ServiceStr.StartsWith("https://")) &&
-            ((hasParam1)?(val.ServiceStr.Contains("{param1}")):(
-                (hasParam2)?(val.ServiceStr.Contains("{param2}")):(
-                    (hasParam3)?(val.ServiceStr.Contains("{param3}")):(true)
-                )
-            ))
-        );
-        if(!IsServiceStrValid) {
-            return "Invalid service string format.";
-        }
-        return null;
+            (hasParam1)
+        )
+            ? val.ServiceStr.Contains("{param1}")
+            : hasParam2
+                ? val.ServiceStr.Contains("{param2}")
+                : hasParam3
+                    ? val.ServiceStr.Contains("{param3}")
+                    : true;
+        return (!IsServiceStrValid)
+            ? StatusMessage.InvalidWebServiceStringFormat
+            : StatusMessage.Ok;
     }
     
-    public string Validate(
-        NodeTag val
-    ) {
-        if(!ValidationUtils.IsValidName(val.Name)) {
-            return $"Invalid tag name format.\n({ValidationUtils.NamesFormatMessage})";
-        }
-        return null;
-    }
+    public StatusMessage Validate(NodeTag val) =>
+        ValidationUtils.IsValidName(val.Name);
 
-    public string Validate(
-        NtwkNode val
-    ) {
-        if(!ValidationUtils.IsValidName(val.Name)) {
-            return $"Invalid node name format.\n({ValidationUtils.NamesFormatMessage})";
+    public StatusMessage Validate(NtwkNode val) {
+        StatusMessage nameValidationStatus = ValidationUtils.IsValidName(val.Name);
+        if(nameValidationStatus.Failure()) {
+            return nameValidationStatus;
         }
-        string ipFormatError = null;
+        StatusMessage ipFormatStatus = StatusMessage.Ok;
         try {
             Data.DataServices.Conversion.ConversionUtils.IPStrToUInt32(val.ipStr);
         }
         catch(ArgumentNullException) {
-            ipFormatError = "Ip address string can not be null.";
+            ipFormatStatus = StatusMessage.IpAddressStringIsNull;
         }
         catch(FormatException) {
-            ipFormatError = "Invalid ip address string format.";
+            ipFormatStatus = StatusMessage.IpAddressStringFormatIsInvalid;
         }
-        return ipFormatError;
+        return ipFormatStatus;
     }
 
-    public string Validate(Profile profile) {
-        if(!ValidationUtils.IsValidName(profile.Name)) {
-            return $"Invalid profile name format.\n({ValidationUtils.NamesFormatMessage})";
+    public StatusMessage Validate(Profile profile) {
+        StatusMessage nameValidationStatus = 
+            ValidationUtils.IsValidName(profile.Name);
+        if(nameValidationStatus.Failure()) {
+            return nameValidationStatus;
         }
-        string emailAddrError = null;
-        try {
-            var addr = new System.Net.Mail.MailAddress(profile.MonitoringAlarmEmail);
-        }
-        catch(ArgumentNullException) {
-            if(profile.SendMonitoringAlarm) {
-                emailAddrError = "Email address not set when monitoring alarm is active.";
+        if(profile.SendMonitoringAlarm) {
+            StatusMessage emailAddrFormatStatus = StatusMessage.Ok;
+            try {
+                var addr = new System.Net.Mail.MailAddress(profile.MonitoringAlarmEmail);
             }
-            //Otherwise it's ok.
-        }
-        catch(ArgumentException) {
-            emailAddrError = "Email address can not be a blank string.";
-        }
-        catch(FormatException) {
-            return "Invalid email address format.";
-        }
-        if(emailAddrError != null) {
-            return emailAddrError;
+            catch(ArgumentNullException) {
+                emailAddrFormatStatus = StatusMessage.EmailAddresIsSetToNull;
+            }
+            catch(ArgumentException) {
+                emailAddrFormatStatus = StatusMessage.EmailAddressIsABlankString;
+            }
+            catch(FormatException) {
+                emailAddrFormatStatus = StatusMessage.EmailAddressFormatIsInvalid;
+            }
+            if(emailAddrFormatStatus.Failure()) {
+                return emailAddrFormatStatus;
+            }
+        } else if(profile.MonitoringAlarmEmail != null) {
+            return StatusMessage.EmailAddressIsNotNullWhileSendAlarmIsNotActive;
         }
         if(profile.MonitoringStartHour < 0 ||
             profile.MonitoringStartHour > 23
         ) {
-            return "Monitoring start hour is out of 0-23 range.";
+            return StatusMessage.MonitoringStartHourIsOutOfRange;
         }
         if(profile.MonitoringEndHour < 0 ||
             profile.MonitoringEndHour > 23
         ) {
-            return "Monitoring end hour is out of 0-23 range.";
+            return StatusMessage.MonitoringEndHourIsOutOfRange;
         }
         if(profile.MonitoringStartHour >= profile.MonitoringEndHour) {
-            return "Monitoring start hour should be earlier then end hour.";
+            return StatusMessage.MonitoringStartHourCanNotBeLaterThanEndHour;
         }
-        return null;
+        return StatusMessage.Ok;
     }
 
-    public string Validate(MonitoringMessage message) {
+    public StatusMessage Validate(MonitoringMessage message) {
         MonitoringMessageType mt;
         if(!Enum.TryParse(message.MessageType, out mt)) {
-            return "Invalid monitoring message type value.";
+            return StatusMessage.InvalidMonitoringMessageTypeValue;
         }
-        return null;
+        return StatusMessage.Ok;
     }
 }
 
