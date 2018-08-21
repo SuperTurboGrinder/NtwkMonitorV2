@@ -1,0 +1,10 @@
+<div>
+    <div *ngFor="let msg of messageQueue">
+        <div *ngIf="msg.isMessage; else httpErrorStatusBlock">
+
+        </div>
+        <ng-template #httpErrorStatusBlock>
+            
+        </ng-template>
+    </div>
+</div>

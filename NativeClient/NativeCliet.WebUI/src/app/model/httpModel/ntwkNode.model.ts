@@ -9,6 +9,4 @@ export class NtwkNode {
         public isOpenTelnet:boolean,
         public isOpenPing:boolean
     ) {}
-    public parent:NtwkNode = null;
-    public children:NtwkNode[] = [];
 }
