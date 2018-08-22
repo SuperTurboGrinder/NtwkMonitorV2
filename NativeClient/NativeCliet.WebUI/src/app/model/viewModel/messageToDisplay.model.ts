@@ -5,6 +5,5 @@ export class MessageToDisplay {
     public isMessage:boolean;
     public message: Messages;
     public errorStatus: BackendErrorStatuses;
-    public time: Date;
-    public isOld;
+    public time: number;
 }

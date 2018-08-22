@@ -1,0 +1,140 @@
+<div class="m-0 p-0" [ngSwitch]="message">
+    <div *ngSwitchCase="errorStatus.DatabaseInternalError" i18n="@@DatabaseInternalError" class="m-0 p-0">
+        Database error occured. Report this error please.
+    </div>
+
+    <!---invalid id messages-->
+    <div *ngSwitchCase="errorStatus.ErrorWhileCheckingIDInDatabase" i18n="@@ErrorWhileCheckingIDInDatabase" class="m-0 p-0">
+        Database error occured while checking ID value. Report this error please.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidProfileID" i18n="@@InvalidProfileID" class="m-0 p-0">
+        Invalid Profile ID.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidTagID" i18n="@@InvalidTagID" class="m-0 p-0">
+        Invalid Tag ID.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidNodeID" i18n="@@InvalidNodeID" class="m-0 p-0">
+        Invalid Node ID
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidSessionID" i18n="@@InvalidSessionID" class="m-0 p-0">
+        Invalid Session ID.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidTagsIDs" i18n="@@InvalidTagsIDs" class="m-0 p-0">
+        Invalid IDs in Tags IDs list.
+    </div>
+
+    <!--general backend input validation-->
+    <div *ngSwitchCase="errorStatus.ErrorWhileCheckingNameExistanceInDatabase" i18n="@@ErrorWhileCheckingNameExistanceInDatabase" class="m-0 p-0">
+        Database error occured while checking name value. Report this error please.
+    </div>
+    <div *ngSwitchCase="errorStatus.NameAlreadyClaimed" i18n="@@NameAlreadyClaimed" class="m-0 p-0">
+        Object name already claimed by another in database.
+    </div>
+    <div *ngSwitchCase="errorStatus.ErrorWhileGetingExistanceOfWSBindingFromDatabase" i18n="@@ErrorWhileGetingExistanceOfWSBindingFromDatabase" class="m-0 p-0">
+        Database error occured while checking web service binding existance. Report this error please.
+    </div>
+    <div *ngSwitchCase="errorStatus.BindingBetweenSpecifiedServiceAndNodeAlreadyExists" i18n="@@BindingBetweenSpecifiedServiceAndNodeAlreadyExists" class="m-0 p-0">
+        Can not create web service binding: binding between specified node and service already exists.
+    </div>
+    <div *ngSwitchCase="errorStatus.ErrorWhileCheckingCWSParamNumberInDatabase" i18n="@@ErrorWhileCheckingCWSParamNumberInDatabase" class="m-0 p-0">
+        Database error occured while checking web service parameters number.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidWebServiceID" i18n="@@InvalidWebServiceID" class="m-0 p-0">
+        Invalid Web Service ID.
+    </div>
+    <div *ngSwitchCase="errorStatus.ServiceBindingSetParementersValueCanNotBeNull" i18n="@@ServiceBindingSetParementersValueCanNotBeNull" class="m-0 p-0">
+        Web service parameters values can not be null.
+    </div>
+    <div *ngSwitchCase="errorStatus.RedundantParameterValuesInServiceBinding" i18n="@@RedundantParameterValuesInServiceBinding" class="m-0 p-0">
+        Redundant parameter values in service binding data.
+    </div>
+    <div *ngSwitchCase="errorStatus.ErrorWhileCheckingIfNodeIsPartOfSubtree" i18n="@@ErrorWhileCheckingIfNodeIsPartOfSubtree" class="m-0 p-0">
+        Database error occured while checking if node is part of subtree.
+    </div>
+    <div *ngSwitchCase="errorStatus.NodeIsPartOfSpecifiedSubtree" i18n="@@NodeIsPartOfSpecifiedSubtree" class="m-0 p-0">
+        Can not move subtree to subroot from the same subtree.
+    </div>
+    <div *ngSwitchCase="errorStatus.BindingBetweenSpecifiedServiceAndNodeDoesNotExist" i18n="@@BindingBetweenSpecifiedServiceAndNodeDoesNotExist" class="m-0 p-0">
+        Binding between specified service and node does not exist.
+    </div>
+
+    <!--backend model input validation-->
+    <div *ngSwitchCase="errorStatus.InvalidName" i18n="@@InvalidName" class="m-0 p-0">
+        Invalid name format.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidCWSParam1Name" i18n="@@InvalidCWSParam1Name" class="m-0 p-0">
+        Invalid web service parameter 1 name format.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidCWSParam2Name" i18n="@@InvalidCWSParam2Name" class="m-0 p-0">
+        Invalid web service parameter 2 name format.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidCWSParam3Name" i18n="@@InvalidCWSParam3Name" class="m-0 p-0">
+        Invalid web service parameter 3 name format.
+    </div>
+    <div *ngSwitchCase="errorStatus.CWSParameterNamesAreNotInOrder" i18n="@@CWSParameterNamesAreNotInOrder" class="m-0 p-0">
+        Web service parameters names are not filled in correct order.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidWebServiceStringFormat" i18n="@@InvalidWebServiceStringFormat" class="m-0 p-0">
+        Invalid web service string format.
+    </div>
+    <div *ngSwitchCase="errorStatus.IpAddressStringIsNull" i18n="@@IpAddressStringIsNull" class="m-0 p-0">
+        Ip address string can not be null.
+    </div>
+    <div *ngSwitchCase="errorStatus.IpAddressStringFormatIsInvalid" i18n="@@IpAddressStringFormatIsInvalid" class="m-0 p-0">
+        Ip address string format is invalid.
+    </div>
+    <div *ngSwitchCase="errorStatus.EmailAddresIsSetToNull" i18n="@@EmailAddresIsSetToNull" class="m-0 p-0">
+        Email address value can not be null.
+    </div>
+    <div *ngSwitchCase="errorStatus.EmailAddressIsABlankString" i18n="@@EmailAddressIsABlankString" class="m-0 p-0">
+        Email address value can not be a blank string.
+    </div>
+    <div *ngSwitchCase="errorStatus.EmailAddressFormatIsInvalid" i18n="@@EmailAddressFormatIsInvalid" class="m-0 p-0">
+        Email address value format is invalid.
+    </div>
+    <div *ngSwitchCase="errorStatus.EmailAddressIsNotNullWhileSendAlarmIsNotActive" i18n="@@EmailAddressIsNotNullWhileSendAlarmIsNotActive" class="m-0 p-0">
+        While send alarm is turned off - email address value should be set to null.
+    </div>
+    <div *ngSwitchCase="errorStatus.MonitoringStartHourIsOutOfRange" i18n="@@MonitoringStartHourIsOutOfRange" class="m-0 p-0">
+        Monitoring start hour is out of range.
+    </div>
+    <div *ngSwitchCase="errorStatus.MonitoringEndHourIsOutOfRange" i18n="@@MonitoringEndHourIsOutOfRange" class="m-0 p-0">
+        Monitoring end hour is out of range.
+    </div>
+    <div *ngSwitchCase="errorStatus.MonitoringStartHourCanNotBeLaterThanEndHour" i18n="@@MonitoringStartHourCanNotBeLaterThanEndHour" class="m-0 p-0">
+        Monitoring start hour can not be set to time after end hour.
+    </div>
+    <div *ngSwitchCase="errorStatus.InvalidMonitoringMessageTypeValue" i18n="@@InvalidMonitoringMessageTypeValue" class="m-0 p-0">
+        Invalid monitoring message type value.
+    </div>
+
+    <!--executable services errors-->
+    <div *ngSwitchCase="errorStatus.NoSpecifiedExecServiceFoundInBinDirectory" i18n="@@NoSpecifiedExecServiceFoundInBinDirectory" class="m-0 p-0">
+        No executable service found for this operation in backend server bin directory.
+    </div>
+    <div *ngSwitchCase="errorStatus.TooManyCandidatesForSpecefiedExecServiceInBinDirectory" i18n="@@TooManyCandidatesForSpecefiedExecServiceInBinDirectory" class="m-0 p-0">
+        Too many candidates for executable service in backend server bin directory.
+    </div>
+    <div *ngSwitchCase="errorStatus.NotEnoughOSRightsToSearchForExecServices" i18n="@@NotEnoughOSRightsToSearchForExecServices" class="m-0 p-0">
+        Not enough rights from OS to search for executable services.
+    </div>
+    <div *ngSwitchCase="errorStatus.CouldNotFindBinDirectoryWhileSearchingForExecutableServices" i18n="@@CouldNotFindBinDirectoryWhileSearchingForExecutableServices" class="m-0 p-0">
+        Could not find bin directory in backend server directory.
+    </div>
+    <div *ngSwitchCase="errorStatus.UnknownIOErrorWhileTryingToFindExecutableServices" i18n="@@UnknownIOErrorWhileTryingToFindExecutableServices" class="m-0 p-0">
+        Unknown backend I/O error while searching for executable service.
+    </div>
+    <div *ngSwitchCase="errorStatus.ExecutableServiceStartError" i18n="@@ExecutableServiceStartError" class="m-0 p-0">
+        Executable service start error.
+    </div>
+
+    <!--ping service errors-->
+    <div *ngSwitchCase="errorStatus.PingExecutionServiceError" i18n="@@PingExecutionServiceError" class="m-0 p-0">
+        Ping service sending error.
+    </div>
+
+    <!--custom web services service errors-->
+    <div *ngSwitchCase="errorStatus.CustomWebServiceStartError" i18n="@@CustomWebServiceStartError" class="m-0 p-0">
+        Error while trying to start custom web service.
+    </div>
+</div>

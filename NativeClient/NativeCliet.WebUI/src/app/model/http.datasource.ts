@@ -3,15 +3,18 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Observable, of } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
 
+import { MessagingService } from "../services/messaging.service"
+
 @Injectable()
 export class HTTPDatasource {
     constructor(
-        private httpClient: HttpClient
+        private httpClient: HttpClient,
+        private messager: MessagingService
     ) {}
 
     public get<T>(url:string): Observable<T> {
         return this.httpClient.get<T>(url).pipe(
-            retry(5),
+            retry(2),
             catchError(err => {
                 this.handleError(err);
                 return of(null);
@@ -56,7 +59,11 @@ export class HTTPDatasource {
             if(error.status == 500) {
                 console.error("Backend operation failed. Please report this error.")
             } else if(error.status == 400) {
-                console.error(`Bad request error:\n${error.error}`)
+                var badRequestData = JSON.parse(error.error);
+                this.messager.reportBadRequestError(
+                    badRequestData.status,
+                    badRequestData.statusString
+                );
             } else {
                 console.error(
                     `Backend returned code ${error.status}, ` +
