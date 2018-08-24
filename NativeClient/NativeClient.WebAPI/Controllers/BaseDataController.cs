@@ -33,7 +33,7 @@ public class BaseDataController : Controller {
         if(status.Failure()) {
             return BadRequest(errAssembler.AssembleReport(status));
         }
-        return Ok();
+        return NoContent();
     }
 
 }

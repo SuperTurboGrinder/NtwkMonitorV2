@@ -1,0 +1,12 @@
+<div>
+    <div *ngIf="sortedIndexes != null; else stillEmptyBlock">
+        <div *ngFor="let i of sortedIndexes">
+            <ng-template let-nodeData="">
+                {{nodeData.node.name}} | 
+            </ng-template>
+        </div>
+    </div>
+    <ng-template #stillEmptyBlock>
+        Loading
+    </ng-template>
+</div>

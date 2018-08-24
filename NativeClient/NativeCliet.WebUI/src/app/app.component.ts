@@ -14,9 +14,11 @@ export class AppComponent {
 
   constructor(private messaging: MessagingService) {
     this.testInterval = interval(3000);
-    this.testInterval.subscribe(_ =>
+    this.testInterval.subscribe(n =>
       messaging.reportBadRequestError(
-        BackendErrorStatuses.EmailAddressIsNotNullWhileSendAlarmIsNotActive,
+        n == 1
+        ? BackendErrorStatuses.EmailAddressIsNotNullWhileSendAlarmIsNotActive
+        : BackendErrorStatuses.DatabaseInternalError,
         "Test data error"
       )
     )

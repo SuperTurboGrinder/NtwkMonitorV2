@@ -1,5 +1,5 @@
 <div style="position:fixed;bottom:0;right:0">
-    <div *ngFor="let msg of messageQueue; trackBy: messageTrackByFn"  [@messageState]="'normal'">
+    <div *ngFor="let msg of messageQueue; trackBy: messageTrackByFn"  [@messageState]="'normal'" class="d-flex align-items-end flex-column">
         <div *ngIf="msg.isMessage; else httpErrorStatusBlock">
 
         </div>
