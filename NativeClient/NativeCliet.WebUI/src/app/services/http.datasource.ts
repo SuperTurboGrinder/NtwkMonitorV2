@@ -5,6 +5,7 @@ import { catchError, retry, map } from "rxjs/operators";
 
 import { HTTPResult } from "../model/servicesModel/httpResult.model";
 import { MessagingService } from "./messaging.service"
+import { BackendErrorStatuses } from "../model/httpModel/backendErrorStatuses.model";
 
 @Injectable()
 export class HTTPDatasource {
@@ -12,26 +13,39 @@ export class HTTPDatasource {
         private httpClient: HttpClient,
         private messager: MessagingService
     ) {}
-
-    public get<T>(url:string): Observable<HTTPResult<T>> {
-        return this.checkedData(this.httpClient.get<HttpResponse<T>>(url))
+    
+    public dataRequest<T>(method: string, url: string, body?: T) : Observable<HTTPResult<T>> {
+        return this.checkedData(
+            this.httpClient.request<T>(method, url, {
+                body: body,
+                observe: 'response',
+                responseType: 'json'
+            })
+        );
     }
 
-    public post<T>(url:string, body:T): Observable<HTTPResult<T>> {
-        return this.checkedData(this.httpClient.post<HttpResponse<T>>(url, body))
+    public operationRequest(method: string, url: string) : Observable<boolean> {
+        return this.checkedOperation(
+            this.httpClient.request(method, url, {
+                observe: 'response',
+                responseType: 'text'
+            })
+        );
     }
 
-    public put<T>(url:string, body:T): Observable<HTTPResult<T>> {
-        return this.checkedData(this.httpClient.put<HttpResponse<T>>(url, body))
-    }
-
-    public delete<T>(url:string): Observable<HTTPResult<T>> {
-        return this.checkedData(this.httpClient.delete<HttpResponse<T>>(url));
+    public dataOperationRequest<T>(method: string, url: string, body: T) : Observable<boolean> {
+        return this.checkedOperation(
+            this.httpClient.request(method, url, {
+                body: body,
+                observe: 'response',
+                responseType: 'text'
+            })
+        );
     }
 
     private checkedData<T>(result: Observable<HttpResponse<T>>) : Observable<HTTPResult<T>> {
         return result.pipe(
-            retry(5),
+            retry(2),
             map((response: HttpResponse<T>) => {
                 if(response.status == 204) {
                     throw new Error("Wrong response (204) when expecting 200.");
@@ -45,6 +59,21 @@ export class HTTPDatasource {
         );
     }
 
+    private checkedOperation<T>(result: Observable<HttpResponse<any>>) : Observable<boolean> {
+        return result.pipe(
+            map((response: HttpResponse<T>) => {
+                if(response.status == 200) {
+                    throw new Error("Wrong response (200) when expecting 204.");
+                }
+                return true;
+            }),
+            catchError(err => {
+                this.handleError(err);
+                return of(false);
+            })
+        );
+    }
+
     private handleError(error: HttpErrorResponse) {
         console.log("ERROR_HANDLING");
         if (error.error instanceof ErrorEvent) {
@@ -53,11 +82,16 @@ export class HTTPDatasource {
             if(error.status == 500) {
                 console.error("Backend returned code 500.")
             } else if(error.status == 400) {
-                var badRequestData = JSON.parse(error.error);
+                var badRequestData: {
+                    status: BackendErrorStatuses,
+                    statusString: string
+                } = JSON.parse(error.error);
                 this.messager.reportBadRequestError(
                     badRequestData.status,
                     badRequestData.statusString
                 );
+            } else if(error.status == 0) {
+                console.error("Backend server not found. Check if it is running.")
             } else {
                 console.error(
                     `Backend returned code ${error.status}, ` +

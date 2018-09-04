@@ -3,6 +3,7 @@ import { Observable, interval } from 'rxjs';
 
 import { BackendErrorStatuses } from './model/httpModel/backendErrorStatuses.model'
 import { MessagingService } from './services/messaging.service';
+import { SettingsProfilesService } from './services/settingsProfiles.service';
 
 @Component({
   selector: 'app-root',
@@ -12,15 +13,9 @@ export class AppComponent {
   title = 'Network Monitor V2';
   testInterval: Observable<number>;
 
-  constructor(private messaging: MessagingService) {
-    this.testInterval = interval(3000);
-    this.testInterval.subscribe(n =>
-      messaging.reportBadRequestError(
-        n == 1
-        ? BackendErrorStatuses.EmailAddressIsNotNullWhileSendAlarmIsNotActive
-        : BackendErrorStatuses.DatabaseInternalError,
-        "Test data error"
-      )
-    )
+  constructor(
+    private messaging: MessagingService
+  ) {
+    
   }
 }

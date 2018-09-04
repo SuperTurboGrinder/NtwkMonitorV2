@@ -3,13 +3,13 @@ import { Observable, Subject } from "rxjs";
 
 @Injectable()
 export class UpdateAlarmService {
-    private alarmSubject = new Subject<boolean>();
+    private alarmSubjectNodesAndTags = new Subject<boolean>();
     
-    public sendAlarm() {
-        this.alarmSubject.next(true);
+    public sendUpdateNodesAndTagsAlarm() {
+        this.alarmSubjectNodesAndTags.next(true);
     }
 
-    public get alarm() : Observable<boolean> {
-        return this.alarmSubject;
+    public get nodesAndTagsUpdateAlarm() : Observable<boolean> {
+        return this.alarmSubjectNodesAndTags;
     }
 }

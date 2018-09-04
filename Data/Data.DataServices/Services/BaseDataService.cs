@@ -87,7 +87,7 @@ public abstract class BaseDataService {
 
     protected async Task<StatusMessage> FailIfCWSBindingExists(int cwsID, int nodeID) {
         DataActionResult<bool> bindingExists =
-            await repo.CheckIfCWSBindingExists(cwsID, nodeID);
+            await repo.CheckIfCWSBindingExists(nodeID, cwsID);
         return bindingExists.Status.Failure()
             ? StatusMessage.ErrorWhileGetingExistanceOfWSBindingFromDatabase
             : bindingExists.Result == true
@@ -97,7 +97,7 @@ public abstract class BaseDataService {
 
     protected async Task<StatusMessage> FailIfCWSBinding_DOES_NOT_Exist(int cwsID, int nodeID) {
         DataActionResult<bool> bindingExists =
-            await repo.CheckIfCWSBindingExists(cwsID, nodeID);
+            await repo.CheckIfCWSBindingExists(nodeID, cwsID);
         return bindingExists.Status.Failure()
             ? StatusMessage.ErrorWhileGetingExistanceOfWSBindingFromDatabase
             : bindingExists.Result == false

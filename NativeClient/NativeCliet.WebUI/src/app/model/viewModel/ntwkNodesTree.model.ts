@@ -4,11 +4,12 @@ import { NodeData } from "../httpModel/nodeData.model";
 import { CWSData } from "../httpModel/cwsData.model";
 
 export class NtwkNodesTree {
+    public webServicesNames: CWSData[] = [];
     public treeLayers: NtwkNodeDataContainer[][] = [];
     public allNodes: NtwkNodeDataContainer[] = [];
 
     public constructor(allNodesData: AllNodesData) {
-        console.log(allNodesData);
+        this.webServicesNames = allNodesData.webServicesData;
         this.treeLayers = allNodesData.nodesData.map(layer =>
             layer.map(nodeData =>
                 new NtwkNodeDataContainer(nodeData)

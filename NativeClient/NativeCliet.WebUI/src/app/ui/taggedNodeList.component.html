@@ -1,12 +1,55 @@
-<div>
-    <div *ngIf="sortedIndexes != null; else stillEmptyBlock">
-        <div *ngFor="let i of sortedIndexes">
-            <ng-template let-nodeData="">
-                {{nodeData.node.name}} | 
-            </ng-template>
+<div class="w-100 h-100 p-0 m-0">
+    <div class="w-100 h-100 p-0 m-0" *ngIf="sortedIndexes != null; else stillEmptyBlock">
+        <div class="w-100 h-100 container p-0 m-0">
+            <strong class="p-0 m-0">
+                <div class="row p-0 m-0 text-center" style="height: 30px">
+                    <div class="col-4 btn-light border m-0 rounded-top p-0 m-0">Name</div>
+                    <div class="col-2 btn-light border m-0 rounded-top p-0 m-0">Exec. services</div>
+                    <div class="col-4 btn-light border m-0 rounded-top p-0 m-0">Web services</div>
+                    <div class="col-2 btn-light border m-0 rounded-top p-0 m-0">Ping</div>
+                </div>
+            </strong>
+            <div class="w-100 p-0 m-0 bg-light" style="height: calc(100vh - 30px); overflow-y:scroll">
+                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn">
+                    <div class="col-4 p-0 m-0 font-italic text-secondary"
+                    >
+                        <strong class="m-0 p-0 "
+                            (mouseenter)="selectNode(i, $event)"
+                            (mouseleave)="deselectNode($event)"
+                        >
+                            {{node(i).name}}
+                        </strong>
+                    </div>
+                    <div class="col-2 p-0 pl-2 m-0">
+                        <execServicesButtons
+                            [node]="node(i)"
+                        ></execServicesButtons>
+                    </div>
+                    <div class="col-4 p-0 pl-2 m-0">
+                        <webServicesButtons
+                            [nodeID]="node(i).id"
+                            [webServices]="listWebServicesNames(i)"
+                        ></webServicesButtons>
+                    </div>
+                    <div class="col-2 p-0 pl-2 m-0">
+                        <pingDisplay
+                            [node]="node(i)"
+                        ></pingDisplay>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <ng-template #stillEmptyBlock>
-        Loading
-    </ng-template>
+        <loadingIndicator
+            [isError]="isLoadingError"
+            (refreshEvent)="refresh($event)"
+        ></loadingIndicator>
+     </ng-template>
 </div>
+<nodeInfoPopup
+    [node]="selectedNode"
+    [webServicesNames]="selectedNodeWebServicesNamesList"
+    [tagsNames]="selectedNodeTagsNamesList"
+    [screenData]="currentScreenData"
+></nodeInfoPopup>

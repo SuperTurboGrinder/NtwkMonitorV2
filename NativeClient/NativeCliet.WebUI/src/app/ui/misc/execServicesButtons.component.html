@@ -1,0 +1,22 @@
+<div class="p-0 m-0">
+    <button type="button"
+        [disabled]="node.isOpenTelnet == false"
+        class="mx-1 btn square text-center p-0 m-0"
+        [ngClass]="{ 'btn-success': node.isOpenTelnet, 'btn-secondary': !node.isOpenTelnet }"
+        style="min-width:26px"
+        title="Telnet"
+        (click)="runTelnet()"
+    >
+        <strong>T</strong>
+    </button>
+    <button type="button"
+        [disabled]="node.isOpenSSH == false"
+        class="mx-1 btn square text-center p-0 m-0"
+        [ngClass]="{ 'btn-success': node.isOpenSSH, 'btn-secondary': !node.isOpenSSH }"
+        style="min-width:26px"
+        title="SSH"
+        (click)="runSSH()"
+    >
+        <strong>S</strong>
+    </button>
+</div>

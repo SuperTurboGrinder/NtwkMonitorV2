@@ -1,0 +1,21 @@
+<div class="w-100 h-100" *ngIf="isError === false; else errorBlock">
+    <div class="w-100 h-100 text-center text-primary d-flex">
+        <div class="align-self-center w-100">
+            <i class="fa fa-refresh fa-spin fa-5x fa-fw" aria-hidden="true"></i>
+        </div>
+    </div>
+</div>
+<ng-template #errorBlock>
+    <div class="w-100 h-100 text-danger text-center d-flex">
+        <div class="align-self-center w-100">
+            <div class="w-100">
+                <i class="fa fa-close fa-5x" aria-hidden="true"></i>
+            </div>
+            <button
+                type="button"
+                class="btn btn-warning"
+                (click)="refresh()"
+            >Refresh</button>
+        </div>
+    </div>
+</ng-template>

@@ -51,7 +51,7 @@ public class NodesServicesDataService
             return DataActionResult<string>.Failed(nodeIDValidationStatus);
         }
         StatusMessage cwsIDValidationStatus =
-            (await repo.GetCWSParamNumber(cwsID)).Status;
+            (await GetCWSParamNumber(cwsID)).Status;
         if(cwsIDValidationStatus.Failure()) {
             return DataActionResult<string>.Failed(cwsIDValidationStatus);
         }

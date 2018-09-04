@@ -4,8 +4,14 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ModelModule } from "../model/model.module";
 import { MessagingService } from "./messaging.service";
 import { UpdateAlarmService } from "./updateAlarm.service";
+import { PingCacheService } from "./pingCache.service";
 import { HTTPDatasource } from "./http.datasource";
-import { NodesRepository } from "./nodes.repository";
+import { PingService } from "./ping.service";
+import { ExecServicesService } from "./execServices.service";
+import { WebServicesService } from "./webServices.service";
+import { NodesService } from "./nodes.service";
+import { TagsService } from "./tags.service";
+import { SettingsProfilesService } from "./settingsProfiles.service";
 import { BaseURL } from "./baseUrl.token";
 
 @NgModule({
@@ -20,8 +26,14 @@ import { BaseURL } from "./baseUrl.token";
     HttpClient,
     MessagingService,
     UpdateAlarmService,
+    PingCacheService,
     HTTPDatasource,
-    NodesRepository
+    PingService,
+    ExecServicesService,
+    WebServicesService,
+    NodesService,
+    TagsService,
+    SettingsProfilesService
   ],
 })
 export class ServicesModule { }
