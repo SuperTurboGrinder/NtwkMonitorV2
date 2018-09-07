@@ -6,11 +6,29 @@ import { WebServicesService } from "../../services/webServices.service";
     templateUrl: './webServicesButtons.component.html'
 })
 export class WebServicesButtonsComponent {
-    @Input() nodeID: number;
-    @Input() webServices: {
+    _webServices: {
         name:string,
         serviceID:number
-    }[];
+    }[] = [];
+    
+    @Input() nodeID: number;
+    @Input() set webServices(ws:{
+        name:string,
+        serviceID:number
+    }[]) {
+        this._webServices = ws;
+        //this._webServices = [];
+        //for(let i = 0; i<20; i++) {
+        //    this._webServices.push({name:i.toString(), serviceID:7});
+        //}
+    }
+
+    get webServices() : {
+        name:string,
+        serviceID:number
+    }[] {
+        return this._webServices;
+    }
 
     constructor(
         private webServicesService: WebServicesService

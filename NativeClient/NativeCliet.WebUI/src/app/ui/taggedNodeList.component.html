@@ -1,17 +1,36 @@
-<div class="w-100 h-100 p-0 m-0">
+<div class="w-100 h-100 p-0 m-0 bg-light">
     <div class="w-100 h-100 p-0 m-0" *ngIf="sortedIndexes != null; else stillEmptyBlock">
-        <div class="w-100 h-100 container p-0 m-0">
-            <strong class="p-0 m-0">
-                <div class="row p-0 m-0 text-center" style="height: 30px">
-                    <div class="col-4 btn-light border m-0 rounded-top p-0 m-0">Name</div>
-                    <div class="col-2 btn-light border m-0 rounded-top p-0 m-0">Exec. services</div>
-                    <div class="col-4 btn-light border m-0 rounded-top p-0 m-0">Web services</div>
-                    <div class="col-2 btn-light border m-0 rounded-top p-0 m-0">Ping</div>
+        <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
+            <div class="row p-0 m-0 text-center" style="height: 30px">
+                <div class="col-5 btn-light border rounded-top p-0 m-0 sortable-collumn"
+                    (click)="setSortByName()"
+                >
+                    <strong>
+                        <span class="p-0 m-0 px-1">Name</span>
+                        <i
+                            class="fa arrow-icon-size" aria-hidden="true"
+                            [ngClass]="{ 'fa-sort-down': isSortedByName() && !isSortedDescending(), 'fa-sort-up': isSortedByName() && isSortedDescending() }"
+                        ></i>
+                    </strong>
                 </div>
-            </strong>
-            <div class="w-100 p-0 m-0 bg-light" style="height: calc(100vh - 30px); overflow-y:scroll">
-                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn">
-                    <div class="col-4 p-0 m-0 font-italic text-secondary"
+                <div class="col-2 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"><strong>Executables</strong></div>
+                <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"><strong>Web services</strong></div>
+                <div class="col-2 btn-light border rounded-top p-0 m-0 sortable-collumn"
+                    (click)="setSortByPing()"
+                >
+                    <strong>
+                        <span class="p-0 m-0 px-1">Ping</span>
+                        <i
+                            class="fa arrow-icon-size" aria-hidden="true"
+                            [ngClass]="{ 'fa-sort-down': isSortedByPing() && !isSortedDescending(), 'fa-sort-up': isSortedByPing() && isSortedDescending() }"
+                        ></i>
+                    </strong>
+                </div>
+            </div>
+        
+            <div class="p-0 m-0 container-fluid" style="height: calc(100% - 30px); width:calc(100% + 16px); overflow-y:scroll">
+                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes">
+                    <div class="col-5 p-0 m-0 font-italic text-secondary"
                     >
                         <strong class="m-0 p-0 "
                             (mouseenter)="selectNode(i, $event)"
@@ -20,20 +39,21 @@
                             {{node(i).name}}
                         </strong>
                     </div>
-                    <div class="col-2 p-0 pl-2 m-0">
+                    <div class="col-2 p-0 m-0">
                         <execServicesButtons
                             [node]="node(i)"
                         ></execServicesButtons>
                     </div>
-                    <div class="col-4 p-0 pl-2 m-0">
+                    <div class="col-3 p-0 m-0">
                         <webServicesButtons
                             [nodeID]="node(i).id"
                             [webServices]="listWebServicesNames(i)"
                         ></webServicesButtons>
                     </div>
-                    <div class="col-2 p-0 pl-2 m-0">
+                    <div class="col-2 p-0 m-0">
                         <pingDisplay
                             [node]="node(i)"
+                            (changedEvent)="resortListByPing()"
                         ></pingDisplay>
                     </div>
                 </div>

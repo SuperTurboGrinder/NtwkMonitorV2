@@ -2,3 +2,56 @@
 .square {
     border-radius: initial !important
 }
+
+.button-size {
+    width:26;
+    height:26;
+}
+
+.button-outer-container {
+    height:26px;
+    width:100%;
+    overflow-y:hidden;
+    white-space:nowrap;
+}
+
+.button-middle-container {
+    position:relative;
+    top:-17px;
+    width:100%;
+}
+
+.button-inner-container {
+    overflow-y:scroll;
+    scroll-behavior: smooth;
+    white-space:nowrap;
+    transform:rotate(-90deg);
+    transform-origin: right top;
+    position:relative;
+    left:-44px;
+    height:100px;
+    width:44px;
+    padding-right:1px
+}
+
+.button-counterrotation {
+    transform:rotate(90deg);
+    transform-origin: center;
+    padding: 0px !important;
+    margin: 0px !important;
+    margin-top:3px !important;
+    margin-bottom:3px !important;
+}
+
+.sortable-collumn {
+    cursor: pointer;
+    user-select: none;
+}
+
+.nonselectable-collumn {
+    user-select: none;
+}
+
+.arrow-icon-size {
+    font-size: 10px
+}

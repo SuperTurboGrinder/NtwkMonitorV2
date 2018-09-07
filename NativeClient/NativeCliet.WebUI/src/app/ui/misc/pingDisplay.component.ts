@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Input } from "@angular/core";
+import { Component, Output, EventEmitter, OnDestroy, Input } from "@angular/core";
 import { PingCacheService } from "../../services/pingCache.service";
 import { Subscription } from "rxjs";
 import { NtwkNode } from "../../model/httpModel/ntwkNode.model";
@@ -13,6 +13,8 @@ export class PingDisplayComponent implements OnDestroy {
     private pingValue: PingTestData = null;
     private subsctiption: Subscription = null;
     public isTryingToPing: boolean = false;
+    
+    @Output() changedEvent = new EventEmitter<boolean>();
 
     @Input()
     set node(node: NtwkNode) {
@@ -24,6 +26,12 @@ export class PingDisplayComponent implements OnDestroy {
             this.node.id,
             (ptd) => {
                 this.isTryingToPing = false;
+
+                if(this.pingValue === null
+                    || (this.pingValue.avg != ptd.avg
+                    || this.pingValue.num != ptd.num
+                    || this.pingValue.failed != ptd.failed))
+                        this.changedEvent.emit(true)
                 this.pingValue = ptd
             }
         );

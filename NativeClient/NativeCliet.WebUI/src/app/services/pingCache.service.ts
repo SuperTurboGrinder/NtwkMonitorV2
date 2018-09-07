@@ -28,6 +28,31 @@ export class PingCacheService {
         return cell;
     }
 
+    public getIDsSortedByPing(descending: boolean) : number[] {
+        let lessWithDescending = () => descending ? 1 : -1;
+        let bothAreFailed = (val1, val2) =>
+            val1.ptd.num == val1.ptd.failed && val2.ptd.num == val2.ptd.failed;
+        let onlyFirstIsFailed = (val1, val2) =>
+            val1.ptd.num == val1.ptd.failed && val2.ptd.num != val2.ptd.failed;
+        let compare = (val1, val2) =>
+            val1.ptd.avg == val2.ptd.avg
+                ? 0 : val1.ptd.avg < val2.ptd.avg
+                    ? lessWithDescending() : -lessWithDescending();
+        let someAreFailedOr = (a: {id:number, ptd: PingTestData}, b: {id:number, ptd: PingTestData},
+            or: (v1, v2) => number
+        ): number => bothAreFailed(a, b)
+                ? 0 : onlyFirstIsFailed(a, b)
+                    ? -1 : onlyFirstIsFailed(b, a)
+                        ? 1 : or(a, b);
+        return Array.from(this.pingCache.entries())
+            .map(val => {
+                return {id: val[0], ptd: val[1].value.getValue()};
+            })
+            .filter(val => val.ptd !== null)
+            .sort((a, b) => someAreFailedOr(a, b, compare))
+            .map(val => val.id);
+    }
+
     public subscribeToValue(
         nodeID: number,
         callback: (ptd:PingTestData)=>void

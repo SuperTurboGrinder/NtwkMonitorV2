@@ -1,11 +1,21 @@
-<div class="p-0 m-0">
-    <button *ngFor="let service of webServices"
-        type="button"
-        class="mx-1 btn btn-primary square text-center p-0 m-0"
-        style="min-width:26px"
-        title="{{service.name}}"
-        (click)="runCustomWebService(service.serviceID)"
-    >
-        <strong>{{service.name[0]}}</strong>
-    </button>
+<div class="p-0 m-0 button-outer-container">
+    <div class="p-0 m-0 button-middle-container nmChildsHeightToThisWidth">
+        <div class="p-0 m-0 button-inner-container nmSizeSetter">
+            <div class="d-flex align-items-center h-100">
+                <div class="d-block-inline" style="max-height:100%">
+                    <div class="p-0 m-0" *ngFor="let service of webServices">
+                        <button 
+                            type="button"
+                            class="button-counterrotation btn btn-primary square text-center"
+                            style="min-width:26px"
+                            title="{{service.name}}"
+                            (click)="runCustomWebService(service.serviceID)"
+                        >
+                            <strong>{{service.name[0]}}</strong>
+                        </button><br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

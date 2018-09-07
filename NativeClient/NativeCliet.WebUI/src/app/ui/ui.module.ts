@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ModelModule } from "../model/model.module";
+
+import { ChildsHeightToThisWidthDirective } from "./directives/childsHeightToThisWidth.directive";
+import { SizeSetterDirective } from "./directives/sizeSetter.directive";
+
 import { PingDisplayComponent } from "./misc/pingDisplay.component";
 import { WebServicesButtonsComponent } from "./misc/webServicesButtons.component";
 import { ExecServicesButtonsComponent } from "./misc/execServicesButtons.component";
@@ -14,6 +18,8 @@ import { TaggedNodeListComponent } from './taggedNodeList.component';
 
 @NgModule({
   declarations: [
+    ChildsHeightToThisWidthDirective,
+    SizeSetterDirective,
     PingDisplayComponent,
     WebServicesButtonsComponent,
     ExecServicesButtonsComponent,
