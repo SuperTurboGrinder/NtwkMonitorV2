@@ -10,7 +10,7 @@ import { BaseURL } from "./baseUrl.token";
 
 @Injectable()
 export class TagsService {
-    private tagsListSubject : BehaviorSubject<HTTPResult<NodeTag[]>> = null;
+    private tagsListSubject = new BehaviorSubject<HTTPResult<NodeTag[]>>(null);
     private baseUrl: string = null;
 
     constructor(
@@ -25,9 +25,7 @@ export class TagsService {
     }
 
     public getTagsList() : Observable<HTTPResult<NodeTag[]>> {
-        if(this.tagsListSubject == null) {
-            this.tagsListSubject =
-                new BehaviorSubject<HTTPResult<NodeTag[]>>(null);
+        if(this.tagsListSubject.value == null) {
             this.updateAlarmService.sendUpdateNodesAndTagsAlarm();
         }
         return this.tagsListSubject;

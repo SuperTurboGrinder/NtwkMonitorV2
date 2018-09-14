@@ -1,14 +1,14 @@
 <div
-    *ngIf="node != null"
+    *ngIf="data != null"
     style="position:fixed"
     class="text-small p-2 bg-light border rounded"
     [ngStyle]="positionStyles"
 >
     <div class="border-bottom">
-        <strong>{{node.name}}</strong>
+        <strong>{{nodeName()}}</strong>
     </div>
     <div class="border-bottom">
-        IP: <span class="font-italic">{{node.ipStr}}</span>
+        IP: <span class="font-italic">{{nodeIP()}}</span>
     </div>
     <div class="border-bottom">
         <div class="p-0 m-0">Executable services:</div>
@@ -19,7 +19,7 @@
     <div class="border-bottom">
         <div class="p-0 m-0">Web services:</div>
         <div class="p-0 m-0 font-italic" *ngIf="hasWebServices(); else noWebServicesBlock">
-            <div class="p-0 m-0" *ngFor="let wsName of webServicesNames">
+            <div class="p-0 m-0" *ngFor="let wsName of webServicesNames()">
                 {{wsName.name}}
             </div>
         </div>
@@ -32,7 +32,8 @@
             style="max-width: 160px"
             *ngIf="hasTags(); else noTagsBlock"
         >
-            <span class="m-0 mx-1 border border-primary badge badge-success badge-pill" *ngFor="let tagName of tagsNames">
+            <span class="m-0 mx-1 border border-primary badge badge-success badge-pill"
+                *ngFor="let tagName of tagsNames()">
                 {{tagName}}
             </span>
         </div>

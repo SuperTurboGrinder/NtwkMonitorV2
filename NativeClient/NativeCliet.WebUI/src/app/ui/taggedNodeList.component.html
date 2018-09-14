@@ -47,7 +47,7 @@
                     <div class="col-3 p-0 m-0">
                         <webServicesButtons
                             [nodeID]="node(i).id"
-                            [webServices]="listWebServicesNames(i)"
+                            [webServices]="listWebServicesData(i)"
                         ></webServicesButtons>
                     </div>
                     <div class="col-2 p-0 m-0">
@@ -67,9 +67,3 @@
         ></loadingIndicator>
      </ng-template>
 </div>
-<nodeInfoPopup
-    [node]="selectedNode"
-    [webServicesNames]="selectedNodeWebServicesNamesList"
-    [tagsNames]="selectedNodeTagsNamesList"
-    [screenData]="currentScreenData"
-></nodeInfoPopup>

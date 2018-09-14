@@ -10,9 +10,10 @@ export class NtwkNodesTree {
 
     public constructor(allNodesData: AllNodesData) {
         this.webServicesNames = allNodesData.webServicesData;
-        this.treeLayers = allNodesData.nodesData.map(layer =>
+        let index: number = 0;
+        this.treeLayers = allNodesData.nodesData.map((layer, layer_index) =>
             layer.map(nodeData =>
-                new NtwkNodeDataContainer(nodeData)
+                new NtwkNodeDataContainer(index++, layer_index, nodeData)
             )
         );
         this.allNodes = this.treeLayers.reduce(
@@ -23,7 +24,7 @@ export class NtwkNodesTree {
     }
 
     private buildTreeBranches() {
-        if(this.treeLayers.length > 2) {
+        if(this.treeLayers.length > 1) {
             for(var lIndex = 1; lIndex < this.treeLayers.length; lIndex++) {
                 var prevLayer = this.treeLayers[lIndex-1];
                 var currentLayer = this.treeLayers[lIndex];

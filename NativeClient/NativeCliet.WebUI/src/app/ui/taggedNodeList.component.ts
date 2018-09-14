@@ -10,6 +10,9 @@ import { UpdateAlarmService } from "../services/updateAlarm.service";
 import { PingCacheService } from "../services/pingCache.service";
 import { NodeTag } from "../model/httpModel/nodeTag.model";
 import { TagsService } from "../services/tags.service";
+import { NodeInfoPopupDataService } from "../services/nodeInfoPopupData.service";
+import { NodeInfoPopupData } from "../model/viewModel/nodeInfoPopupData.model";
+import { NodeInfoDataCache } from "./helpers/nodesInfoDataCache.helper";
 
 enum Sorting {
     Default,
@@ -23,36 +26,13 @@ enum Sorting {
 })
 export class TaggedNodeListComponent implements OnDestroy {
     private filteredNodesList: NodeData[] = null;
-    private tagsNames: string[][] = null;
-    private webServicesNames: {
-        name:string,
-        serviceID:number
-    }[][] = null;
-    private tagsList: NodeTag[] = null;
-    private cwsDataList: CWSData[] = null;
     public sortedIndexes: number[] = null;
     private loadingError = false;
-    public selectedNodeIndex: number = -1;
-    public screenData = { x:0, y:0, mouseX:0, mouseY:0 };
-    private subsctiptions: Subscription[] = [];
+    private nodesTreeSubscription: Subscription = null;
+    private nodeInfoPopupDataCache: NodeInfoDataCache = null;
 
     private sorting: Sorting = Sorting.Default;
     private sortingDescending: boolean = false;
-
-    //getNodeData(i:number) : NodeData {
-    //    return this.filteredNodesList[i].;
-    //}
-
-    ngOnInit() {
-        this.screenData.x = window.innerWidth;
-        this.screenData.y = window.innerHeight;
-    }
-    
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-        this.screenData.x = window.innerWidth;
-        this.screenData.y = window.innerHeight;
-    }
 
     private defaultSortedIndexes(filteredNodesList: NodeData[], _: boolean) : number[] {
         return Array.from(
@@ -148,39 +128,32 @@ export class TaggedNodeListComponent implements OnDestroy {
         return this.sortingDescending;
     }
 
-    public selectNode(i:number, event:MouseEvent) {
-        this.screenData.mouseX = event.clientX;
-        this.screenData.mouseY = event.clientY;
-        this.selectedNodeIndex = i;
+    listWebServicesData(i:number) : {name:string, id:number}[] {
+        return this.nodeInfoPopupDataCache.listWebServicesData(
+            i,
+            this.filteredNodesList[i].boundWebServicesIDs
+        );
+    }
+
+    public selectNode(i:number, event:MouseEvent) {;
+        this.nodeInfoPopupService.setData(
+            this.nodeInfoPopupDataCache.formNodeInfoPopupData(
+                i,
+                this.filteredNodesList[i],
+                {x: event.clientX, y: event.clientY}
+            )
+        );
     }
 
     public deselectNode(event:MouseEvent) {
-        this.selectedNodeIndex = -1;
+        this.nodeInfoPopupService.setData(null);
     }
 
     public node(i:number) : NtwkNode {
         return this.filteredNodesList[i].node;
     }
 
-    public get currentScreenData() 
-    : { x:number, y:number, mouseX:number, mouseY:number } {
-        return this.screenData;
-    }
-
-    public get selectedNode() : NtwkNode {
-        if(this.selectedNodeIndex == -1) return null;
-        return this.node(this.selectedNodeIndex);
-    }
-
-    public get selectedNodeTagsNamesList() : string[] {
-        if(this.selectedNodeIndex == -1) return null;
-        return this.listTagsNames(this.selectedNodeIndex);
-    }
-
-    public get selectedNodeWebServicesNamesList() : {name:string,serviceID:number}[] {
-        if(this.selectedNodeIndex == -1) return null;
-        return this.listWebServicesNames(this.selectedNodeIndex);
-    }
+    
 
     public get isLoadingError() {
         return this.loadingError;
@@ -195,31 +168,6 @@ export class TaggedNodeListComponent implements OnDestroy {
         this.updateList();
     }
 
-    private listTagsNames(i: number) : string[] {
-        if(this.tagsList === null) return;
-        let IDs = this.filteredNodesList[i].tagsIDs;
-        if(this.tagsNames[i].length === 0 && IDs.length > 0) {
-            this.tagsNames[i] = this.tagsList
-                .filter(tag => IDs.includes(tag.id))
-                .map(tag => tag.name);
-        }
-        return this.tagsNames[i];
-    }
-
-    public listWebServicesNames(i: number)
-    : {name:string,serviceID:number}[] {
-        if(this.cwsDataList === null) return;
-        let IDs = this.filteredNodesList[i].boundWebServicesIDs;
-        if(this.webServicesNames[i].length === 0 && IDs.length > 0) {
-            this.webServicesNames[i] = this.cwsDataList
-                .filter(cwsD => IDs.includes(cwsD.id))
-                .map(cwsD => {
-                    return { name:cwsD.name, serviceID:cwsD.id }
-                });
-        }
-        return this.webServicesNames[i];
-    }
-
     private updateList() {
         this.loadingError = false;
         this.updateService.sendUpdateNodesAndTagsAlarm();
@@ -228,20 +176,12 @@ export class TaggedNodeListComponent implements OnDestroy {
     constructor(
         private pingCacheService: PingCacheService,
         private updateService: UpdateAlarmService,
-        nodesService: NodesService,
+        private nodeInfoPopupService: NodeInfoPopupDataService,
         tagsService: TagsService,
+        nodesService: NodesService,
         settingsService: SettingsProfilesService,
     ) {
-        let tagsListSubscription = tagsService.getTagsList().subscribe(tagsListResult => {
-            if(tagsListResult === null) {
-                return;
-            } else if(tagsListResult.success === false) {
-                this.loadingError = true;
-                return;
-            }
-            this.tagsList = tagsListResult.data;
-        });
-        let nodesTreeSubscription = nodesService.getNodesTree().subscribe(treeResult => {
+        this.nodesTreeSubscription = nodesService.getNodesTree().subscribe(treeResult => {
             if(treeResult === null) {
                 return;
             } else if(treeResult.success === false) {
@@ -255,29 +195,34 @@ export class TaggedNodeListComponent implements OnDestroy {
                         return;
                     }
                     let viewNodesIDs = viewNodesIDsResult.data;
-                    this.cwsDataList = treeResult.data.cwsData;
                     let allNodes = treeResult.data.nodesTree.allNodes;
                     this.filteredNodesList = allNodes
                         .filter(nData => 
                             viewNodesIDs.includes(nData.nodeData.node.id)
                         )
                         .map(nData => nData.nodeData);
-                    this.tagsNames = Array.from(
-                        {length: this.filteredNodesList.length},
-                        _ => []
+                    this.renewPopupDataCache(
+                        new NodeInfoDataCache(
+                            this.filteredNodesList.length,
+                            treeResult.data.cwsData,
+                            tagsService
+                        )
                     );
-                    this.webServicesNames = Array.from(
-                        {length: this.filteredNodesList.length},
-                        _ => []
-                    );
+                    this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
                     this.sortedIndexes = this.defaultSortedIndexes(this.filteredNodesList, false);
                 })
         });
-        this.subsctiptions.push(tagsListSubscription);
-        this.subsctiptions.push(nodesTreeSubscription);
+    }
+
+    private renewPopupDataCache(newCache: NodeInfoDataCache) {
+        if(this.nodeInfoPopupDataCache != null) {
+            this.nodeInfoPopupDataCache.destroy();
+        }
+        this.nodeInfoPopupDataCache = newCache;
     }
 
     ngOnDestroy() {
-        this.subsctiptions.forEach(sub => sub.unsubscribe());
+        this.renewPopupDataCache(null);
+        this.nodesTreeSubscription.unsubscribe();
     }
 }

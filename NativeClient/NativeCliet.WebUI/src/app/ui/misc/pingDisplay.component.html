@@ -1,26 +1,30 @@
-<div class="p-0 m-0 w-100 text-right">
-    <strong class="p-0 pr-1 m-0"
-        [ngClass]="{ 'text-success': pingOK, 'text-warning': pingWarning, 'text-danger': pingDanger }"
-    >
-        {{pingAverage()}}
-    </strong>
-    <strong class="p-0 m-0">
-        <span
-            [ngClass]="{ 'text-warning': pingCountWarning, 'text-danger': pingCountDanger }"
-        >{{pingSuccessful()}}</span>/{{pingCount()}}
-    </strong>
+<div class="row p-0 m-0  text-right">
+    <div class="col-8 p-0 m-0 text-center">
+        <strong class="p-0 pr-1 m-0"
+            [ngClass]="{ 'text-success': pingOK, 'text-warning': pingWarning, 'text-danger': pingDanger }"
+        >
+            {{pingAverage()}}
+        </strong>
+        <strong class="p-0 m-0">
+            <span
+                [ngClass]="{ 'text-warning': pingCountWarning, 'text-danger': pingCountDanger }"
+            >{{pingSuccessful()}}</span>/{{pingCount()}}
+        </strong>
+    </div>
     
-    <button type="button"
-        [disabled]="isButtonDisabled"
-        class="btn square text-center p-0 mr-2 ml-1 my-0"
-        [ngClass]="{ 'btn-success': !isButtonDisabled, 'btn-secondary': isButtonDisabled }"
-        style="min-width:26px"
-        title="Ping"
-        (click)="tryToPing()"
-    >
-        <i
-            class="fa" aria-hidden="true"
-            [ngClass]="{ 'fa-ban': node.isOpenPing==false, 'fa-refresh fa-spin fa-fw': node.isOpenPing==true && isButtonDisabled, 'fa-exchange': !isButtonDisabled }"
-        ></i>
-    </button>
+    <div class="col-4 text-center p-0 m-0">
+        <button type="button"
+            [disabled]="isButtonDisabled"
+            class="btn square text-center p-0 mr-2 ml-1 my-0"
+            [ngClass]="{ 'btn-success': !isButtonDisabled, 'btn-secondary': isButtonDisabled }"
+            style="min-width:26px"
+            title="Ping"
+            (click)="tryToPing()"
+        >
+            <i
+                class="fa" aria-hidden="true"
+                [ngClass]="{ 'fa-ban': node.isOpenPing==false, 'fa-refresh fa-spin fa-fw': node.isOpenPing==true && isButtonDisabled, 'fa-exchange': !isButtonDisabled }"
+            ></i>
+        </button>
+    </div>
 </div>

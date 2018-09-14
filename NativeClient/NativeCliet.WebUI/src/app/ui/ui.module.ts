@@ -15,6 +15,7 @@ import { NodeInfoPopupComponent } from './misc/nodeInfoPopup.component';
 import { BackendErrorSelectorComponent } from './messeging/backendErrorSelector.component';
 import { MessageDisplayComponent } from './messeging/messageDisplay.component';
 import { TaggedNodeListComponent } from './taggedNodeList.component';
+import { NodesTreeViewComponent } from './nodesTreeView.component';
 
 @NgModule({
   declarations: [
@@ -27,14 +28,17 @@ import { TaggedNodeListComponent } from './taggedNodeList.component';
     NodeInfoPopupComponent,
     BackendErrorSelectorComponent,
     MessageDisplayComponent,
-    TaggedNodeListComponent
+    TaggedNodeListComponent,
+    NodesTreeViewComponent
   ],
   imports: [
     BrowserAnimationsModule, CommonModule, ModelModule
   ],
   exports: [
     MessageDisplayComponent,
-    TaggedNodeListComponent
+    NodeInfoPopupComponent,
+    TaggedNodeListComponent,
+    NodesTreeViewComponent
   ],
   providers: [],
 })
