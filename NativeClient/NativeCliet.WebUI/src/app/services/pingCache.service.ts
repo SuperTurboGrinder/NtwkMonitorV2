@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Subscription, BehaviorSubject } from "rxjs"
+import { first, skip } from "rxjs/operators";
 
 import { PingService } from "./ping.service";
 import { PingTestData } from "../model/httpModel/pingTestData.model";
@@ -60,7 +61,14 @@ export class PingCacheService {
         return this.getCell(nodeID).value.subscribe(callback);
     }
 
-    public updateValue(nodeID: number) {
+    private subscribeToNextOnly(
+        nodeID: number,
+        callback: (ptd:PingTestData)=>void
+    ) {
+        this.getCell(nodeID).value.pipe(skip(1), first()).subscribe(callback);
+    }
+
+    private pingByID(nodeID: number) {
         let cell = this.getCell(nodeID);
         if(cell.isLocked == false) {
             cell.setLock();
@@ -73,8 +81,54 @@ export class PingCacheService {
                 )
             });
         }
-
     }
+
+    public updateValue(nodeID: number) {
+        this.pingByID(nodeID);
+    }
+
+    public silentTreeUpdate(roots:PingTree[]) {
+        roots.forEach((tree) => {
+            this.pingTree(tree, null);
+        })
+    }
+
+    private pingTree(
+        root: PingTree,
+        errorCallback: (currentRoot: PingTree) => void
+    ) {
+        console.log(`pingTree(${root.id})`);
+        this.subscribeToNextOnly(root.id,
+            ptd => {
+                if(ptd.failed != ptd.num) {
+                    root.childrenIDs.forEach(
+                        nextRoot => this.pingTree(nextRoot, errorCallback)
+                    )
+                } else {
+                    this.setFailedBranch(root.childrenIDs)
+                    if(errorCallback) errorCallback(root);
+                }
+            }
+        )
+        this.pingByID(root.id);
+    }
+
+    setFailedBranch(roots: PingTree[]) {
+        roots.forEach(root => {
+            let cell = this.getCell(root.id);
+            cell.value.next({
+                failed: 0,
+                num: 0,
+                avg: 0
+            })
+            this.setFailedBranch(root.childrenIDs);
+        })
+    }
+}
+
+export class PingTree {
+    public id:number;
+    public childrenIDs:PingTree[];
 }
 
 class PingCacheCell {

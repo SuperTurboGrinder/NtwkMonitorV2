@@ -7,7 +7,7 @@ import { NodesService } from "../services/nodes.service";
 import { NodeData } from "../model/httpModel/nodeData.model";
 import { SettingsProfilesService } from "../services/settingsProfiles.service";
 import { UpdateAlarmService } from "../services/updateAlarm.service";
-import { PingCacheService } from "../services/pingCache.service";
+import { PingCacheService, PingTree } from "../services/pingCache.service";
 import { NodeTag } from "../model/httpModel/nodeTag.model";
 import { TagsService } from "../services/tags.service";
 import { NodeInfoPopupDataService } from "../services/nodeInfoPopupData.service";
@@ -16,6 +16,7 @@ import { NtwkNodesTree } from "../model/viewModel/ntwkNodesTree.model";
 import { NtwkNodeDataContainer } from "../model/viewModel/ntwkNodeDataContainer.model";
 import { NodeInfoDataCache } from "./helpers/nodesInfoDataCache.helper";
 import { TreeCollapsingService } from "../services/treeCollapsing.service";
+import { PingService } from "../services/ping.service";
 
 @Component({
     selector: 'nodesTreeView',
@@ -23,6 +24,7 @@ import { TreeCollapsingService } from "../services/treeCollapsing.service";
 })
 export class NodesTreeViewComponent implements OnDestroy {
     private allNodesList: NtwkNodeDataContainer[] = null;
+    private rootLayer: NtwkNodeDataContainer[] = null;
     private layers: number[][];
     private loadingError = false;
     private nodesTreeSubscription: Subscription = null;
@@ -32,6 +34,7 @@ export class NodesTreeViewComponent implements OnDestroy {
     private displayLayersCount = 10;
     private displayedNodesIndexes: number[] = null;
     private displayedNodesPrefixes: string[] = null;
+    private displayedNodesFlatPingTree: PingTree[] = null;
 
     public prefix(prefixIndex: number) {
         return this.displayedNodesPrefixes[prefixIndex];
@@ -59,6 +62,9 @@ export class NodesTreeViewComponent implements OnDestroy {
         this.displayedNodesIndexes = flattenSubtree(
             startLayer,
             this.displayLayersCount-1
+        );
+        this.displayedNodesFlatPingTree = this.buildPingTree(
+            this.rootLayer
         );
         this.buildPrefixes();
     }
@@ -199,8 +205,15 @@ export class NodesTreeViewComponent implements OnDestroy {
         this.updateService.sendUpdateNodesAndTagsAlarm();
     }
 
+    public pingBranch(i: number) {
+        this.pingCacheService.silentTreeUpdate(
+            [this.displayedNodesFlatPingTree[i]]
+        )
+    }
+
     constructor(
         private updateService: UpdateAlarmService,
+        private pingCacheService: PingCacheService,
         private nodeInfoPopupService: NodeInfoPopupDataService,
         private treeCollapsingService: TreeCollapsingService,
         tagsService: TagsService,
@@ -215,6 +228,7 @@ export class NodesTreeViewComponent implements OnDestroy {
             }
             
             this.allNodesList = treeResult.data.nodesTree.allNodes;
+            this.rootLayer = treeResult.data.nodesTree.treeLayers[0];
             this.layers = treeResult.data.nodesTree.treeLayers
                 .map(layer => layer.map(container => container.index));
             this.rebuildDisplayedList();
@@ -227,6 +241,28 @@ export class NodesTreeViewComponent implements OnDestroy {
             );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
         })
+    }
+
+    private buildPingTree(firstLayer: NtwkNodeDataContainer[]): PingTree[] {
+        let toPingTree =
+        (container: NtwkNodeDataContainer) : PingTree => {
+            let childrenPingTree: PingTree[] = this.treeCollapsingService.isCollapsed(
+                container.nodeData.node.id
+            ) ? [] : [].concat(...container.children.map(
+                c => toPingTree(c)
+            ));
+            return {
+                id: container.nodeData.node.id,
+                childrenIDs: childrenPingTree
+            };
+        }
+        let flattenPingTree = (roots: PingTree[]): PingTree[] => {
+            let flatten = root => [root].concat(
+                ...root.childrenIDs.map(flatten)
+            )
+            return [].concat(...roots.map(flatten))
+        }
+        return flattenPingTree(firstLayer.map(toPingTree));
     }
 
     private renewPopupDataCache(newCache: NodeInfoDataCache) {

@@ -17,12 +17,12 @@
             </div>
         
             <div class="p-0 m-0 container-fluid" style="height: calc(100% - 30px); width:calc(100% + 16px); overflow-y:scroll">
-                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; let prefixIndex = index">
+                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; let indexIndex = index">
                     <div class="col-5 p-0 m-0 font-italic text-secondary text-left"
                     >
                         <strong class="m-0 p-0 pl-2">
                             <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
-                            -->{{prefix(prefixIndex)}}{{noChildrenChar(i)}}</span><!--
+                            -->{{prefix(indexIndex)}}{{noChildrenChar(i)}}</span><!--
                             --><span *ngIf="hasChildren(i)">
                                 <button
                                     type="button"
@@ -43,6 +43,7 @@
                             --><span
                                 (mouseenter)="selectNode(i, $event)"
                                 (mouseleave)="deselectNode($event)"
+                                (click)="pingBranch(indexIndex)"
                             >[{{node(i).name}}]</span>
                             
                         </strong>
