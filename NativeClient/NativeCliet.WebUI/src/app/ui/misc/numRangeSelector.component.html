@@ -1,0 +1,14 @@
+<span>
+    <span>from</span>
+    <numValueSwitch
+        [min]="min"
+        [max]="lower_max"
+        (changedValueEvent)="setLower($event)"
+    ></numValueSwitch>
+    <span>to</span>
+    <numValueSwitch
+        [min]="higher_min"
+        [max]="max"
+        (changedValueEvent)="setHigher($event)"
+    ></numValueSwitch>
+</span>

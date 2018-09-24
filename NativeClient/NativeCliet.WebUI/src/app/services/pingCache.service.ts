@@ -98,19 +98,25 @@ export class PingCacheService {
         errorCallback: (currentRoot: PingTree) => void
     ) {
         console.log(`pingTree(${root.id})`);
-        this.subscribeToNextOnly(root.id,
-            ptd => {
-                if(ptd.failed != ptd.num) {
-                    root.childrenIDs.forEach(
-                        nextRoot => this.pingTree(nextRoot, errorCallback)
-                    )
-                } else {
-                    this.setFailedBranch(root.childrenIDs)
-                    if(errorCallback) errorCallback(root);
+        if(root.isPingable) {
+            this.subscribeToNextOnly(root.id,
+                ptd => {
+                    if(ptd.failed != ptd.num) {
+                        root.childrenIDs.forEach(
+                            nextRoot => this.pingTree(nextRoot, errorCallback)
+                        )
+                    } else {
+                        this.setFailedBranch(root.childrenIDs)
+                        if(errorCallback) errorCallback(root);
+                    }
                 }
-            }
-        )
-        this.pingByID(root.id);
+            );
+            this.pingByID(root.id);
+        } else {
+            root.childrenIDs.forEach(
+                nextRoot => this.pingTree(nextRoot, errorCallback)
+            )
+        }
     }
 
     setFailedBranch(roots: PingTree[]) {
@@ -128,6 +134,8 @@ export class PingCacheService {
 
 export class PingTree {
     public id:number;
+    public isPingable:boolean;
+    public isBranchPingable:boolean;
     public childrenIDs:PingTree[];
 }
 

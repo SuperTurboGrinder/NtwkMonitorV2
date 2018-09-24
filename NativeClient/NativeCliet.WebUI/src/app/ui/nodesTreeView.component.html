@@ -16,7 +16,7 @@
                 </div>
             </div>
         
-            <div class="p-0 m-0 container-fluid" style="height: calc(100% - 30px); width:calc(100% + 16px); overflow-y:scroll">
+            <div class="p-0 m-0 container-fluid" style="height: calc(100% - 60px); width:calc(100% + 16px); overflow-y:scroll">
                 <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; let indexIndex = index">
                     <div class="col-5 p-0 m-0 font-italic text-secondary text-left"
                     >
@@ -44,6 +44,7 @@
                                 (mouseenter)="selectNode(i, $event)"
                                 (mouseleave)="deselectNode($event)"
                                 (click)="pingBranch(indexIndex)"
+                                [ngClass]="{ 'btn btn-success square p-0 px-1 m-0 mx-1' : isBranchPingable(indexIndex) }"
                             >[{{node(i).name}}]</span>
                             
                         </strong>
@@ -65,6 +66,13 @@
                         ></pingDisplay>
                     </div>
                 </div>
+            </div>
+            <div class="w-100 p-0 m-0 text-center" style="height: 30px">
+                Tree levels
+                <numRangeSelector
+                    [min]=0
+                    [max]=4
+                ></numRangeSelector>
             </div>
         </div>
     </div>

@@ -1,0 +1,23 @@
+<span class="border bg-white h-100 p-0 m-0">
+    <span
+        [ngClass]="{
+            'btn-light square': !isMin(),
+            'text-secondary' : isMin()
+        }"
+        class="border-right p-0 m-0 px-1 h-100"
+        style="user-select: none;"
+        (click)="decrement()"
+    >
+        <i class="fa fa-caret-left"></i>
+    </span>
+        {{value}}
+    <span
+        [ngClass]="{
+            'btn-light square': !isMax(),
+            'text-secondary' : isMax()
+        }"
+        class="border-left p-0 m-0 px-1 h-100"
+        style="user-select: none;"
+        (click)="increment()"
+    ><i class="fa fa-caret-right"></i></span>
+</span>

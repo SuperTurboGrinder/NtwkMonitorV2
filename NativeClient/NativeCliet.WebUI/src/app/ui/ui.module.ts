@@ -16,12 +16,16 @@ import { BackendErrorSelectorComponent } from './messeging/backendErrorSelector.
 import { MessageDisplayComponent } from './messeging/messageDisplay.component';
 import { TaggedNodeListComponent } from './taggedNodeList.component';
 import { NodesTreeViewComponent } from './nodesTreeView.component';
+import { NumValueSwitchComponent } from './misc/numValueSwitch.component';
+import { NumRangeSelectorComponent } from './misc/numRangeSelector.component';
 
 @NgModule({
   declarations: [
     ChildsHeightToThisWidthDirective,
     SizeSetterDirective,
     PingDisplayComponent,
+    NumValueSwitchComponent,
+    NumRangeSelectorComponent,
     WebServicesButtonsComponent,
     ExecServicesButtonsComponent,
     LoadingIndicatorComponent,
