@@ -68,10 +68,11 @@
                 </div>
             </div>
             <div class="w-100 p-0 m-0 text-center" style="height: 30px">
-                Tree levels
+                Show tree levels
                 <numRangeSelector
                     [min]=0
-                    [max]=4
+                    [max]="treeLayersNum - 1"
+                    (changedValueEvent)="changeVisibleLayers($event)"
                 ></numRangeSelector>
             </div>
         </div>

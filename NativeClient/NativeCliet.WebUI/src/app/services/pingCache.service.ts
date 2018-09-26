@@ -97,7 +97,6 @@ export class PingCacheService {
         root: PingTree,
         errorCallback: (currentRoot: PingTree) => void
     ) {
-        console.log(`pingTree(${root.id})`);
         if(root.isPingable) {
             this.subscribeToNextOnly(root.id,
                 ptd => {
