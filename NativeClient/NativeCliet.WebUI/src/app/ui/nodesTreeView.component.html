@@ -70,9 +70,9 @@
             <div class="w-100 p-0 m-0 text-center" style="height: 30px">
                 Show tree levels
                 <numRangeSelector
-                    [min]=0
-                    [max]="treeLayersNum - 1"
-                    (changedValueEvent)="changeVisibleLayers($event)"
+                    [maxValue]="fullTreeLayersCount()-1"
+                    [maxLength]="10"
+                    (changedEvent)="changeVisibleLayers($event)"
                 ></numRangeSelector>
             </div>
         </div>

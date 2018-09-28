@@ -32,6 +32,10 @@ export class NumValueSwitchComponent {
         }
     }
 
+    @Input() set initialValue(val: number) {
+        this._value = val;
+    }
+
     get value(): number { return this._value }
     get min(): number { return this._min }
     get max(): number { return this._max }

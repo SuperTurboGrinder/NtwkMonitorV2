@@ -17,6 +17,7 @@ import { NtwkNodeDataContainer } from "../model/viewModel/ntwkNodeDataContainer.
 import { NodeInfoDataCache } from "./helpers/nodesInfoDataCache.helper";
 import { TreeCollapsingService } from "../services/treeCollapsing.service";
 import { PingService } from "../services/ping.service";
+import { Range } from "../ui/misc/numRangeSelector.component";
 
 @Component({
     selector: 'nodesTreeView',
@@ -27,13 +28,13 @@ export class NodesTreeViewComponent implements OnDestroy {
     private loadingError = false;
     private nodesTreeSubscription: Subscription = null;
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
-    private pingTreeBuilder: PingTreeBuilder = null;
+    //private pingTreeBuilder: PingTreeBuilder = null;
 
     private readonly maxDisplayedLayers = 10;
     private startDisplayLayer = 0;
     private displayLayersCount = 0;
     private treeLayersCount = 0;
-    private nodesFlatPingTree: PingTree[] = null;
+    //private nodesFlatPingTree: PingTree[] = null;
 
     public prefix(prefixIndex: number) {
         return this.displayTreeHelper.prefix(prefixIndex);
@@ -66,8 +67,12 @@ export class NodesTreeViewComponent implements OnDestroy {
             : null;
     }
 
-    public get treeLayersNum(): number {
+    public fullTreeLayersCount(): number {
         return this.treeLayersCount;
+    }
+
+    public  maxDisplayedTreeLayers() {
+        return this.maxDisplayedLayers
     }
 
     public node(index: number): NtwkNode {
@@ -105,9 +110,9 @@ export class NodesTreeViewComponent implements OnDestroy {
         this.rebuildPingTree();
     }
 
-    public changeVisibleLayers(range: {lower:number, higher:number}) {
-        this.startDisplayLayer = range.lower;
-        this.displayLayersCount = range.higher - range.lower + 1;
+    public changeVisibleLayers(range: Range) {
+        this.startDisplayLayer = range.value;
+        this.displayLayersCount = range.length;
         this.displayTreeHelper.setDisplayedTreeLayers(
             this.startDisplayLayer,
             this.displayLayersCount
@@ -124,19 +129,20 @@ export class NodesTreeViewComponent implements OnDestroy {
     }
 
     public pingBranch(i: number) {
-        let branch = this.nodesFlatPingTree[i];
-        if(branch !== null) 
-            this.pingCacheService.silentTreeUpdate(
-                [branch]
-            )
+        //let branch = this.nodesFlatPingTree[i];
+        //if(branch !== null) 
+        //    this.pingCacheService.silentTreeUpdate(
+        //        [branch]
+        //    )
     }
 
     public isBranchPingable(i: number): boolean {
-        if(this.treeLayersCount === 0) return false;
-        let branch = this.nodesFlatPingTree[i];
-        return branch !== null && (
-            branch.isBranchPingable || branch.isPingable
-        );
+        //if(this.treeLayersCount === 0) return false;
+        //let branch = this.nodesFlatPingTree[i];
+        //return branch !== null && (
+        //    branch.isBranchPingable || branch.isPingable
+        //);
+        return true;
     }
 
     constructor(
@@ -168,16 +174,17 @@ export class NodesTreeViewComponent implements OnDestroy {
                 treeCollapsingService,
                 treeResult.data.nodesTree.allNodes,
                 treeResult.data.nodesTree.treeLayers,
-                0, 10
-            );
-            this.pingTreeBuilder = new PingTreeBuilder(
-                treeCollapsingService,
-                treeResult.data.nodesTree.treeLayers
-            );
-            this.rebuildPingTree(
                 this.startDisplayLayer,
                 this.displayLayersCount
             );
+            //this.pingTreeBuilder = new PingTreeBuilder(
+            //    treeCollapsingService,
+            //    treeResult.data.nodesTree.treeLayers
+            //);
+            //this.rebuildPingTree(
+            //    this.startDisplayLayer,
+            //    this.displayLayersCount
+            //);
             this.renewPopupDataCache(
                 new NodeInfoDataCache(
                     treeResult.data.nodesTree.allNodes.length,
@@ -190,7 +197,7 @@ export class NodesTreeViewComponent implements OnDestroy {
     }
 
     private rebuildPingTree() {
-        this.nodesFlatPingTree = this.pingTreeBuilder.buildPingTree();
+        //this.nodesFlatPingTree = this.pingTreeBuilder.buildPingTree();
     }
 
     private renewPopupDataCache(newCache: NodeInfoDataCache) {
@@ -206,18 +213,108 @@ export class NodesTreeViewComponent implements OnDestroy {
     }
 }
 
+class NtwkNodesSubtree {
+    constructor(
+        public container: NtwkNodeDataContainer,
+        public isBranchPingable: boolean,
+        public children: NtwkNodesSubtree[]
+    ) {}
+
+    public get isPingable() : boolean {
+        return this.container.nodeData.node.isOpenPing;
+    }
+
+    public static getFlatSubtree(
+        subtree: NtwkNodesSubtree[]
+    ) : NtwkNodesSubtree[] {
+        if(subtree.length === 0)
+            return subtree;
+        let flattened: NtwkNodesSubtree[] = [];
+        for(let i = 0; i< subtree.length; i++) {
+            let subroot = subtree[i];
+            flattened.push(subroot);
+            flattened = flattened.concat(NtwkNodesSubtree
+                .getFlatSubtree(subroot.children)
+            );
+        }
+        return flattened;
+    }
+}
+
+class TreeTrimmingHelper {
+    private lastBottomLayer = -1;
+    private lastDepth = -1;
+    private lastSubtree: NtwkNodesSubtree[] = null;
+
+    constructor(
+        private wholeTreeLayers: NtwkNodeDataContainer[][],
+        private treeCollapsingService: TreeCollapsingService
+    ) {}
+
+    public get fullTreeHeight(): number {
+        return this.wholeTreeLayers.length;
+    }
+
+    public getSubtree(
+        fromLayer: number, depth: number
+    ): NtwkNodesSubtree[] {
+        let result = fromLayer === this.lastBottomLayer
+            && depth === this.lastDepth
+                ? this.lastSubtree
+                : this.setLastSubtree(
+                    this.wholeTreeLayers[fromLayer].map(
+                        container => this.nodeContainerIntoSubtree(
+                            container,
+                            fromLayer+depth-1
+                        )
+                    )
+                );
+        this.lastBottomLayer = fromLayer;
+        this.lastDepth = depth;
+        return result;
+    }
+
+    private setLastSubtree(
+        subtree: NtwkNodesSubtree[]
+    ) : NtwkNodesSubtree[] {
+        this.lastSubtree = subtree;
+        return subtree;
+    }
+
+    private nodeContainerIntoSubtree(
+        c: NtwkNodeDataContainer,
+        maxDepth: number
+    ) : NtwkNodesSubtree {
+        let children: NtwkNodesSubtree[] = c.depth === maxDepth
+        || this.treeCollapsingService
+        .isCollapsed(c.nodeData.node.id)
+            ? []
+            : c.children
+                .map(c => this.nodeContainerIntoSubtree(c, maxDepth));
+        let isBranchPingable: boolean = children.some(
+            c => c.isBranchPingable
+            || c.container.nodeData.node.isOpenPing
+        )
+        return new NtwkNodesSubtree(c, isBranchPingable, children);
+    }
+}
+
 class DisplayTreeHelper {
-    private flatListIndexesByLayer: number[][] = null;
-    private flattenedListOfDisplayedNodesIndexes: number[] = null;
+    //private flatListIndexesByLayer: number[][] = null;
+    private flattenedTreeOfDisplayedNodesIndexes: number[] = null;
     private displayedNodesPrefixes: string[] = null;
+    private treeTrimmingHelper: TreeTrimmingHelper = null;
 
     constructor(
         private treeCollapsingService: TreeCollapsingService,
         private flatNodesList: NtwkNodeDataContainer[],
-        private nodesTreeLayers: NtwkNodeDataContainer[][],
+        nodesTreeLayers: NtwkNodeDataContainer[][],
         private startLayerNumber: number,
         private displayedLayersCount: number
     ) {
+        this.treeTrimmingHelper = new TreeTrimmingHelper(
+            nodesTreeLayers, treeCollapsingService
+        );
         this.buildInternalStructures(
             startLayerNumber,
             displayedLayersCount
@@ -225,7 +322,7 @@ class DisplayTreeHelper {
     }
 
     public get displayedNodesIndexes() {
-        return this.flattenedListOfDisplayedNodesIndexes;
+        return this.flattenedTreeOfDisplayedNodesIndexes;
     }
 
     public noChildrenChar(flatNodesListIndex: number): string {
@@ -262,78 +359,44 @@ class DisplayTreeHelper {
     ) {
         this.startLayerNumber = startLayerNumber;
         this.displayedLayersCount = displayedLayersCount;
-        this.rebuildDisplayedList(startLayerNumber, displayedLayersCount);
+        this.rebuildDisplayedList();
     }
 
     public foldBranch(i: number) {
         this.treeCollapsingService.foldSubtree(
             this.node(i).id
         )
-        this.rebuildDisplayedList(
-            this.startLayerNumber,
-            this.displayedLayersCount
-        );
+        this.rebuildDisplayedList();
     }
 
     public unfoldBranch(i: number) {
         this.treeCollapsingService.unfoldSubtree(
             this.node(i).id
         )
-        this.rebuildDisplayedList(
-            this.startLayerNumber,
-            this.displayedLayersCount
-        );
+        this.rebuildDisplayedList();
     }
 
-    private rebuildDisplayedList(
-        startLayerNumber: number,
-        displayedLayersCount: number
-    ) {
-        let startLayerIndexes
-            = this.flatListIndexesByLayer[startLayerNumber];
-        this.flattenedListOfDisplayedNodesIndexes = this.flattenSubtrees(
-            startLayerIndexes,
-            displayedLayersCount-1
-        );
-        this.buildPrefixes(this.flattenedListOfDisplayedNodesIndexes);
+    private rebuildDisplayedList() {
+        let subtree = this.treeTrimmingHelper
+            .getSubtree(this.startLayerNumber, this.displayedLayersCount);
+        this.flattenedTreeOfDisplayedNodesIndexes = NtwkNodesSubtree
+            .getFlatSubtree(subtree).map(n => n.container.index);
+        this.buildPrefixes(this.flattenedTreeOfDisplayedNodesIndexes);
     }
 
     private buildInternalStructures(
         startLayerNumber: number,
         displayedLayersCount: number
     ) {
-        this.flatListIndexesByLayer = this.nodesTreeLayers
-            .map(layer => layer.map(container => container.index));
-        this.rebuildDisplayedList(startLayerNumber, displayedLayersCount);
-    }
-
-    private flattenSubtrees(
-        flatListRootsIndexes:number[],
-        layersCount:number
-    ) {
-        if(layersCount === 0 || flatListRootsIndexes.length === 0)
-            return flatListRootsIndexes;
-        let flattened: number[] = [];
-        for(let i = 0; i< flatListRootsIndexes.length; i++) {
-            let subtreeRootIndex = flatListRootsIndexes[i];
-            flattened.push(subtreeRootIndex);
-            let nodeContainer = this.flatNodesList[subtreeRootIndex];
-            let isSubtreeCollapsed = this.treeCollapsingService
-                .isCollapsed(nodeContainer.nodeData.node.id)
-            flattened = isSubtreeCollapsed
-                || nodeContainer.children.length === 0
-                ? flattened
-                : flattened.concat(this.flattenSubtrees(
-                    nodeContainer.children.map(c => c.index),
-                    layersCount-1
-                ))
-        }
-        return flattened;
+        this.setDisplayedTreeLayers(
+            startLayerNumber, 
+            displayedLayersCount
+        );
     }
 
     private containerOfDisplayedNode(indexIntoDisplayedNodesIndexes: number) {
         return this.flatNodesList[
-            this.flattenedListOfDisplayedNodesIndexes[
+            this.flattenedTreeOfDisplayedNodesIndexes[
                 indexIntoDisplayedNodesIndexes
             ]
         ];
@@ -347,13 +410,11 @@ class DisplayTreeHelper {
         let startLayer = previousLayer;
         let lastOn = arr => arr[arr.length-1];
         let decrementLastValue = arr => arr[arr.length-1]--;
-        let prefixesNum = this.flattenedListOfDisplayedNodesIndexes.length;
+        let prefixesNum = this.flattenedTreeOfDisplayedNodesIndexes.length;
         let prefixes: string[] = [""];
         let previousNodeContainer: NtwkNodeDataContainer = null;
-        console.log("BUILDING PREFIXES")
         for(let i = 0; i < prefixesNum; i++) {
             let currentNodeContainer = this.containerOfDisplayedNode(i);
-            console.log(`Prefix for ${currentNodeContainer.nodeData.node.name}`)
             let currentLayer = currentNodeContainer.depth;
             if(currentLayer == startLayer) {
                 prefixes.push(prefixes[0]);
@@ -371,7 +432,6 @@ class DisplayTreeHelper {
                         }
                     }
                 } else if(currentLayer > previousLayer) {
-                    console.log(currentLayer)
                     //push to stack, add to prefix
                     prefix = prefix.length == 0 ? prefix
                         : lastOn(prefix) == "└"
@@ -399,9 +459,7 @@ class DisplayTreeHelper {
             previousNodeContainer = currentNodeContainer;
             previousLayer = currentLayer;
         }
-        console.log(prefixes);
         this.displayedNodesPrefixes = prefixes.slice(1, prefixes.length);
-        console.log(this.displayedNodesPrefixes)
     }
 }
 
@@ -412,15 +470,16 @@ class PingTreeBuilder {
     ) {}
 
     private nodeDataContainerToPingTree(
-        container: NtwkNodeDataContainer
+        container: NtwkNodeDataContainer,
+        maxDepth: number
     ) : PingTree  {
         let isSubtreeCollapsed = this.treeCollapsingService
             .isCollapsed(container.nodeData.node.id)
         let childrenPingTree: PingTree[] = isSubtreeCollapsed
-        ||
+        ||  container.depth === maxDepth
             ? []
             : [].concat(...container.children.map(
-                c => this.nodeDataContainerToPingTree(c)
+                c => this.nodeDataContainerToPingTree(c, maxDepth)
             ));
         return {
             id: container.nodeData.node.id,
@@ -432,7 +491,7 @@ class PingTreeBuilder {
         };
     }
 
-    private flattenPingTrees(roots: PingTree[], depth: number): PingTree[] {
+    private flattenPingTrees(roots: PingTree[]): PingTree[] {
         let flatten = root => [root].concat(
             ...root.childrenIDs.map(flatten)
         )
@@ -455,7 +514,7 @@ class PingTreeBuilder {
         return result;
     }
 
-    public buildPingTree(fromLayer: number, layersCount: number): PingTree[] {
+    /*public buildPingTree(fromLayer: number, layersCount: number): PingTree[] {
         let trees = this.treeLayers[fromLayer]
             .map( c => this.nodeDataContainerToPingTree(c));
         let result = this.flattenPingTrees(trees, layersCount)
@@ -467,5 +526,5 @@ class PingTreeBuilder {
             );
         trees = this.cleanTreesFromUnpingableNodes(trees);
         return result;
-    }
+    }*/
 }

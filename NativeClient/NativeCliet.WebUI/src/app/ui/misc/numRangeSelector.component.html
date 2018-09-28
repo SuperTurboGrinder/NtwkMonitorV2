@@ -1,14 +1,44 @@
-<span>
-    <span>from</span>
-    <numValueSwitch
-        [min]="min"
-        [max]="lower_max"
-        (changedValueEvent)="setLower($event)"
-    ></numValueSwitch>
-    <span>to</span>
-    <numValueSwitch
-        [min]="higher_min"
-        [max]="max"
-        (changedValueEvent)="setHigher($event)"
-    ></numValueSwitch>
+<span>from</span>
+<span class="border bg-white h-100 p-0 m-0">
+    <span
+        [ngClass]="{
+            'btn-light square': isLowerDownActive(),
+            'text-secondary' : !isLowerDownActive()
+        }"
+        class="border-right p-0 m-0 px-1 h-100"
+        style="user-select: none;"
+    >
+        <i class="fa fa-caret-left"></i>
+    </span>
+        {{lowerValue()}}
+    <span
+        [ngClass]="{
+            'btn-light square': isLowerUpActive(),
+            'text-secondary' : !isLowerUpActive()
+        }"
+        class="border-left p-0 m-0 px-1 h-100"
+        style="user-select: none;"
+    ><i class="fa fa-caret-right"></i></span>
+</span>
+<span>to</span>
+<span class="border bg-white h-100 p-0 m-0">
+    <span
+        [ngClass]="{
+            'btn-light square': isHigherDownActive(),
+            'text-secondary' : !isHigherDownActive()
+        }"
+        class="border-right p-0 m-0 px-1 h-100"
+        style="user-select: none;"
+    >
+        <i class="fa fa-caret-left"></i>
+    </span>
+        {{higherValue()}}
+    <span
+        [ngClass]="{
+            'btn-light square': isHigherUpActive(),
+            'text-secondary' : !isHigherUpActive()
+        }"
+        class="border-left p-0 m-0 px-1 h-100"
+        style="user-select: none;"
+    ><i class="fa fa-caret-right"></i></span>
 </span>
