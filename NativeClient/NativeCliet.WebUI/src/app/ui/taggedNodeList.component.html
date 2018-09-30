@@ -29,34 +29,41 @@
             </div>
         
             <div class="p-0 m-0 container-fluid" style="height: calc(100% - 30px); width:calc(100% + 16px); overflow-y:scroll">
-                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes">
-                    <div class="col-5 p-0 m-0 font-italic text-secondary"
-                    >
-                        <strong class="m-0 p-0 "
-                            (mouseenter)="selectNode(i, $event)"
-                            (mouseleave)="deselectNode($event)"
-                        >
-                            {{node(i).name}}
-                        </strong>
-                    </div>
-                    <div class="col-2 p-0 m-0">
-                        <execServicesButtons
-                            [node]="node(i)"
-                        ></execServicesButtons>
-                    </div>
-                    <div class="col-3 p-0 m-0">
-                        <webServicesButtons
-                            [nodeID]="node(i).id"
-                            [webServices]="listWebServicesData(i)"
-                        ></webServicesButtons>
-                    </div>
-                    <div class="col-2 p-0 m-0">
-                        <pingDisplay
-                            [node]="node(i)"
-                            (changedEvent)="resortListByPing()"
-                        ></pingDisplay>
+                <div class="row p-0 py-3 m-0 text-center font-italic" *ngIf="isNoNodesLoaded(); else nodesList">
+                    <div class="col">
+                        <strong>No saved nodes found in database.</strong>
                     </div>
                 </div>
+                <ng-template #nodesList>
+                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes">
+                        <div class="col-5 p-0 m-0 font-italic text-secondary"
+                        >
+                            <strong class="m-0 p-0 "
+                                (mouseenter)="selectNode(i, $event)"
+                                (mouseleave)="deselectNode($event)"
+                            >
+                                {{node(i).name}}
+                            </strong>
+                        </div>
+                        <div class="col-2 p-0 m-0">
+                            <execServicesButtons
+                                [node]="node(i)"
+                            ></execServicesButtons>
+                        </div>
+                        <div class="col-3 p-0 m-0">
+                            <webServicesButtons
+                                [nodeID]="node(i).id"
+                                [webServices]="listWebServicesData(i)"
+                            ></webServicesButtons>
+                        </div>
+                        <div class="col-2 p-0 m-0">
+                            <pingDisplay
+                                [node]="node(i)"
+                                (changedEvent)="resortListByPing()"
+                            ></pingDisplay>
+                        </div>
+                    </div>
+                </ng-template>
             </div>
         </div>
     </div>

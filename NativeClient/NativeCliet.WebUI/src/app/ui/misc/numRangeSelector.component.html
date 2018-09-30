@@ -1,4 +1,4 @@
-<span>from</span>
+<span>from </span>
 <span class="border bg-white h-100 p-0 m-0">
     <span
         [ngClass]="{
@@ -7,6 +7,7 @@
         }"
         class="border-right p-0 m-0 px-1 h-100"
         style="user-select: none;"
+        (click)="decrValue()"
     >
         <i class="fa fa-caret-left"></i>
     </span>
@@ -18,9 +19,10 @@
         }"
         class="border-left p-0 m-0 px-1 h-100"
         style="user-select: none;"
+        (click)="incrValue()"
     ><i class="fa fa-caret-right"></i></span>
 </span>
-<span>to</span>
+<span> to </span>
 <span class="border bg-white h-100 p-0 m-0">
     <span
         [ngClass]="{
@@ -29,6 +31,7 @@
         }"
         class="border-right p-0 m-0 px-1 h-100"
         style="user-select: none;"
+        (click)="decrLength()"
     >
         <i class="fa fa-caret-left"></i>
     </span>
@@ -40,5 +43,7 @@
         }"
         class="border-left p-0 m-0 px-1 h-100"
         style="user-select: none;"
+        (click)="incrLength()"
     ><i class="fa fa-caret-right"></i></span>
 </span>
+<span> ({{currentLength()}}) out of {{ofMax()}} </span>

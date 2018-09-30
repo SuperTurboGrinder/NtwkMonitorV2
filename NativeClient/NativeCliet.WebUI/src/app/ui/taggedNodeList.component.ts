@@ -30,6 +30,7 @@ export class TaggedNodeListComponent implements OnDestroy {
     private loadingError = false;
     private nodesTreeSubscription: Subscription = null;
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
+    private nodesListIsEmpty: boolean = true;
 
     private sorting: Sorting = Sorting.Default;
     private sortingDescending: boolean = false;
@@ -153,7 +154,9 @@ export class TaggedNodeListComponent implements OnDestroy {
         return this.filteredNodesList[i].node;
     }
 
-    
+    public isNoNodesLoaded(): boolean {
+        return this.nodesListIsEmpty;
+    }
 
     public get isLoadingError() {
         return this.loadingError;
@@ -194,6 +197,11 @@ export class TaggedNodeListComponent implements OnDestroy {
                         this.loadingError = true;
                         return;
                     }
+                    let nodesNum = treeResult.data.nodesTree.allNodes.length;
+                    if(nodesNum === 0) {
+                        this.nodesListIsEmpty = true;
+                        this.filteredNodesList = [null]
+                    } else this.nodesListIsEmpty = false;
                     let viewNodesIDs = viewNodesIDsResult.data;
                     let allNodes = treeResult.data.nodesTree.allNodes;
                     this.filteredNodesList = allNodes

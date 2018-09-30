@@ -7,9 +7,6 @@ export class Range {
     ) {}
     
     public fit(max_value, max_length) {
-        console.log("fit")
-        console.log(max_value)
-        console.log(max_length);
         let higher_value = this.value + this.length -1;
         let oldVal = this.value;
         let oldLen = this.length;
@@ -20,6 +17,24 @@ export class Range {
             : max_value - this.value + 1;
         let changed = this.value !== oldVal || this.length !== oldLen;
         return changed;
+    }
+
+    public incr() {
+        this.value++;
+        this.shorten();
+    }
+    
+    public decr() {
+        this.value--;
+        this.lengthen();
+    }
+
+    public lengthen() {
+        this.length++;
+    }
+
+    public shorten() {
+        this.length = (this.length > 1) ? this.length-1 : 1;
     }
 }
 
@@ -45,15 +60,22 @@ export class NumRangeSelectorComponent {
         }
     }
 
+    public currentLength() {
+        return this._range.length;
+    }
+
+    public ofMax() {
+        return this._max_value+1;
+    }
+
     @Input() set maxValue(newMax: number) {
-        console.log(this._range);
         this._max_value = newMax;
         this.fit();
-        console.log(this._range);
     }
 
     @Input() set maxLength(maxLength: number) {
         this._max_length = maxLength;
+        this._range.length = maxLength;
         this.fit();
     }
 
@@ -82,5 +104,33 @@ export class NumRangeSelectorComponent {
 
     public higherValue(): number {
         return this._range.value + this._range.length -1;
+    }
+
+    public decrValue() {
+        if(this.isLowerDownActive()) {
+            this._range.decr();
+            this.emitChange();
+        }
+    }
+
+    public incrValue() {
+        if(this.isLowerUpActive()) {
+            this._range.incr();
+            this.emitChange();
+        }
+    }
+
+    public decrLength() {
+        if(this.isHigherDownActive()) {
+            this._range.shorten();
+            this.emitChange();
+        }
+    }
+
+    public incrLength() {
+        if(this.isHigherUpActive()) {
+            this._range.lengthen();
+            this.emitChange();
+        }
     }
 }

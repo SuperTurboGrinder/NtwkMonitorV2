@@ -1,5 +1,5 @@
 <div class="w-100 h-100 p-0 m-0 bg-light">
-    <div class="w-100 h-100 p-0 m-0" *ngIf="displayedNodesIndexes != null; else stillEmptyBlock">
+    <div class="w-100 h-100 p-0 m-0" *ngIf="isInitialized() != false; else stillEmptyBlock">
         <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
             <div class="row p-0 m-0 text-center" style="height: 30px">
                 <div class="col-5 border rounded-top p-0 m-0 nonselectable-collumn">
@@ -17,57 +17,64 @@
             </div>
         
             <div class="p-0 m-0 container-fluid" style="height: calc(100% - 60px); width:calc(100% + 16px); overflow-y:scroll">
-                <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; let indexIndex = index">
-                    <div class="col-5 p-0 m-0 font-italic text-secondary text-left"
-                    >
-                        <strong class="m-0 p-0 pl-2">
-                            <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
-                            -->{{prefix(indexIndex)}}{{noChildrenChar(i)}}</span><!--
-                            --><span *ngIf="hasChildren(i)">
-                                <button
-                                    type="button"
-                                    *ngIf="isCollapsed(i); else collapseButton"
-                                    (click)="unfoldBranch(i)"
-                                    class="text-center p-0 m-0"
-                                    style="width: 15px; height: 15px; line-height: 8px;"
-                                >+</button>
-                                <ng-template #collapseButton>
-                                    <button
-                                        type="button"
-                                        (click)="foldBranch(i)"
-                                        class="text-center p-0 m-0"
-                                        style="width: 15px; height: 15px; line-height: 8px;"
-                                    >-</button>
-                                </ng-template>
-                            </span><!--
-                            --><span
-                                (mouseenter)="selectNode(i, $event)"
-                                (mouseleave)="deselectNode($event)"
-                                (click)="pingBranch(indexIndex)"
-                                [ngClass]="{ 'btn btn-success square p-0 px-1 m-0 mx-1' : isBranchPingable(indexIndex) }"
-                            >[{{node(i).name}}]</span>
-                            
-                        </strong>
-                    </div>
-                    <div class="col-2 p-0 m-0">
-                        <execServicesButtons
-                            [node]="node(i)"
-                        ></execServicesButtons>
-                    </div>
-                    <div class="col-3 p-0 m-0">
-                        <webServicesButtons
-                            [nodeID]="node(i).id"
-                            [webServices]="listWebServicesData(i)"
-                        ></webServicesButtons>
-                    </div>
-                    <div class="col-2 p-0 m-0">
-                        <pingDisplay
-                            [node]="node(i)"
-                        ></pingDisplay>
+                <div class="row p-0 py-3 m-0 text-center font-italic" *ngIf="isNoNodesLoaded(); else nodesList">
+                    <div class="col">
+                        <strong>No saved nodes found in database.</strong>
                     </div>
                 </div>
+                <ng-template #nodesList>
+                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; let indexIndex = index">
+                        <div class="col-5 p-0 m-0 font-italic text-secondary text-left"
+                        >
+                            <strong class="m-0 p-0 pl-2">
+                                <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
+                                -->{{prefix(indexIndex)}}{{noChildrenChar(i)}}</span><!--
+                                --><span *ngIf="hasChildren(i)">
+                                    <button
+                                        type="button"
+                                        *ngIf="isCollapsed(i); else collapseButton"
+                                        (click)="unfoldBranch(i)"
+                                        class="text-center p-0 m-0"
+                                        style="width: 15px; height: 15px; line-height: 8px;"
+                                    >+</button>
+                                    <ng-template #collapseButton>
+                                        <button
+                                            type="button"
+                                            (click)="foldBranch(i)"
+                                            class="text-center p-0 m-0"
+                                            style="width: 15px; height: 15px; line-height: 8px;"
+                                        >-</button>
+                                    </ng-template>
+                                </span><!--
+                                --><span
+                                    (mouseenter)="selectNode(i, $event)"
+                                    (mouseleave)="deselectNode($event)"
+                                    (click)="pingBranch(indexIndex)"
+                                    [ngClass]="{ 'btn btn-success square p-0 px-1 m-0 mx-1' : isBranchPingable(indexIndex) }"
+                                >[{{node(i).name}}]</span>
+                                
+                            </strong>
+                        </div>
+                        <div class="col-2 p-0 m-0">
+                            <execServicesButtons
+                                [node]="node(i)"
+                            ></execServicesButtons>
+                        </div>
+                        <div class="col-3 p-0 m-0">
+                            <webServicesButtons
+                                [nodeID]="node(i).id"
+                                [webServices]="listWebServicesData(i)"
+                            ></webServicesButtons>
+                        </div>
+                        <div class="col-2 p-0 m-0">
+                            <pingDisplay
+                                [node]="node(i)"
+                            ></pingDisplay>
+                        </div>
+                    </div>
+                </ng-template>
             </div>
-            <div class="w-100 p-0 m-0 text-center" style="height: 30px">
+            <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
                 Show tree levels
                 <numRangeSelector
                     [maxValue]="fullTreeLayersCount()-1"
