@@ -18,9 +18,11 @@ import { TaggedNodeListComponent } from './taggedNodeList.component';
 import { NodesTreeViewComponent } from './nodesTreeView.component';
 import { NumValueSwitchComponent } from './misc/numValueSwitch.component';
 import { NumRangeSelectorComponent } from './misc/numRangeSelector.component';
+import { SettingsProfileSelectionComponent } from './settingsProfileSelection.component';
 
 @NgModule({
   declarations: [
+    SettingsProfileSelectionComponent,
     ChildsHeightToThisWidthDirective,
     SizeSetterDirective,
     PingDisplayComponent,
@@ -42,6 +44,7 @@ import { NumRangeSelectorComponent } from './misc/numRangeSelector.component';
     MessageDisplayComponent,
     NodeInfoPopupComponent,
     TaggedNodeListComponent,
+    SettingsProfileSelectionComponent,
     NodesTreeViewComponent
   ],
   providers: [],
