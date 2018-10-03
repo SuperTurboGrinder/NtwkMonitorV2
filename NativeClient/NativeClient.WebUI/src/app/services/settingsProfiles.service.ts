@@ -9,7 +9,7 @@ import { BaseURL } from "./baseUrl.token";
 
 @Injectable()
 export class SettingsProfilesService {
-    private currentProfileID = 1;
+    private currentProfileID = -1; //not assigned
     private currentProfileSubject : BehaviorSubject<SettingsProfile> = null;
     private baseUrl: string = null;
 
@@ -25,6 +25,10 @@ export class SettingsProfilesService {
             'get',
             this.baseUrl
         );
+    }
+
+    public isCurrentProfileSet() {
+        return this.currentProfileID !== -1;
     }
 
     public setCurrentProfile(id: number) : Observable<SettingsProfile> {
