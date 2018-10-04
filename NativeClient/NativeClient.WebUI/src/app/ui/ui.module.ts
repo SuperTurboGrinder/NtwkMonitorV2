@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ModelModule } from "../model/model.module";
@@ -19,6 +21,7 @@ import { NodesTreeViewComponent } from './nodesTreeView.component';
 import { NumValueSwitchComponent } from './misc/numValueSwitch.component';
 import { NumRangeSelectorComponent } from './misc/numRangeSelector.component';
 import { SettingsProfileSelectionComponent } from './settingsProfileSelection.component';
+import { SettingsProfileFormComponent } from './crud/settingsProfileForm.component';
 
 @NgModule({
   declarations: [
@@ -35,17 +38,19 @@ import { SettingsProfileSelectionComponent } from './settingsProfileSelection.co
     BackendErrorSelectorComponent,
     MessageDisplayComponent,
     TaggedNodeListComponent,
-    NodesTreeViewComponent
+    NodesTreeViewComponent,
+    SettingsProfileFormComponent
   ],
   imports: [
-    BrowserAnimationsModule, CommonModule, ModelModule
+    BrowserAnimationsModule, FormsModule, RouterModule, CommonModule, ModelModule
   ],
   exports: [
     MessageDisplayComponent,
     NodeInfoPopupComponent,
     TaggedNodeListComponent,
     SettingsProfileSelectionComponent,
-    NodesTreeViewComponent
+    NodesTreeViewComponent,
+    SettingsProfileFormComponent
   ],
   providers: [],
 })
