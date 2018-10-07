@@ -1,66 +1,98 @@
-<div class="border p-3 bg-primary"
-    [ngClass]="{'bg-warning': isEditMode}"
->
-    <span class="h4">
-        <span *ngIf="isEditMode === true" i18n="@@editorViewEditHeader">Edit </span>
-        <span *ngIf="isEditMode === false" i18n="@@editorViewCreateHeader">New </span>
-        <span i18n="@@editorViewHeaderEnding">settings profile</span>
-    </span>
-</div>
-<!--
-    public id:number,
-    public name:string,
-    //public sendMonitoringAlarm:boolean,
-    //public monitoringAlarmEmail:string,
-    public monitoringStartHour:number, //from 0 to 23
-    public monitoringEndHour:number,
-    public startMonitoringOnLaunch:boolean,
-    public depthMonitoring:boolean,
-    public monitorInterval:number
--->
-<form
-    novalidate
-    #form="ngForm"
-    (ngSubmit)="save(form)"
-    validate
->
-    <div class="row">
-        <div class="col-6 form-inline py-2">
-            <label i18n="@@nameLabel" class="pr-2">Name</label>
-            <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="profile.name" minlength="2" required />
-            <strong
-                *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
-                class="text-small text-danger"
-            >
-                <div
-                    i18n="@@nameRequiredMessge"
-                    *ngIf="nameModel.errors.required"
-                >Name value required.</div>
-            </strong>
-        </div>
+<div class="w-100 h-100 p-0 m-0">
+    <div class="border p-3 bg-primary w-100"
+        [ngClass]="{'bg-warning': isEditMode}"
+    >
+        <span class="h4">
+            <span *ngIf="isEditMode === true" i18n="@@editorViewEditHeader">Edit </span>
+            <span *ngIf="isEditMode === false" i18n="@@editorViewCreateHeader">New </span>
+            <span i18n="@@editorViewHeaderEnding">settings profile</span>
+        </span>
     </div>
-    <div class="row">
-        <div class="col">
-            <div class="form-inline m-0 p-0">
-                <span i18n="@@autoMonitoringLabel">Auto monitoring</span>
-                <input
-                    class="form-control mx-2"
-                    type="checkbox"
-                    name="startMonitoringOnLaunch"
-                    [(ngModel)]="profile.startMonitoringOnLaunch"
-                >
+    <!--
+        public id:number,
+        public name:string,
+        //public sendMonitoringAlarm:boolean,
+        //public monitoringAlarmEmail:string,
+        public monitoringStartHour:number, //from 0 to 23
+        public monitoringEndHour:number,
+        public startMonitoringOnLaunch:boolean,
+        public depthMonitoring:boolean,
+        public monitorInterval:number
+    -->
+    <form
+        class="pl-2 w-100"
+        novalidate
+        #form="ngForm"
+        (ngSubmit)="save(form)"
+        validate
+    >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6 form-inline py-2">
+                    <label i18n="@@nameLabel" class="pr-2">Name</label>
+                    <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="profile.name" minlength="2" required />
+                    <strong
+                        *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
+                        class="text-small text-danger"
+                    >
+                        <div
+                            i18n="@@nameRequiredMessge"
+                            *ngIf="nameModel.errors.required"
+                        >Name value required.</div>
+                    </strong>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-inline m-0 p-0">
+                        <input
+                            class="form-control mx-2"
+                            type="checkbox"
+                            name="startMonitoringOnLaunch"
+                            [(ngModel)]="profile.startMonitoringOnLaunch"
+                        >
+                        <span i18n="@@autoMonitoringLabel">Auto start monitoring</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-inline m-0 p-0">
+                        <input
+                            class="form-control mx-2"
+                            type="checkbox"
+                            name="depthMonitoring"
+                            [(ngModel)]="profile.depthMonitoring"
+                        >
+                        <span i18n="@@skipUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row py-1">
+                <div class="col">
+                    <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
+                    <numRangeSelector
+                        [maxValue]="23"
+                        [maxLength]="24"
+                    ></numRangeSelector>
+                    <span i18n="@@hoursLabel"> hours</span>
+                </div>
+            </div>
+
+            <div class="row py-1">
+                <div class="col">
+                    <span i18n="@@monitoringIntervalLabel">Monitor ping every </span>
+                    <numValueSwitch
+                        [min]="1"
+                        [max]="30"
+                        [initialValue]="1"
+                    ></numValueSwitch>
+                    <span i18n="@@minutesLabel"> minutes</span>
+                </div>
             </div>
         </div>
-    </div>
-    
-    <div class="row">
-        <div class="col">
-            <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
-            <numRangeSelector
-                [maxValue]="23"
-                [maxLength]="24"
-            ></numRangeSelector>
-            <span i18n="@@hoursLabel"> hours</span>
-        </div>
-    </div>
-</form>
+    </form>
+</div>

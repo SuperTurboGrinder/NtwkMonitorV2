@@ -8,6 +8,7 @@ export class NumValueSwitchComponent {
     private _min: number = 0;
     private _max: number = 0;
     private _value: number = 0;
+    private _initialized: boolean = false;
     
     @Output() private changedValueEvent = new EventEmitter<number>();
 
@@ -33,7 +34,10 @@ export class NumValueSwitchComponent {
     }
 
     @Input() set initialValue(val: number) {
-        this._value = val;
+        if(this._initialized === false) {
+            this._initialized = true;
+            this._value = val;
+        }
     }
 
     get value(): number { return this._value }
