@@ -20,11 +20,15 @@ import { TaggedNodeListComponent } from './taggedNodeList.component';
 import { NodesTreeViewComponent } from './nodesTreeView.component';
 import { NumValueSwitchComponent } from './misc/numValueSwitch.component';
 import { NumRangeSelectorComponent } from './misc/numRangeSelector.component';
-import { SettingsProfileSelectionComponent } from './settingsProfileSelection.component';
+import { SettingsProfileSelectionComponent } from './crud/settingsProfileSelection.component';
 import { SettingsProfileFormComponent } from './crud/settingsProfileForm.component';
+import { UIMainComponent } from './uiMain.component';
+import { UIRoutingConfig } from './ui.routing';
+import { TagSelectionComponent } from './crud/tagSelection.component';
 
 @NgModule({
   declarations: [
+    UIMainComponent,
     SettingsProfileSelectionComponent,
     ChildsHeightToThisWidthDirective,
     SizeSetterDirective,
@@ -39,18 +43,22 @@ import { SettingsProfileFormComponent } from './crud/settingsProfileForm.compone
     MessageDisplayComponent,
     TaggedNodeListComponent,
     NodesTreeViewComponent,
-    SettingsProfileFormComponent
+    SettingsProfileFormComponent,
+    TagSelectionComponent
   ],
   imports: [
-    BrowserAnimationsModule, FormsModule, RouterModule, CommonModule, ModelModule
+    BrowserAnimationsModule,
+    FormsModule,
+    RouterModule,
+    CommonModule,
+    ModelModule,
+    RouterModule,
+    RouterModule.forRoot(UIRoutingConfig.routes)
   ],
   exports: [
-    MessageDisplayComponent,
     NodeInfoPopupComponent,
-    TaggedNodeListComponent,
-    SettingsProfileSelectionComponent,
-    NodesTreeViewComponent,
-    SettingsProfileFormComponent
+    MessageDisplayComponent,
+    UIMainComponent
   ],
   providers: [],
 })

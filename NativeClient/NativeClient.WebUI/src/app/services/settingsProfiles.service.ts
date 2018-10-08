@@ -53,6 +53,10 @@ export class SettingsProfilesService {
         return this.currentProfileSubject;
     }
 
+    public isCurrentProfileID(id: number): boolean {
+        return this.currentProfileID === id;
+    }
+
     public currentProfilesViewNodesIDs() : Observable<HTTPResult<number[]>> {
         return this.httpDatasource.dataRequest<number[]>(
             'get',

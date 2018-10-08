@@ -94,5 +94,29 @@
                 </div>
             </div>
         </div>
+        <div>
+            <button
+                type="button"
+                [ngClass]="{
+                    'btn-primary': isEditMode === false,
+                    'btn-warning': isEditMode
+                }"
+                class="btn square m-1"
+            >
+                <span
+                    *ngIf="isEditMode; else createButton"
+                    i18n="@@saveButtonLabel"
+                >Save</span>
+                <ng-template #createButton>
+                    <span i18n="@@createButtonLabel">Create</span>
+                </ng-template>
+            </button>
+            <button
+                type="button"
+                class="btn btn-secondary square m-1"
+            >
+                Cancel
+            </button>
+        </div>
     </form>
 </div>

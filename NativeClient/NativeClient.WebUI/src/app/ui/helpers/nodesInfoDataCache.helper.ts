@@ -27,10 +27,10 @@ export class NodeInfoDataCache {
         this.webServicesNames = newArrayOfNodesCountLength();
         this.tagsSubscription = tagsService.getTagsList().subscribe(tagsListResult => {
             if(tagsListResult === null) {
-                return null;
+                return;
             } else if(tagsListResult.success === false) {
                 this.loadingError = true;
-                return null;
+                return;
             }
             this.tagsList = tagsListResult.data;
         });

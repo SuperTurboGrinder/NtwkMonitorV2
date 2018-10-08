@@ -1,7 +1,8 @@
 import { Component, OnDestroy, HostListener } from "@angular/core";
 import { Subscription } from "rxjs";
-import { SettingsProfilesService } from "../services/settingsProfiles.service";
-import { SettingsProfile } from "../model/httpModel/settingsProfile.model";
+import { SettingsProfilesService } from "../../services/settingsProfiles.service";
+import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
     selector: 'settingsProfileSelection',
@@ -9,11 +10,15 @@ import { SettingsProfile } from "../model/httpModel/settingsProfile.model";
 })
 export class SettingsProfileSelectionComponent {
     private profiles: SettingsProfile[] = null;
-    private loadingError: boolean = false;
+    private loadingError = false;
+    public readonly isEditorView: boolean;
 
     constructor(
-        private settingsService: SettingsProfilesService
+        private settingsService: SettingsProfilesService,
+        route: ActivatedRoute
     ) {
+        let pageName = route.snapshot.url[0].path;
+        this.isEditorView = pageName !== "profilesSelect";
         this.updateProfilesList();
     }
 
@@ -26,8 +31,14 @@ export class SettingsProfileSelectionComponent {
     }
 
     public setAndContinue(profileID: number) {
-        this.settingsService.setCurrentProfile(profileID);
-        console.log(`Set ${profileID} as current profile.`);
+        if(!this.isCurrentProfile(profileID)) {
+            this.settingsService.setCurrentProfile(profileID);
+            console.log(`Set ${profileID} as current profile.`);
+        }
+    }
+
+    public isCurrentProfile(id: number): boolean {
+        return this.settingsService.isCurrentProfileID(id);
     }
 
     private updateProfilesList() {

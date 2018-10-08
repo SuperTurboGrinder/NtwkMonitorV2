@@ -26,10 +26,12 @@ export class SettingsProfileFormComponent {
         let routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
         this._isEditMode = routeSnapshot.url[1].path === "edit";
         if(this._isEditMode) {
-            let selectedID = parseInt(routeSnapshot.params[0]);
+            let selectedID = parseInt(routeSnapshot.params.id);
+            console.log(selectedID);
             settingsService.getProfiles().subscribe(
                 (profilesResult: HTTPResult<SettingsProfile[]>) => {
                     if(profilesResult.success === true) {
+                        console.log(profilesResult.data)
                         this.profile = profilesResult.data.find(
                             profile => profile.id === selectedID
                         )

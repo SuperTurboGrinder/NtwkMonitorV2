@@ -1,0 +1,57 @@
+<div class="w-100 h-100 p-0 m-0 bg-light">
+    <div class="w-100 h-100 p-0 m-0" *ngIf="tagsList != null; else stillEmptyBlock">
+        <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
+            <div class="p-0 m-0" style="height:100%; width:calc(100% + 16px); overflow-y:scroll">
+                <div class="d-flex align-items-center h-100 w-100">
+                    <div class="d-block-inline w-100" style="max-height:100%">
+                        <div class="p-0 m-0 container-fluid">
+                            <div class="row pb-1 text-center" *ngFor="let tag of tagsList">
+                                <div class="col-1"> </div>
+                                <div
+                                    class="col-6 text-left p-2 border-bottom"
+                                >
+                                    <span class="h4">{{tag.name}}</span>
+                                </div>
+                                <div class="col-2 p-1 border-bottom">
+                                    <button
+                                        type="button"
+                                        class="btn btn-warning square w-100"
+                                        i18n="@@editButtonLabel"
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                                <div class="col-2 p-1 border-bottom">
+                                    <button
+                                        type="button"
+                                        class="btn btn-danger square w-100"
+                                        i18n="@@removeButtonLabel"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                                <div class="col-1"> </div>
+                            </div>
+                            <div class="row p-0 m-0 text-center">
+                                <div class="w-100">
+                                    <span
+                                        class="btn btn-primary square p-1 m-1"
+                                        i18n="@@addNewButtonLabel"
+                                    >
+                                        Add new
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #stillEmptyBlock>
+        <loadingIndicator
+            [isError]="isLoadingError"
+            (refreshEvent)="refresh($event)"
+        ></loadingIndicator>
+        </ng-template>
+</div>
