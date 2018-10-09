@@ -3,7 +3,6 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { ModelModule } from "../model/model.module";
 import { MessagingService } from "./messaging.service";
-import { UpdateAlarmService } from "./updateAlarm.service";
 import { PingCacheService } from "./pingCache.service";
 import { HTTPDatasource } from "./http.datasource";
 import { PingService } from "./ping.service";
@@ -31,7 +30,6 @@ import { TreeCollapsingService } from './treeCollapsing.service';
     TreeCollapsingService,
     NodeInfoPopupDataService,
     MessagingService,
-    UpdateAlarmService,
     PingCacheService,
     HTTPDatasource,
     PingService,

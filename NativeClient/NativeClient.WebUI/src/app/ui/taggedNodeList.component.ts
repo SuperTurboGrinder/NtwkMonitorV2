@@ -1,12 +1,10 @@
-import { Component, OnDestroy, HostListener } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Component } from "@angular/core";
 
 import { NtwkNode } from "../model/httpModel/ntwkNode.model";
 import { CWSData } from "../model/httpModel/cwsData.model";
 import { NodesService } from "../services/nodes.service";
 import { NodeData } from "../model/httpModel/nodeData.model";
 import { SettingsProfilesService } from "../services/settingsProfiles.service";
-import { UpdateAlarmService } from "../services/updateAlarm.service";
 import { PingCacheService } from "../services/pingCache.service";
 import { NodeTag } from "../model/httpModel/nodeTag.model";
 import { TagsService } from "../services/tags.service";
@@ -24,11 +22,10 @@ enum Sorting {
     selector: 'taggedNodeList',
     templateUrl: './taggedNodeList.component.html'
 })
-export class TaggedNodeListComponent implements OnDestroy {
+export class TaggedNodeListComponent {
     private filteredNodesList: NodeData[] = null;
     public sortedIndexes: number[] = null;
     private loadingError = false;
-    private nodesTreeSubscription: Subscription = null;
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
     private nodesListIsEmpty: boolean = true;
 
@@ -168,30 +165,27 @@ export class TaggedNodeListComponent implements OnDestroy {
     }
 
     public refresh(_: boolean) {
-        this.updateList();
-    }
-
-    private updateList() {
         this.loadingError = false;
-        this.updateService.sendUpdateNodesAndTagsAlarm();
+        this.initialize();
     }
 
     constructor(
         private pingCacheService: PingCacheService,
-        private updateService: UpdateAlarmService,
         private nodeInfoPopupService: NodeInfoPopupDataService,
-        tagsService: TagsService,
-        nodesService: NodesService,
-        settingsService: SettingsProfilesService,
+        private tagsService: TagsService,
+        private nodesService: NodesService,
+        private settingsService: SettingsProfilesService,
     ) {
-        this.nodesTreeSubscription = nodesService.getNodesTree().subscribe(treeResult => {
-            if(treeResult === null) {
-                return;
-            } else if(treeResult.success === false) {
+        this.initialize();
+    }
+
+    private initialize() {
+        this.nodesService.getNodesTree().subscribe(treeResult => {
+            if(treeResult.success === false) {
                 this.loadingError = true;
                 return;
             }
-            settingsService.currentProfilesViewNodesIDs()
+            this.settingsService.currentProfilesViewNodesIDs()
                 .subscribe(viewNodesIDsResult => {
                     if(viewNodesIDsResult.success === false) {
                         this.loadingError = true;
@@ -209,28 +203,15 @@ export class TaggedNodeListComponent implements OnDestroy {
                             viewNodesIDs.includes(nData.nodeData.node.id)
                         )
                         .map(nData => nData.nodeData);
-                    this.renewPopupDataCache(
+                    this.nodeInfoPopupDataCache =
                         new NodeInfoDataCache(
                             this.filteredNodesList.length,
                             treeResult.data.cwsData,
-                            tagsService
-                        )
-                    );
+                            this.tagsService
+                        );
                     this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
                     this.sortedIndexes = this.defaultSortedIndexes(this.filteredNodesList, false);
                 })
         });
-    }
-
-    private renewPopupDataCache(newCache: NodeInfoDataCache) {
-        if(this.nodeInfoPopupDataCache != null) {
-            this.nodeInfoPopupDataCache.destroy();
-        }
-        this.nodeInfoPopupDataCache = newCache;
-    }
-
-    ngOnDestroy() {
-        this.renewPopupDataCache(null);
-        this.nodesTreeSubscription.unsubscribe();
     }
 }

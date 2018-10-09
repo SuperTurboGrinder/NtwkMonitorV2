@@ -1,9 +1,7 @@
-import { Component, OnDestroy, HostListener } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Component } from "@angular/core";
 
 import { NtwkNode } from "../model/httpModel/ntwkNode.model";
 import { NodesService } from "../services/nodes.service";
-import { UpdateAlarmService } from "../services/updateAlarm.service";
 import { PingCacheService, PingTree } from "../services/pingCache.service";
 import { TagsService } from "../services/tags.service";
 import { NodeInfoPopupDataService } from "../services/nodeInfoPopupData.service";
@@ -16,10 +14,9 @@ import { DisplayTreeHelper } from "./helpers/displayTreeHelper.helper";
     selector: 'nodesTreeView',
     templateUrl: './nodesTreeView.component.html'
 })
-export class NodesTreeViewComponent implements OnDestroy {
+export class NodesTreeViewComponent {
     private displayTreeHelper: DisplayTreeHelper = null;
     private loadingError = false;
-    private nodesTreeSubscription: Subscription = null;
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
     private nodesListIsEmpty: boolean = true;
     private initialized: boolean = false;
@@ -105,12 +102,10 @@ export class NodesTreeViewComponent implements OnDestroy {
 
     public foldBranch(index: number) {
         this.displayTreeHelper.foldBranch(index);
-        this.rebuildPingTree();
     }
 
     public unfoldBranch(index: number) {
         this.displayTreeHelper.unfoldBranch(index);
-        this.rebuildPingTree();
     }
 
     public changeVisibleLayers(range: Range) {
@@ -123,12 +118,8 @@ export class NodesTreeViewComponent implements OnDestroy {
     }
 
     public refresh(_: boolean) {
-        this.updateList();
-    }
-
-    private updateList() {
         this.loadingError = false;
-        this.updateService.sendUpdateNodesAndTagsAlarm();
+        this.initialize();
     }
 
     public pingBranch(i: number) {
@@ -148,17 +139,18 @@ export class NodesTreeViewComponent implements OnDestroy {
     }
 
     constructor(
-        private updateService: UpdateAlarmService,
         private pingCacheService: PingCacheService,
         private nodeInfoPopupService: NodeInfoPopupDataService,
-        treeCollapsingService: TreeCollapsingService,
-        tagsService: TagsService,
-        nodesService: NodesService,
+        private treeCollapsingService: TreeCollapsingService,
+        private tagsService: TagsService,
+        private nodesService: NodesService,
     ) {
-        this.nodesTreeSubscription = nodesService.getNodesTree().subscribe(treeResult => {
-            if(treeResult === null) {
-                return;
-            } else if(treeResult.success === false) {
+        this.initialize();
+    }
+
+    private initialize() {
+        this.nodesService.getNodesTree().subscribe(treeResult => {
+            if(treeResult.success === false) {
                 this.loadingError = true;
                 return;
             }
@@ -175,36 +167,19 @@ export class NodesTreeViewComponent implements OnDestroy {
                     ? this.treeLayersCount
                     : this.maxDisplayedLayers;
             this.displayTreeHelper = new DisplayTreeHelper(
-                treeCollapsingService,
+                this.treeCollapsingService,
                 treeResult.data.nodesTree.allNodes,
                 treeResult.data.nodesTree.treeLayers,
                 this.startDisplayLayer,
                 this.displayLayersCount
             );
-            this.renewPopupDataCache(
+            this.nodeInfoPopupDataCache =
                 new NodeInfoDataCache(
                     treeResult.data.nodesTree.allNodes.length,
                     treeResult.data.cwsData,
-                    tagsService
-                )
-            );
+                    this.tagsService
+                );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
         })
-    }
-
-    private rebuildPingTree() {
-        //this.nodesFlatPingTree = this.pingTreeBuilder.buildPingTree();
-    }
-
-    private renewPopupDataCache(newCache: NodeInfoDataCache) {
-        if(this.nodeInfoPopupDataCache != null) {
-            this.nodeInfoPopupDataCache.destroy();
-        }
-        this.nodeInfoPopupDataCache = newCache;
-    }
-
-    ngOnDestroy() {
-        this.renewPopupDataCache(null);
-        this.nodesTreeSubscription.unsubscribe();
     }
 }

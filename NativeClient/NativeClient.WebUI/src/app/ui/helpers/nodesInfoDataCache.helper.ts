@@ -11,7 +11,6 @@ export class NodeInfoDataCache {
     private webServicesNames: string[][] = null;
     public loadingError = false;
     private tagsList: NodeTag[] = null;
-    private tagsSubscription = null;
 
     constructor(
         len: number,
@@ -25,14 +24,12 @@ export class NodeInfoDataCache {
         this.tagsNames = newArrayOfNodesCountLength();
         this.webServicesData = newArrayOfNodesCountLength();
         this.webServicesNames = newArrayOfNodesCountLength();
-        this.tagsSubscription = tagsService.getTagsList().subscribe(tagsListResult => {
-            if(tagsListResult === null) {
-                return;
-            } else if(tagsListResult.success === false) {
+        tagsService.getTagsList().subscribe(tagsListResult => {
+            if(tagsListResult.success === false) {
                 this.loadingError = true;
-                return;
+            } else {
+                this.tagsList = tagsListResult.data;
             }
-            this.tagsList = tagsListResult.data;
         });
     }
 
@@ -93,9 +90,5 @@ export class NodeInfoDataCache {
             this.webServicesNames[i] = this.webServicesData[i]
                 .map(wsD => wsD.name);
         }
-    }
-    
-    public destroy() {
-        this.tagsSubscription.unsubscribe();
     }
 }
