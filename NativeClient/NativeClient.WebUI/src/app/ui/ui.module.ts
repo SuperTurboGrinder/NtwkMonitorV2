@@ -25,6 +25,7 @@ import { SettingsProfileFormComponent } from './crud/settingsProfileForm.compone
 import { UIMainComponent } from './uiMain.component';
 import { UIRoutingConfig } from './ui.routing';
 import { TagSelectionComponent } from './crud/tagSelection.component';
+import { ConfirmationPopupComponent } from './misc/confirmationPopup.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { TagSelectionComponent } from './crud/tagSelection.component';
     TaggedNodeListComponent,
     NodesTreeViewComponent,
     SettingsProfileFormComponent,
-    TagSelectionComponent
+    TagSelectionComponent,
+    ConfirmationPopupComponent
   ],
   imports: [
     BrowserAnimationsModule,

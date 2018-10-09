@@ -120,3 +120,9 @@
         </div>
     </form>
 </div>
+<confirmationPopup
+    [display]="true"
+    (answerEvent)="discardAndReturn($event)"
+>
+    <span>Discard changes?</span>
+</confirmationPopup>

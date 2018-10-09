@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Location } from "@angular/common";
 import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
 import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
 import { SettingsProfilesService } from "../../services/settingsProfiles.service";
@@ -11,12 +12,14 @@ import { HTTPResult } from "../../model/servicesModel/httpResult.model";
 export class SettingsProfileFormComponent {
     private _isEditMode: boolean = false;
     public profile: SettingsProfile = null;
+    public displayDiscardMessage = false;
 
     public get isEditMode() {
         return this._isEditMode;
     }
 
     constructor(
+        private location: Location,
         route: ActivatedRoute,
         settingsService: SettingsProfilesService
     ) {
@@ -38,6 +41,17 @@ export class SettingsProfileFormComponent {
                     }
                 }
             );
+        }
+    }
+
+    tryDiscard() {
+        this.displayDiscardMessage = true;
+    }
+
+    discardAndReturn(shouldDiscard: boolean) {
+        this.displayDiscardMessage = false;
+        if(shouldDiscard) {
+            this.location.back();
         }
     }
 }
