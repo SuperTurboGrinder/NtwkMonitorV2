@@ -38,10 +38,8 @@ namespace NativeClient.WebAPI.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: false),
-                    SendMonitoringAlarm = table.Column<bool>(nullable: false),
-                    MonitoringAlarmEmail = table.Column<string>(nullable: true),
                     MonitoringStartHour = table.Column<int>(nullable: false),
-                    MonitoringEndHour = table.Column<int>(nullable: false),
+                    MonitoringSessionDuration = table.Column<int>(nullable: false),
                     StartMonitoringOnLaunch = table.Column<bool>(nullable: false),
                     DepthMonitoring = table.Column<bool>(nullable: false),
                     MonitorInterval = table.Column<int>(nullable: false)

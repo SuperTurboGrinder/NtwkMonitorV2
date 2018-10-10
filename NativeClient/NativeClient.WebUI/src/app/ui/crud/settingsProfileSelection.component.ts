@@ -13,6 +13,10 @@ export class SettingsProfileSelectionComponent {
     private loadingError = false;
     public readonly isEditorView: boolean;
 
+    private profileToRemove: SettingsProfile = null;
+    public aboutToBeRemovedProfileName = "";
+    public displayDeleteMessage = false;
+
     constructor(
         private settingsService: SettingsProfilesService,
         route: ActivatedRoute
@@ -55,5 +59,19 @@ export class SettingsProfileSelectionComponent {
 
     public refresh(_: boolean) {
         this.updateProfilesList();
+    }
+
+    public tryRemove(profileToRemove: SettingsProfile) {
+        this.profileToRemove = profileToRemove;
+        this.aboutToBeRemovedProfileName = profileToRemove.name;
+        this.displayDeleteMessage = true;
+    }
+
+    public deleteProfile(shouldDelete: boolean) {
+        this.displayDeleteMessage = false;
+        if(shouldDelete && this.profileToRemove !== null) {
+            //this.settingsService.delete(this.profileToRemove.id);
+            console.log(`Removed profile ${this.profileToRemove.id}`)
+        }
     }
 }

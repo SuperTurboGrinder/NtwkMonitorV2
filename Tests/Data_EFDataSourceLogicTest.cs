@@ -224,10 +224,10 @@ public class Data_EFDataSourceLogicTest {
         //Assert nodes groups structure
         Assert.Equal(2, allNodesData.NodesData.Count());
         Assert.Equal(2, allNodesData.NodesData.First().Count());
-        Assert.Equal(1, allNodesData.NodesData.Skip(1).First().Count());
-        Assert.NotEqual(null, allNodesData.NodesData.First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node1ID));
-        Assert.NotEqual(null, allNodesData.NodesData.First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node3ID));
-        Assert.NotEqual(null, allNodesData.NodesData.Skip(1).First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node2ID));
+        Assert.Single(allNodesData.NodesData.Skip(1).First());
+        Assert.NotNull(allNodesData.NodesData.First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node1ID));
+        Assert.NotNull(allNodesData.NodesData.First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node3ID));
+        Assert.NotNull(allNodesData.NodesData.Skip(1).First().SingleOrDefault(nd => nd.Node.ID == IDSet.Node2ID));
         //Assert ws data
         Assert.All(
             allNodesData.WebServicesData.Zip(cwData,  (o1, o2) => new { o1, o2 }),

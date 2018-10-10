@@ -256,10 +256,8 @@ public static class EFDataSourceLogic {
         Profile newProfile = new Profile {
             ID = 0,
             Name = profile.Name,
-            MonitoringAlarmEmail = profile.MonitoringAlarmEmail,
-            SendMonitoringAlarm = profile.SendMonitoringAlarm,
             MonitoringStartHour = profile.MonitoringStartHour,
-            MonitoringEndHour = profile.MonitoringEndHour,
+            MonitoringSessionDuration = profile.MonitoringSessionDuration,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
             DepthMonitoring = profile.DepthMonitoring,
             MonitorInterval = profile.MonitorInterval
@@ -688,10 +686,8 @@ public static class EFDataSourceLogic {
     ) {
         Profile profile = await context.Profiles.FindAsync(newProfileData.ID);
         profile.Name = newProfileData.Name;
-        profile.SendMonitoringAlarm = newProfileData.SendMonitoringAlarm;
-        profile.MonitoringAlarmEmail = newProfileData.MonitoringAlarmEmail;
         profile.MonitoringStartHour = newProfileData.MonitoringStartHour;
-        profile.MonitoringEndHour = newProfileData.MonitoringEndHour;
+        profile.MonitoringSessionDuration = newProfileData.MonitoringSessionDuration;
         profile.StartMonitoringOnLaunch = newProfileData.StartMonitoringOnLaunch;
         profile.DepthMonitoring = newProfileData.DepthMonitoring;
         profile.MonitorInterval = newProfileData.MonitorInterval;

@@ -85,26 +85,11 @@
     <div *ngSwitchCase="errorStatus.IpAddressStringFormatIsInvalid" i18n="@@IpAddressStringFormatIsInvalid" class="m-0 p-0">
         Ip address string format is invalid.
     </div>
-    <div *ngSwitchCase="errorStatus.EmailAddresIsSetToNull" i18n="@@EmailAddresIsSetToNull" class="m-0 p-0">
-        Email address value can not be null.
-    </div>
-    <div *ngSwitchCase="errorStatus.EmailAddressIsABlankString" i18n="@@EmailAddressIsABlankString" class="m-0 p-0">
-        Email address value can not be a blank string.
-    </div>
-    <div *ngSwitchCase="errorStatus.EmailAddressFormatIsInvalid" i18n="@@EmailAddressFormatIsInvalid" class="m-0 p-0">
-        Email address value format is invalid.
-    </div>
-    <div *ngSwitchCase="errorStatus.EmailAddressIsNotNullWhileSendAlarmIsNotActive" i18n="@@EmailAddressIsNotNullWhileSendAlarmIsNotActive" class="m-0 p-0">
-        While send alarm is turned off - email address value should be set to null.
-    </div>
     <div *ngSwitchCase="errorStatus.MonitoringStartHourIsOutOfRange" i18n="@@MonitoringStartHourIsOutOfRange" class="m-0 p-0">
         Monitoring start hour is out of range.
     </div>
-    <div *ngSwitchCase="errorStatus.MonitoringEndHourIsOutOfRange" i18n="@@MonitoringEndHourIsOutOfRange" class="m-0 p-0">
-        Monitoring end hour is out of range.
-    </div>
-    <div *ngSwitchCase="errorStatus.MonitoringStartHourCanNotBeLaterThanEndHour" i18n="@@MonitoringStartHourCanNotBeLaterThanEndHour" class="m-0 p-0">
-        Monitoring start hour can not be set to time after end hour.
+    <div *ngSwitchCase="errorStatus.MonitoringSessionDurationIsOutOfRange" i18n="@@MonitoringSessionDurationIsOutOfRange" class="m-0 p-0">
+        Monitoring session duration is out of range.
     </div>
     <div *ngSwitchCase="errorStatus.InvalidMonitoringMessageTypeValue" i18n="@@InvalidMonitoringMessageTypeValue" class="m-0 p-0">
         Invalid monitoring message type value.

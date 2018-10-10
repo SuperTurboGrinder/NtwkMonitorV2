@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace NativeClient.WebAPI.Migrations
 {
     [DbContext(typeof(NtwkDBContext))]
-    [Migration("20180813114712_InitialCreate")]
+    [Migration("20181010120434_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,16 +196,12 @@ namespace NativeClient.WebAPI.Migrations
 
                     b.Property<int>("MonitorInterval");
 
-                    b.Property<string>("MonitoringAlarmEmail");
-
-                    b.Property<int>("MonitoringEndHour");
+                    b.Property<int>("MonitoringSessionDuration");
 
                     b.Property<int>("MonitoringStartHour");
 
                     b.Property<string>("Name")
                         .IsRequired();
-
-                    b.Property<bool>("SendMonitoringAlarm");
 
                     b.Property<bool>("StartMonitoringOnLaunch");
 

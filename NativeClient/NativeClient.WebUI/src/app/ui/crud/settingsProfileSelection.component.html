@@ -5,47 +5,36 @@
                 <div class="d-flex align-items-center h-100 w-100">
                     <div class="d-block-inline w-100" style="max-height:100%">
                         <div class="p-0 m-0 container-fluid">
-                            <div class="row pb-1 text-center" *ngFor="let profile of profilesList">
+                            <div class="row m-0 p-0 text-center" *ngFor="let profile of profilesList">
                                 <div class="col-1"> </div>
-                                <div
-                                    class="col-6 text-left p-2 border-bottom"
-                                    [ngClass]="{'col-8': isEditorView === false}"
-                                >
+                                <div class="col-6 text-left p-2 border-bottom">
                                     <span class="h4">{{profile.name}}</span>
                                 </div>
-                                <div
-                                    *ngIf="isEditorView === false"
-                                    class="col-2 p-1 border-bottom"
-                                >
+                                <div class="col-4 p-1 border-bottom text-right">
                                     <button
+                                        *ngIf="isEditorView === false"
                                         type="button"
-                                        class="btn btn-outline-success square w-100"
+                                        class="btn btn-outline-success square mx-1"
                                         [disabled]="isCurrentProfile(profile.id)"
                                         (click)="setAndContinue(profile.id)"
                                         i18n="@@selectButtonLabel"
                                     >
                                         Select
                                     </button>
-                                </div>
-                                <div
-                                    *ngIf="isEditorView"
-                                    class="col-2 p-1 border-bottom"
-                                >
                                     <button
+                                        *ngIf="isEditorView"
                                         type="button"
-                                        class="btn btn-warning square w-100"
+                                        class="btn btn-warning square mx-1"
                                         i18n="@@editButtonLabel"
+                                        [routerLink]="['/profile', 'edit', profile.id]"
                                     >
                                         Edit
                                     </button>
-                                </div>
-                                <div
-                                    *ngIf="isEditorView"
-                                    class="col-2 p-1 border-bottom"
-                                >
                                     <button
+                                        *ngIf="isEditorView"
                                         type="button"
-                                        class="btn btn-danger square w-100"
+                                        class="btn btn-danger square mx-1"
+                                        (click)="tryRemove(profile)"
                                         i18n="@@removeButtonLabel"
                                     >
                                         Remove
@@ -77,3 +66,10 @@
         ></loadingIndicator>
      </ng-template>
 </div>
+<confirmationPopup
+    [display]="displayDeleteMessage"
+    (answerEvent)="deleteProfile($event)"
+>
+    <span i18n="@@deleteProfileLabel">Delete profile</span>
+    <span> "{{aboutToBeRemovedProfileName}}"?</span>
+</confirmationPopup>

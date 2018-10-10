@@ -48,6 +48,8 @@ class EFDatabaseMockingUtils {
             Name = TestProfileName,
             StartMonitoringOnLaunch = true,
             DepthMonitoring = true,
+            MonitoringStartHour = 0,
+            MonitoringSessionDuration = 24,
             MonitorInterval = 10
         };
         context.Profiles.Add(testProfile);

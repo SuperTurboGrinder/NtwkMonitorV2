@@ -78,7 +78,10 @@ namespace NativeClient.WebAPI
             }
 
             app.UseCors(options => options
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:4200")
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
             );
 
             app.UseMvc();

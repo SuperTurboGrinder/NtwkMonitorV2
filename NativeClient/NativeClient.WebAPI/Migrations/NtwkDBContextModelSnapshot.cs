@@ -194,16 +194,12 @@ namespace NativeClient.WebAPI.Migrations
 
                     b.Property<int>("MonitorInterval");
 
-                    b.Property<string>("MonitoringAlarmEmail");
-
-                    b.Property<int>("MonitoringEndHour");
+                    b.Property<int>("MonitoringSessionDuration");
 
                     b.Property<int>("MonitoringStartHour");
 
                     b.Property<string>("Name")
                         .IsRequired();
-
-                    b.Property<bool>("SendMonitoringAlarm");
 
                     b.Property<bool>("StartMonitoringOnLaunch");
 

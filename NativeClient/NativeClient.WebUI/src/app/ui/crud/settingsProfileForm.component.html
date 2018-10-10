@@ -1,4 +1,7 @@
-<div class="w-100 h-100 p-0 m-0">
+<div
+    class="w-100 h-100 p-0 m-0"
+    *ngIf="displayOperationInProgress === false; else operationInProgress"
+>
     <div class="border p-3 bg-primary w-100"
         [ngClass]="{'bg-warning': isEditMode}"
     >
@@ -11,10 +14,8 @@
     <!--
         public id:number,
         public name:string,
-        //public sendMonitoringAlarm:boolean,
-        //public monitoringAlarmEmail:string,
         public monitoringStartHour:number, //from 0 to 23
-        public monitoringEndHour:number,
+        public monitoringSessionDuration:number,
         public startMonitoringOnLaunch:boolean,
         public depthMonitoring:boolean,
         public monitorInterval:number
@@ -77,6 +78,7 @@
                     <numRangeSelector
                         [maxValue]="23"
                         [maxLength]="24"
+                        (changedEvent)="updateMonitoringHoursRage($event)"
                     ></numRangeSelector>
                     <span i18n="@@hoursLabel"> hours</span>
                 </div>
@@ -89,6 +91,7 @@
                         [min]="1"
                         [max]="30"
                         [initialValue]="1"
+                        (changedValueEvent)="setMonitorInterval($event)"
                     ></numValueSwitch>
                     <span i18n="@@minutesLabel"> minutes</span>
                 </div>
@@ -102,6 +105,7 @@
                     'btn-warning': isEditMode
                 }"
                 class="btn square m-1"
+                (click)="tryCreate()"
             >
                 <span
                     *ngIf="isEditMode; else createButton"
@@ -114,15 +118,20 @@
             <button
                 type="button"
                 class="btn btn-secondary square m-1"
+                (click)="tryDiscard()"
+                i18n="@@cancelButtonLabel"
             >
                 Cancel
             </button>
         </div>
     </form>
 </div>
+<ng-template #operationInProgress>
+    <loadingIndicator></loadingIndicator>
+ </ng-template>
 <confirmationPopup
-    [display]="true"
+    [display]="displayDiscardMessage"
     (answerEvent)="discardAndReturn($event)"
 >
-    <span>Discard changes?</span>
+    <span i18n="@@discardChangesLabel">Discard changes?</span>
 </confirmationPopup>

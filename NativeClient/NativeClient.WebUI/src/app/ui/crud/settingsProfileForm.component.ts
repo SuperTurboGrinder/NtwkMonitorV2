@@ -4,6 +4,7 @@ import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
 import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
 import { SettingsProfilesService } from "../../services/settingsProfiles.service";
 import { HTTPResult } from "../../model/servicesModel/httpResult.model";
+import { Range } from "../misc/numRangeSelector.component"
 
 @Component({
     selector: 'settingsProfileForm',
@@ -11,8 +12,10 @@ import { HTTPResult } from "../../model/servicesModel/httpResult.model";
 })
 export class SettingsProfileFormComponent {
     private _isEditMode: boolean = false;
+    public original: SettingsProfile = null;
     public profile: SettingsProfile = null;
     public displayDiscardMessage = false;
+    public displayOperationInProgress = false;
 
     public get isEditMode() {
         return this._isEditMode;
@@ -21,10 +24,10 @@ export class SettingsProfileFormComponent {
     constructor(
         private location: Location,
         route: ActivatedRoute,
-        settingsService: SettingsProfilesService
+        private settingsService: SettingsProfilesService
     ) {
         this.profile = new SettingsProfile(
-            0, "", false, null, 0, 23, true, true, 1
+            0, "", 0, 24, true, true, 1
         );
         let routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
         this._isEditMode = routeSnapshot.url[1].path === "edit";
@@ -34,18 +37,53 @@ export class SettingsProfileFormComponent {
             settingsService.getProfiles().subscribe(
                 (profilesResult: HTTPResult<SettingsProfile[]>) => {
                     if(profilesResult.success === true) {
-                        console.log(profilesResult.data)
-                        this.profile = profilesResult.data.find(
+                        this.original = profilesResult.data.find(
                             profile => profile.id === selectedID
-                        )
+                        );
+                        this.profile = this.makeProfileCopy(this.original)
                     }
                 }
             );
+        } else {
+            this.original = this.makeProfileCopy(this.profile);
         }
     }
 
+    public setMonitorInterval(interval: number) {
+        this.profile.monitorInterval = interval;
+    }
+
+    public updateMonitoringHoursRage(range: Range) {
+        this.profile.monitoringStartHour = range.value;
+        this.profile.monitoringSessionDuration = range.length;
+    }
+
+    private makeProfileCopy(profile: SettingsProfile): SettingsProfile {
+        return new SettingsProfile(
+            profile.id,
+            profile.name,
+            profile.monitoringStartHour,
+            profile.monitoringSessionDuration,
+            profile.startMonitoringOnLaunch,
+            profile.depthMonitoring,
+            profile.monitorInterval
+        );
+    }
+
+    private isOkToDiscard(): boolean {
+        return this.original.name === this.profile.name
+            && this.original.monitoringStartHour === this.profile.monitoringStartHour
+            && this.original.monitoringSessionDuration === this.profile.monitoringSessionDuration
+            && this.original.startMonitoringOnLaunch === this.profile.startMonitoringOnLaunch
+            && this.original.depthMonitoring === this.profile.depthMonitoring
+            && this.original.monitorInterval === this.profile.monitorInterval
+    }
+
     tryDiscard() {
-        this.displayDiscardMessage = true;
+        if(this.isOkToDiscard())
+            this.discardAndReturn(true);
+        else
+            this.displayDiscardMessage = true;
     }
 
     discardAndReturn(shouldDiscard: boolean) {
@@ -53,5 +91,21 @@ export class SettingsProfileFormComponent {
         if(shouldDiscard) {
             this.location.back();
         }
+    }
+
+    tryCreate() {
+        this.displayOperationInProgress = true;
+        console.log(this.profile)
+        this.settingsService.createNewProfile(
+            this.profile,
+            (success: boolean) => {
+                if(success) {
+                    //send success message
+                    this.location.back();
+                } else {
+                    this.displayOperationInProgress = false;
+                }
+            }
+        );
     }
 }

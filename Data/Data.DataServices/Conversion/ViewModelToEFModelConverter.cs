@@ -25,11 +25,9 @@ public class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
         return new EFDbModel.Profile() {
             ID = profile.ID,
             Name = profile.Name,
-            SendMonitoringAlarm = profile.SendMonitoringAlarm,
-            MonitoringAlarmEmail = profile.MonitoringAlarmEmail,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
             MonitoringStartHour = profile.MonitoringStartHour,
-            MonitoringEndHour = profile.MonitoringEndHour,
+            MonitoringSessionDuration = profile.MonitoringSessionDuration,
             MonitorInterval = profile.MonitorInterval,
             DepthMonitoring = profile.DepthMonitoring
         };

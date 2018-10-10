@@ -71,43 +71,22 @@ public class ViewModelValidator : IViewModelValidator {
     }
 
     public StatusMessage Validate(Profile profile) {
+        const int MIDNIGHT = 0;
+        const int TWENTY_FOUR_HOURS = 24;
         StatusMessage nameValidationStatus = 
             ValidationUtils.IsValidName(profile.Name);
         if(nameValidationStatus.Failure()) {
             return nameValidationStatus;
         }
-        if(profile.SendMonitoringAlarm) {
-            StatusMessage emailAddrFormatStatus = StatusMessage.Ok;
-            try {
-                var addr = new System.Net.Mail.MailAddress(profile.MonitoringAlarmEmail);
-            }
-            catch(ArgumentNullException) {
-                emailAddrFormatStatus = StatusMessage.EmailAddresIsSetToNull;
-            }
-            catch(ArgumentException) {
-                emailAddrFormatStatus = StatusMessage.EmailAddressIsABlankString;
-            }
-            catch(FormatException) {
-                emailAddrFormatStatus = StatusMessage.EmailAddressFormatIsInvalid;
-            }
-            if(emailAddrFormatStatus.Failure()) {
-                return emailAddrFormatStatus;
-            }
-        } else if(profile.MonitoringAlarmEmail != null) {
-            return StatusMessage.EmailAddressIsNotNullWhileSendAlarmIsNotActive;
-        }
-        if(profile.MonitoringStartHour < 0 ||
-            profile.MonitoringStartHour > 23
+        if(profile.MonitoringStartHour < MIDNIGHT ||
+            profile.MonitoringStartHour > MIDNIGHT+23
         ) {
             return StatusMessage.MonitoringStartHourIsOutOfRange;
         }
-        if(profile.MonitoringEndHour < 0 ||
-            profile.MonitoringEndHour > 23
+        if(profile.MonitoringSessionDuration < 1 ||
+            profile.MonitoringSessionDuration > TWENTY_FOUR_HOURS
         ) {
-            return StatusMessage.MonitoringEndHourIsOutOfRange;
-        }
-        if(profile.MonitoringStartHour >= profile.MonitoringEndHour) {
-            return StatusMessage.MonitoringStartHourCanNotBeLaterThanEndHour;
+            return StatusMessage.MonitoringSessionDurationIsOutOfRange;
         }
         return StatusMessage.Ok;
     }

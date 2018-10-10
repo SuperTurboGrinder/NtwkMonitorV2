@@ -63,4 +63,17 @@ export class SettingsProfilesService {
             this.baseUrl+`/${this.currentProfileID}/mainViewNodesIDs`
         );
     }
+
+    public createNewProfile(
+        newProfile: SettingsProfile,
+        callback: (success: boolean)=>void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'post',
+            this.baseUrl+`/new`,
+            newProfile
+        ).subscribe(
+            (result: HTTPResult<SettingsProfile>) => callback(result.success)
+        );
+    }
 }
