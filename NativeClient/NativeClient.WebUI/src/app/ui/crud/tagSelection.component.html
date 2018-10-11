@@ -1,5 +1,5 @@
 <div class="w-100 h-100 p-0 m-0 bg-light">
-    <div class="w-100 h-100 p-0 m-0" *ngIf="tagsList != null; else stillEmptyBlock">
+    <div class="w-100 h-100 p-0 m-0" *ngIf="tagsList != null && !displayOperationInProgress; else stillEmptyBlock">
         <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
             <div class="p-0 m-0" style="height:100%; width:calc(100% + 16px); overflow-y:scroll">
                 <div class="d-flex align-items-center h-100 w-100">
@@ -17,6 +17,7 @@
                                         type="button"
                                         class="btn btn-warning square w-100"
                                         i18n="@@editButtonLabel"
+                                        [routerLink]="['/tag', 'edit', tag.id]"
                                     >
                                         Edit
                                     </button>
@@ -26,6 +27,7 @@
                                         type="button"
                                         class="btn btn-danger square w-100"
                                         i18n="@@removeButtonLabel"
+                                        (click)="tryRemove(tag)"
                                     >
                                         Remove
                                     </button>
@@ -36,6 +38,7 @@
                                 <div class="w-100">
                                     <span
                                         class="btn btn-primary square p-1 m-1"
+                                        [routerLink]="['/tag/new']"
                                         i18n="@@addNewButtonLabel"
                                     >
                                         Add new
@@ -55,3 +58,10 @@
         ></loadingIndicator>
         </ng-template>
 </div>
+<confirmationPopup
+    [display]="displayDeleteMessage"
+    (answerEvent)="deleteTag($event)"
+>
+    <span i18n="@@deleteTagLabel">Delete tag</span>
+    <span> "{{aboutToBeRemovedTagName}}"?</span>
+</confirmationPopup>

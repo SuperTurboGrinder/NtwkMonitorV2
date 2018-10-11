@@ -5,6 +5,8 @@ import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
 import { SettingsProfilesService } from "../../services/settingsProfiles.service";
 import { HTTPResult } from "../../model/servicesModel/httpResult.model";
 import { Range } from "../misc/numRangeSelector.component"
+import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
+import { MessagingService } from "src/app/services/messaging.service";
 
 @Component({
     selector: 'settingsProfileForm',
@@ -41,6 +43,7 @@ export class SettingsProfileFormComponent {
     }
 
     constructor(
+        private messager: MessagingService,
         private location: Location,
         route: ActivatedRoute,
         private settingsService: SettingsProfilesService
@@ -111,9 +114,12 @@ export class SettingsProfileFormComponent {
         }
     }
 
-    private confirmOperationSuccess(success: boolean) {
+    private confirmOperationSuccess(
+        success: boolean,
+        successMessage: MessagesEnum
+    ) {
         if(success) {
-            //send success message
+            this.messager.showMessage(successMessage);
             this.location.back();
         } else {
             this.displayOperationInProgress = false;
@@ -130,13 +136,16 @@ export class SettingsProfileFormComponent {
         this.displayOperationInProgress = true;
         this.settingsService.createNewProfile(
             this.profile,
-            (success: boolean) => this.confirmOperationSuccess(success)
+            (success: boolean) => this.confirmOperationSuccess(
+                success,
+                MessagesEnum.CreatedSuccessfully
+            )
         );
     }
 
     public trySaveChanges() {
         if(this.isOkToDiscard())
-            { /*send no changes detected message*/ }
+            this.messager.showMessage(MessagesEnum.NoChangesDetected);
         else
             this.displaySaveChangesMessage = true;
     }
@@ -147,7 +156,10 @@ export class SettingsProfileFormComponent {
         this.displayOperationInProgress = true;
         this.settingsService.updateProfile(
             this.profile,
-            (success: boolean) => this.confirmOperationSuccess(success)
+            (success: boolean) => this.confirmOperationSuccess(
+                success,
+                MessagesEnum.UpdatedSuccessfully
+            )
         );
     }
 }

@@ -1,0 +1,16 @@
+<!--for_i18n-->
+
+<div class="m-0 p-0" [ngSwitch]="message">
+        <div *ngSwitchCase="messagesEnum.CreatedSuccessfully" i18n="@@CreatedSuccessfully" class="m-0 p-0">
+            Created successfully.
+        </div>
+        <div *ngSwitchCase="messagesEnum.UpdatedSuccessfully" i18n="@@UpdatedSuccessfully" class="m-0 p-0">
+            Saved changes successfully.
+        </div>
+        <div *ngSwitchCase="messagesEnum.DeletedSuccessfully" i18n="@@DeletedSuccessfully" class="m-0 p-0">
+            Deleted successfully.
+        </div>
+        <div *ngSwitchCase="messagesEnum.NoChangesDetected" i18n="@@NoChangesDetected" class="m-0 p-0">
+            No changes detected to save.
+        </div>
+</div>

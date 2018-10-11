@@ -3,6 +3,8 @@ import { Subscription } from "rxjs";
 import { SettingsProfilesService } from "../../services/settingsProfiles.service";
 import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
 import { ActivatedRoute } from "@angular/router";
+import { MessagingService } from "src/app/services/messaging.service";
+import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
 
 @Component({
     selector: 'settingsProfileSelection',
@@ -12,12 +14,14 @@ export class SettingsProfileSelectionComponent {
     private profiles: SettingsProfile[] = null;
     private loadingError = false;
     public readonly isEditorView: boolean;
+    public displayOperationInProgress = false;
 
     private profileToRemove: SettingsProfile = null;
     public aboutToBeRemovedProfileName = "";
     public displayDeleteMessage = false;
 
     constructor(
+        private messager: MessagingService,
         private settingsService: SettingsProfilesService,
         route: ActivatedRoute
     ) {
@@ -74,8 +78,18 @@ export class SettingsProfileSelectionComponent {
     public deleteProfile(shouldDelete: boolean) {
         this.displayDeleteMessage = false;
         if(shouldDelete && this.profileToRemove !== null) {
-            //this.settingsService.delete(this.profileToRemove.id);
-            console.log(`Removed profile ${this.profileToRemove.id}`)
+            this.displayOperationInProgress = true;
+            this.settingsService.deleteProfile(
+                this.profileToRemove.id,
+                (success: boolean) => {
+                    let removed = this.profileToRemove;
+                    if(success === true) {
+                        this.profiles = this.profiles.filter(p => p.id != removed.id);
+                        this.messager.showMessage(MessagesEnum.DeletedSuccessfully);
+                    }
+                    this.displayOperationInProgress = false;
+                }
+            );
         }
     }
 }

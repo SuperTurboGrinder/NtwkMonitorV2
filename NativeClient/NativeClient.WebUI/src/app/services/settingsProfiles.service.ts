@@ -89,4 +89,16 @@ export class SettingsProfilesService {
             (success: boolean) => callback(success)
         );
     }
+
+    public deleteProfile(
+        id: number,
+        callback: (success: boolean)=>void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'delete',
+            this.baseUrl+`/${id}/remove`
+        ).subscribe(
+            (result: HTTPResult<SettingsProfile>) => callback(result.success)
+        );
+    }
 }

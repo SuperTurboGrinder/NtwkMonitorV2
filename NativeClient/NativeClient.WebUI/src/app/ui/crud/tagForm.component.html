@@ -1,0 +1,99 @@
+<div
+    class="w-100 h-100 p-0 m-0"
+    *ngIf="displayOperationInProgress === false; else operationInProgress"
+>
+    <div class="border p-3 bg-primary w-100"
+        [ngClass]="{'bg-warning': isEditMode}"
+    >
+        <span class="h4">
+            <span *ngIf="isEditMode === true" i18n="@@editorViewEditHeader">Edit </span>
+            <span *ngIf="isEditMode === false" i18n="@@editorViewCreateHeader">New </span>
+            <span i18n="@@editorViewHeaderEnding">node tag</span>
+        </span>
+    </div>
+    <!--
+        public id:number,
+        public name:string
+    -->
+    <form
+        class="pl-2 w-100"
+        novalidate
+        #form="ngForm"
+        (ngSubmit)="save(form)"
+        validate
+    >
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-6 form-inline py-2">
+                    <label i18n="@@nameLabel" class="pr-2">Name</label>
+                    <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="tag.name" minlength="2" required />
+                    <strong
+                        *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
+                        class="text-small text-danger"
+                    >
+                        <div
+                            i18n="@@nameRequiredMessge"
+                            *ngIf="nameModel.errors.required"
+                        >Name value required.</div>
+                    </strong>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button
+                *ngIf="isEditMode; else createButton"
+                type="button"
+                class="btn btn-warning square m-1"
+                (click)="trySaveChanges()"
+            >
+                <span i18n="@@saveButtonLabel">Save</span>
+            </button>
+            <ng-template #createButton>
+                <button
+                    type="button"
+                    class="btn btn-primary square m-1"
+                    (click)="tryCreateNew()"
+                >
+                    <span i18n="@@createButtonLabel">Create</span>
+                </button>
+            </ng-template>
+            <button
+                type="button"
+                class="btn btn-secondary square m-1"
+                (click)="tryDiscard()"
+                i18n="@@cancelButtonLabel"
+            >
+                Cancel
+            </button>
+        </div>
+    </form>
+</div>
+<ng-template #operationInProgress>
+    <loadingIndicator></loadingIndicator>
+ </ng-template>
+
+ <!--Discard changes popup-->
+<confirmationPopup
+    [display]="displayDiscardMessage"
+    (answerEvent)="discardAndReturn($event)"
+>
+    <span i18n="@@discardChangesLabel">Discard changes?</span>
+</confirmationPopup>
+
+<!--Create confirmation popup-->
+<confirmationPopup
+    [display]="displayCreateConfirmationMessage"
+    (answerEvent)="createNewTagAndReturn($event)"
+>
+    <span i18n="@@saveToDatabaseLabel">Save to database?</span>
+</confirmationPopup>
+
+<!--Overwrite popup-->
+<confirmationPopup
+    [display]="displaySaveChangesMessage"
+    (answerEvent)="saveChangesToTagAndReturn($event)"
+>
+    <span i18n="@@saveChangesToDatabaseLabel">
+        Save changes to database?
+    </span>
+</confirmationPopup>

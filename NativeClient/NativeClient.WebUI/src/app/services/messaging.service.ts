@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer, Subject } from 'rxjs';
 
-import { Messages } from "../model/servicesModel/messagesEnum.model"
+import { MessagesEnum } from "../model/servicesModel/messagesEnum.model"
 import { BackendErrorStatuses } from '../model/httpModel/backendErrorStatuses.model'
 
 @Injectable()
 export class MessagingService {
-    private messagesSubject = new Subject<Messages>();
+    private messagesSubject = new Subject<MessagesEnum>();
     private backendErrorsSubject = new Subject<BackendErrorStatuses>();
 
     public reportBadRequestError(
@@ -17,11 +17,11 @@ export class MessagingService {
         this.backendErrorsSubject.next(status);
     }
 
-    public showMessage(message:Messages) {
+    public showMessage(message:MessagesEnum) {
         this.messagesSubject.next(message);
     }
 
-    public get messages() : Observable<Messages> {
+    public get messages() : Observable<MessagesEnum> {
         return this.messagesSubject;
     }
 

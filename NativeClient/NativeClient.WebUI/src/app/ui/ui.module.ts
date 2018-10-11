@@ -26,6 +26,8 @@ import { UIMainComponent } from './uiMain.component';
 import { UIRoutingConfig } from './ui.routing';
 import { TagSelectionComponent } from './crud/tagSelection.component';
 import { ConfirmationPopupComponent } from './misc/confirmationPopup.component';
+import { MessageTextSelectorComponent } from './messeging/messageTextSelector.component';
+import { TagFormComponent } from './crud/tagForm.component';
 
 @NgModule({
   declarations: [
@@ -40,11 +42,13 @@ import { ConfirmationPopupComponent } from './misc/confirmationPopup.component';
     ExecServicesButtonsComponent,
     LoadingIndicatorComponent,
     NodeInfoPopupComponent,
+    MessageTextSelectorComponent,
     BackendErrorSelectorComponent,
     MessageDisplayComponent,
     TaggedNodeListComponent,
     NodesTreeViewComponent,
     SettingsProfileFormComponent,
+    TagFormComponent,
     TagSelectionComponent,
     ConfirmationPopupComponent
   ],

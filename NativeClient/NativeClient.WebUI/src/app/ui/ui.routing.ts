@@ -3,6 +3,7 @@ import { SettingsProfileSelectionComponent } from "./crud/settingsProfileSelecti
 import { TagSelectionComponent } from "./crud/tagSelection.component";
 import { TaggedNodeListComponent } from "./taggedNodeList.component";
 import { NodesTreeViewComponent } from "./nodesTreeView.component";
+import { TagFormComponent } from "./crud/tagForm.component";
 
 
 export class UIRoutingConfig {
@@ -26,6 +27,14 @@ export class UIRoutingConfig {
         {
             path: "tags",
             component: TagSelectionComponent
+        },
+        {
+            path: "tag/new",
+            component: TagFormComponent
+        },
+        {
+            path: "tag/edit/:id",
+            component: TagFormComponent
         },
         {
             path: "tagFilteredView",

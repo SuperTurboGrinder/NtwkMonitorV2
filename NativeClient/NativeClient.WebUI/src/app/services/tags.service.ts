@@ -23,4 +23,42 @@ export class TagsService {
             this.baseUrl
         );
     }
+
+    public createNewTag(
+        newTag: NodeTag,
+        callback: (success: boolean)=>void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'post',
+            this.baseUrl+`/new`,
+            newTag
+        ).subscribe(
+            (result: HTTPResult<NodeTag>) => callback(result.success)
+        );
+    }
+
+    public updateTag(
+        newTagState: NodeTag,
+        callback: (success: boolean)=>void
+    ) {
+        return this.httpDatasource.dataOperationRequest(
+            'put',
+            this.baseUrl+`/${newTagState.id}/update`,
+            newTagState
+        ).subscribe(
+            (success: boolean) => callback(success)
+        );
+    }
+
+    public deleteTag(
+        id: number,
+        callback: (success: boolean)=>void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'delete',
+            this.baseUrl+`/${id}/delete`
+        ).subscribe(
+            (result: HTTPResult<NodeTag>) => callback(result.success)
+        );
+    }
 }

@@ -37,10 +37,10 @@ import { MessageToDisplay } from "../../model/viewModel/messageToDisplay.model";
     ]
 })
 export class MessageDisplayComponent {
-    mainQueueCapacity = 8;
+    private mainQueueCapacity = 8;
     public messageQueue: MessageToDisplay[] = [];
-    secondaryMessageQueue: MessageToDisplay[] = [];
-    updateInterval: Observable<number>;
+    private secondaryMessageQueue: MessageToDisplay[] = [];
+    private updateInterval: Observable<number>;
 
     constructor(private messaging: MessagingService) {
         this.updateInterval = interval(1000);
@@ -49,7 +49,9 @@ export class MessageDisplayComponent {
                 var now = new Date().getTime();
                 for(var i = 0; i < this.messageQueue.length; i++) {
                     var ms = now - this.messageQueue[i].time;
-                    if(ms > 12000) {
+                    var deadline = this.messageQueue[i].isMessage
+                        ? 3000 : 12000;
+                    if(ms > deadline) {
                         this.messageQueue.shift();
                         this.swapFromSecondaryQueue();
                     } else {
@@ -78,7 +80,7 @@ export class MessageDisplayComponent {
         );
     }
 
-    addNewMessage(msg:MessageToDisplay) {
+    private addNewMessage(msg:MessageToDisplay) {
         if(this.messageQueue.length < this.mainQueueCapacity) {
             this.messageQueue.push(msg);
         } else {
@@ -86,7 +88,7 @@ export class MessageDisplayComponent {
         }
     }
 
-    swapFromSecondaryQueue() {
+    private swapFromSecondaryQueue() {
         if(this.secondaryMessageQueue.length > 0
             && this.messageQueue.length < this.mainQueueCapacity
         ) {
