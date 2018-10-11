@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <ng-template #nodesList>
-                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes">
+                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn">
                         <div class="col-5 p-0 m-0 font-italic text-secondary"
                         >
                             <strong class="m-0 p-0 "

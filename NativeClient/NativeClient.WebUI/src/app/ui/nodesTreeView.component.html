@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <ng-template #nodesList>
-                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; let indexIndex = index">
+                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of displayedNodesIndexes; trackBy: nodeTrackByFn; let indexIndex = index">
                         <div class="col-5 p-0 m-0 font-italic text-secondary text-left"
                         >
                             <strong class="m-0 p-0 pl-2">

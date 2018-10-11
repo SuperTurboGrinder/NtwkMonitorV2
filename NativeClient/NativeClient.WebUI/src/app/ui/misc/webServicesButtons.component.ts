@@ -23,6 +23,13 @@ export class WebServicesButtonsComponent {
         //}
     }
 
+    serviceTrackBy(index: number, ws: {
+        name:string,
+        serviceID:number
+    }) {
+        return ws.serviceID;
+    }
+
     get webServices() : {
         name:string,
         serviceID:number

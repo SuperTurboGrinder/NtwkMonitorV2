@@ -46,6 +46,7 @@ export class NumRangeSelectorComponent {
     private _range: Range = new Range(0, 1);
     private _max_value: number = 0;
     private _max_length: number = 1;
+    private _initialized = false;
     
     @Output() private changedEvent = new EventEmitter<Range>();
 
@@ -77,6 +78,14 @@ export class NumRangeSelectorComponent {
         this._max_length = maxLength;
         this._range.length = maxLength;
         this.fit();
+    }
+
+    @Input() set initialValue(val: Range) {
+        if(val === null) return;
+        if(this._initialized === false) {
+            this._initialized = true;
+            this._range = val;
+        }
     }
 
     public isLowerDownActive(): boolean {

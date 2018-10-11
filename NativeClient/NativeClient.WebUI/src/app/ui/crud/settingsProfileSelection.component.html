@@ -5,7 +5,7 @@
                 <div class="d-flex align-items-center h-100 w-100">
                     <div class="d-block-inline w-100" style="max-height:100%">
                         <div class="p-0 m-0 container-fluid">
-                            <div class="row m-0 p-0 text-center" *ngFor="let profile of profilesList">
+                            <div class="row m-0 p-0 text-center" *ngFor="let profile of profilesList; trackBy: profilesTrackBy">
                                 <div class="col-1"> </div>
                                 <div class="col-6 text-left p-2 border-bottom">
                                     <span class="h4">{{profile.name}}</span>

@@ -97,7 +97,7 @@ export class NodesTreeViewComponent {
 
     nodeTrackByFn(index:number, node_index:number) {
         if(!this.displayTreeHelper) return null;
-        return this.displayTreeHelper.nodeData(node_index).node.id;
+        return this.displayTreeHelper.node(node_index).id;
     }
 
     public foldBranch(index: number) {

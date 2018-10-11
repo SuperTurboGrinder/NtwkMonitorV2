@@ -26,6 +26,10 @@ export class SettingsProfileSelectionComponent {
         this.updateProfilesList();
     }
 
+    public profilesTrackBy(index: number, profile: SettingsProfile) {
+        return profile.id;
+    }
+
     get profilesList() : SettingsProfile[] {
         return this.profiles;
     }

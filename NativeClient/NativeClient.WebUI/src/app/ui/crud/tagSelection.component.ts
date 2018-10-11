@@ -31,6 +31,10 @@ export class TagSelectionComponent {
         return this.tags;
     }
 
+    public tagsTrackBy(index: number, tag: NodeTag) {
+        return tag.id;
+    }
+
     get isLoadingError() : boolean {
         return this.loadingError;
     }

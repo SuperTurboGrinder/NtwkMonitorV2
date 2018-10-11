@@ -92,8 +92,8 @@ public class SettingsProfileDataController : BaseDataController {
         );
     }
 
-    // POST api/settingsProfiles/1/update
-    [HttpPost("{profileID:int}/update")]
+    // PUT api/settingsProfiles/1/update
+    [HttpPut("{profileID:int}/update")]
     public async Task<ActionResult> UpdateProfile(int profileID, [FromBody] Profile profile) {
         profile.ID = profileID;
         return ObserveDataOperationStatus(

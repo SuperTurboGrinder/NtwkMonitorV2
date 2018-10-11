@@ -18,7 +18,6 @@ export class NumValueSwitchComponent {
     }
 
     @Input() set min(newMin: number) {
-        console.log("min changed")
         this._min = newMin;
         if(this.value < newMin) {
             this.value = newMin;
@@ -26,7 +25,6 @@ export class NumValueSwitchComponent {
     }
 
     @Input() set max(newMax: number) {
-        console.log("max changed")
         this._max = newMax;
         if(this.value > newMax) {
             this.value = newMax;
@@ -34,6 +32,7 @@ export class NumValueSwitchComponent {
     }
 
     @Input() set initialValue(val: number) {
+        if(val === null) return;
         if(this._initialized === false) {
             this._initialized = true;
             this._value = val;

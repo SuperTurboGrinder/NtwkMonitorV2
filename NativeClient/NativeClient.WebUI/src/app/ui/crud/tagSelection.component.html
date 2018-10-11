@@ -5,7 +5,7 @@
                 <div class="d-flex align-items-center h-100 w-100">
                     <div class="d-block-inline w-100" style="max-height:100%">
                         <div class="p-0 m-0 container-fluid">
-                            <div class="row pb-1 text-center" *ngFor="let tag of tagsList">
+                            <div class="row pb-1 text-center" *ngFor="let tag of tagsList; trackBy: tagsTrackBy">
                                 <div class="col-1"> </div>
                                 <div
                                     class="col-6 text-left p-2 border-bottom"

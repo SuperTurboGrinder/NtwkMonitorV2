@@ -76,4 +76,17 @@ export class SettingsProfilesService {
             (result: HTTPResult<SettingsProfile>) => callback(result.success)
         );
     }
+
+    public updateProfile(
+        newProfileState: SettingsProfile,
+        callback: (success: boolean)=>void
+    ) {
+        return this.httpDatasource.dataOperationRequest(
+            'put',
+            this.baseUrl+`/${newProfileState.id}/update`,
+            newProfileState
+        ).subscribe(
+            (success: boolean) => callback(success)
+        );
+    }
 }
