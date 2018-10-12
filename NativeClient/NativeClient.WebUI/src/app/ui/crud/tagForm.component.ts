@@ -32,7 +32,6 @@ export class TagFormComponent {
         route: ActivatedRoute,
         private tagsService: TagsService
     ) {
-        console.log("TEST")
         this.tag = {
             id: 0,
             name: ""

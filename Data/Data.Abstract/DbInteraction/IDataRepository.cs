@@ -67,6 +67,7 @@ public interface IDataRepository {
     Task<StatusMessage> SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID);
 
     Task<StatusMessage> UpdateProfile(Profile profile);
+    Task<StatusMessage> UpdateTag(NodeTag tag);
     Task<StatusMessage> UpdateNode(NtwkNode node);
     Task<StatusMessage> UpdateCustomWebService(CustomWebService cws);
     Task<StatusMessage> UpdateWebServiceBinding(int nodeID, int cwsID,

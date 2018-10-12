@@ -306,6 +306,12 @@ public class EFDataRepository : IDataRepository {
             await efDataSource.UpdateProfile(profile)
         );
     }
+
+    public async Task<StatusMessage> UpdateTag(NodeTag tag) {
+        return await PerformOperationOrLogExceptions(async () =>
+            await efDataSource.UpdateTag(tag)
+        );
+    }
     
     public async Task<StatusMessage> UpdateNode(NtwkNode node) {
         return await PerformOperationOrLogExceptions(async () =>

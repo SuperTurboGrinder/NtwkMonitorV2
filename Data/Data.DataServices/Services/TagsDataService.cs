@@ -53,6 +53,18 @@ public class TagsDataService
         );
     }
 
+    public async Task<StatusMessage> UpdateTag(NodeTag tag) {
+        StatusMessage tagIDValidationStatus = await ValidateTagID(tag.ID);
+        if(tagIDValidationStatus.Failure()) {
+            return tagIDValidationStatus;
+        }
+        StatusMessage tagValidationStatus = validator.Validate(tag);
+        if(tagValidationStatus.Failure()) {
+            return tagValidationStatus;
+        }
+        return await repo.UpdateTag(viewToEFConverter.Convert(tag));
+    }
+
     public async Task<DataActionResult<NodeTag>> RemoveTag(int tagID) {
         StatusMessage tagIDValidationStatus = await ValidateTagID(tagID);
         if(tagIDValidationStatus.Failure()) {

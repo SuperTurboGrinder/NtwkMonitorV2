@@ -64,6 +64,7 @@ public interface IEFDbDataSource {
     Task SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID);
 
     Task UpdateProfile(Profile profile);
+    Task UpdateTag(NodeTag tag);
     Task UpdateNode(NtwkNode node);
     Task UpdateCustomWebService(CustomWebService cws);
     Task UpdateWebServiceBinding(int nodeID, int cwsID,

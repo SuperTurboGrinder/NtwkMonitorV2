@@ -923,6 +923,26 @@ public class Data_EFDataSourceLogicTest {
     }
 
     [Fact]
+    public async void UpdateTag_WillUpdateSpecifiedTag() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        int tagsBefore = context.Tags.Count();
+        NodeTag tag = context.Tags
+            .AsNoTracking()
+            .Single(t => t.ID == IDSet.Tag1ID);
+        string oldName = tag.Name;
+        tag.Name = "1234567";
+        await EFDataSourceLogic.UpdateTag_Logic(context, tag);
+        int tagsAfter = context.Tags.Count();
+
+        Assert.Equal(0, tagsAfter - tagsBefore);
+        Assert.DoesNotContain(context.Tags, t => t.Name == oldName);
+        Assert.Single(context.Tags, t => t.Name == tag.Name);
+    }
+
+    [Fact]
     public static async Task CreateWebServiceBinding_WillBindWebServiceToANode() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();

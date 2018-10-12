@@ -487,6 +487,15 @@ public static class EFDataSourceLogic {
         return newTag;
     }
 
+    public static async Task UpdateTag_Logic(
+        NtwkDBContext context,
+        NodeTag newNodeTagData
+    ) {
+        NodeTag tag = await context.Tags.FindAsync(newNodeTagData.ID);
+        tag.Name = newNodeTagData.Name;
+        await context.SaveChangesAsync();
+    }
+
     public static async Task SetNodeTags_Logic(
         NtwkDBContext context,
         int nodeID,

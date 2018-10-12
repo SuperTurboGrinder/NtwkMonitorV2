@@ -202,6 +202,10 @@ public class EFDataSource : IEFDbDataSource {
     public async Task UpdateProfile(Profile profile) {
         await UpdateProfile_Logic(context, profile);
     }
+
+    public async Task UpdateTag(NodeTag tag) {
+        await UpdateTag_Logic(context, tag);
+    }
     
     public async Task UpdateNode(NtwkNode node) {
         await UpdateNode_Logic(context, node);

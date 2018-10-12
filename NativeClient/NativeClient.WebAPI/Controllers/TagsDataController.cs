@@ -38,6 +38,15 @@ public class TagsDataController : BaseDataController {
         );
     }
 
+    //PUT api/nodeTags/1/update
+    [HttpPut("{tagID:int}/update")]
+    public async Task<ActionResult> UpdateTag(int tagID, [FromBody] NodeTag tag) {
+        tag.ID = tagID;
+        return ObserveDataOperationStatus(
+            await data.UpdateTag(tag)
+        );
+    }
+
     // DELETE api/nodeTags/1/delete
     [HttpDelete("{tagID:int}/delete")]
     public async Task<ActionResult> RemoveTag(int tagID) {

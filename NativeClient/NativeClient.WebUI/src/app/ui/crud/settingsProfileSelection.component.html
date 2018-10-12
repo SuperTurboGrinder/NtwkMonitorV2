@@ -1,75 +1,43 @@
-<div class="w-100 h-100 p-0 m-0 bg-light">
-    <div class="w-100 h-100 p-0 m-0" *ngIf="profilesList != null && !displayOperationInProgress; else stillEmptyBlock">
-        <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
-            <div class="p-0 m-0" style="height:100%; width:calc(100% + 16px); overflow-y:scroll">
-                <div class="d-flex align-items-center h-100 w-100">
-                    <div class="d-block-inline w-100" style="max-height:100%">
-                        <div class="p-0 m-0 container-fluid">
-                            <div class="row m-0 p-0 text-center" *ngFor="let profile of profilesList; trackBy: profilesTrackBy">
-                                <div class="col-1"> </div>
-                                <div class="col-6 text-left p-2 border-bottom">
-                                    <span class="h4">{{profile.name}}</span>
-                                </div>
-                                <div class="col-4 p-1 border-bottom text-right">
-                                    <button
-                                        *ngIf="isEditorView === false"
-                                        type="button"
-                                        class="btn btn-outline-success square mx-1"
-                                        [disabled]="isCurrentProfile(profile.id)"
-                                        (click)="setAndContinue(profile.id)"
-                                        i18n="@@selectButtonLabel"
-                                    >
-                                        Select
-                                    </button>
-                                    <button
-                                        *ngIf="isEditorView"
-                                        type="button"
-                                        class="btn btn-warning square mx-1"
-                                        i18n="@@editButtonLabel"
-                                        [routerLink]="['/profile', 'edit', profile.id]"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        *ngIf="isEditorView"
-                                        type="button"
-                                        class="btn btn-danger square mx-1"
-                                        (click)="tryRemove(profile)"
-                                        i18n="@@removeButtonLabel"
-                                    >
-                                        Remove
-                                    </button>
-                                </div>
-                                <div class="col-1"> </div>
-                            </div>
-                            <div class="row p-0 m-0 text-center">
-                                <div class="w-100">
-                                    <span
-                                        class="btn btn-primary square p-1 m-1"
-                                        [routerLink]="['/profile/new']"
-                                        i18n="@@addNewButtonLabel"
-                                    >
-                                        Add new
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<crudSelectorTemplate
+    [isCustomView]="!isEditorView"
+    [dataLoaded]="dataList !== null"
+    [displayOperationInProgress]="displayOperationInProgress"
+    [isLoadingError]="isLoadingError"
+    (refreshEvent)="refresh($event)"
+    (deleteAnswerEvent)="deleteObject($event)"
+
+    [dataList]="dataList"
+    [baseFormLink]="'/profile'"
+>
+    <div class="p-0 m-0 container-fluid">
+        <div class="row m-0 p-0 text-center" *ngFor="let profile of dataList; trackBy: profilesTrackBy">
+            <div class="col-1"> </div>
+            <div class="col-6 text-left p-2 border-bottom">
+                <span class="h4">{{profile.name}}</span>
+            </div>
+            <div class="col-4 p-1 border-bottom text-right">
+                <button
+                    type="button"
+                    class="btn btn-outline-success square mx-1"
+                    [disabled]="isCurrentProfile(profile.id)"
+                    (click)="setAndContinue(profile.id)"
+                    i18n="@@selectButtonLabel"
+                >
+                    Select
+                </button>
+            </div>
+            <div class="col-1"> </div>
+        </div>
+        <div class="row p-0 m-0 text-center">
+            <div class="w-100">
+                <span
+                    class="btn btn-primary square p-1 m-1"
+                    [routerLink]="['/profile/new']"
+                    i18n="@@addNewButtonLabel"
+                >
+                    Add new
+                </span>
             </div>
         </div>
     </div>
-    <ng-template #stillEmptyBlock>
-        <loadingIndicator
-            [isError]="isLoadingError"
-            (refreshEvent)="refresh($event)"
-        ></loadingIndicator>
-     </ng-template>
-</div>
-<confirmationPopup
-    [display]="displayDeleteMessage"
-    (answerEvent)="deleteProfile($event)"
->
-    <span i18n="@@deleteProfileLabel">Delete profile</span>
-    <span> "{{aboutToBeRemovedProfileName}}"?</span>
-</confirmationPopup>
+</crudSelectorTemplate>  

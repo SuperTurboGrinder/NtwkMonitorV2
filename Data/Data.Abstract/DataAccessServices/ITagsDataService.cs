@@ -13,6 +13,7 @@ namespace Data.Abstract.DataAccessServices {
 public interface ITagsDataService {
     Task<DataActionResult<IEnumerable<NodeTag>>> GetAllTags();
     Task<DataActionResult<NodeTag>> CreateTag(NodeTag tag);
+    Task<StatusMessage> UpdateTag(NodeTag tag);
     Task<DataActionResult<NodeTag>> RemoveTag(int tagID);
 }
 
