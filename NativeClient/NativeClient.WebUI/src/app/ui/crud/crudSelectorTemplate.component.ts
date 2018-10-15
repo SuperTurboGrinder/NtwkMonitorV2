@@ -1,12 +1,4 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
-import { Location } from "@angular/common";
-import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
-import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
-import { SettingsProfilesService } from "../../services/settingsProfiles.service";
-import { HTTPResult } from "../../model/servicesModel/httpResult.model";
-import { Range } from "../misc/numRangeSelector.component"
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
-import { MessagingService } from "src/app/services/messaging.service";
 
 @Component({
     selector: 'crudSelectorTemplate',

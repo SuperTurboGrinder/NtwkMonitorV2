@@ -29,6 +29,7 @@ import { ConfirmationPopupComponent } from './misc/confirmationPopup.component';
 import { MessageTextSelectorComponent } from './messeging/messageTextSelector.component';
 import { TagFormComponent } from './crud/tagForm.component';
 import { CrudSelectorTemplateComponent } from './crud/crudSelectorTemplate.component';
+import { CrudFormScaffoldingComponent } from './crud/crudFormScaffolding.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { CrudSelectorTemplateComponent } from './crud/crudSelectorTemplate.compo
     TagFormComponent,
     TagSelectionComponent,
     ConfirmationPopupComponent,
-    CrudSelectorTemplateComponent
+    CrudSelectorTemplateComponent,
+    CrudFormScaffoldingComponent
   ],
   imports: [
     BrowserAnimationsModule,

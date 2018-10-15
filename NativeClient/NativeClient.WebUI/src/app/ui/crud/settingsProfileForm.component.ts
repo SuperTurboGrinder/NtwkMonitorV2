@@ -7,159 +7,91 @@ import { HTTPResult } from "../../model/servicesModel/httpResult.model";
 import { Range } from "../misc/numRangeSelector.component"
 import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
 import { MessagingService } from "src/app/services/messaging.service";
+import { BaseCrudFormComponent } from "../helpers/baseCrudFormComponent.helper";
 
 @Component({
     selector: 'settingsProfileForm',
     templateUrl: './settingsProfileForm.component.html'
 })
-export class SettingsProfileFormComponent {
-    private _isEditMode: boolean = false;
-    public original: SettingsProfile = null;
-    public profile: SettingsProfile = null;
-    private originalSessionDurationRange: Range = null;
-
-    public displayOperationInProgress = false;
-    public displayDiscardMessage = false;
-    public displayCreateConfirmationMessage = false;
-    public displaySaveChangesMessage = false;
-
-    public get isEditMode() {
-        return this._isEditMode;
-    }
-
-    public get originalMonitorSessionRange(): Range {
-        if(this.original === null) return null;
-        if(this.originalSessionDurationRange === null)
-            this.originalSessionDurationRange = new Range(
-                this.original.monitoringStartHour,
-                this.original.monitoringSessionDuration
-            );
-        return this.originalSessionDurationRange;
-    }
-
-    public get originalMonitorInterval(): number {
-        if(this.original === null) return null;
-        return this.original.monitorInterval;
-    }
+export class SettingsProfileFormComponent
+    extends BaseCrudFormComponent<SettingsProfile, SettingsProfilesService> {
 
     constructor(
-        private messager: MessagingService,
-        private location: Location,
+        messager: MessagingService,
+        location: Location,
         route: ActivatedRoute,
-        private settingsService: SettingsProfilesService
+        settingsService: SettingsProfilesService
     ) {
-        this.profile = new SettingsProfile(
-            0, "", 0, 24, true, true, 1
+        super(messager, location, route, settingsService);
+    }
+
+    protected getOriginalData(
+        id: number,
+        callback: (success: boolean, orig: SettingsProfile) => void
+    ) {
+        this.dataService.getProfiles().subscribe(
+            (profilesResult: HTTPResult<SettingsProfile[]>) => {
+                callback(
+                    profilesResult.success,
+                    profilesResult.success
+                        ? profilesResult.data.find(profile => profile.id === id)
+                        : null
+                );
+            }
         );
-        let routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
-        this._isEditMode = routeSnapshot.url[1].path === "edit";
-        if(this._isEditMode) {
-            let selectedID = parseInt(routeSnapshot.params.id);
-            settingsService.getProfiles().subscribe(
-                (profilesResult: HTTPResult<SettingsProfile[]>) => {
-                    if(profilesResult.success === true) {
-                        this.original = profilesResult.data.find(
-                            profile => profile.id === selectedID
-                        );
-                        this.profile = this.makeProfileCopy(this.original)
-                    }
-                }
-            );
-        } else {
-            this.original = this.makeProfileCopy(this.profile);
-        }
+    }
+
+    protected newEmptyData(): SettingsProfile {
+        return new SettingsProfile(
+            0, "", 0, 24, true, true, 1
+        )
+    }
+
+    protected currentIdenticalTo(obj: SettingsProfile): boolean {
+        return obj.name === this.data.name
+            && obj.monitoringStartHour === this.data.monitoringStartHour
+            && obj.monitoringSessionDuration === this.data.monitoringSessionDuration
+            && obj.startMonitoringOnLaunch === this.data.startMonitoringOnLaunch
+            && obj.depthMonitoring === this.data.depthMonitoring
+            && obj.monitorInterval === this.data.monitorInterval
+    }
+
+    protected makeCopy(orig: SettingsProfile) : SettingsProfile {
+        return new SettingsProfile(
+            orig.id,
+            orig.name,
+            orig.monitoringStartHour,
+            orig.monitoringSessionDuration,
+            orig.startMonitoringOnLaunch,
+            orig.depthMonitoring,
+            orig.monitorInterval
+        );
+    }
+
+    protected saveAsNewObjectInDatabase(
+        callback: (success: boolean) => void
+    ) {
+        this.dataService.createNewProfile(
+            this.data,
+            callback
+        );
+    }
+
+    protected saveChangesToObjectInDatabase(
+        callback: (success: boolean) => void
+    ) {
+        this.dataService.updateProfile(
+            this.data,
+            callback
+        );
     }
 
     public setMonitorInterval(interval: number) {
-        this.profile.monitorInterval = interval;
+        this.data.monitorInterval = interval;
     }
 
     public updateMonitoringHoursRage(range: Range) {
-        this.profile.monitoringStartHour = range.value;
-        this.profile.monitoringSessionDuration = range.length;
-    }
-
-    private makeProfileCopy(profile: SettingsProfile): SettingsProfile {
-        return new SettingsProfile(
-            profile.id,
-            profile.name,
-            profile.monitoringStartHour,
-            profile.monitoringSessionDuration,
-            profile.startMonitoringOnLaunch,
-            profile.depthMonitoring,
-            profile.monitorInterval
-        );
-    }
-
-    private isOkToDiscard(): boolean {
-        return this.original.name === this.profile.name
-            && this.original.monitoringStartHour === this.profile.monitoringStartHour
-            && this.original.monitoringSessionDuration === this.profile.monitoringSessionDuration
-            && this.original.startMonitoringOnLaunch === this.profile.startMonitoringOnLaunch
-            && this.original.depthMonitoring === this.profile.depthMonitoring
-            && this.original.monitorInterval === this.profile.monitorInterval
-    }
-
-    public tryDiscard() {
-        if(this.isOkToDiscard())
-            this.discardAndReturn(true);
-        else
-            this.displayDiscardMessage = true;
-    }
-
-    public discardAndReturn(shouldDiscard: boolean) {
-        this.displayDiscardMessage = false;
-        if(shouldDiscard) {
-            this.location.back();
-        }
-    }
-
-    private confirmOperationSuccess(
-        success: boolean,
-        successMessage: MessagesEnum
-    ) {
-        if(success) {
-            this.messager.showMessage(successMessage);
-            this.location.back();
-        } else {
-            this.displayOperationInProgress = false;
-        }
-    }
-
-    public tryCreateNew() {
-        this.displayCreateConfirmationMessage = true;
-    }
-
-    public createNewProfileAndReturn(shouldCreate: boolean) {
-        this.displayCreateConfirmationMessage = false;
-        if(!shouldCreate) return;
-        this.displayOperationInProgress = true;
-        this.settingsService.createNewProfile(
-            this.profile,
-            (success: boolean) => this.confirmOperationSuccess(
-                success,
-                MessagesEnum.CreatedSuccessfully
-            )
-        );
-    }
-
-    public trySaveChanges() {
-        if(this.isOkToDiscard())
-            this.messager.showMessage(MessagesEnum.NoChangesDetected);
-        else
-            this.displaySaveChangesMessage = true;
-    }
-
-    public saveChangesToProfileAndReturn(shouldSave: boolean) {
-        this.displaySaveChangesMessage = false;
-        if(!shouldSave) return;
-        this.displayOperationInProgress = true;
-        this.settingsService.updateProfile(
-            this.profile,
-            (success: boolean) => this.confirmOperationSuccess(
-                success,
-                MessagesEnum.UpdatedSuccessfully
-            )
-        );
+        this.data.monitoringStartHour = range.value;
+        this.data.monitoringSessionDuration = range.length;
     }
 }

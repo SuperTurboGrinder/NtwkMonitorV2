@@ -1,6 +1,14 @@
-<div
-    class="w-100 h-100 p-0 m-0"
-    *ngIf="displayOperationInProgress === false; else operationInProgress"
+<crudFormScaffolding
+    [displayOperationInProgress]="displayOperationInProgress || data === null"
+    [isLoadingError]="isLoadingError"
+    [displayDiscardMessage]="displayDiscardMessage"
+    [displayCreateConfirmationMessage]="displayCreateConfirmationMessage"
+    [displaySaveChangesMessage]="displaySaveChangesMessage"
+
+    (discardConfirmationEvent)="discardAndReturn($event)"
+    (saveNewConfirmationEvent)="createNewObjectAndReturn($event)"
+    (saveChangesConfirmationEvent)="saveChangesToObjectAndReturn($event)"
+    (refreshEvent)="refresh($event)"
 >
     <div class="border p-3 bg-primary w-100"
         [ngClass]="{'bg-warning': isEditMode}"
@@ -31,7 +39,7 @@
             <div class="row">
                 <div class="col-6 form-inline py-2">
                     <label i18n="@@nameLabel" class="pr-2">Name</label>
-                    <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="profile.name" minlength="2" required />
+                    <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="data.name" minlength="2" required />
                     <strong
                         *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
                         class="text-small text-danger"
@@ -51,7 +59,7 @@
                             class="form-control mx-2"
                             type="checkbox"
                             name="startMonitoringOnLaunch"
-                            [(ngModel)]="profile.startMonitoringOnLaunch"
+                            [(ngModel)]="data.startMonitoringOnLaunch"
                         >
                         <span i18n="@@autoMonitoringLabel">Auto start monitoring</span>
                     </div>
@@ -65,7 +73,7 @@
                             class="form-control mx-2"
                             type="checkbox"
                             name="depthMonitoring"
-                            [(ngModel)]="profile.depthMonitoring"
+                            [(ngModel)]="data.depthMonitoring"
                         >
                         <span i18n="@@skipUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
                     </div>
@@ -126,33 +134,4 @@
             </button>
         </div>
     </form>
-</div>
-<ng-template #operationInProgress>
-    <loadingIndicator></loadingIndicator>
- </ng-template>
-
- <!--Discard changes popup-->
-<confirmationPopup
-    [display]="displayDiscardMessage"
-    (answerEvent)="discardAndReturn($event)"
->
-    <span i18n="@@discardChangesLabel">Discard changes?</span>
-</confirmationPopup>
-
-<!--Create confirmation popup-->
-<confirmationPopup
-    [display]="displayCreateConfirmationMessage"
-    (answerEvent)="createNewProfileAndReturn($event)"
->
-    <span i18n="@@saveToDatabaseLabel">Save to database?</span>
-</confirmationPopup>
-
-<!--Overwrite popup-->
-<confirmationPopup
-    [display]="displaySaveChangesMessage"
-    (answerEvent)="saveChangesToProfileAndReturn($event)"
->
-    <span i18n="@@saveChangesToDatabaseLabel">
-        Save changes to database?
-    </span>
-</confirmationPopup>
+</crudFormScaffolding>

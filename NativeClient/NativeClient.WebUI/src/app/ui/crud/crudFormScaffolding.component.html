@@ -1,0 +1,38 @@
+<div
+    class="w-100 h-100 p-0 m-0"
+    *ngIf="!displayOperationInProgress; else operationInProgress"
+>
+    <ng-content></ng-content>
+</div>
+<ng-template #operationInProgress>
+    <loadingIndicator
+        [isError]="isLoadingError"
+        (refreshEvent)="refresh($event)"
+    ></loadingIndicator>
+</ng-template>
+
+ <!--Discard changes popup-->
+<confirmationPopup
+    [display]="displayDiscardMessage"
+    (answerEvent)="discardAndReturn($event)"
+>
+    <span i18n="@@discardChangesLabel">Discard changes?</span>
+</confirmationPopup>
+
+<!--Create confirmation popup-->
+<confirmationPopup
+    [display]="displayCreateConfirmationMessage"
+    (answerEvent)="createNewObjectAndReturn($event)"
+>
+    <span i18n="@@saveToDatabaseLabel">Save to database?</span>
+</confirmationPopup>
+
+<!--Overwrite popup-->
+<confirmationPopup
+    [display]="displaySaveChangesMessage"
+    (answerEvent)="saveChangesToObjectAndReturn($event)"
+>
+    <span i18n="@@saveChangesToDatabaseLabel">
+        Save changes to database?
+    </span>
+</confirmationPopup>
