@@ -5,7 +5,7 @@
                 <div class="d-flex align-items-center h-100 w-100">
                     <div class="d-block-inline w-100" style="max-height:100%">
                         <div *ngIf="isCustomView; else standardView">
-                            <ng-content></ng-content>
+                            <ng-container *ngTemplateOutlet="contentRef"></ng-container>
                         </div>
                         <ng-template #standardView>
                             <div class="p-0 m-0 container-fluid">

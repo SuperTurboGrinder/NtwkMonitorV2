@@ -9,35 +9,37 @@
     [dataList]="dataList"
     [baseFormLink]="'/profile'"
 >
-    <div class="p-0 m-0 container-fluid">
-        <div class="row m-0 p-0 text-center" *ngFor="let profile of dataList">
-            <div class="col-1"> </div>
-            <div class="col-6 text-left p-2 border-bottom">
-                <span class="h4">{{profile.name}}</span>
+    <ng-template>
+        <div class="p-0 m-0 container-fluid">
+            <div class="row m-0 p-0 text-center" *ngFor="let profile of dataList">
+                <div class="col-1"> </div>
+                <div class="col-6 text-left p-2 border-bottom">
+                    <span class="h4">{{profile.name}}</span>
+                </div>
+                <div class="col-4 p-1 border-bottom text-right">
+                    <button
+                        type="button"
+                        class="btn btn-outline-success square mx-1"
+                        [disabled]="isCurrentProfile(profile.id)"
+                        (click)="setAndContinue(profile.id)"
+                        i18n="@@selectButtonLabel"
+                    >
+                        Select
+                    </button>
+                </div>
+                <div class="col-1"> </div>
             </div>
-            <div class="col-4 p-1 border-bottom text-right">
-                <button
-                    type="button"
-                    class="btn btn-outline-success square mx-1"
-                    [disabled]="isCurrentProfile(profile.id)"
-                    (click)="setAndContinue(profile.id)"
-                    i18n="@@selectButtonLabel"
-                >
-                    Select
-                </button>
+            <div class="row p-0 m-0 text-center">
+                <div class="w-100">
+                    <span
+                        class="btn btn-primary square p-1 m-1"
+                        [routerLink]="['/profile/new']"
+                        i18n="@@addNewButtonLabel"
+                    >
+                        Add new
+                    </span>
+                </div>
             </div>
-            <div class="col-1"> </div>
         </div>
-        <div class="row p-0 m-0 text-center">
-            <div class="w-100">
-                <span
-                    class="btn btn-primary square p-1 m-1"
-                    [routerLink]="['/profile/new']"
-                    i18n="@@addNewButtonLabel"
-                >
-                    Add new
-                </span>
-            </div>
-        </div>
-    </div>
+    </ng-template>
 </crudSelectorTemplate>  

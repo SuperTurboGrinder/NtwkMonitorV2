@@ -30,6 +30,7 @@ import { MessageTextSelectorComponent } from './messeging/messageTextSelector.co
 import { TagFormComponent } from './crud/tagForm.component';
 import { CrudSelectorTemplateComponent } from './crud/crudSelectorTemplate.component';
 import { CrudFormScaffoldingComponent } from './crud/crudFormScaffolding.component';
+import { CrudFormHeaderComponent } from './crud/crudFormHeader.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { CrudFormScaffoldingComponent } from './crud/crudFormScaffolding.compone
     TagSelectionComponent,
     ConfirmationPopupComponent,
     CrudSelectorTemplateComponent,
-    CrudFormScaffoldingComponent
+    CrudFormScaffoldingComponent,
+    CrudFormHeaderComponent
   ],
   imports: [
     BrowserAnimationsModule,

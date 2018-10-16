@@ -1,10 +1,17 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import {
+    Component,
+    Input, Output, EventEmitter,
+    ContentChild, TemplateRef
+} from "@angular/core";
 
 @Component({
     selector: 'crudSelectorTemplate',
     templateUrl: './crudSelectorTemplate.component.html'
 })
 export class CrudSelectorTemplateComponent {
+    //in place of ng-content
+    //fixes rendering before initialization
+    @ContentChild(TemplateRef) contentRef;
 
     @Input() isCustomView = false;
 

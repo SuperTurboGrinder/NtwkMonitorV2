@@ -11,23 +11,24 @@ export class NumValueSwitchComponent {
     private _initialized: boolean = false;
     
     @Output() private changedValueEvent = new EventEmitter<number>();
-
-    set value(newValue: number) {
-        this._value = newValue;
-        this.changedValueEvent.emit(newValue);
+    
+    private emitChange() {
+        this.changedValueEvent.emit(this._value);
     }
 
     @Input() set min(newMin: number) {
         this._min = newMin;
         if(this.value < newMin) {
-            this.value = newMin;
+            this._value = newMin;
+            this.emitChange();
         }
     }
 
     @Input() set max(newMax: number) {
         this._max = newMax;
         if(this.value > newMax) {
-            this.value = newMax;
+            this._value = newMax;
+            this.emitChange();
         }
     }
 
@@ -36,6 +37,7 @@ export class NumValueSwitchComponent {
         if(this._initialized === false) {
             this._initialized = true;
             this._value = val;
+            this.emitChange();
         }
     }
 
@@ -44,20 +46,24 @@ export class NumValueSwitchComponent {
     get max(): number { return this._max }
 
     isMin(): boolean {
-        return this.value === this.min;
+        return this._value === this._min;
     }
 
     isMax(): boolean {
-        return this.value === this.max;
+        return this._value === this._max;
     }
 
     increment() {
-        if(!this.isMax())
-            this.value++;
+        if(!this.isMax()) {
+            this._value++;
+            this.emitChange();
+        }
     }
 
     decrement() {
-        if(!this.isMin())
-            this.value--;
+        if(!this.isMin()) {
+            this._value--;
+            this.emitChange();
+        }
     }
 }

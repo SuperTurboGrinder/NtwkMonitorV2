@@ -1,5 +1,5 @@
 <crudFormScaffolding
-    [displayOperationInProgress]="displayOperationInProgress || data === null"
+    [displayOperationInProgress]="displayOperationInProgress"
     [isLoadingError]="isLoadingError"
     [displayDiscardMessage]="displayDiscardMessage"
     [displayCreateConfirmationMessage]="displayCreateConfirmationMessage"
@@ -10,128 +10,126 @@
     (saveChangesConfirmationEvent)="saveChangesToObjectAndReturn($event)"
     (refreshEvent)="refresh($event)"
 >
-    <div class="border p-3 bg-primary w-100"
-        [ngClass]="{'bg-warning': isEditMode}"
-    >
-        <span class="h4">
-            <span *ngIf="isEditMode === true" i18n="@@editorViewEditHeader">Edit </span>
-            <span *ngIf="isEditMode === false" i18n="@@editorViewCreateHeader">New </span>
-            <span i18n="@@editorViewHeaderEnding">settings profile</span>
-        </span>
-    </div>
-    <!--
-        public id:number,
-        public name:string,
-        public monitoringStartHour:number, //from 0 to 23
-        public monitoringSessionDuration:number,
-        public startMonitoringOnLaunch:boolean,
-        public depthMonitoring:boolean,
-        public monitorInterval:number
-    -->
-    <form
-        class="pl-2 w-100"
-        novalidate
-        #form="ngForm"
-        (ngSubmit)="save(form)"
-        validate
-    >
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-6 form-inline py-2">
-                    <label i18n="@@nameLabel" class="pr-2">Name</label>
-                    <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="data.name" minlength="2" required />
-                    <strong
-                        *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
-                        class="text-small text-danger"
+    <ng-template>
+        <crudFormHeader
+            [isEditMode]="isEditMode"
+        >
+            <span i18n="@@settingsProfileLabel">settings profile</span>
+        </crudFormHeader>
+        <!--
+            public id:number,
+            public name:string,
+            public monitoringStartHour:number, //from 0 to 23
+            public monitoringSessionDuration:number,
+            public startMonitoringOnLaunch:boolean,
+            public depthMonitoring:boolean,
+            public monitorInterval:number
+        -->
+        <form
+            class="pl-2 w-100"
+            novalidate
+            #form="ngForm"
+            (ngSubmit)="save(form)"
+            validate
+        >
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-6 form-inline py-2">
+                        <label i18n="@@nameLabel" class="pr-2">Name</label>
+                        <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="data.name" minlength="2" required />
+                        <strong
+                            *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
+                            class="text-small text-danger"
+                        >
+                            <div
+                                i18n="@@nameRequiredMessge"
+                                *ngIf="nameModel.errors.required"
+                            >Name value required.</div>
+                        </strong>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col">
+                        <div class="form-inline m-0 p-0">
+                            <input
+                                class="form-control mx-2"
+                                type="checkbox"
+                                name="startMonitoringOnLaunch"
+                                [(ngModel)]="data.startMonitoringOnLaunch"
+                            >
+                            <span i18n="@@autoMonitoringLabel">Auto start monitoring</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="row">
+                    <div class="col">
+                        <div class="form-inline m-0 p-0">
+                            <input
+                                class="form-control mx-2"
+                                type="checkbox"
+                                name="depthMonitoring"
+                                [(ngModel)]="data.depthMonitoring"
+                            >
+                            <span i18n="@@skipUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row py-1">
+                    <div class="col">
+                        <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
+                        <numRangeSelector
+                            [maxValue]="23"
+                            [maxLength]="24"
+                            [initialValue]="originalMonitorSessionRange"
+                            (changedEvent)="updateMonitoringHoursRage($event)"
+                        ></numRangeSelector>
+                        <span i18n="@@hoursLabel"> hours</span>
+                    </div>
+                </div>
+    
+                <div class="row py-1">
+                    <div class="col">
+                        <span i18n="@@monitoringIntervalLabel">Monitor ping every </span>
+                        <numValueSwitch
+                            [min]="1"
+                            [max]="30"
+                            [initialValue]="originalMonitorInterval"
+                            (changedValueEvent)="setMonitorInterval($event)"
+                        ></numValueSwitch>
+                        <span i18n="@@minutesLabel"> minutes</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button
+                    *ngIf="isEditMode; else createButton"
+                    type="button"
+                    class="btn btn-warning square m-1"
+                    (click)="trySaveChanges()"
+                >
+                    <span i18n="@@saveButtonLabel">Save</span>
+                </button>
+                <ng-template #createButton>
+                    <button
+                        type="button"
+                        class="btn btn-primary square m-1"
+                        (click)="tryCreateNew()"
                     >
-                        <div
-                            i18n="@@nameRequiredMessge"
-                            *ngIf="nameModel.errors.required"
-                        >Name value required.</div>
-                    </strong>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-inline m-0 p-0">
-                        <input
-                            class="form-control mx-2"
-                            type="checkbox"
-                            name="startMonitoringOnLaunch"
-                            [(ngModel)]="data.startMonitoringOnLaunch"
-                        >
-                        <span i18n="@@autoMonitoringLabel">Auto start monitoring</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <div class="form-inline m-0 p-0">
-                        <input
-                            class="form-control mx-2"
-                            type="checkbox"
-                            name="depthMonitoring"
-                            [(ngModel)]="data.depthMonitoring"
-                        >
-                        <span i18n="@@skipUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row py-1">
-                <div class="col">
-                    <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
-                    <numRangeSelector
-                        [maxValue]="23"
-                        [maxLength]="24"
-                        [initialValue]="originalMonitorSessionRange"
-                        (changedEvent)="updateMonitoringHoursRage($event)"
-                    ></numRangeSelector>
-                    <span i18n="@@hoursLabel"> hours</span>
-                </div>
-            </div>
-
-            <div class="row py-1">
-                <div class="col">
-                    <span i18n="@@monitoringIntervalLabel">Monitor ping every </span>
-                    <numValueSwitch
-                        [min]="1"
-                        [max]="30"
-                        [initialValue]="originalMonitorInterval"
-                        (changedValueEvent)="setMonitorInterval($event)"
-                    ></numValueSwitch>
-                    <span i18n="@@minutesLabel"> minutes</span>
-                </div>
-            </div>
-        </div>
-        <div>
-            <button
-                *ngIf="isEditMode; else createButton"
-                type="button"
-                class="btn btn-warning square m-1"
-                (click)="trySaveChanges()"
-            >
-                <span i18n="@@saveButtonLabel">Save</span>
-            </button>
-            <ng-template #createButton>
+                        <span i18n="@@createButtonLabel">Create</span>
+                    </button>
+                </ng-template>
                 <button
                     type="button"
-                    class="btn btn-primary square m-1"
-                    (click)="tryCreateNew()"
+                    class="btn btn-secondary square m-1"
+                    (click)="tryDiscard()"
+                    i18n="@@cancelButtonLabel"
                 >
-                    <span i18n="@@createButtonLabel">Create</span>
+                    Cancel
                 </button>
-            </ng-template>
-            <button
-                type="button"
-                class="btn btn-secondary square m-1"
-                (click)="tryDiscard()"
-                i18n="@@cancelButtonLabel"
-            >
-                Cancel
-            </button>
-        </div>
-    </form>
+            </div>
+        </form>
+    </ng-template>
 </crudFormScaffolding>

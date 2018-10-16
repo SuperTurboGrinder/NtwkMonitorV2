@@ -15,6 +15,8 @@ import { BaseCrudFormComponent } from "../helpers/baseCrudFormComponent.helper";
 })
 export class SettingsProfileFormComponent
     extends BaseCrudFormComponent<SettingsProfile, SettingsProfilesService> {
+    private _originalMonitorSessionRange: Range = null;
+    private _originalMonitorInterval: number = null;
 
     constructor(
         messager: MessagingService,
@@ -25,17 +27,33 @@ export class SettingsProfileFormComponent
         super(messager, location, route, settingsService);
     }
 
+    public get originalMonitorSessionRange() {
+        return this._originalMonitorSessionRange
+    }
+
+    public get originalMonitorInterval() {
+        return this._originalMonitorInterval;
+    }
+
     protected getOriginalData(
         id: number,
         callback: (success: boolean, orig: SettingsProfile) => void
     ) {
         this.dataService.getProfiles().subscribe(
             (profilesResult: HTTPResult<SettingsProfile[]>) => {
+                let profile = profilesResult.success
+                    ? profilesResult.data.find(profile => profile.id === id)
+                    : null;
+                if(profile !== null) {
+                    this._originalMonitorSessionRange = new Range(
+                        profile.monitoringStartHour,
+                        profile.monitoringSessionDuration
+                    );
+                    this._originalMonitorInterval = profile.monitorInterval;
+                }
                 callback(
                     profilesResult.success,
-                    profilesResult.success
-                        ? profilesResult.data.find(profile => profile.id === id)
-                        : null
+                    profile
                 );
             }
         );
@@ -53,7 +71,7 @@ export class SettingsProfileFormComponent
             && obj.monitoringSessionDuration === this.data.monitoringSessionDuration
             && obj.startMonitoringOnLaunch === this.data.startMonitoringOnLaunch
             && obj.depthMonitoring === this.data.depthMonitoring
-            && obj.monitorInterval === this.data.monitorInterval
+            && obj.monitorInterval === this.data.monitorInterval;
     }
 
     protected makeCopy(orig: SettingsProfile) : SettingsProfile {

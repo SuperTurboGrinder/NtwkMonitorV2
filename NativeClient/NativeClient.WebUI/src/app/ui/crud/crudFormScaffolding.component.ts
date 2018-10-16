@@ -1,12 +1,19 @@
-import { Component, Input, Output, EventEmitter  } from "@angular/core";
+import {
+    Component,
+    Input, Output, EventEmitter,
+    ContentChild, TemplateRef
+} from "@angular/core";
 
 @Component({
     selector: 'crudFormScaffolding',
     templateUrl: './crudFormScaffolding.component.html'
 })
 export class CrudFormScaffoldingComponent {
+    //in place of ng-content
+    //fixes rendering before initialization
+    @ContentChild(TemplateRef) contentRef;
+
     @Input() set displayOperationInProgress(val: boolean) {
-        console.log(`Swapping ${this._displayOperationInProgress} with ${val}`);
         this._displayOperationInProgress = val;
     }
     get displayOperationInProgress() {

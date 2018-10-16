@@ -11,7 +11,7 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
     private originalData: DataType = null;
     public data: DataType = null;
 
-    public displayOperationInProgress = false;
+    public displayOperationInProgress = true;
     public isLoadingError = false;
     public displayDiscardMessage = false;
     public displayCreateConfirmationMessage = false;
@@ -23,7 +23,6 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
         route: ActivatedRoute,
         protected dataService: DataService
     ) {
-        this.displayOperationInProgress = true;
         let routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
         this.isEditMode = routeSnapshot.url[1].path === "edit";
         if(this.isEditMode) {
@@ -32,6 +31,7 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
         } else {
             this.originalData = this.newEmptyData();
             this.data = this.newEmptyData();
+            this.displayOperationInProgress = false;
         }
     }
 

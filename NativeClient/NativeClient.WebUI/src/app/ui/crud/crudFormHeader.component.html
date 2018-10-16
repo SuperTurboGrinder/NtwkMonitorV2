@@ -1,0 +1,9 @@
+<div class="border p-3 bg-primary w-100"
+    [ngClass]="{'bg-warning': isEditMode}"
+>
+    <span class="h4">
+        <span *ngIf="isEditMode === true" i18n="@@editorViewEditHeader">Edit </span>
+        <span *ngIf="isEditMode === false" i18n="@@editorViewCreateHeader">New </span>
+        <ng-content></ng-content>
+    </span>
+</div>

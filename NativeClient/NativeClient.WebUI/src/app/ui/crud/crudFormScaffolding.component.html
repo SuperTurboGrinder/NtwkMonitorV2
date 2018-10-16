@@ -2,7 +2,7 @@
     class="w-100 h-100 p-0 m-0"
     *ngIf="!displayOperationInProgress; else operationInProgress"
 >
-    <ng-content></ng-content>
+    <ng-container *ngTemplateOutlet="contentRef"></ng-container>
 </div>
 <ng-template #operationInProgress>
     <loadingIndicator
