@@ -199,7 +199,7 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
         utils.CreateClosuresForTestNodes(context, IDSet);
         var cwData = context.WebServices.AsNoTracking()
-            .Select(ws => new { ws.ID, ws.ServiceName })
+            .Select(ws => new { ws.ID, ws.Name })
             .OrderByDescending(id => id)
             .ToList();
         var nodesData = context.NodesClosureTable.AsNoTracking()
@@ -235,8 +235,8 @@ public class Data_EFDataSourceLogicTest {
                 if(o.o1.ID != o.o2.ID) {
                     throw new Exception($"Unexpected ID value: {o.o1.ID} != {o.o2.ID}");
                 }
-                if(o.o1.Name != o.o2.ServiceName) {
-                    throw new Exception($"Unexpected Name value: {o.o1.Name} != {o.o2.ServiceName}");
+                if(o.o1.Name != o.o2.Name) {
+                    throw new Exception($"Unexpected Name value: {o.o1.Name} != {o.o2.Name}");
                 }
             }
         );
@@ -359,7 +359,7 @@ public class Data_EFDataSourceLogicTest {
         var cvsList = await EFDataSourceLogic.GetAllCWS_Logic(context);
 
         Assert.Single(cvsList);
-        Assert.Equal(utils.WebInterfaceOn8080Name, cvsList.First().ServiceName);
+        Assert.Equal(utils.WebInterfaceOn8080Name, cvsList.First().Name);
     }
 
     [Fact]
@@ -1130,7 +1130,7 @@ public class Data_EFDataSourceLogicTest {
 
         CustomWebService cvs = new CustomWebService {
             ID = 0,
-            ServiceName = "Web Interface On Custom Port",
+            Name = "Web Interface On Custom Port",
             ServiceStr = "http://{node_ip}:{param1}",
             Parametr1Name = "Service Port"
         };
@@ -1139,7 +1139,7 @@ public class Data_EFDataSourceLogicTest {
         int cwsCoundAfter = context.WebServices.Count();
 
         Assert.Equal(1, cwsCoundAfter - cwsCoundBefore);
-        Assert.Equal("Web Interface On Custom Port", createdCWS.ServiceName);
+        Assert.Equal("Web Interface On Custom Port", createdCWS.Name);
     }
 
     [Fact]
@@ -1338,7 +1338,7 @@ public class Data_EFDataSourceLogicTest {
         string newCWSParam1Name = "TestParam1";
         var wsToUpdate = new CustomWebService {
             ID=cwsBefore.ID,
-            ServiceName=newCWSName,
+            Name=newCWSName,
             ServiceStr=newCWSStr,
             Parametr1Name=newCWSParam1Name
         };
@@ -1347,10 +1347,10 @@ public class Data_EFDataSourceLogicTest {
         var cwsAfter = context.WebServices.AsNoTracking()
             .Single(ws => ws.ID == IDSet.WebServiceID);
 
-        Assert.NotEqual(newCWSName, cwsBefore.ServiceName);
+        Assert.NotEqual(newCWSName, cwsBefore.Name);
         Assert.NotEqual(newCWSStr, cwsBefore.ServiceStr);
         Assert.NotEqual(newCWSParam1Name, cwsBefore.Parametr1Name);
-        Assert.Equal(newCWSName, cwsAfter.ServiceName);
+        Assert.Equal(newCWSName, cwsAfter.Name);
         Assert.Equal(newCWSStr, cwsAfter.ServiceStr);
         Assert.Equal(newCWSParam1Name, cwsAfter.Parametr1Name);
     }

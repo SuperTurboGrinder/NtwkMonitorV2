@@ -54,8 +54,8 @@ public class Data_NtwkDbContextTest {
         Assert.Equal(utils.SecondTagName, nodes[1].Tags.Skip(1).First().Tag.Name);
         Assert.Single(nodes[0].CustomWebServices);
         Assert.Single(nodes[1].CustomWebServices);
-        Assert.Equal(utils.WebInterfaceOn8080Name, nodes[0].CustomWebServices.First().Service.ServiceName);
-        Assert.Equal(utils.WebInterfaceOn8080Name, nodes[1].CustomWebServices.First().Service.ServiceName);
+        Assert.Equal(utils.WebInterfaceOn8080Name, nodes[0].CustomWebServices.First().Service.Name);
+        Assert.Equal(utils.WebInterfaceOn8080Name, nodes[1].CustomWebServices.First().Service.Name);
 
         Assert.Equal(2, monitoringSession.Pulses.Count);
         Assert.Empty(monitoringSession.Pulses.First().Messages);

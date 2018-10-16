@@ -111,7 +111,7 @@ class EFDatabaseMockingUtils {
 
         var webInterfaceService = new CustomWebService {
             ID = 0,
-            ServiceName = WebInterfaceOn8080Name,
+            Name = WebInterfaceOn8080Name,
             ServiceStr = "http://{node_ip}:8080"
         };
         context.WebServices.Add(webInterfaceService);
@@ -214,7 +214,7 @@ class EFDatabaseMockingUtils {
             Tag1ID = context.Tags.Single(t => t.Name == FirstTagName).ID,
             Tag2ID = context.Tags.Single(t => t.Name == SecondTagName).ID,
             Tag3ID = context.Tags.Single(t => t.Name == ThirdTagName).ID,
-            WebServiceID = context.WebServices.Single(w => w.ServiceName == WebInterfaceOn8080Name).ID
+            WebServiceID = context.WebServices.Single(w => w.Name == WebInterfaceOn8080Name).ID
         };
     }
 
@@ -329,7 +329,7 @@ class EFDatabaseMockingUtils {
         string newParam1Name = "Port";
         var secondWebService = new CustomWebService {
             ID=0,
-            ServiceName=newServiceName,
+            Name=newServiceName,
             ServiceStr=newServiceStr,
             Parametr1Name=newParam1Name
         };

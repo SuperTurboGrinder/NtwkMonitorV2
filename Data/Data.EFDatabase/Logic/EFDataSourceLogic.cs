@@ -121,7 +121,7 @@ public static class EFDataSourceLogic {
         List<Model.ViewModel.CWSData> servicesData = await context.WebServices.AsNoTracking()
             .Select(ws => new Model.ViewModel.CWSData() {
                 ID = ws.ID,
-                Name = ws.ServiceName
+                Name = ws.Name
             })
             .OrderBy(wsd => wsd.ID)
             .ToListAsync();
@@ -460,7 +460,7 @@ public static class EFDataSourceLogic {
         string name
     ) {
         return await context.WebServices.AsNoTracking()
-            .Where(e => e.ServiceName == name)
+            .Where(e => e.Name == name)
             .AnyAsync();
     }
 
@@ -676,7 +676,7 @@ public static class EFDataSourceLogic {
     ) {
         CustomWebService newCWS = new CustomWebService {
             ID = 0,
-            ServiceName = cws.ServiceName,
+            Name = cws.Name,
             ServiceStr = cws.ServiceStr,
             Parametr1Name = cws.Parametr1Name,
             Parametr2Name = cws.Parametr2Name,
@@ -798,7 +798,7 @@ public static class EFDataSourceLogic {
     ) {
         CustomWebService cwsToUpdate = 
             await context.WebServices.FindAsync(cws.ID);
-        cwsToUpdate.ServiceName = cws.ServiceName;
+        cwsToUpdate.Name = cws.Name;
         cwsToUpdate.ServiceStr = cws.ServiceStr;
         cwsToUpdate.Parametr1Name = cws.Parametr1Name;
         cwsToUpdate.Parametr2Name = cws.Parametr2Name;
