@@ -1,0 +1,55 @@
+<div>
+    <div>
+        <div i18n="@@baseHrefLabel">Base href</div>
+        <div class="form-inline m-0 p-0">
+            <button
+                type="button"
+                class="btn btn-outline-secondary square"
+                (click)="useHttp = !useHttp"
+            >
+                <span *ngIf="useHttp; else httpsButton">http://</span>
+                <ng-template #httpsButton>https://</ng-template>
+            </button>
+            <input
+                class="form-control"
+                type="url"
+            />
+        </div>
+    </div>
+    <div class="form-inline m-0 p-0">
+        <span class="pr-2" i18n="@@useIPLabel">Use IP</span>
+        <input
+            class="form-control mx-2"
+            type="checkbox"
+            [checked]="useIP()"
+            (change)="setIPUsage($event.target.checked)"
+        />
+    </div>
+    <div class="form-inline m-0 p-0">
+        <span class="pr-2" i18n="@@parametrLabel">Parmetr</span>
+        1
+        <input
+            class="form-control mx-2"
+            type="checkbox"
+            [checked]="usesParam1()"
+            (change)="setParm1Usage($event.target.checked)"
+        />
+        2
+        <input
+            class="form-control mx-2"
+            type="checkbox"
+            [checked]="usesParam2()"
+            (change)="setParm2Usage($event.target.checked)"
+        />
+        3
+        <input
+            class="form-control mx-2"
+            type="checkbox"
+            [checked]="usesParam3()"
+            (change)="setParm3Usage($event.target.checked)"
+        />
+    </div>
+    <div class="form-inline m-0 p-0">
+
+    </div>
+</div>

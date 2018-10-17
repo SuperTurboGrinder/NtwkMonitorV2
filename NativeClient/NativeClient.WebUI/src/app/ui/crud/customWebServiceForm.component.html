@@ -14,16 +14,15 @@
         <crudFormHeader
             [isEditMode]="isEditMode"
         >
-            <span i18n="@@settingsProfileLabel">settings profile</span>
+            <span i18n="@@customWebServiceLabel">custom web service</span>
         </crudFormHeader>
         <!--
             public id:number,
             public name:string,
-            public monitoringStartHour:number, //from 0 to 23
-            public monitoringSessionDuration:number,
-            public startMonitoringOnLaunch:boolean,
-            public depthMonitoring:boolean,
-            public monitorInterval:number
+            public serviceStr:string,
+            public parametr1Name,
+            public parametr2Name,
+            public parametr3Name
         -->
         <form
             class="pl-2 w-100"
@@ -47,58 +46,10 @@
                         </strong>
                     </div>
                 </div>
-    
                 <div class="row">
-                    <div class="col">
-                        <div class="form-inline m-0 p-0">
-                            <input
-                                class="form-control mx-2"
-                                type="checkbox"
-                                name="startMonitoringOnLaunch"
-                                [(ngModel)]="data.startMonitoringOnLaunch"
-                            >
-                            <span i18n="@@autoMonitoringLabel">Auto start monitoring</span>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="row">
-                    <div class="col">
-                        <div class="form-inline m-0 p-0">
-                            <input
-                                class="form-control mx-2"
-                                type="checkbox"
-                                name="depthMonitoring"
-                                [(ngModel)]="data.depthMonitoring"
-                            >
-                            <span i18n="@@skipUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row py-1">
-                    <div class="col">
-                        <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
-                        <numRangeSelector
-                            [maxValue]="23"
-                            [maxLength]="24"
-                            [initialValue]="originalMonitorSessionRange"
-                            (changedEvent)="updateMonitoringHoursRage($event)"
-                        ></numRangeSelector>
-                        <span i18n="@@hoursLabel"> hours</span>
-                    </div>
-                </div>
-    
-                <div class="row py-1">
-                    <div class="col">
-                        <span i18n="@@monitoringIntervalLabel">Monitor ping every </span>
-                        <numValueSwitch
-                            [min]="1"
-                            [max]="30"
-                            [initialValue]="originalMonitorInterval"
-                            (changedValueEvent)="setMonitorInterval($event)"
-                        ></numValueSwitch>
-                        <span i18n="@@minutesLabel"> minutes</span>
+                    <div class="col-6 py-2">
+                        <customWebServiceStringBuilder
+                        ></customWebServiceStringBuilder>
                     </div>
                 </div>
             </div>

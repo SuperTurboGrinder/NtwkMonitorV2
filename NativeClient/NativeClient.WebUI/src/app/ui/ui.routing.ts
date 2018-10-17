@@ -5,6 +5,7 @@ import { TaggedNodeListComponent } from "./taggedNodeList.component";
 import { NodesTreeViewComponent } from "./nodesTreeView.component";
 import { TagFormComponent } from "./crud/tagForm.component";
 import { CustomWebServiceSelectionComponent } from "./crud/customWebServiceSelection.component";
+import { CustomWebServiceFormComponent } from "./crud/customWebServiceForm.component";
 
 
 export class UIRoutingConfig {
@@ -40,6 +41,14 @@ export class UIRoutingConfig {
         {
             path: "customWebServices",
             component: CustomWebServiceSelectionComponent
+        },
+        {
+            path: "customWebService/new",
+            component: CustomWebServiceFormComponent
+        },
+        {
+            path: "customWebService/edit/:id",
+            component: CustomWebServiceFormComponent
         },
         {
             path: "tagFilteredView",
