@@ -1,0 +1,10 @@
+<crudSelectorTemplate
+    [dataLoaded]="dataList !== null"
+    [displayOperationInProgress]="displayOperationInProgress"
+    [isLoadingError]="isLoadingError"
+    (refreshEvent)="refresh($event)"
+    (deleteAnswerEvent)="deleteObject($event)"
+
+    [dataList]="dataList"
+    [baseFormLink]="'/customWebService'"
+></crudSelectorTemplate>

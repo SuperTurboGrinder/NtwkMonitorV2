@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
 import { TagsService } from "../../services/tags.service";
 import { NodeTag } from "../../model/httpModel/nodeTag.model";
 import { MessagingService } from "src/app/services/messaging.service";
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
 import { BaseCrudSelectorComponent } from "../helpers/baseCrudSelectorComponent.helper";
 
 @Component({

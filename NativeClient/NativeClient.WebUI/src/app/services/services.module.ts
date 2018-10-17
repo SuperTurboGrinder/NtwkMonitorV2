@@ -15,6 +15,7 @@ import { BaseURL } from "./baseUrl.token";
 import { ScreenSizeService } from "./screenSize.service";
 import { NodeInfoPopupDataService } from './nodeInfoPopupData.service';
 import { TreeCollapsingService } from './treeCollapsing.service';
+import { CustomWebServicesService } from './customWebServices.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { TreeCollapsingService } from './treeCollapsing.service';
     WebServicesService,
     NodesService,
     TagsService,
-    SettingsProfilesService
+    SettingsProfilesService,
+    CustomWebServicesService
   ],
 })
 export class ServicesModule { }

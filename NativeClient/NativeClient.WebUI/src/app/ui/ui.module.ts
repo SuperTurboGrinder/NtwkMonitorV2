@@ -31,6 +31,7 @@ import { TagFormComponent } from './crud/tagForm.component';
 import { CrudSelectorTemplateComponent } from './crud/crudSelectorTemplate.component';
 import { CrudFormScaffoldingComponent } from './crud/crudFormScaffolding.component';
 import { CrudFormHeaderComponent } from './crud/crudFormHeader.component';
+import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelection.component';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { CrudFormHeaderComponent } from './crud/crudFormHeader.component';
     ConfirmationPopupComponent,
     CrudSelectorTemplateComponent,
     CrudFormScaffoldingComponent,
-    CrudFormHeaderComponent
+    CrudFormHeaderComponent,
+    CustomWebServiceSelectionComponent
   ],
   imports: [
     BrowserAnimationsModule,

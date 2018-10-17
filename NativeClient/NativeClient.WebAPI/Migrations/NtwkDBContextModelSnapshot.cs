@@ -21,14 +21,14 @@ namespace NativeClient.WebAPI.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Name")
+                        .IsRequired();
+
                     b.Property<string>("Parametr1Name");
 
                     b.Property<string>("Parametr2Name");
 
                     b.Property<string>("Parametr3Name");
-
-                    b.Property<string>("ServiceName")
-                        .IsRequired();
 
                     b.Property<string>("ServiceStr")
                         .IsRequired();

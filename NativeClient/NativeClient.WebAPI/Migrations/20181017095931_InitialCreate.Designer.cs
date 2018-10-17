@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace NativeClient.WebAPI.Migrations
 {
     [DbContext(typeof(NtwkDBContext))]
-    [Migration("20181010120434_InitialCreate")]
+    [Migration("20181017095931_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,14 +23,14 @@ namespace NativeClient.WebAPI.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Name")
+                        .IsRequired();
+
                     b.Property<string>("Parametr1Name");
 
                     b.Property<string>("Parametr2Name");
 
                     b.Property<string>("Parametr3Name");
-
-                    b.Property<string>("ServiceName")
-                        .IsRequired();
 
                     b.Property<string>("ServiceStr")
                         .IsRequired();

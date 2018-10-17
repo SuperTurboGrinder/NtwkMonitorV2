@@ -86,7 +86,7 @@ export class SettingsProfilesService {
             this.baseUrl+`/${newProfileState.id}/update`,
             newProfileState
         ).subscribe(
-            (success: boolean) => callback(success)
+            callback
         );
     }
 

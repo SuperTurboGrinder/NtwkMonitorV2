@@ -46,7 +46,7 @@ export class TagsService {
             this.baseUrl+`/${newTagState.id}/update`,
             newTagState
         ).subscribe(
-            (success: boolean) => callback(success)
+            callback
         );
     }
 

@@ -68,7 +68,7 @@ namespace NativeClient.WebAPI.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ServiceName = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     ServiceStr = table.Column<string>(nullable: false),
                     Parametr1Name = table.Column<string>(nullable: true),
                     Parametr2Name = table.Column<string>(nullable: true),
