@@ -75,6 +75,7 @@ export class CustomWebServiceFormComponent
     protected saveAsNewObjectInDatabase(
         callback: (success: boolean) => void
     ) {
+        console.log(this.data)
         this.dataService.createNewCWS(
             this.data,
             callback
