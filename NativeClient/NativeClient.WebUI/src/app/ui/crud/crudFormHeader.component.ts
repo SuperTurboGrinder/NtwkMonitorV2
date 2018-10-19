@@ -1,9 +1,9 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'crudFormHeader',
+    selector: 'app-crud-form-header',
     templateUrl: './crudFormHeader.component.html'
 })
 export class CrudFormHeaderComponent {
-    @Input() isEditMode: boolean = false;
+    @Input() isEditMode = false;
 }

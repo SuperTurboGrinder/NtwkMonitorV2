@@ -1,16 +1,16 @@
-import { Injectable, Inject } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
-import { map, switchMap } from "rxjs/operators";
+import { Injectable, Inject } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { HTTPDatasource } from './http.datasource';
-import { HTTPResult } from '../model/servicesModel/httpResult.model'
-import { BaseURL } from "./baseUrl.token";
+import { HTTPResult } from '../model/servicesModel/httpResult.model';
+import { BaseURL } from './baseUrl.token';
 
 @Injectable()
 export class SettingsProfilesService {
-    private currentProfileID = -1; //not assigned
-    private currentProfileSubject : BehaviorSubject<SettingsProfile> = null;
+    private currentProfileID = -1; // not assigned
+    private currentProfileSubject: BehaviorSubject<SettingsProfile> = null;
     private baseUrl: string = null;
 
     constructor(
@@ -20,7 +20,7 @@ export class SettingsProfilesService {
         this.baseUrl = _baseUrl + 'settingsProfiles';
     }
 
-    public getProfiles() : Observable<HTTPResult<SettingsProfile[]>> {
+    public getProfiles(): Observable<HTTPResult<SettingsProfile[]>> {
         return this.httpDatasource.dataRequest<SettingsProfile[]>(
             'get',
             this.baseUrl
@@ -31,13 +31,13 @@ export class SettingsProfilesService {
         return this.currentProfileID !== -1;
     }
 
-    public setCurrentProfile(id: number) : Observable<SettingsProfile> {
+    public setCurrentProfile(id: number): Observable<SettingsProfile> {
         this.currentProfileID = id;
         return this.getProfiles().pipe(
             switchMap(results => {
-                if(results.success) {
-                    let result = results.data.find(p => p.id == id);
-                    if(this.currentProfileSubject == null) {
+                if (results.success) {
+                    const result = results.data.find(p => p.id === id);
+                    if (this.currentProfileSubject == null) {
                         this.currentProfileSubject =
                             new BehaviorSubject<SettingsProfile>(result);
                     } else {
@@ -49,7 +49,7 @@ export class SettingsProfilesService {
         );
     }
 
-    public get currentProfile() : Observable<SettingsProfile> {
+    public get currentProfile(): Observable<SettingsProfile> {
         return this.currentProfileSubject;
     }
 
@@ -57,20 +57,20 @@ export class SettingsProfilesService {
         return this.currentProfileID === id;
     }
 
-    public currentProfilesViewNodesIDs() : Observable<HTTPResult<number[]>> {
+    public currentProfilesViewNodesIDs(): Observable<HTTPResult<number[]>> {
         return this.httpDatasource.dataRequest<number[]>(
             'get',
-            this.baseUrl+`/${this.currentProfileID}/mainViewNodesIDs`
+            this.baseUrl + `/${this.currentProfileID}/mainViewNodesIDs`
         );
     }
 
     public createNewProfile(
         newProfile: SettingsProfile,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataRequest(
             'post',
-            this.baseUrl+`/new`,
+            this.baseUrl + `/new`,
             newProfile
         ).subscribe(
             (result: HTTPResult<SettingsProfile>) => callback(result.success)
@@ -79,11 +79,11 @@ export class SettingsProfilesService {
 
     public updateProfile(
         newProfileState: SettingsProfile,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataOperationRequest(
             'put',
-            this.baseUrl+`/${newProfileState.id}/update`,
+            this.baseUrl + `/${newProfileState.id}/update`,
             newProfileState
         ).subscribe(
             callback
@@ -92,11 +92,11 @@ export class SettingsProfilesService {
 
     public deleteProfile(
         id: number,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataRequest(
             'delete',
-            this.baseUrl+`/${id}/remove`
+            this.baseUrl + `/${id}/remove`
         ).subscribe(
             (result: HTTPResult<SettingsProfile>) => callback(result.success)
         );

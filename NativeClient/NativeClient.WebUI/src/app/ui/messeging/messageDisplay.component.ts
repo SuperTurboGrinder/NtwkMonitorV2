@@ -9,10 +9,10 @@ import {
 } from '@angular/animations';
 
 import { MessagingService } from '../../services/messaging.service';
-import { MessageToDisplay } from "../../model/viewModel/messageToDisplay.model";
+import { MessageToDisplay } from '../../model/viewModel/messageToDisplay.model';
 
 @Component({
-    selector: 'messageDisplay',
+    selector: 'app-message-display',
     templateUrl: './messageDisplay.component.html',
     animations: [
         trigger('messageState', [
@@ -45,13 +45,13 @@ export class MessageDisplayComponent {
     constructor(private messaging: MessagingService) {
         this.updateInterval = interval(1000);
         this.updateInterval.subscribe(_ => {
-            if(this.messageQueue.length > 0) {
-                var now = new Date().getTime();
-                for(var i = 0; i < this.messageQueue.length; i++) {
-                    var ms = now - this.messageQueue[i].time;
-                    var deadline = this.messageQueue[i].isMessage
+            if (this.messageQueue.length > 0) {
+                const now = new Date().getTime();
+                for (let i = 0; i < this.messageQueue.length; i++) {
+                    const ms = now - this.messageQueue[i].time;
+                    const deadline = this.messageQueue[i].isMessage
                         ? 3000 : 12000;
-                    if(ms > deadline) {
+                    if (ms > deadline) {
                         this.messageQueue.shift();
                         this.swapFromSecondaryQueue();
                     } else {
@@ -61,7 +61,7 @@ export class MessageDisplayComponent {
             } else {
                 this.swapFromSecondaryQueue();
             }
-        })
+        });
         this.messaging.messages.subscribe(msg =>
             this.addNewMessage({
                 isMessage: true,
@@ -80,8 +80,8 @@ export class MessageDisplayComponent {
         );
     }
 
-    private addNewMessage(msg:MessageToDisplay) {
-        if(this.messageQueue.length < this.mainQueueCapacity) {
+    private addNewMessage(msg: MessageToDisplay) {
+        if (this.messageQueue.length < this.mainQueueCapacity) {
             this.messageQueue.push(msg);
         } else {
             this.secondaryMessageQueue.push(msg);
@@ -89,7 +89,7 @@ export class MessageDisplayComponent {
     }
 
     private swapFromSecondaryQueue() {
-        if(this.secondaryMessageQueue.length > 0
+        if (this.secondaryMessageQueue.length > 0
             && this.messageQueue.length < this.mainQueueCapacity
         ) {
             this.messageQueue.push(this.secondaryMessageQueue[0]);
@@ -97,7 +97,7 @@ export class MessageDisplayComponent {
         }
     }
 
-    messageTrackByFn(index:number, item:MessageToDisplay) {
+    messageTrackByFn(index: number, item: MessageToDisplay) {
         return item.time;
     }
 }

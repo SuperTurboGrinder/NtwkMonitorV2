@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-import { Observable, interval } from 'rxjs';
-
-import { BackendErrorStatuses } from './model/httpModel/backendErrorStatuses.model'
-import { MessagingService } from './services/messaging.service';
-import { SettingsProfilesService } from './services/settingsProfiles.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +10,5 @@ export class AppComponent {
   testInterval: Observable<number>;
 
   constructor(
-    private messaging: MessagingService
-  ) {
-    
-  }
+  ) { }
 }

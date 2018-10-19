@@ -1,25 +1,25 @@
-import { Component } from "@angular/core";
+import { Component } from '@angular/core';
 
-import { NtwkNode } from "../model/httpModel/ntwkNode.model";
-import { NodesService } from "../services/nodes.service";
-import { PingCacheService, PingTree } from "../services/pingCache.service";
-import { TagsService } from "../services/tags.service";
-import { NodeInfoPopupDataService } from "../services/nodeInfoPopupData.service";
-import { NodeInfoDataCache } from "./helpers/nodesInfoDataCache.helper";
-import { TreeCollapsingService } from "../services/treeCollapsing.service";
-import { Range } from "../ui/misc/numRangeSelector.component";
-import { DisplayTreeHelper } from "./helpers/displayTreeHelper.helper";
+import { NtwkNode } from '../model/httpModel/ntwkNode.model';
+import { NodesService } from '../services/nodes.service';
+import { PingCacheService } from '../services/pingCache.service';
+import { TagsService } from '../services/tags.service';
+import { NodeInfoPopupDataService } from '../services/nodeInfoPopupData.service';
+import { NodeInfoDataCache } from './helpers/nodesInfoDataCache.helper';
+import { TreeCollapsingService } from '../services/treeCollapsing.service';
+import { Range } from '../ui/misc/numRangeSelector.component';
+import { DisplayTreeHelper } from './helpers/displayTreeHelper.helper';
 
 @Component({
-    selector: 'nodesTreeView',
+    selector: 'app-nodes-tree-view',
     templateUrl: './nodesTreeView.component.html'
 })
 export class NodesTreeViewComponent {
     private displayTreeHelper: DisplayTreeHelper = null;
     private loadingError = false;
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
-    private nodesListIsEmpty: boolean = true;
-    private initialized: boolean = false;
+    private nodesListIsEmpty = true;
+    private initialized = false;
 
     private readonly maxDisplayedLayers = 10;
     private startDisplayLayer = 0;
@@ -29,15 +29,15 @@ export class NodesTreeViewComponent {
     public prefix(prefixIndex: number) {
         return this.displayTreeHelper.prefix(prefixIndex);
     }
-    
-    listWebServicesData(i:number) : {name:string, id:number}[] {
+
+    listWebServicesData(i: number): {name: string, id: number}[] {
         return this.nodeInfoPopupDataCache.listWebServicesData(
             i,
             this.displayTreeHelper.nodeData(i).boundWebServicesIDs
         );
     }
 
-    public selectNode(i:number, event:MouseEvent) {
+    public selectNode(i: number, event: MouseEvent) {
         this.nodeInfoPopupService.setData(
             this.nodeInfoPopupDataCache.formNodeInfoPopupData(
                 i,
@@ -47,7 +47,7 @@ export class NodesTreeViewComponent {
         );
     }
 
-    public deselectNode(event:MouseEvent) {
+    public deselectNode(event: MouseEvent) {
         this.nodeInfoPopupService.setData(null);
     }
 
@@ -72,7 +72,7 @@ export class NodesTreeViewComponent {
     }
 
     public  maxDisplayedTreeLayers() {
-        return this.maxDisplayedLayers
+        return this.maxDisplayedLayers;
     }
 
     public node(index: number): NtwkNode {
@@ -95,8 +95,10 @@ export class NodesTreeViewComponent {
         return this.loadingError;
     }
 
-    nodeTrackByFn(index:number, node_index:number) {
-        if(!this.displayTreeHelper) return null;
+    nodeTrackByFn(index: number, node_index: number) {
+        if (!this.displayTreeHelper) {
+            return null;
+        }
         return this.displayTreeHelper.node(node_index).id;
     }
 
@@ -114,7 +116,7 @@ export class NodesTreeViewComponent {
         this.displayTreeHelper.setDisplayedTreeLayers(
             this.startDisplayLayer,
             this.displayLayersCount
-        )
+        );
     }
 
     public refresh(_: boolean) {
@@ -123,16 +125,19 @@ export class NodesTreeViewComponent {
     }
 
     public pingBranch(i: number) {
-        let branch = this.displayTreeHelper.flatPingTree[i];
-        if(branch !== null) 
+        const branch = this.displayTreeHelper.flatPingTree[i];
+        if (branch !== null) {
             this.pingCacheService.silentTreeUpdate(
                 [branch]
-            )
+            );
+        }
     }
 
     public isBranchPingable(i: number): boolean {
-        if(this.treeLayersCount === 0) return false;
-        let branch = this.displayTreeHelper.flatPingTree[i];
+        if (this.treeLayersCount === 0) {
+            return false;
+        }
+        const branch = this.displayTreeHelper.flatPingTree[i];
         return branch !== null && (
             branch.isBranchPingable || branch.isPingable
         );
@@ -150,17 +155,19 @@ export class NodesTreeViewComponent {
 
     private initialize() {
         this.nodesService.getNodesTree().subscribe(treeResult => {
-            if(treeResult.success === false) {
+            if (treeResult.success === false) {
                 this.loadingError = true;
                 return;
             }
             this.initialized = true;
 
-            if(treeResult.data.nodesTree.allNodes.length === 0) {
+            if (treeResult.data.nodesTree.allNodes.length === 0) {
                 this.nodesListIsEmpty = true;
                 return;
-            } else this.nodesListIsEmpty = false;
-            
+            } else {
+                this.nodesListIsEmpty = false;
+            }
+
             this.treeLayersCount = treeResult.data.nodesTree.treeLayers.length;
             this.displayLayersCount =
                 this.treeLayersCount <= this.maxDisplayedLayers
@@ -180,6 +187,6 @@ export class NodesTreeViewComponent {
                     this.tagsService
                 );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
-        })
+        });
     }
 }

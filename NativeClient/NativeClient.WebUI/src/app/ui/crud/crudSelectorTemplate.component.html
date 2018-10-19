@@ -55,16 +55,16 @@
         </div>
     </div>
     <ng-template #stillEmptyBlock>
-        <loadingIndicator
+        <app-loading-indicator
             [isError]="isLoadingError"
             (refreshEvent)="refresh($event)"
-        ></loadingIndicator>
+        ></app-loading-indicator>
     </ng-template>
 </div>
-<confirmationPopup
+<app-confirmation-popup
     [display]="displayDeleteMessage"
     (answerEvent)="deleteHandler($event)"
 >
     <span i18n="@@deleteLabel">Delete</span>
     <span> "{{objectToRemoveName}}"?</span>
-</confirmationPopup>
+</app-confirmation-popup>

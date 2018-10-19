@@ -1,9 +1,9 @@
-import { Injectable } from "@angular/core";
-import { Subscription, BehaviorSubject } from "rxjs"
-import { first, skip } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { Subscription, BehaviorSubject } from 'rxjs';
+import { first, skip } from 'rxjs/operators';
 
-import { PingService } from "./ping.service";
-import { PingTestData } from "../model/httpModel/pingTestData.model";
+import { PingService } from './ping.service';
+import { PingTestData } from '../model/httpModel/pingTestData.model';
 
 @Injectable()
 export class PingCacheService {
@@ -13,33 +13,33 @@ export class PingCacheService {
         private pingService: PingService
     ) {}
 
-    isLocked(nodeID: number) : boolean {
-        let cell = this.pingCache.get(nodeID);
-        return cell == undefined
+    isLocked(nodeID: number): boolean {
+        const cell = this.pingCache.get(nodeID);
+        return cell === undefined
             ? false
             : cell.isLocked;
     }
 
-    private getCell(nodeID: number) : PingCacheCell {
+    private getCell(nodeID: number): PingCacheCell {
         let cell = this.pingCache.get(nodeID);
-        if(cell == undefined) {
+        if (cell === undefined) {
             cell = new PingCacheCell(null);
             this.pingCache.set(nodeID, cell);
         }
         return cell;
     }
 
-    public getIDsSortedByPing(descending: boolean) : number[] {
-        let lessWithDescending = () => descending ? 1 : -1;
-        let bothAreFailed = (val1, val2) =>
-            val1.ptd.num == val1.ptd.failed && val2.ptd.num == val2.ptd.failed;
-        let onlyFirstIsFailed = (val1, val2) =>
-            val1.ptd.num == val1.ptd.failed && val2.ptd.num != val2.ptd.failed;
-        let compare = (val1, val2) =>
-            val1.ptd.avg == val2.ptd.avg
+    public getIDsSortedByPing(descending: boolean): number[] {
+        const lessWithDescending = () => descending ? 1 : -1;
+        const bothAreFailed = (val1, val2) =>
+            val1.ptd.num === val1.ptd.failed && val2.ptd.num === val2.ptd.failed;
+        const onlyFirstIsFailed = (val1, val2) =>
+            val1.ptd.num === val1.ptd.failed && val2.ptd.num !== val2.ptd.failed;
+        const compare = (val1, val2) =>
+            val1.ptd.avg === val2.ptd.avg
                 ? 0 : val1.ptd.avg < val2.ptd.avg
                     ? lessWithDescending() : -lessWithDescending();
-        let someAreFailedOr = (a: {id:number, ptd: PingTestData}, b: {id:number, ptd: PingTestData},
+        const someAreFailedOr = (a: {id: number, ptd: PingTestData}, b: {id: number, ptd: PingTestData},
             or: (v1, v2) => number
         ): number => bothAreFailed(a, b)
                 ? 0 : onlyFirstIsFailed(a, b)
@@ -56,29 +56,29 @@ export class PingCacheService {
 
     public subscribeToValue(
         nodeID: number,
-        callback: (ptd:PingTestData)=>void
-    ) : Subscription {
+        callback: (ptd: PingTestData) => void
+    ): Subscription {
         return this.getCell(nodeID).value.subscribe(callback);
     }
 
     private subscribeToNextOnly(
         nodeID: number,
-        callback: (ptd:PingTestData)=>void
+        callback: (ptd: PingTestData) => void
     ) {
         this.getCell(nodeID).value.pipe(skip(1), first()).subscribe(callback);
     }
 
     private pingByID(nodeID: number) {
-        let cell = this.getCell(nodeID);
-        if(cell.isLocked == false) {
+        const cell = this.getCell(nodeID);
+        if (cell.isLocked === false) {
             cell.setLock();
             this.pingService.getPing(nodeID).subscribe(pingTestResult => {
-                cell.resetLock()
+                cell.resetLock();
                 cell.value.next(
                     pingTestResult.success === true
                         ? pingTestResult.data
                         : null
-                )
+                );
             });
         }
     }
@@ -87,26 +87,28 @@ export class PingCacheService {
         this.pingByID(nodeID);
     }
 
-    public silentTreeUpdate(roots:PingTree[]) {
+    public silentTreeUpdate(roots: PingTree[]) {
         roots.forEach((tree) => {
             this.pingTree(tree, null);
-        })
+        });
     }
 
     private pingTree(
         root: PingTree,
         errorCallback: (currentRoot: PingTree) => void
     ) {
-        if(root.isPingable) {
+        if (root.isPingable) {
             this.subscribeToNextOnly(root.id,
                 ptd => {
-                    if(ptd.failed != ptd.num) {
+                    if (ptd.failed !== ptd.num) {
                         root.childrenIDs.forEach(
                             nextRoot => this.pingTree(nextRoot, errorCallback)
-                        )
+                        );
                     } else {
-                        this.setFailedBranch(root.childrenIDs)
-                        if(errorCallback) errorCallback(root);
+                        this.setFailedBranch(root.childrenIDs);
+                        if (errorCallback) {
+                            errorCallback(root);
+                        }
                     }
                 }
             );
@@ -114,35 +116,35 @@ export class PingCacheService {
         } else {
             root.childrenIDs.forEach(
                 nextRoot => this.pingTree(nextRoot, errorCallback)
-            )
+            );
         }
     }
 
     setFailedBranch(roots: PingTree[]) {
         roots.forEach(root => {
-            let cell = this.getCell(root.id);
+            const cell = this.getCell(root.id);
             cell.value.next({
                 failed: 0,
                 num: 0,
                 avg: 0
-            })
+            });
             this.setFailedBranch(root.childrenIDs);
-        })
+        });
     }
 }
 
 export class PingTree {
-    public id:number;
-    public isPingable:boolean;
-    public isBranchPingable:boolean;
-    public childrenIDs:PingTree[];
+    public id: number;
+    public isPingable: boolean;
+    public isBranchPingable: boolean;
+    public childrenIDs: PingTree[];
 }
 
 class PingCacheCell {
     public value: BehaviorSubject<PingTestData>;
-    private _isLocked: boolean = false;
+    private _isLocked = false;
 
-    get isLocked() : boolean {
+    get isLocked(): boolean {
         return this._isLocked;
     }
 

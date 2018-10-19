@@ -1,7 +1,7 @@
 export enum BackendErrorStatuses {
     DatabaseInternalError = 101,
 
-    //invalid id messages
+    // invalid id messages
     ErrorWhileCheckingIDInDatabase = 201,
     InvalidProfileID = 202,
     InvalidTagID = 203,
@@ -9,7 +9,7 @@ export enum BackendErrorStatuses {
     InvalidSessionID = 205,
     InvalidTagsIDs = 206,
 
-    //other input validation
+    // other input validation
     ErrorWhileCheckingNameExistanceInDatabase = 301,
     NameAlreadyClaimed = 302,
     ErrorWhileGetingExistanceOfWSBindingFromDatabase = 303,
@@ -22,7 +22,7 @@ export enum BackendErrorStatuses {
     NodeIsPartOfSpecifiedSubtree = 310,
     BindingBetweenSpecifiedServiceAndNodeDoesNotExist = 311,
 
-    //view model validation
+    // view model validation
     InvalidName = 401,
     InvalidCWSParam1Name = 402,
     InvalidCWSParam2Name = 403,
@@ -35,16 +35,16 @@ export enum BackendErrorStatuses {
     MonitoringSessionDurationIsOutOfRange = 410,
     InvalidMonitoringMessageTypeValue = 411,
 
-    //controllers services errors
-    //exceutables service
+    // controllers services errors
+    // exceutables service
     NoSpecifiedExecServiceFoundInBinDirectory = 501,
     TooManyCandidatesForSpecefiedExecServiceInBinDirectory = 502,
     NotEnoughOSRightsToSearchForExecServices = 503,
     CouldNotFindBinDirectoryWhileSearchingForExecutableServices = 504,
     UnknownIOErrorWhileTryingToFindExecutableServices = 505,
     ExecutableServiceStartError = 506,
-    //ping service
+    // ping service
     PingExecutionServiceError = 507,
-    //web services launcher service
+    // web services launcher service
     CustomWebServiceStartError = 508,
 }

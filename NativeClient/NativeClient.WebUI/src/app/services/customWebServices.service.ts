@@ -1,11 +1,11 @@
-import { Injectable, Inject } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable, Inject } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { CustomWebService } from "../model/httpModel/customWebService.model";
+import { CustomWebService } from '../model/httpModel/customWebService.model';
 import { HTTPDatasource } from './http.datasource';
-import { HTTPResult } from '../model/servicesModel/httpResult.model'
-import { BaseURL } from "./baseUrl.token";
-import { CustomWebServiceBinding } from "../model/httpModel/cwsBindingData.model";
+import { HTTPResult } from '../model/servicesModel/httpResult.model';
+import { BaseURL } from './baseUrl.token';
+import { CustomWebServiceBinding } from '../model/httpModel/cwsBindingData.model';
 
 @Injectable()
 export class CustomWebServicesService {
@@ -18,7 +18,7 @@ export class CustomWebServicesService {
         this.baseUrl = _baseUrl + 'webServices';
     }
 
-    public getCWSList() : Observable<HTTPResult<CustomWebService[]>> {
+    public getCWSList(): Observable<HTTPResult<CustomWebService[]>> {
         return this.httpDatasource.dataRequest<CustomWebService[]>(
             'get',
             this.baseUrl
@@ -27,11 +27,11 @@ export class CustomWebServicesService {
 
     public createNewCWS(
         newCWS: CustomWebService,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataRequest(
             'post',
-            this.baseUrl+`/new`,
+            this.baseUrl + `/new`,
             newCWS
         ).subscribe(
             (result: HTTPResult<CustomWebService>) => callback(result.success)
@@ -40,11 +40,11 @@ export class CustomWebServicesService {
 
     public updateCWS(
         newCWSState: CustomWebService,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataOperationRequest(
             'put',
-            this.baseUrl+`/${newCWSState.id}/update`,
+            this.baseUrl + `/${newCWSState.id}/update`,
             newCWSState
         ).subscribe(
             (success: boolean) => callback(success)
@@ -53,11 +53,11 @@ export class CustomWebServicesService {
 
     public deleteCWS(
         id: number,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataRequest(
             'delete',
-            this.baseUrl+`/${id}/delete`
+            this.baseUrl + `/${id}/delete`
         ).subscribe(
             (result: HTTPResult<CustomWebService>) => callback(result.success)
         );
@@ -66,11 +66,11 @@ export class CustomWebServicesService {
     public createNewCWSBinding(
         serviceID: number,
         newCWSBindingData: CustomWebServiceBinding,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataOperationRequest(
             'post',
-            this.baseUrl+`/${serviceID}/bind`,
+            this.baseUrl + `/${serviceID}/bind`,
             newCWSBindingData
         ).subscribe(
             callback
@@ -80,11 +80,11 @@ export class CustomWebServicesService {
     public updateCWSBinding(
         serviceID: number,
         newCWSBindingState: CustomWebServiceBinding,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.dataOperationRequest(
             'put',
-            this.baseUrl+`/${serviceID}/updateBinding`,
+            this.baseUrl + `/${serviceID}/updateBinding`,
             newCWSBindingState
         ).subscribe(
             callback
@@ -94,11 +94,11 @@ export class CustomWebServicesService {
     public deleteCWSBinding(
         serviceID: number,
         nodeID: number,
-        callback: (success: boolean)=>void
+        callback: (success: boolean) => void
     ) {
         return this.httpDatasource.operationRequest(
             'delete',
-            this.baseUrl+`/${serviceID}/deleteBindingWithNode/${nodeID}`
+            this.baseUrl + `/${serviceID}/deleteBindingWithNode/${nodeID}`
         ).subscribe(
             callback
         );

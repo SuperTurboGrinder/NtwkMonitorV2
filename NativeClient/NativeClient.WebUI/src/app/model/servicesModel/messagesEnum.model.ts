@@ -1,5 +1,5 @@
 export enum MessagesEnum {
-    //crud messages
+    // crud messages
     CreatedSuccessfully = 101,
     UpdatedSuccessfully = 102,
     DeletedSuccessfully = 103,

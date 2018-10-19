@@ -1,4 +1,4 @@
-import { NtwkNode } from "./ntwkNode.model";
+import { NtwkNode } from './ntwkNode.model';
 
 export class NodeData {
     constructor(

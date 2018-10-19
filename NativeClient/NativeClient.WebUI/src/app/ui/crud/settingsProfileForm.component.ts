@@ -1,16 +1,15 @@
-import { Component } from "@angular/core";
-import { Location } from "@angular/common";
-import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
-import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
-import { SettingsProfilesService } from "../../services/settingsProfiles.service";
-import { HTTPResult } from "../../model/servicesModel/httpResult.model";
-import { Range } from "../misc/numRangeSelector.component"
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
-import { MessagingService } from "src/app/services/messaging.service";
-import { BaseCrudFormComponent } from "../helpers/baseCrudFormComponent.helper";
+import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { SettingsProfile } from '../../model/httpModel/settingsProfile.model';
+import { SettingsProfilesService } from '../../services/settingsProfiles.service';
+import { HTTPResult } from '../../model/servicesModel/httpResult.model';
+import { Range } from '../misc/numRangeSelector.component';
+import { MessagingService } from 'src/app/services/messaging.service';
+import { BaseCrudFormComponent } from '../helpers/baseCrudFormComponent.helper';
 
 @Component({
-    selector: 'settingsProfileForm',
+    selector: 'app-settings-profile-form',
     templateUrl: './settingsProfileForm.component.html'
 })
 export class SettingsProfileFormComponent
@@ -28,7 +27,7 @@ export class SettingsProfileFormComponent
     }
 
     public get originalMonitorSessionRange() {
-        return this._originalMonitorSessionRange
+        return this._originalMonitorSessionRange;
     }
 
     public get originalMonitorInterval() {
@@ -41,10 +40,10 @@ export class SettingsProfileFormComponent
     ) {
         this.dataService.getProfiles().subscribe(
             (profilesResult: HTTPResult<SettingsProfile[]>) => {
-                let profile = profilesResult.success
-                    ? profilesResult.data.find(profile => profile.id === id)
+                const profile = profilesResult.success
+                    ? profilesResult.data.find(p => p.id === id)
                     : null;
-                if(profile !== null) {
+                if (profile !== null) {
                     this._originalMonitorSessionRange = new Range(
                         profile.monitoringStartHour,
                         profile.monitoringSessionDuration
@@ -61,8 +60,8 @@ export class SettingsProfileFormComponent
 
     protected newEmptyData(): SettingsProfile {
         return new SettingsProfile(
-            0, "", 0, 24, true, true, 1
-        )
+            0, '', 0, 24, true, true, 1
+        );
     }
 
     protected currentIdenticalTo(obj: SettingsProfile): boolean {
@@ -74,7 +73,7 @@ export class SettingsProfileFormComponent
             && obj.monitorInterval === this.data.monitorInterval;
     }
 
-    protected makeCopy(orig: SettingsProfile) : SettingsProfile {
+    protected makeCopy(orig: SettingsProfile): SettingsProfile {
         return new SettingsProfile(
             orig.id,
             orig.name,

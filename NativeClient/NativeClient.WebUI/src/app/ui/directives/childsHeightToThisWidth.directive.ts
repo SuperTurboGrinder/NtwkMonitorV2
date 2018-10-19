@@ -1,21 +1,25 @@
-import { Directive, ContentChild, QueryList, ElementRef, HostListener } from "@angular/core";
+import {
+    Directive,
+    ContentChild, ElementRef, HostListener,
+    AfterContentInit } from '@angular/core';
 
-import { SizeSetterDirective } from "./sizeSetter.directive";
+import { SizeSetterDirective } from './sizeSetter.directive';
 
 @Directive({
-    selector: ".nmChildsHeightToThisWidth"
+    // tslint:disable-next-line:directive-selector
+    selector: '.nmChildsHeightToThisWidth'
 })
-export class ChildsHeightToThisWidthDirective {
+export class ChildsHeightToThisWidthDirective implements AfterContentInit {
     @ContentChild(SizeSetterDirective)
-    sizeSetter:SizeSetterDirective;
-    //sizeSetters: QueryList<SizeSetterDirective>;
+    sizeSetter: SizeSetterDirective;
+    // sizeSetters: QueryList<SizeSetterDirective>;
 
     constructor(private elementRef: ElementRef) {}
 
     private updateChildSizes() {
-        //this.sizeSetters.forEach(child => child.setHeight(
-        //    this.elementRef.nativeElement.offsetWidth 
-        //));
+        // this.sizeSetters.forEach(child => child.setHeight(
+        //    this.elementRef.nativeElement.offsetWidth
+        // ));
         this.sizeSetter.setHeight(
             this.elementRef.nativeElement.offsetWidth
         );
@@ -24,7 +28,7 @@ export class ChildsHeightToThisWidthDirective {
     ngAfterContentInit() {
         this.updateChildSizes();
     }
-    
+
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         this.updateChildSizes();

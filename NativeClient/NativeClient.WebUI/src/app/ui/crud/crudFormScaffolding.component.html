@@ -5,34 +5,34 @@
     <ng-container *ngTemplateOutlet="contentRef"></ng-container>
 </div>
 <ng-template #operationInProgress>
-    <loadingIndicator
+    <app-loading-indicator
         [isError]="isLoadingError"
         (refreshEvent)="refresh($event)"
-    ></loadingIndicator>
+    ></app-loading-indicator>
 </ng-template>
 
  <!--Discard changes popup-->
-<confirmationPopup
+<app-confirmation-popup
     [display]="displayDiscardMessage"
     (answerEvent)="discardAndReturn($event)"
 >
     <span i18n="@@discardChangesLabel">Discard changes?</span>
-</confirmationPopup>
+</app-confirmation-popup>
 
 <!--Create confirmation popup-->
-<confirmationPopup
+<app-confirmation-popup
     [display]="displayCreateConfirmationMessage"
     (answerEvent)="createNewObjectAndReturn($event)"
 >
     <span i18n="@@saveToDatabaseLabel">Save to database?</span>
-</confirmationPopup>
+</app-confirmation-popup>
 
 <!--Overwrite popup-->
-<confirmationPopup
+<app-confirmation-popup
     [display]="displaySaveChangesMessage"
     (answerEvent)="saveChangesToObjectAndReturn($event)"
 >
     <span i18n="@@saveChangesToDatabaseLabel">
         Save changes to database?
     </span>
-</confirmationPopup>
+</app-confirmation-popup>

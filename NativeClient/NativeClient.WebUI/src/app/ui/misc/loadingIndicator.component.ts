@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-    selector: 'loadingIndicator',
+    selector: 'app-loading-indicator',
     templateUrl: './loadingIndicator.component.html'
 })
 export class LoadingIndicatorComponent {
     @Output() refreshEvent = new EventEmitter<boolean>();
-    @Input() isError: boolean = false;
+    @Input() isError = false;
 
     refresh() {
         this.refreshEvent.emit(true);

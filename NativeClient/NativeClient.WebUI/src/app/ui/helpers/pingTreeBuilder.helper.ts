@@ -1,10 +1,10 @@
-import { NtwkNodesSubtree } from "../../model/viewModel/ntwkNodesSubtree.model";
-import { PingTree } from "../../services/pingCache.service";
+import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
+import { PingTree } from '../../services/pingCache.service';
 
 
 export class PingTreeBuilder {
-    private static nodesSubtreeToPingTree(subtree: NtwkNodesSubtree) : PingTree  {
-        let childrenPingTree: PingTree[] = [].concat(
+    private static nodesSubtreeToPingTree(subtree: NtwkNodesSubtree): PingTree  {
+        const childrenPingTree: PingTree[] = [].concat(
             ...subtree.children.map(
                 c => this.nodesSubtreeToPingTree(c)
             )
@@ -18,16 +18,16 @@ export class PingTreeBuilder {
     }
 
     private static flattenPingTrees(roots: PingTree[]): PingTree[] {
-        let flatten = root => [root].concat(
+        const flatten = root => [root].concat(
             ...root.childrenIDs.map(flatten)
-        )
-        return [].concat(...roots.map(flatten))
+        );
+        return [].concat(...roots.map(flatten));
     }
 
     private static cleanTreesFromUnpingableNodes(
         roots: PingTree[]
     ): PingTree[] {
-        let result = roots.map(root =>
+        const result = roots.map(root =>
             root.isPingable === false
             && root.isBranchPingable === false
                 ? null : root
@@ -36,15 +36,15 @@ export class PingTreeBuilder {
             root.childrenIDs = this.cleanTreesFromUnpingableNodes(
                 root.childrenIDs
             )
-        )
+        );
         return result;
     }
 
     public static buildAndFlatten(fromSubtree: NtwkNodesSubtree[]): PingTree[] {
         let trees = fromSubtree
             .map( c => this.nodesSubtreeToPingTree(c));
-        let result = this.flattenPingTrees(trees)
-            .map(root => 
+        const result = this.flattenPingTrees(trees)
+            .map(root =>
                 root.isPingable === false
                 && root.isBranchPingable === false
                     ? null

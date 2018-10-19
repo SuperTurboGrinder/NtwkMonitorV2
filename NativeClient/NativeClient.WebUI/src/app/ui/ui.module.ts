@@ -4,15 +4,15 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { ModelModule } from "../model/model.module";
+import { ModelModule } from '../model/model.module';
 
-import { ChildsHeightToThisWidthDirective } from "./directives/childsHeightToThisWidth.directive";
-import { SizeSetterDirective } from "./directives/sizeSetter.directive";
+import { ChildsHeightToThisWidthDirective } from './directives/childsHeightToThisWidth.directive';
+import { SizeSetterDirective } from './directives/sizeSetter.directive';
 
-import { PingDisplayComponent } from "./misc/pingDisplay.component";
-import { WebServicesButtonsComponent } from "./misc/webServicesButtons.component";
-import { ExecServicesButtonsComponent } from "./misc/execServicesButtons.component";
-import { LoadingIndicatorComponent } from "./misc/loadingIndicator.component";
+import { PingDisplayComponent } from './misc/pingDisplay.component';
+import { WebServicesButtonsComponent } from './misc/webServicesButtons.component';
+import { ExecServicesButtonsComponent } from './misc/execServicesButtons.component';
+import { LoadingIndicatorComponent } from './misc/loadingIndicator.component';
 import { NodeInfoPopupComponent } from './misc/nodeInfoPopup.component';
 import { BackendErrorSelectorComponent } from './messeging/backendErrorSelector.component';
 import { MessageDisplayComponent } from './messeging/messageDisplay.component';

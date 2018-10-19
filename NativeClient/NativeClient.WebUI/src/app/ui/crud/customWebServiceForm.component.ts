@@ -1,21 +1,19 @@
-import { Component } from "@angular/core";
-import { Location } from "@angular/common";
-import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
-import { HTTPResult } from "../../model/servicesModel/httpResult.model";
-import { Range } from "../misc/numRangeSelector.component"
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
-import { MessagingService } from "src/app/services/messaging.service";
-import { BaseCrudFormComponent } from "../helpers/baseCrudFormComponent.helper";
-import { CustomWebServicesService } from "src/app/services/customWebServices.service";
-import { CustomWebService } from "src/app/model/httpModel/customWebService.model";
+import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { HTTPResult } from '../../model/servicesModel/httpResult.model';
+import { MessagingService } from 'src/app/services/messaging.service';
+import { BaseCrudFormComponent } from '../helpers/baseCrudFormComponent.helper';
+import { CustomWebServicesService } from 'src/app/services/customWebServices.service';
+import { CustomWebService } from 'src/app/model/httpModel/customWebService.model';
 
 @Component({
-    selector: 'customWebServiceForm',
+    selector: 'app-custom-web-service-form',
     templateUrl: './customWebServiceForm.component.html'
 })
 export class CustomWebServiceFormComponent
     extends BaseCrudFormComponent<CustomWebService, CustomWebServicesService> {
-    
+
     constructor(
         messager: MessagingService,
         location: Location,
@@ -31,22 +29,22 @@ export class CustomWebServiceFormComponent
     ) {
         this.dataService.getCWSList().subscribe(
             (cwsResult: HTTPResult<CustomWebService[]>) => {
-                let cws = cwsResult.success === true
-                    ? cwsResult.data.find(cws => cws.id === id)
+                const cws = cwsResult.success === true
+                    ? cwsResult.data.find(s => s.id === id)
                     : null;
                 callback(
                     cwsResult.success,
                     cws
                 );
             }
-        )
+        );
     }
 
     protected newEmptyData(): CustomWebService {
         return {
             id: 0,
-            name: "",
-            serviceStr: "",
+            name: '',
+            serviceStr: '',
             parametr1Name: null,
             parametr2Name: null,
             parametr3Name: null
@@ -61,7 +59,7 @@ export class CustomWebServiceFormComponent
             && obj.parametr3Name === this.data.parametr3Name;
     }
 
-    protected makeCopy(orig: CustomWebService) : CustomWebService {
+    protected makeCopy(orig: CustomWebService): CustomWebService {
         return {
             id: orig.id,
             name: orig.name,
@@ -75,7 +73,7 @@ export class CustomWebServiceFormComponent
     protected saveAsNewObjectInDatabase(
         callback: (success: boolean) => void
     ) {
-        console.log(this.data)
+        console.log(this.data);
         this.dataService.createNewCWS(
             this.data,
             callback

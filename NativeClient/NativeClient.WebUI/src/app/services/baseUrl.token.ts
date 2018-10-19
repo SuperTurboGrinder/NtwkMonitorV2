@@ -1,3 +1,3 @@
-import { InjectionToken } from "@angular/core";
+import { InjectionToken } from '@angular/core';
 
-export const BaseURL = new InjectionToken<string>("BaseURL");
+export const BaseURL = new InjectionToken<string>('BaseURL');

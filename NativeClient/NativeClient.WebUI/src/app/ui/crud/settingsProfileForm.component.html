@@ -1,4 +1,4 @@
-<crudFormScaffolding
+<app-crud-form-scaffolding
     [displayOperationInProgress]="displayOperationInProgress"
     [isLoadingError]="isLoadingError"
     [displayDiscardMessage]="displayDiscardMessage"
@@ -11,11 +11,11 @@
     (refreshEvent)="refresh($event)"
 >
     <ng-template>
-        <crudFormHeader
+        <app-crud-form-header
             [isEditMode]="isEditMode"
         >
             <span i18n="@@settingsProfileLabel">settings profile</span>
-        </crudFormHeader>
+        </app-crud-form-header>
         <!--
             public id:number,
             public name:string,
@@ -79,12 +79,12 @@
                 <div class="row py-1">
                     <div class="col">
                         <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
-                        <numRangeSelector
+                        <app-num-range-selector
                             [maxValue]="23"
                             [maxLength]="24"
                             [initialValue]="originalMonitorSessionRange"
                             (changedEvent)="updateMonitoringHoursRage($event)"
-                        ></numRangeSelector>
+                        ></app-num-range-selector>
                         <span i18n="@@hoursLabel"> hours</span>
                     </div>
                 </div>
@@ -92,12 +92,12 @@
                 <div class="row py-1">
                     <div class="col">
                         <span i18n="@@monitoringIntervalLabel">Monitor ping every </span>
-                        <numValueSwitch
+                        <app-num-value-switch
                             [min]="1"
                             [max]="30"
                             [initialValue]="originalMonitorInterval"
                             (changedValueEvent)="setMonitorInterval($event)"
-                        ></numValueSwitch>
+                        ></app-num-value-switch>
                         <span i18n="@@minutesLabel"> minutes</span>
                     </div>
                 </div>
@@ -131,4 +131,4 @@
             </div>
         </form>
     </ng-template>
-</crudFormScaffolding>
+</app-crud-form-scaffolding>

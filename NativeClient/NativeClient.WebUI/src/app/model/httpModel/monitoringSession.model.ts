@@ -1,10 +1,13 @@
 export class MonitoringSession {
+    public creationTimeJS: Date;
+    public lastPulseTimeJS: Date;
+
     constructor(
-        public id:number,
-        public createdByProfileID:number,
-        public participatingNodesNum:number,
-        public creationTime:number,
-        public lastPulseTime:number
+        public id: number,
+        public createdByProfileID: number,
+        public participatingNodesNum: number,
+        public creationTime: number,
+        public lastPulseTime: number
     ) {
     }
 
@@ -12,7 +15,4 @@ export class MonitoringSession {
         this.creationTimeJS = new Date(this.creationTime);
         this.lastPulseTimeJS = new Date(this.lastPulseTime);
     }
-    
-    public creationTimeJS:Date;
-    public lastPulseTimeJS:Date;
 }

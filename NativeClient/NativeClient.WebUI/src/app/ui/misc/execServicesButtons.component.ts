@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input } from "@angular/core";
+import { Component, EventEmitter, Input } from '@angular/core';
 
-import { NtwkNode } from "../../model/httpModel/ntwkNode.model";
-import { ExecServicesService } from "../../services/execServices.service";
+import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
+import { ExecServicesService } from '../../services/execServices.service';
 
 @Component({
-    selector: 'execServicesButtons',
+    selector: 'app-exec-services-buttons',
     templateUrl: './execServicesButtons.component.html'
 })
 export class ExecServicesButtonsComponent {

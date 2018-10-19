@@ -1,27 +1,27 @@
-import { Injectable, HostListener } from '@angular/core';
-import { Observable, Observer, BehaviorSubject, Subscription } from 'rxjs';
+import { Injectable, HostListener, OnInit } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
-import { ScreenSize } from "../model/viewModel/screenSize.model";
+import { ScreenSize } from '../model/viewModel/screenSize.model';
 
 @Injectable()
-export class ScreenSizeService {
+export class ScreenSizeService implements OnInit {
     private screenSize = new BehaviorSubject<ScreenSize>({
         width: 800,
         height: 600
     });
 
     public subscribeToScreenSize(
-        func: (screenSizes: {width:number; height: number}) => void
-    ) : Subscription {
+        func: (screenSizes: {width: number; height: number}) => void
+    ): Subscription {
         return this.screenSize.subscribe(func);
     }
 
     ngOnInit() {
         this.updateScreenSize();
     }
-    
+
     @HostListener('window:resize', ['$event'])
-    onResize(event) {
+    onResize() {
         this.updateScreenSize();
     }
 

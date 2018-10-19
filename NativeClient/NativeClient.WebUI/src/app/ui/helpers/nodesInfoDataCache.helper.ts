@@ -1,13 +1,13 @@
-import { NodeTag } from "../../model/httpModel/nodeTag.model";
-import { CWSData } from "../../model/httpModel/cwsData.model";
-import { TagsService } from "../../services/tags.service";
-import { NodeData } from "../../model/httpModel/nodeData.model";
-import { NodeInfoPopupData } from "../../model/viewModel/nodeInfoPopupData.model";
+import { NodeTag } from '../../model/httpModel/nodeTag.model';
+import { CWSData } from '../../model/httpModel/cwsData.model';
+import { TagsService } from '../../services/tags.service';
+import { NodeData } from '../../model/httpModel/nodeData.model';
+import { NodeInfoPopupData } from '../../model/viewModel/nodeInfoPopupData.model';
 
 
 export class NodeInfoDataCache {
     private tagsNames: string[][] = null;
-    private webServicesData: {name:string, id:number}[][] = null;
+    private webServicesData: {name: string, id: number}[][] = null;
     private webServicesNames: string[][] = null;
     public loadingError = false;
     private tagsList: NodeTag[] = null;
@@ -17,7 +17,7 @@ export class NodeInfoDataCache {
         private cwsDataList: CWSData[],
         tagsService: TagsService
     ) {
-        let newArrayOfNodesCountLength = () => Array.from(
+        const newArrayOfNodesCountLength = () => Array.from(
             {length: len},
             _ => []
         );
@@ -25,7 +25,7 @@ export class NodeInfoDataCache {
         this.webServicesData = newArrayOfNodesCountLength();
         this.webServicesNames = newArrayOfNodesCountLength();
         tagsService.getTagsList().subscribe(tagsListResult => {
-            if(tagsListResult.success === false) {
+            if (tagsListResult.success === false) {
                 this.loadingError = true;
             } else {
                 this.tagsList = tagsListResult.data;
@@ -36,22 +36,24 @@ export class NodeInfoDataCache {
     public formNodeInfoPopupData(
         index: number,
         nodeData: NodeData,
-        screenPos: {x:number, y:number}
-    ) : NodeInfoPopupData {
+        screenPos: {x: number, y: number}
+    ): NodeInfoPopupData {
         return {
             node: nodeData.node,
             webServicesNames: this.listWebServicesNames(index, nodeData.boundWebServicesIDs),
             tagsNames: this.listTagsNames(index, nodeData.tagsIDs),
             screenPos: screenPos
-        }
+        };
     }
 
     private listTagsNames(
         i: number,
         nodeTagsIDs: number[]
-    ) : string[] {
-        if(this.tagsList === null) return null;
-        if(this.tagsNames[i].length === 0 && nodeTagsIDs.length > 0) {
+    ): string[] {
+        if (this.tagsList === null) {
+            return null;
+        }
+        if (this.tagsNames[i].length === 0 && nodeTagsIDs.length > 0) {
             this.tagsNames[i] = this.tagsList
                 .filter(tag => nodeTagsIDs.includes(tag.id))
                 .map(tag => tag.name);
@@ -62,8 +64,10 @@ export class NodeInfoDataCache {
     private listWebServicesNames(
         i: number,
         boundWebServicesIDs: number[]
-    ) : string[] {
-        if(this.cwsDataList === null) return null;
+    ): string[] {
+        if (this.cwsDataList === null) {
+            return null;
+        }
         this.createWSDataCache(i, boundWebServicesIDs);
         return this.webServicesNames[i];
     }
@@ -71,8 +75,10 @@ export class NodeInfoDataCache {
     public listWebServicesData(
         i: number,
         boundWebServicesIDs: number[]
-    ) : {name: string, id: number }[] {
-        if(this.cwsDataList === null) return null;
+    ): {name: string, id: number }[] {
+        if (this.cwsDataList === null) {
+            return null;
+        }
         this.createWSDataCache(i, boundWebServicesIDs);
         return this.webServicesData[i];
     }
@@ -81,7 +87,7 @@ export class NodeInfoDataCache {
         i: number,
         boundWebServicesIDs: number[]
     ) {
-        if(this.webServicesData[i].length === 0 && boundWebServicesIDs.length > 0) {
+        if (this.webServicesData[i].length === 0 && boundWebServicesIDs.length > 0) {
             this.webServicesData[i] = this.cwsDataList
                 .filter(cwsD => boundWebServicesIDs.includes(cwsD.id))
                 .map(cwsD => {

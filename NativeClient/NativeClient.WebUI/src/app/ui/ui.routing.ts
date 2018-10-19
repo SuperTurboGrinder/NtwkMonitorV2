@@ -1,67 +1,67 @@
-import { SettingsProfileFormComponent } from "./crud/settingsProfileForm.component";
-import { SettingsProfileSelectionComponent } from "./crud/settingsProfileSelection.component";
-import { TagSelectionComponent } from "./crud/tagSelection.component";
-import { TaggedNodeListComponent } from "./taggedNodeList.component";
-import { NodesTreeViewComponent } from "./nodesTreeView.component";
-import { TagFormComponent } from "./crud/tagForm.component";
-import { CustomWebServiceSelectionComponent } from "./crud/customWebServiceSelection.component";
-import { CustomWebServiceFormComponent } from "./crud/customWebServiceForm.component";
+import { SettingsProfileFormComponent } from './crud/settingsProfileForm.component';
+import { SettingsProfileSelectionComponent } from './crud/settingsProfileSelection.component';
+import { TagSelectionComponent } from './crud/tagSelection.component';
+import { TaggedNodeListComponent } from './taggedNodeList.component';
+import { NodesTreeViewComponent } from './nodesTreeView.component';
+import { TagFormComponent } from './crud/tagForm.component';
+import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelection.component';
+import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
 
 
 export class UIRoutingConfig {
     public static readonly routes = [
         {
-            path: "profiles",
+            path: 'profiles',
             component: SettingsProfileSelectionComponent,
         },
         {
-            path: "profilesSelect",
+            path: 'profilesSelect',
             component: SettingsProfileSelectionComponent,
         },
         {
-            path: "profile/edit/:id",
+            path: 'profile/edit/:id',
             component: SettingsProfileFormComponent
         },
         {
-            path: "profile/new",
+            path: 'profile/new',
             component: SettingsProfileFormComponent
         },
         {
-            path: "tags",
+            path: 'tags',
             component: TagSelectionComponent
         },
         {
-            path: "tag/new",
+            path: 'tag/new',
             component: TagFormComponent
         },
         {
-            path: "tag/edit/:id",
+            path: 'tag/edit/:id',
             component: TagFormComponent
         },
         {
-            path: "customWebServices",
+            path: 'customWebServices',
             component: CustomWebServiceSelectionComponent
         },
         {
-            path: "customWebService/new",
+            path: 'customWebService/new',
             component: CustomWebServiceFormComponent
         },
         {
-            path: "customWebService/edit/:id",
+            path: 'customWebService/edit/:id',
             component: CustomWebServiceFormComponent
         },
         {
-            path: "tagFilteredView",
+            path: 'tagFilteredView',
             component: TaggedNodeListComponent
         },
         {
-            path: "treeView",
+            path: 'treeView',
             component: NodesTreeViewComponent
         },
         {
-            path: "",
-            redirectTo: "/profilesSelect",
-            pathMatch: "full"
+            path: '',
+            redirectTo: '/profilesSelect',
+            pathMatch: 'full'
         }
-    ]
+    ];
 }

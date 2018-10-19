@@ -1,14 +1,12 @@
-import { Component, OnDestroy, HostListener } from "@angular/core";
-import { Subscription } from "rxjs";
-import { SettingsProfilesService } from "../../services/settingsProfiles.service";
-import { SettingsProfile } from "../../model/httpModel/settingsProfile.model";
-import { ActivatedRoute } from "@angular/router";
-import { MessagingService } from "src/app/services/messaging.service";
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
-import { BaseCrudSelectorComponent } from "../helpers/baseCrudSelectorComponent.helper";
+import { Component } from '@angular/core';
+import { SettingsProfilesService } from '../../services/settingsProfiles.service';
+import { SettingsProfile } from '../../model/httpModel/settingsProfile.model';
+import { ActivatedRoute } from '@angular/router';
+import { MessagingService } from 'src/app/services/messaging.service';
+import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.helper';
 
 @Component({
-    selector: 'settingsProfileSelection',
+    selector: 'app-settings-profile-selection',
     templateUrl: './settingsProfileSelection.component.html'
 })
 export class SettingsProfileSelectionComponent
@@ -21,12 +19,12 @@ export class SettingsProfileSelectionComponent
         route: ActivatedRoute
     ) {
         super(messager, settingsService);
-        let pageName = route.snapshot.url[0].path;
-        this.isEditorView = pageName !== "profilesSelect";
+        const pageName = route.snapshot.url[0].path;
+        this.isEditorView = pageName !== 'profilesSelect';
     }
 
     public setAndContinue(profileID: number) {
-        if(!this.isCurrentProfile(profileID)) {
+        if (!this.isCurrentProfile(profileID)) {
             this.settingsService.setCurrentProfile(profileID);
             console.log(`Set ${profileID} as current profile.`);
         }

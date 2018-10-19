@@ -1,9 +1,7 @@
-import { Location } from "@angular/common";
-import { ActivatedRouteSnapshot, ActivatedRoute } from "@angular/router";
-import { HTTPResult } from "../../model/servicesModel/httpResult.model";
-import { Range } from "../misc/numRangeSelector.component"
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
-import { MessagingService } from "src/app/services/messaging.service";
+import { Location } from '@angular/common';
+import { ActivatedRouteSnapshot, ActivatedRoute } from '@angular/router';
+import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
+import { MessagingService } from 'src/app/services/messaging.service';
 
 export abstract class BaseCrudFormComponent<DataType, DataService> {
     public readonly isEditMode: boolean;
@@ -23,10 +21,10 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
         route: ActivatedRoute,
         protected dataService: DataService
     ) {
-        let routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
-        this.isEditMode = routeSnapshot.url[1].path === "edit";
-        if(this.isEditMode) {
-            this.originalDataID = parseInt(routeSnapshot.params.id);
+        const routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
+        this.isEditMode = routeSnapshot.url[1].path === 'edit';
+        if (this.isEditMode) {
+            this.originalDataID = parseInt(routeSnapshot.params.id, 10);
             this.reloadOriginalData();
         } else {
             this.originalData = this.newEmptyData();
@@ -40,14 +38,14 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
         callback: (success: boolean, orig: DataType) => void
     );
     protected abstract newEmptyData(): DataType;
-    protected abstract currentIdenticalTo(data:DataType): boolean;
-    protected abstract makeCopy(orig: DataType) : DataType;
+    protected abstract currentIdenticalTo(data: DataType): boolean;
+    protected abstract makeCopy(orig: DataType): DataType;
     protected abstract saveAsNewObjectInDatabase(
         callback: (success: boolean) => void
     );
     protected abstract saveChangesToObjectInDatabase(
         callback: (success: boolean) => void
-    )
+    );
 
     public refresh(_: boolean) {
         this.reloadOriginalData();
@@ -59,25 +57,26 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
             this.originalDataID,
             (success, orig) => {
                 this.isLoadingError = success === false;
-                if(success) {
+                if (success) {
                     this.displayOperationInProgress = false;
                     this.originalData = orig;
                     this.data = this.makeCopy(this.originalData);
                 }
             }
-        )
+        );
     }
 
     public tryDiscard() {
-        if(this.currentIdenticalTo(this.originalData))
+        if (this.currentIdenticalTo(this.originalData)) {
             this.discardAndReturn(true);
-        else
+        } else {
             this.displayDiscardMessage = true;
+        }
     }
 
     public discardAndReturn(shouldDiscard: boolean) {
         this.displayDiscardMessage = false;
-        if(shouldDiscard) {
+        if (shouldDiscard) {
             this.location.back();
         }
     }
@@ -86,11 +85,12 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
         success: boolean,
         successMessage: MessagesEnum
     ) {
-        if(success) {
+        if (success) {
             this.messager.showMessage(successMessage);
             this.location.back();
-        } else
+        } else {
             this.displayOperationInProgress = false;
+        }
     }
 
     public tryCreateNew() {
@@ -99,7 +99,7 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
 
     public createNewObjectAndReturn(shouldCreate: boolean) {
         this.displayCreateConfirmationMessage = false;
-        if(shouldCreate) {
+        if (shouldCreate) {
             this.displayOperationInProgress = true;
             this.saveAsNewObjectInDatabase(
                 (success: boolean) => this.confirmOperationSuccess(
@@ -111,15 +111,16 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
     }
 
     public trySaveChanges() {
-        if(this.currentIdenticalTo(this.originalData))
+        if (this.currentIdenticalTo(this.originalData)) {
             this.messager.showMessage(MessagesEnum.NoChangesDetected);
-        else
+        } else {
             this.displaySaveChangesMessage = true;
+        }
     }
 
     public saveChangesToObjectAndReturn(shouldSave: boolean) {
         this.displaySaveChangesMessage = false;
-        if(shouldSave) {
+        if (shouldSave) {
             this.displayOperationInProgress = true;
             this.saveChangesToObjectInDatabase(
                 (success: boolean) => this.confirmOperationSuccess(

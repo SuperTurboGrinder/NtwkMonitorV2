@@ -1,11 +1,11 @@
-import { Component } from "@angular/core";
-import { CustomWebService } from "../../model/httpModel/customWebService.model";
-import { MessagingService } from "src/app/services/messaging.service";
-import { BaseCrudSelectorComponent } from "../helpers/baseCrudSelectorComponent.helper";
-import { CustomWebServicesService } from "src/app/services/customWebServices.service";
+import { Component } from '@angular/core';
+import { CustomWebService } from '../../model/httpModel/customWebService.model';
+import { MessagingService } from 'src/app/services/messaging.service';
+import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.helper';
+import { CustomWebServicesService } from 'src/app/services/customWebServices.service';
 
 @Component({
-    selector: 'customWebServiceSelection',
+    selector: 'app-custom-web-service-selection',
     templateUrl: './customWebServiceSelection.component.html'
 })
 export class CustomWebServiceSelectionComponent

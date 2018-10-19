@@ -1,11 +1,11 @@
-import { TreeTrimmingHelper } from "./treeTrimmingHelper.helper";
-import { TreeCollapsingService } from "../../services/treeCollapsing.service";
-import { NtwkNodeDataContainer } from "../../model/viewModel/ntwkNodeDataContainer.model";
-import { NtwkNode } from "../../model/httpModel/ntwkNode.model";
-import { NodeData } from "../../model/httpModel/nodeData.model";
-import { NtwkNodesSubtree } from "../../model/viewModel/ntwkNodesSubtree.model";
-import { PingTree } from "../../services/pingCache.service";
-import { PingTreeBuilder } from "./pingTreeBuilder.helper";
+import { TreeTrimmingHelper } from './treeTrimmingHelper.helper';
+import { TreeCollapsingService } from '../../services/treeCollapsing.service';
+import { NtwkNodeDataContainer } from '../../model/viewModel/ntwkNodeDataContainer.model';
+import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
+import { NodeData } from '../../model/httpModel/nodeData.model';
+import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
+import { PingTree } from '../../services/pingCache.service';
+import { PingTreeBuilder } from './pingTreeBuilder.helper';
 
 export class DisplayTreeHelper {
     private flattenedTreeOfDisplayedNodesIndexes: number[] = null;
@@ -35,19 +35,19 @@ export class DisplayTreeHelper {
 
     public noChildrenChar(flatNodesListIndex: number): string {
         return this.flatNodesList[flatNodesListIndex]
-            .children.length == 0 ? "─" : "";
+            .children.length === 0 ? '─' : '';
     }
 
-    public hasChildren(flatNodesListIndex: number) : boolean {
+    public hasChildren(flatNodesListIndex: number): boolean {
         return this.flatNodesList[flatNodesListIndex]
-            .children.length > 0
+            .children.length > 0;
     }
 
-    public node(index:number) : NtwkNode {
+    public node(index: number): NtwkNode {
         return this.flatNodesList[index].nodeData.node;
     }
 
-    public nodeData(index:number) : NodeData {
+    public nodeData(index: number): NodeData {
         return this.flatNodesList[index].nodeData;
     }
 
@@ -73,23 +73,23 @@ export class DisplayTreeHelper {
     public foldBranch(i: number) {
         this.treeCollapsingService.foldSubtree(
             this.node(i).id
-        )
+        );
         this.rebuildDisplayedList(true);
     }
 
     public unfoldBranch(i: number) {
         this.treeCollapsingService.unfoldSubtree(
             this.node(i).id
-        )
+        );
         this.rebuildDisplayedList(true);
     }
 
     public get flatPingTree(): PingTree[] {
-        return this.flattenedPingTree
+        return this.flattenedPingTree;
     }
 
-    private rebuildDisplayedList(forcedUpdate:boolean = false) {
-        let subtree = this.treeTrimmingHelper
+    private rebuildDisplayedList(forcedUpdate: boolean = false) {
+        const subtree = this.treeTrimmingHelper
             .getSubtree(
                 this.startLayerNumber,
                 this.displayedLayersCount,
@@ -106,7 +106,7 @@ export class DisplayTreeHelper {
         displayedLayersCount: number
     ) {
         this.setDisplayedTreeLayers(
-            startLayerNumber, 
+            startLayerNumber,
             displayedLayersCount
         );
     }
@@ -120,53 +120,55 @@ export class DisplayTreeHelper {
     }
 
     private buildPrefixes(displayedNodesIndexes: number[]) {
-        if(!displayedNodesIndexes || displayedNodesIndexes.length == 0)
+        if (!displayedNodesIndexes || displayedNodesIndexes.length === 0) {
             return;
-        let branchLengthStack: number[] = [];
+        }
+        const branchLengthStack: number[] = [];
         let previousLayer = this.containerOfDisplayedNode(0).depth;
-        let startLayer = previousLayer;
-        let lastOn = arr => arr[arr.length-1];
-        let decrementLastValue = arr => arr[arr.length-1]--;
-        let prefixesNum = this.flattenedTreeOfDisplayedNodesIndexes.length;
-        let prefixes: string[] = [""];
+        const startLayer = previousLayer;
+        const lastOn = arr => arr[arr.length - 1];
+        const decrementLastValue = arr => arr[arr.length - 1]--;
+        const prefixesNum = this.flattenedTreeOfDisplayedNodesIndexes.length;
+        const prefixes: string[] = [''];
         let previousNodeContainer: NtwkNodeDataContainer = null;
-        for(let i = 0; i < prefixesNum; i++) {
-            let currentNodeContainer = this.containerOfDisplayedNode(i);
-            let currentLayer = currentNodeContainer.depth;
-            if(currentLayer == startLayer) {
+        for (let i = 0; i < prefixesNum; i++) {
+            const currentNodeContainer = this.containerOfDisplayedNode(i);
+            const currentLayer = currentNodeContainer.depth;
+            if (currentLayer === startLayer) {
                 prefixes.push(prefixes[0]);
-            }
-            else {
+            } else {
                 let prefix = lastOn(prefixes);
-                if(previousLayer == currentLayer) {
-                    if(lastOn(branchLengthStack) == 1) {
-                        prefix = prefix.substr(0, prefix.length-1)+"└"
+                if (previousLayer === currentLayer) {
+                    if (lastOn(branchLengthStack) === 1) {
+                        prefix = prefix.substr(0, prefix.length - 1) + '└';
                     }
-                    if(branchLengthStack.length > 0) {
+                    if (branchLengthStack.length > 0) {
                         decrementLastValue(branchLengthStack);
-                        if(lastOn(branchLengthStack) == 0) {
+                        if (lastOn(branchLengthStack) === 0) {
                             branchLengthStack.pop();
                         }
                     }
-                } else if(currentLayer > previousLayer) {
-                    //push to stack, add to prefix
-                    prefix = prefix.length == 0 ? prefix
-                        : lastOn(prefix) == "└"
-                            ? prefix.substr(0, prefix.length-1)+" "
-                            : lastOn(prefix) == "├"
-                                ? prefix.substr(0, prefix.length-1)+ "│"
+                } else if (currentLayer > previousLayer) {
+                    // push to stack, add to prefix
+                    prefix = prefix.length === 0 ? prefix
+                        : lastOn(prefix) === '└'
+                            ? prefix.substr(0, prefix.length - 1) + ' '
+                            : lastOn(prefix) === '├'
+                                ? prefix.substr(0, prefix.length - 1) + '│'
                                 : prefix;
-                    let branchLength = previousNodeContainer.children.length;
-                    if(branchLength > 1) branchLengthStack.push(branchLength-1);
-                    prefix = prefix + ((branchLength == 1) ? "└" : "├")
-                } else { //current < prev
-                    //use last on stack or empty
-                    prefix = branchLengthStack.length == 0 ? prefixes[0]
+                    const branchLength = previousNodeContainer.children.length;
+                    if (branchLength > 1) {
+                        branchLengthStack.push(branchLength - 1);
+                    }
+                    prefix = prefix + ((branchLength === 1) ? '└' : '├');
+                } else { // current < prev
+                    // use last on stack or empty
+                    prefix = branchLengthStack.length === 0 ? prefixes[0]
                         : prefix.substr(0, currentLayer - startLayer)
-                            +  (lastOn(branchLengthStack) == 1) ? "└" : "├";
-                    if(branchLengthStack.length > 0) {
+                            +  (lastOn(branchLengthStack) === 1) ? '└' : '├';
+                    if (branchLengthStack.length > 0) {
                         decrementLastValue(branchLengthStack);
-                        if(lastOn(branchLengthStack) == 0) {
+                        if (lastOn(branchLengthStack) === 0) {
                             branchLengthStack.pop();
                         }
                     }

@@ -1,10 +1,10 @@
-import { Injectable, Inject } from "@angular/core";
-import { Observable, BehaviorSubject } from "rxjs";
+import { Injectable, Inject } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
 
-import { PingTestData } from "../model/httpModel/pingTestData.model";
+import { PingTestData } from '../model/httpModel/pingTestData.model';
 import { HTTPDatasource } from './http.datasource';
 import { HTTPResult } from '../model/servicesModel/httpResult.model';
-import { BaseURL } from "./baseUrl.token";
+import { BaseURL } from './baseUrl.token';
 
 @Injectable()
 export class PingService {
@@ -17,10 +17,10 @@ export class PingService {
         this.baseUrl = _baseUrl + 'services/ping';
     }
 
-    getPing(nodeID: number) : Observable<HTTPResult<PingTestData>> {
+    getPing(nodeID: number): Observable<HTTPResult<PingTestData>> {
         return this.httpDatasource.dataRequest<PingTestData>(
-            "get",
-            this.baseUrl+`/${nodeID}`
-        )
+            'get',
+            this.baseUrl + `/${nodeID}`
+        );
     }
 }

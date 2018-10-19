@@ -1,5 +1,5 @@
-import { Injectable, HostListener } from '@angular/core';
-import { Observable, Observer, BehaviorSubject, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 import { NodeInfoPopupData } from '../model/viewModel/nodeInfoPopupData.model';
 
@@ -11,7 +11,7 @@ export class NodeInfoPopupDataService {
         this.data.next(nodeData);
     }
 
-    subscribeToData(func: (NodeInfoPopupData) => void) : Subscription {
+    subscribeToData(func: (NodeInfoPopupData) => void): Subscription {
         return this.data.subscribe(func);
     }
 }

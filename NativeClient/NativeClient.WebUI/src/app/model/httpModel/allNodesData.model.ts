@@ -1,5 +1,5 @@
-import { NodeData } from "./nodeData.model";
-import { CWSData } from "./cwsData.model";
+import { NodeData } from './nodeData.model';
+import { CWSData } from './cwsData.model';
 
 export class AllNodesData {
     constructor(

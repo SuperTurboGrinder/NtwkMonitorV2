@@ -1,6 +1,6 @@
-import { HTTPResult } from "src/app/model/servicesModel/httpResult.model";
-import { MessagingService } from "src/app/services/messaging.service";
-import { MessagesEnum } from "src/app/model/servicesModel/messagesEnum.model";
+import { HTTPResult } from 'src/app/model/servicesModel/httpResult.model';
+import { MessagingService } from 'src/app/services/messaging.service';
+import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
 
 export abstract class BaseCrudSelectorComponent<DataType, DataService> {
     private data: DataType[] = null;
@@ -17,7 +17,7 @@ export abstract class BaseCrudSelectorComponent<DataType, DataService> {
     protected abstract updateDataList();
 
     protected setNewData(dataResult: HTTPResult<DataType[]>) {
-        if(dataResult.success === true) {
+        if (dataResult.success === true) {
             this.data = dataResult.data;
         } else {
             this.loadingError = true;
@@ -28,7 +28,7 @@ export abstract class BaseCrudSelectorComponent<DataType, DataService> {
         return this.data;
     }
 
-    get isLoadingError() : boolean {
+    get isLoadingError(): boolean {
         return this.loadingError;
     }
 
@@ -42,14 +42,14 @@ export abstract class BaseCrudSelectorComponent<DataType, DataService> {
     );
 
     public deleteObject(event: {shouldDelete: boolean, id: number}) {
-        if(event.shouldDelete) {
+        if (event.shouldDelete) {
             this.displayOperationInProgress = true;
             this.deleteObjectPermanently(
                 event.id,
                 (success: boolean) => {
-                    if(success === true) {
+                    if (success === true) {
                         this.data = null;
-                        this.updateDataList()
+                        this.updateDataList();
                         this.messager.showMessage(MessagesEnum.DeletedSuccessfully);
                     }
                     this.displayOperationInProgress = false;

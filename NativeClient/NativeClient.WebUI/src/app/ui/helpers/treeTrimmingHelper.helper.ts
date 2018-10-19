@@ -1,6 +1,6 @@
-import { NtwkNodesSubtree } from "../../model/viewModel/ntwkNodesSubtree.model"
-import { NtwkNodeDataContainer } from "../../model/viewModel/ntwkNodeDataContainer.model";
-import { TreeCollapsingService } from "../../services/treeCollapsing.service";
+import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
+import { NtwkNodeDataContainer } from '../../model/viewModel/ntwkNodeDataContainer.model';
+import { TreeCollapsingService } from '../../services/treeCollapsing.service';
 
 export class TreeTrimmingHelper {
     private lastBottomLayer = -1;
@@ -19,14 +19,14 @@ export class TreeTrimmingHelper {
     public getSubtree(
         fromLayer: number, depth: number, forceUpdate: boolean = false
     ): NtwkNodesSubtree[] {
-        let result = fromLayer === this.lastBottomLayer
+        const result = fromLayer === this.lastBottomLayer
             && depth === this.lastDepth && !forceUpdate
                 ? this.lastSubtree
                 : this.setLastSubtree(
                     this.wholeTreeLayers[fromLayer].map(
                         container => this.nodeContainerIntoSubtree(
                             container,
-                            fromLayer+depth-1
+                            fromLayer + depth - 1
                         )
                     )
                 );
@@ -37,25 +37,25 @@ export class TreeTrimmingHelper {
 
     private setLastSubtree(
         subtree: NtwkNodesSubtree[]
-    ) : NtwkNodesSubtree[] {
+    ): NtwkNodesSubtree[] {
         this.lastSubtree = subtree;
         return subtree;
     }
 
     private nodeContainerIntoSubtree(
-        c: NtwkNodeDataContainer,
+        cont: NtwkNodeDataContainer,
         maxDepth: number
-    ) : NtwkNodesSubtree {
-        let children: NtwkNodesSubtree[] = c.depth === maxDepth
+    ): NtwkNodesSubtree {
+        const children: NtwkNodesSubtree[] = cont.depth === maxDepth
         || this.treeCollapsingService
-        .isCollapsed(c.nodeData.node.id)
+        .isCollapsed(cont.nodeData.node.id)
             ? []
-            : c.children
+            : cont.children
                 .map(c => this.nodeContainerIntoSubtree(c, maxDepth));
-        let isBranchPingable: boolean = children.some(
+        const isBranchPingable: boolean = children.some(
             c => c.isBranchPingable
             || c.container.nodeData.node.isOpenPing
-        )
-        return new NtwkNodesSubtree(c, isBranchPingable, children);
+        );
+        return new NtwkNodesSubtree(cont, isBranchPingable, children);
     }
 }

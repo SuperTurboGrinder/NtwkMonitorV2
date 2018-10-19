@@ -46,21 +46,21 @@
                             </strong>
                         </div>
                         <div class="col-2 p-0 m-0">
-                            <execServicesButtons
+                            <app-exec-services-buttons
                                 [node]="node(i)"
-                            ></execServicesButtons>
+                            ></app-exec-services-buttons>
                         </div>
                         <div class="col-3 p-0 m-0">
-                            <webServicesButtons
+                            <app-web-services-buttons
                                 [nodeID]="node(i).id"
                                 [webServices]="listWebServicesData(i)"
-                            ></webServicesButtons>
+                            ></app-web-services-buttons>
                         </div>
                         <div class="col-2 p-0 m-0">
-                            <pingDisplay
+                            <app-ping-display
                                 [node]="node(i)"
                                 (changedEvent)="resortListByPing()"
-                            ></pingDisplay>
+                            ></app-ping-display>
                         </div>
                     </div>
                 </ng-template>
@@ -68,9 +68,9 @@
         </div>
     </div>
     <ng-template #stillEmptyBlock>
-        <loadingIndicator
+        <app-loading-indicator
             [isError]="isLoadingError"
             (refreshEvent)="refresh($event)"
-        ></loadingIndicator>
+        ></app-loading-indicator>
      </ng-template>
 </div>

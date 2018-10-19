@@ -1,14 +1,14 @@
-import { Injectable, Inject } from "@angular/core";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Injectable, Inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { NtwkNode } from '../model/httpModel/ntwkNode.model';
-import { CWSData } from "../model/httpModel/cwsData.model";
+import { CWSData } from '../model/httpModel/cwsData.model';
 import { AllNodesData } from '../model/httpModel/allNodesData.model';
 import { NtwkNodesTree } from '../model/viewModel/ntwkNodesTree.model';
 import { HTTPDatasource } from './http.datasource';
-import { HTTPResult } from '../model/servicesModel/httpResult.model'
-import { BaseURL } from "./baseUrl.token";
+import { HTTPResult } from '../model/servicesModel/httpResult.model';
+import { BaseURL } from './baseUrl.token';
 
 @Injectable()
 export class NodesService {
@@ -21,7 +21,7 @@ export class NodesService {
         this.baseUrl = _baseUrl + 'nodes';
     }
 
-    public getNodesTree() : Observable<HTTPResult<{
+    public getNodesTree(): Observable<HTTPResult<{
         cwsData: CWSData[],
         nodesTree: NtwkNodesTree
     }>> {
@@ -29,7 +29,7 @@ export class NodesService {
             'get',
             this.baseUrl
         ).pipe(
-            map(result => 
+            map(result =>
                 result.success === true
                     ? HTTPResult.Successful({
                         cwsData: result.data.webServicesData,
@@ -40,10 +40,10 @@ export class NodesService {
         );
     }
 
-    public createNode(node: NtwkNode) : Observable<HTTPResult<NtwkNode>> {
+    public createNode(node: NtwkNode): Observable<HTTPResult<NtwkNode>> {
         return this.httpDatasource.dataRequest<NtwkNode>(
             'get',
-            this.baseUrl+'/new',
+            this.baseUrl + '/new',
             node
         );
     }

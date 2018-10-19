@@ -1,9 +1,8 @@
-import { Component, Input } from "@angular/core";
-
-import { BackendErrorStatuses } from "../../model/httpModel/backendErrorStatuses.model"
+import { Component, Input } from '@angular/core';
+import { BackendErrorStatuses } from '../../model/httpModel/backendErrorStatuses.model';
 
 @Component({
-    selector: 'backendErrorSelector',
+    selector: 'app-backend-error-selector',
     templateUrl: './backendErrorSelector.component.html'
 })
 export class BackendErrorSelectorComponent {
