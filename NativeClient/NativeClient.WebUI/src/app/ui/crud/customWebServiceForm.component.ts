@@ -14,6 +14,7 @@ import { CustomWebService } from 'src/app/model/httpModel/customWebService.model
 export class CustomWebServiceFormComponent
     extends BaseCrudFormComponent<CustomWebService, CustomWebServicesService> {
 
+    public serviceStringBuilderInitData: CustomWebService = null;
     constructor(
         messager: MessagingService,
         location: Location,
@@ -32,6 +33,7 @@ export class CustomWebServiceFormComponent
                 const cws = cwsResult.success === true
                     ? cwsResult.data.find(s => s.id === id)
                     : null;
+                this.serviceStringBuilderInitData = cws;
                 callback(
                     cwsResult.success,
                     cws
@@ -87,5 +89,17 @@ export class CustomWebServiceFormComponent
             this.data,
             callback
         );
+    }
+
+    setUrlTemplateData(val: {
+        templateStr: string,
+        param1Name: string,
+        param2Name: string,
+        param3Name: string
+    }) {
+        this.data.serviceStr = val.templateStr;
+        this.data.parametr1Name = val.param1Name;
+        this.data.parametr2Name = val.param2Name;
+        this.data.parametr3Name = val.param3Name;
     }
 }

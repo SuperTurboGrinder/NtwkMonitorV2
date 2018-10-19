@@ -13,7 +13,7 @@ public class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
     public EFDbModel.CustomWebService Convert(CustomWebService cws) {
         return new EFDbModel.CustomWebService() {
             ID = cws.ID,
-            Name = cws.ServiceName,
+            Name = cws.Name,
             ServiceStr = cws.ServiceStr,
             Parametr1Name = cws.Parametr1Name,
             Parametr2Name = cws.Parametr2Name,

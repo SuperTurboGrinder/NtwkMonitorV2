@@ -5,7 +5,7 @@ namespace Data.Model.ViewModel {
 
 public class CustomWebService {
     public int ID;
-    public string ServiceName;
+    public string Name;
     public string ServiceStr;
     public string Parametr1Name;
     public string Parametr2Name;

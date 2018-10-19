@@ -67,6 +67,8 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
     }
 
     public tryDiscard() {
+        console.log(this.data);
+        console.log(this.originalData);
         if (this.currentIdenticalTo(this.originalData)) {
             this.discardAndReturn(true);
         } else {

@@ -25,6 +25,30 @@
             [checked]="useIP()"
             (change)="setIPUsage($event.target.checked)"
         />
+        <span *ngIf="useIP()">
+            <span
+                [ngClass]="{
+                    'btn-light square': !isLeftEdge(0),
+                    'text-secondary' : isLeftEdge(0)
+                }"
+                class="border-right p-0 m-0 px-1 h-100"
+                style="user-select: none;"
+                (click)="moveBackward(0)"
+            >
+                <i class="fa fa-caret-left"></i>
+            </span>
+            <span
+                [ngClass]="{
+                    'btn-light square': !isRightEdge(0),
+                    'text-secondary' : isRightEdge(0)
+                }"
+                class="border-right p-0 m-0 px-1 h-100"
+                style="user-select: none;"
+                (click)="moveForward(0)"
+            >
+                <i class="fa fa-caret-right"></i>
+            </span>
+        </span>
     </div>
     <div>
         <span class="pr-2" i18n="@@parametrLabel">Parameters</span>

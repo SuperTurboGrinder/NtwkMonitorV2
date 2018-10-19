@@ -1,4 +1,5 @@
 import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { CustomWebService } from 'src/app/model/httpModel/customWebService.model';
 
 class Param {
     paramNum: number; // 0-ip, 1-3 params
@@ -27,6 +28,78 @@ export class CustomWebServiceStringBuilderComponent {
     ];
 
     public useHttp = false;
+
+    @Output() private changeEvent = new EventEmitter<{
+        templateStr: string,
+        param1Name: string,
+        param2Name: string,
+        param3Name: string
+    }>();
+
+    private initialized = false;
+    @Input() private set initialValue(val: CustomWebService) {
+        if (val !== null && !this.initialized) {
+            const httpStr = 'http://';
+            const httpsStr = 'https://';
+            const nodeIPStr = '{node_ip}';
+            const param1Str = '{param1}';
+            const param2Str = '{param2}';
+            const param3Str = '{param3}';
+            let rawTemplate: string = null;
+            if (val.serviceStr.includes(httpStr)) {
+                this.useHttp = true;
+                rawTemplate = val.serviceStr.replace(httpStr, '');
+            } else {
+                this.useHttp = false;
+                rawTemplate = val.serviceStr.replace(httpsStr, '');
+            }
+            const finalUrlTemplate = rawTemplate;
+            this.setIPUsage(false);
+            if (val.serviceStr.includes(nodeIPStr)) {
+                const templateWithIP = rawTemplate
+                    .replace(param1Str, '')
+                    .replace(param2Str, '')
+                    .replace(param3Str, '');
+                this.setIPUsage(true);
+                this.params[0].strPos = templateWithIP.indexOf(nodeIPStr);
+                rawTemplate.replace(nodeIPStr, '');
+            }
+            const hasParam1 = val.parametr1Name !== null && val.parametr1Name !== '';
+            const hasParam2 = val.parametr2Name !== null && val.parametr2Name !== '';
+            const hasParam3 = val.parametr3Name !== null && val.parametr3Name !== '';
+            this.paramNum = 0;
+            if (hasParam1) {
+                this.paramNames[0] = val.parametr1Name;
+                this.paramNum = 1;
+                this.params[1].strPos = rawTemplate.indexOf(param1Str);
+                rawTemplate = rawTemplate.replace(param1Str, '');
+                if (hasParam2) {
+                    this.paramNames[1] = val.parametr2Name;
+                    this.paramNum = 2;
+                    this.params[2].strPos = rawTemplate.indexOf(param2Str);
+                    rawTemplate = rawTemplate.replace(param2Str, '');
+                    if (hasParam3) {
+                        this.paramNames[2] = val.parametr3Name;
+                        this.paramNum = 3;
+                        this.params[3].strPos = rawTemplate.indexOf(param3Str);
+                        rawTemplate = rawTemplate.replace(param3Str, '');
+                    }
+                }
+            }
+            this.finalUrlTemplate = finalUrlTemplate;
+            this.baseUrl = rawTemplate;
+            this.emitChange();
+        }
+    }
+
+    private emitChange() {
+        this.changeEvent.emit({
+            templateStr: this.useHttp ? 'http://' : 'https://' + this.finalUrlTemplate,
+            param1Name: this.paramNames[0] === '' ? null : this.paramNames[0],
+            param2Name: this.paramNames[1] === '' ? null : this.paramNames[1],
+            param3Name: this.paramNames[2] === '' ? null : this.paramNames[2]
+        });
+    }
 
     getFinalUrlTemplate(): string {
         return this.finalUrlTemplate;
@@ -67,6 +140,12 @@ export class CustomWebServiceStringBuilderComponent {
         } else {
             this.paramNum = paramNum - 1;
         }
+        if (this.params[2].strPos < this.params[1].strPos) {
+            this.params[2].strPos = this.params[1].strPos;
+        }
+        if (this.params[3].strPos < this.params[2].strPos) {
+            this.params[3].strPos = this.params[2].strPos;
+        }
         this.buildFinalTemplate();
     }
 
@@ -80,20 +159,9 @@ export class CustomWebServiceStringBuilderComponent {
             this.paramPositions = this.paramPositions.filter(p => p !== 0);
         } else {
             this.paramPositions.push(0);
-            this.sortParamPositions();
+            this.params[0].strPos = this.baseUrl.length;
         }
         this.buildFinalTemplate();
-    }
-
-    private sortParamPositions() {
-        this.paramPositions.sort((p1, p2) => {
-            const firstParam = this.params[p1];
-            const secondParam = this.params[p2];
-            return firstParam.strPos < secondParam.strPos
-                ? -1
-                : secondParam.strPos < firstParam.strPos
-                    ? 1 : 0;
-        });
     }
 
     buildFinalTemplate() {
@@ -113,15 +181,16 @@ export class CustomWebServiceStringBuilderComponent {
         const suffix = this.baseUrl.substr(currentCursor, this.baseUrl.length - currentCursor);
         stringBuilder.push(suffix);
         this.finalUrlTemplate = stringBuilder.join('');
+        this.emitChange();
     }
 
-    isLeftEdge(paramNum: number) {
+    isLeftEdge(paramNum: number): boolean {
         const param = this.params[paramNum];
         return param.strPos === 0
             && (paramNum !== 0 || this.paramPositions[0] === paramNum);
     }
 
-    isRightEdge(paramNum: number) {
+    isRightEdge(paramNum: number): boolean {
         const param = this.params[paramNum];
         return param.strPos === this.baseUrl.length
             && (paramNum !== 0 ||
@@ -129,23 +198,93 @@ export class CustomWebServiceStringBuilderComponent {
             );
     }
 
+    private sameStrPosWithNext(negative: boolean, paramNum: number): boolean {
+        const nextParamNum = this.paramPositions[
+            this.paramPositions.indexOf(paramNum + (negative ? -1 : 1))
+        ];
+        return this.params[paramNum].strPos === this.params[nextParamNum].strPos;
+    }
+
+    private isOnEdge(negative: boolean, paramNum: number) {
+        return this.paramPositions[
+            negative ? 0 : this.paramPositions.length - 1
+        ] === paramNum;
+    }
+
+    private shouldSwapWithNext(negative: boolean, paramNum: number): boolean {
+        if (paramNum === 0) { // node_ip
+            if (this.paramNum === 0) { // swap through all
+                return true;
+            }
+            if (this.paramNum === 3) {
+                return this.sameStrPosWithNext(negative, paramNum);
+            }
+            if (negative) {
+                return this.paramPositions.indexOf(paramNum) > this.paramNum
+                    || this.sameStrPosWithNext(negative, paramNum);
+            } else {
+                return this.paramPositions.indexOf(paramNum) < this.paramNum - 1
+                    || this.sameStrPosWithNext(negative, paramNum);
+            }
+        } else { // paramN
+            const nextIndex = this.paramPositions.indexOf(paramNum)
+                + (negative ? -1 : 1);
+            const nextIsIP = this.paramPositions[nextIndex] === 0;
+            return nextIsIP && this.sameStrPosWithNext(negative, paramNum);
+        }
+    }
+
+    private swapWithNext(negative: boolean, paramNum: number) {
+        const index = this.paramPositions.indexOf(paramNum);
+        const nextIndex = this.paramPositions
+            .indexOf(paramNum + (negative ? -1 : 1));
+        const nextParamNum = this.paramPositions[nextIndex];
+        this.paramPositions[index] = nextParamNum;
+        this.paramPositions[nextIndex] = paramNum;
+    }
+
     private move(paramNum: number, negative: boolean = false) {
+        if (!this.isOnEdge(negative, paramNum)) {
+            if (this.shouldSwapWithNext(negative, paramNum)) {
+                this.swapWithNext(negative, paramNum);
+            }
+        }
         const moveDirection = negative ? -1 : 1;
         const param = this.params[paramNum];
         let skipStrPosMove = false;
-        const isInEdgePositon =
-            this.paramPositions[
+        const isInEdgePositon = paramNum === 0
+            ? this.paramNum === 0
+                ? true
+                : negative
+                    ? this.paramPositions.indexOf(0) === 0
+                    : this.paramPositions.indexOf(0) >= this.paramNum
+            : this.paramPositions[
                 negative ? 0 : this.paramPositions.length - 1
             ] === paramNum;
         if (!isInEdgePositon) {
-            const index = this.paramPositions.findIndex(p => p === paramNum);
-            const nextParam =
-                this.params[this.paramPositions[index + moveDirection]];
+            let index = this.paramPositions.indexOf(paramNum);
+            let nextIndex = index + moveDirection;
+            let nextParam =
+                this.params[this.paramPositions[nextIndex]];
+            if (paramNum === 0 && negative) {
+                while (nextParam.paramNum > this.paramNum) {
+                    this.paramPositions[index] = nextParam.paramNum;
+                    this.paramPositions[nextIndex] = paramNum;
+                    index = nextIndex;
+                    nextIndex += moveDirection;
+                    nextParam =
+                        this.params[this.paramPositions[nextIndex]];
+                }
+            }
+            console.log(this.paramPositions);
+            console.log(param);
+            console.log(nextParam);
             if (nextParam.strPos === param.strPos) {
                 if (param.paramNum === 0 || nextParam.paramNum === 0) {
                     this.paramPositions[index] = nextParam.paramNum;
-                    this.paramPositions[index + moveDirection] = paramNum;
+                    this.paramPositions[nextIndex] = paramNum;
                     skipStrPosMove = true;
+                    console.log(this.paramPositions);
                 } else {
                     this.move(nextParam.paramNum, negative);
                 }

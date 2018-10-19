@@ -97,7 +97,7 @@ public class CustomWebServicesDataService
             return DataActionResult<CustomWebService>.Failed(validationStatus);
         }
         StatusMessage nameExistsStatus =
-            await FailIfCWSNameExists(cws.ServiceName);
+            await FailIfCWSNameExists(cws.Name);
         if(nameExistsStatus.Failure()) {
             return DataActionResult<CustomWebService>.Failed(nameExistsStatus);
         }
@@ -121,7 +121,7 @@ public class CustomWebServicesDataService
             return validationStatus;
         }
         StatusMessage nameExistsStatus =
-            await FailIfNodeNameExists(cws.ServiceName);
+            await FailIfNodeNameExists(cws.Name);
         if(nameExistsStatus.Failure()) {
             return validationStatus;
         }

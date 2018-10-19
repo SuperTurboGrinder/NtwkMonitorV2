@@ -9,7 +9,7 @@ namespace Data.DataServices.Validation {
 public class ViewModelValidator : IViewModelValidator {
     public StatusMessage Validate(CustomWebService val) {
         StatusMessage nameValidationStatus =
-            ValidationUtils.IsValidName(val.ServiceName);
+            ValidationUtils.IsValidName(val.Name);
         if(nameValidationStatus.Failure())
             return nameValidationStatus;
         bool hasParam1 = !string.IsNullOrEmpty(val.Parametr1Name);
@@ -34,16 +34,19 @@ public class ViewModelValidator : IViewModelValidator {
                         : StatusMessage.Ok;
         if(paramNamesValidation.Failure())
             return paramNamesValidation;
-        bool IsServiceStrValid = (
-            (val.ServiceStr.StartsWith("http://") || val.ServiceStr.StartsWith("https://")) &&
-            (hasParam1)
-        )
+        bool IsServiceStrStartHttp = (
+            (val.ServiceStr.StartsWith("http://") || val.ServiceStr.StartsWith("https://"))
+        );
+        bool AreServiceStrParametersValid = hasParam1
             ? val.ServiceStr.Contains("{param1}")
             : hasParam2
                 ? val.ServiceStr.Contains("{param2}")
                 : hasParam3
                     ? val.ServiceStr.Contains("{param3}")
                     : true;
+        bool IsServiceStrValid = IsServiceStrStartHttp
+            && AreServiceStrParametersValid
+            && hasParam1 ? true : val.ServiceStr.Length > 10;
         return (!IsServiceStrValid)
             ? StatusMessage.InvalidWebServiceStringFormat
             : StatusMessage.Ok;
