@@ -37,16 +37,21 @@ public class ViewModelValidator : IViewModelValidator {
         bool IsServiceStrStartHttp = (
             (val.ServiceStr.StartsWith("http://") || val.ServiceStr.StartsWith("https://"))
         );
-        bool AreServiceStrParametersValid = hasParam1
-            ? val.ServiceStr.Contains("{param1}")
-            : hasParam2
-                ? val.ServiceStr.Contains("{param2}")
-                : hasParam3
-                    ? val.ServiceStr.Contains("{param3}")
-                    : true;
+        bool containsP1Str = val.ServiceStr.Contains("{param1}");
+        bool containsP2Str = val.ServiceStr.Contains("{param2}");
+        bool containsP3Str = val.ServiceStr.Contains("{param3}");
+        bool isParam1Valid = (hasParam1 && containsP1Str)
+            || (!hasParam1 && !containsP1Str);
+        bool isParam2Valid = (hasParam1 && hasParam2 && containsP2Str)
+            || (!hasParam2 && !containsP2Str);
+        bool isParam3Valid = (hasParam1 && hasParam2 && hasParam3 && containsP3Str)
+            || (!hasParam3 && !containsP3Str);
+        bool AreServiceStrParametersValid =
+            isParam1Valid && isParam2Valid && isParam3Valid;
+        bool LengthCheck = hasParam1 ? true : val.ServiceStr.Length > 10;
         bool IsServiceStrValid = IsServiceStrStartHttp
             && AreServiceStrParametersValid
-            && hasParam1 ? true : val.ServiceStr.Length > 10;
+            && LengthCheck;
         return (!IsServiceStrValid)
             ? StatusMessage.InvalidWebServiceStringFormat
             : StatusMessage.Ok;

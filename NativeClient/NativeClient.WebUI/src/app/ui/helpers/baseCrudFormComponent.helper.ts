@@ -96,6 +96,7 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
     }
 
     public tryCreateNew() {
+        console.log(this.data);
         this.displayCreateConfirmationMessage = true;
     }
 
