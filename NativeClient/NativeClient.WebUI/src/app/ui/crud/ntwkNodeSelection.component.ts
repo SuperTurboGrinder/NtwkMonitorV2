@@ -20,6 +20,8 @@ class NodeLineData {
 })
 export class NtwkNodeSelectionComponent
     extends BaseCrudSelectorComponent<NodeLineData, NodesService> {
+    public displayLocalDeleteMessage = false;
+    private nodeToRemove: NodeLineData = null;
 
     constructor(
         messager: MessagingService,
@@ -57,9 +59,27 @@ export class NtwkNodeSelectionComponent
     }
 
     protected deleteObjectPermanently(
-        objID: number,
+        nodeID: number,
         callback: (success: boolean) => void
     ) {
-        // this.dataService.deleteTag(objID, callback);
+        this.dataService.deleteNode(nodeID, callback);
+    }
+
+    public tryRemove(objectToRemove: NodeLineData) {
+        this.nodeToRemove = objectToRemove;
+        this.displayLocalDeleteMessage = true;
+    }
+
+    public deleteHandler(shouldDelete: boolean) {
+        this.displayLocalDeleteMessage = false;
+        this.deleteObject({
+            shouldDelete: shouldDelete,
+            id: this.nodeToRemove.id
+        });
+    }
+
+    public get nodeToRemoveName() {
+        return this.nodeToRemove === null
+            ? '' : this.nodeToRemove.name;
     }
 }

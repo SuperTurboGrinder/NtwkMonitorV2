@@ -40,11 +40,41 @@ export class NodesService {
         );
     }
 
-    public createNode(node: NtwkNode): Observable<HTTPResult<NtwkNode>> {
-        return this.httpDatasource.dataRequest<NtwkNode>(
-            'get',
-            this.baseUrl + '/new',
+    public createNewNode(
+        node: NtwkNode,
+        callback: (success: boolean) => void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'post',
+            this.baseUrl + `/new`,
             node
+        ).subscribe(
+            (result: HTTPResult<NtwkNode>) => callback(result.success)
+        );
+    }
+
+    public updateNode(
+        newNodeState: NtwkNode,
+        callback: (success: boolean) => void
+    ) {
+        return this.httpDatasource.dataOperationRequest(
+            'put',
+            this.baseUrl + `/${newNodeState.id}/update`,
+            newNodeState
+        ).subscribe(
+            callback
+        );
+    }
+
+    public deleteNode(
+        id: number,
+        callback: (success: boolean) => void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'delete',
+            this.baseUrl + `/${id}/delete`
+        ).subscribe(
+            (result: HTTPResult<NtwkNode>) => callback(result.success)
         );
     }
 }

@@ -1,0 +1,75 @@
+<app-crud-form-scaffolding
+    [displayOperationInProgress]="displayOperationInProgress"
+    [isLoadingError]="isLoadingError"
+    [displayDiscardMessage]="displayDiscardMessage"
+    [displayCreateConfirmationMessage]="displayCreateConfirmationMessage"
+    [displaySaveChangesMessage]="displaySaveChangesMessage"
+
+    (discardConfirmationEvent)="discardAndReturn($event)"
+    (saveNewConfirmationEvent)="createNewObjectAndReturn($event)"
+    (saveChangesConfirmationEvent)="saveChangesToObjectAndReturn($event)"
+    (refreshEvent)="refresh($event)"
+>
+    <ng-template>
+        <app-crud-form-header
+            [isEditMode]="isEditMode"
+        >
+            <span i18n="@@nodeLabel">node</span>
+        </app-crud-form-header>
+        <!--
+            public id:number,
+            public name:string
+        -->
+        <form
+            class="pl-2 w-100"
+            novalidate
+            #form="ngForm"
+            validate
+        >
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-6 form-inline py-2">
+                        <label i18n="@@nameLabel" class="pr-2">Name</label>
+                        <input class="form-control" #nameModel="ngModel" name="name" [(ngModel)]="data.name" minlength="2" required />
+                        <strong
+                            *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)"
+                            class="text-small text-danger"
+                        >
+                            <div
+                                i18n="@@nameRequiredMessge"
+                                *ngIf="nameModel.errors.required"
+                            >Name value required.</div>
+                        </strong>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <button
+                    *ngIf="isEditMode; else createButton"
+                    type="button"
+                    class="btn btn-warning square m-1"
+                    (click)="trySaveChanges()"
+                >
+                    <span i18n="@@saveButtonLabel">Save</span>
+                </button>
+                <ng-template #createButton>
+                    <button
+                        type="button"
+                        class="btn btn-primary square m-1"
+                        (click)="tryCreateNew()"
+                    >
+                        <span i18n="@@createButtonLabel">Create</span>
+                    </button>
+                </ng-template>
+                <button
+                    type="button"
+                    class="btn btn-secondary square m-1"
+                    (click)="tryDiscard()"
+                    i18n="@@cancelButtonLabel"
+                >
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </ng-template>
+</app-crud-form-scaffolding>

@@ -23,7 +23,7 @@
                         type="button"
                         class="btn btn-primary square p-0 px-1 mr-1"
                         i18n="@@addNewLabel"
-                        [routerLink]="[baseFormLink, data.id, 'new']"
+                        [routerLink]="['/node/', node.id, 'new']"
                     >
                         Add new
                     </button>
@@ -31,7 +31,7 @@
                         type="button"
                         class="btn btn-warning square p-0 px-1 mr-1"
                         i18n="@@editButtonLabel"
-                        [routerLink]="[baseFormLink, 'edit', data.id]"
+                        [routerLink]="['/node/edit', node.id]"
                     >
                         Edit
                     </button>
@@ -39,7 +39,7 @@
                         type="button"
                         class="btn btn-danger square p-0 px-1 mr-1"
                         i18n="@@removeButtonLabel"
-                        (click)="tryRemove(data)"
+                        (click)="tryRemove(node)"
                     >
                         Remove
                     </button>
@@ -59,3 +59,10 @@
         </div>
     </ng-template>
 </app-crud-selector-template>
+<app-confirmation-popup
+    [display]="displayLocalDeleteMessage"
+    (answerEvent)="deleteHandler($event)"
+>
+    <span i18n="@@deleteLabel">Delete</span>
+    <span> "{{nodeToRemoveName}}"?</span>
+</app-confirmation-popup>

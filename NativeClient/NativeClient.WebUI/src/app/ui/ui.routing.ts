@@ -7,6 +7,7 @@ import { TagFormComponent } from './crud/tagForm.component';
 import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelection.component';
 import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
 import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
+import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
 
 
 export class UIRoutingConfig {
@@ -52,16 +53,24 @@ export class UIRoutingConfig {
             component: CustomWebServiceFormComponent
         },
         {
+            path: 'nodes',
+            component: NtwkNodeSelectionComponent
+        },
+        {
+            path: 'node/new',
+            component: NtwkNodeFormComponent
+        },
+        {
+            path: 'node/edit/:id',
+            component: NtwkNodeFormComponent
+        },
+        {
             path: 'tagFilteredView',
             component: TaggedNodeListComponent
         },
         {
             path: 'treeView',
             component: NodesTreeViewComponent
-        },
-        {
-            path: 'nodes',
-            component: NtwkNodeSelectionComponent
         },
         {
             path: '',
