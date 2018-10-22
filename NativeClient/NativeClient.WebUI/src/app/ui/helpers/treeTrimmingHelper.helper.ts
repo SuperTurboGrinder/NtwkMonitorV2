@@ -47,11 +47,12 @@ export class TreeTrimmingHelper {
         maxDepth: number
     ): NtwkNodesSubtree {
         const children: NtwkNodesSubtree[] = cont.depth === maxDepth
-        || this.treeCollapsingService
-        .isCollapsed(cont.nodeData.node.id)
-            ? []
-            : cont.children
-                .map(c => this.nodeContainerIntoSubtree(c, maxDepth));
+        || (this.treeCollapsingService !== null
+            && this.treeCollapsingService.isCollapsed(cont.nodeData.node.id))
+                ? []
+                : cont.children.map(
+                    c => this.nodeContainerIntoSubtree(c, maxDepth)
+                );
         const isBranchPingable: boolean = children.some(
             c => c.isBranchPingable
             || c.container.nodeData.node.isOpenPing

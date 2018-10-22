@@ -52,6 +52,14 @@ public class ViewModelValidator : IViewModelValidator {
         bool IsServiceStrValid = IsServiceStrStartHttp
             && AreServiceStrParametersValid
             && LengthCheck;
+        /*throw new Exception($@"
+            HttpStart: {IsServiceStrStartHttp},
+            HasParam: {hasParam1}, {hasParam2}, {hasParam3},
+            ContainstParamStr: {containsP1Str}, {containsP2Str}, {containsP3Str},
+            ParamValid: {isParam1Valid}, {isParam2Valid}, {isParam3Valid},
+            LengthCheck: {LengthCheck},
+            IsStrValid: {IsServiceStrValid}
+        ");*/
         return (!IsServiceStrValid)
             ? StatusMessage.InvalidWebServiceStringFormat
             : StatusMessage.Ok;

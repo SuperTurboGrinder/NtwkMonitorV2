@@ -1,0 +1,61 @@
+<app-crud-selector-template
+    [isCustomView]="true"
+    [dataLoaded]="dataList !== null"
+    [displayOperationInProgress]="displayOperationInProgress"
+    [isLoadingError]="isLoadingError"
+    (refreshEvent)="refresh($event)"
+    (deleteAnswerEvent)="deleteObject($event)"
+
+    [dataList]="dataList"
+    [baseFormLink]="'/node'"
+>
+    <ng-template>
+        <div class="p-0 m-0 container-fluid">
+            <div class="row m-0 p-0 text-center" *ngFor="let node of dataList">
+                <div class="col-8 text-left border-bottom">
+                    <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
+                    -->{{node.prefix}}<!--
+                    --></span><!--
+                    --><b>[{{node.name}}]</b>
+                </div>
+                <div class="col-4 border-bottom text-right">
+                    <button
+                        type="button"
+                        class="btn btn-primary square p-0 px-1 mr-1"
+                        i18n="@@addNewLabel"
+                        [routerLink]="[baseFormLink, data.id, 'new']"
+                    >
+                        Add new
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-warning square p-0 px-1 mr-1"
+                        i18n="@@editButtonLabel"
+                        [routerLink]="[baseFormLink, 'edit', data.id]"
+                    >
+                        Edit
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-danger square p-0 px-1 mr-1"
+                        i18n="@@removeButtonLabel"
+                        (click)="tryRemove(data)"
+                    >
+                        Remove
+                    </button>
+                </div>
+            </div>
+            <div class="row p-0 m-0 text-center">
+                <div class="w-100">
+                    <span
+                        class="btn btn-primary square py-0 px-1 my-1"
+                        [routerLink]="['/node/new']"
+                        i18n="@@addNewOnRootButtonLabel"
+                    >
+                        Add new on root
+                    </span>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</app-crud-selector-template>

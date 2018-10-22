@@ -67,8 +67,6 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
     }
 
     public tryDiscard() {
-        console.log(this.data);
-        console.log(this.originalData);
         if (this.currentIdenticalTo(this.originalData)) {
             this.discardAndReturn(true);
         } else {
@@ -96,7 +94,6 @@ export abstract class BaseCrudFormComponent<DataType, DataService> {
     }
 
     public tryCreateNew() {
-        console.log(this.data);
         this.displayCreateConfirmationMessage = true;
     }
 

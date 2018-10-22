@@ -6,6 +6,7 @@ import { NodesTreeViewComponent } from './nodesTreeView.component';
 import { TagFormComponent } from './crud/tagForm.component';
 import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelection.component';
 import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
+import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 
 
 export class UIRoutingConfig {
@@ -57,6 +58,10 @@ export class UIRoutingConfig {
         {
             path: 'treeView',
             component: NodesTreeViewComponent
+        },
+        {
+            path: 'nodes',
+            component: NtwkNodeSelectionComponent
         },
         {
             path: '',

@@ -216,6 +216,18 @@ export class CustomWebServiceFormComponent
         } else {
             this.paramNum = paramNum - 1;
         }
+        if (on === false) {
+            this.data.parametr1Name = paramNum === 1
+                ? null : this.data.parametr1Name;
+            this.data.parametr2Name = paramNum === 2
+                ? null : this.data.parametr2Name;
+            this.data.parametr3Name = paramNum === 3
+                ? null : this.data.parametr3Name;
+        }
+        this.data.parametr2Name = paramNum < 2
+            ? null : this.data.parametr2Name;
+        this.data.parametr3Name = paramNum < 3
+            ? null : this.data.parametr3Name;
         if (this.params[2].strPos < this.params[1].strPos) {
             this.params[2].strPos = this.params[1].strPos;
         }

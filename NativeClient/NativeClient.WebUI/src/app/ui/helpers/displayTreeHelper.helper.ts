@@ -52,9 +52,11 @@ export class DisplayTreeHelper {
     }
 
     public isCollapsed(index: number): boolean {
-        return this.treeCollapsingService.isCollapsed(
-            this.node(index).id
-        );
+        return this.treeCollapsingService === null
+            ? false
+            : this.treeCollapsingService.isCollapsed(
+                this.node(index).id
+            );
     }
 
     public prefix(prefixIndex: number): string {
@@ -71,17 +73,21 @@ export class DisplayTreeHelper {
     }
 
     public foldBranch(i: number) {
-        this.treeCollapsingService.foldSubtree(
-            this.node(i).id
-        );
-        this.rebuildDisplayedList(true);
+        if (this.treeCollapsingService !== null) {
+            this.treeCollapsingService.foldSubtree(
+                this.node(i).id
+            );
+            this.rebuildDisplayedList(true);
+        }
     }
 
     public unfoldBranch(i: number) {
-        this.treeCollapsingService.unfoldSubtree(
-            this.node(i).id
-        );
-        this.rebuildDisplayedList(true);
+        if (this.treeCollapsingService !== null) {
+            this.treeCollapsingService.unfoldSubtree(
+                this.node(i).id
+            );
+            this.rebuildDisplayedList(true);
+        }
     }
 
     public get flatPingTree(): PingTree[] {
@@ -129,7 +135,7 @@ export class DisplayTreeHelper {
         const lastOn = arr => arr[arr.length - 1];
         const decrementLastValue = arr => arr[arr.length - 1]--;
         const prefixesNum = this.flattenedTreeOfDisplayedNodesIndexes.length;
-        const prefixes: string[] = [''];
+        let prefixes: string[] = [''];
         let previousNodeContainer: NtwkNodeDataContainer = null;
         for (let i = 0; i < prefixesNum; i++) {
             const currentNodeContainer = this.containerOfDisplayedNode(i);
@@ -178,6 +184,13 @@ export class DisplayTreeHelper {
             previousNodeContainer = currentNodeContainer;
             previousLayer = currentLayer;
         }
-        this.displayedNodesPrefixes = prefixes.slice(1, prefixes.length);
+        prefixes = prefixes.slice(1, prefixes.length);
+        if (this.treeCollapsingService === null) {
+            prefixes = prefixes.map((p, i) => p + (
+                this.containerOfDisplayedNode(i).children.length === 0
+                    ? '─' : '┬'
+            ));
+        }
+        this.displayedNodesPrefixes = prefixes;
     }
 }

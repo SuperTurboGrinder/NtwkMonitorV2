@@ -33,6 +33,7 @@ import { CrudFormScaffoldingComponent } from './crud/crudFormScaffolding.compone
 import { CrudFormHeaderComponent } from './crud/crudFormHeader.component';
 import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelection.component';
 import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
+import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.compo
     CrudFormScaffoldingComponent,
     CrudFormHeaderComponent,
     CustomWebServiceSelectionComponent,
-    CustomWebServiceFormComponent
+    CustomWebServiceFormComponent,
+    NtwkNodeSelectionComponent
   ],
   imports: [
     BrowserAnimationsModule,
