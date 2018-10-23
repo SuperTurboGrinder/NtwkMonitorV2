@@ -35,6 +35,7 @@ import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelec
 import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
 import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
+import { IPValidatorDirective } from './directives/ipvalidator.directive';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
     SettingsProfileSelectionComponent,
     ChildsHeightToThisWidthDirective,
     SizeSetterDirective,
+    IPValidatorDirective,
     PingDisplayComponent,
     NumValueSwitchComponent,
     NumRangeSelectorComponent,

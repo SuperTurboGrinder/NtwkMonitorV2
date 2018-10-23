@@ -16,6 +16,31 @@ import { NtwkNodesTree } from 'src/app/model/viewModel/ntwkNodesTree.model';
 export class NtwkNodeFormComponent
     extends BaseCrudFormComponent<NtwkNode, NodesService> {
 
+    private _usesParentPort = false;
+    private _localParentPortValue = 1;
+
+    public get usesParentPort() {
+        return this._usesParentPort;
+    }
+
+    public get localParentPortValue() {
+        return this._localParentPortValue;
+    }
+
+    public setParentPortUsage(on: boolean) {
+        this._usesParentPort = on;
+        this.data.parentPort = on === false
+            ? null
+            : this.data.parentPort = this._localParentPortValue;
+    }
+
+    public updateParentPort(value: number) {
+        this._localParentPortValue = value;
+        if (this._usesParentPort) {
+            this.data.parentPort = this._localParentPortValue;
+        }
+    }
+
     constructor(
         messager: MessagingService,
         location: Location,

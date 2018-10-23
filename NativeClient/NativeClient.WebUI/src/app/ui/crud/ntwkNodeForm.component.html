@@ -42,6 +42,71 @@
                         </strong>
                     </div>
                 </div>
+                <div class="row" *ngIf="data.parentIP !== null">
+                    <div class="col-6 form-inline py-2">
+                        <label i18n="@@parentPortLabel" class="pr-2">Parent port</label>
+                        <input
+                            class="form-control mx-2"
+                            type="checkbox"
+                            [checked]="usesParentPort"
+                            (change)="setParentPortUsage($event.target.checked)"
+                        />
+                        <span *ngIf="data.parentPort !== null">
+                            <app-num-value-switch
+                                [min]="1.0"
+                                [max]="30.0"
+                                [initialValue]="localParentPortValue"
+                                (changedValueEvent)="updateParentPort($event)"
+                            ></app-num-value-switch>
+                        </span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 form-inline py-2">
+                        <label i18n="@@ipLabel" class="pr-2">IP</label>
+                        <input class="form-control" #ipModel="ngModel" name="ipStr" app-ipvalidator [(ngModel)]="data.ipStr" required />
+                        <strong
+                            *ngIf="ipModel.invalid && (ipModel.dirty || ipModel.touched)"
+                            class="text-small text-danger"
+                        >
+                            <div
+                                i18n="@@ipRequiredMessge"
+                                *ngIf="ipModel.errors.required; else invalidFormat"
+                            >IP value required.</div>
+                            <ng-template #invalidFormat>Invalid format.</ng-template>
+                        </strong>
+                    </div>
+                </div>
+                <div class="row" *ngIf="data.parentIP !== null">
+                    <div class="col-6 form-inline py-2">
+                        <label i18n="@@servicesLabel" class="pr-2">Services: </label>
+                        <label i18n="@@sshLabel" class="pr-2">SSH</label>
+                        <input
+                            class="form-control mx-2"
+                            type="checkbox"
+                            [checked]="data.isOpenSSH"
+                            (change)="data.isOpenSSH = $event.target.checked"
+                        />
+                        <label i18n="@@telnetLabel" class="pr-2">Telnet</label>
+                        <input
+                            class="form-control mx-2"
+                            type="checkbox"
+                            [checked]="data.isOpenTelnet"
+                            (change)="data.isOpenTelnet = $event.target.checked"
+                        />
+                    </div>
+                </div>
+                <div class="row" *ngIf="data.parentIP !== null">
+                    <div class="col-6 form-inline py-2">
+                        <label i18n="@@openPingLabel" class="pr-2">Open ping</label>
+                        <input
+                            class="form-control mx-2"
+                            type="checkbox"
+                            [checked]="data.isOpenPing"
+                            (change)="data.isOpenPing = $event.target.checked"
+                        />
+                    </div>
+                </div>
             </div>
             <div>
                 <button
