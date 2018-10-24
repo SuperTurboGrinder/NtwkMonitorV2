@@ -41,19 +41,27 @@ export abstract class BaseCrudSelectorComponent<DataType, DataService> {
         callback: (success: boolean) => void
     );
 
+    protected confirmOperationSuccess(
+        success: boolean,
+        successMessage: MessagesEnum
+    ) {
+        if (success === true) {
+            this.data = null;
+            this.updateDataList();
+            this.messager.showMessage(successMessage);
+        }
+        this.displayOperationInProgress = false;
+    }
+
     public deleteObject(event: {shouldDelete: boolean, id: number}) {
         if (event.shouldDelete) {
             this.displayOperationInProgress = true;
             this.deleteObjectPermanently(
                 event.id,
-                (success: boolean) => {
-                    if (success === true) {
-                        this.data = null;
-                        this.updateDataList();
-                        this.messager.showMessage(MessagesEnum.DeletedSuccessfully);
-                    }
-                    this.displayOperationInProgress = false;
-                }
+                (success: boolean) => this.confirmOperationSuccess(
+                    success,
+                    MessagesEnum.DeletedSuccessfully
+                )
             );
         }
     }

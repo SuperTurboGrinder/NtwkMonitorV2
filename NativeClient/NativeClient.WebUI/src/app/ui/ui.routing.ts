@@ -61,6 +61,10 @@ export class UIRoutingConfig {
             component: NtwkNodeFormComponent
         },
         {
+            path: 'node/:parentId/new',
+            component: NtwkNodeFormComponent
+        },
+        {
             path: 'node/edit/:id',
             component: NtwkNodeFormComponent
         },

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { HTTPResult } from '../../model/servicesModel/httpResult.model';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { NtwkNode } from 'src/app/model/httpModel/ntwkNode.model';
@@ -18,6 +18,7 @@ export class NtwkNodeFormComponent
 
     private _usesParentPort = false;
     private _localParentPortValue = 1;
+    private _localParentID: number = null;
 
     public get usesParentPort() {
         return this._usesParentPort;
@@ -48,6 +49,10 @@ export class NtwkNodeFormComponent
         nodesService: NodesService
     ) {
         super(messager, location, route, nodesService);
+        const routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
+        if (routeSnapshot.url[2].path === 'new') {
+            this._localParentID = parseInt(routeSnapshot.params.parentId, 10);
+        }
     }
 
     protected getOriginalData(
@@ -110,10 +115,18 @@ export class NtwkNodeFormComponent
     protected saveAsNewObjectInDatabase(
         callback: (success: boolean) => void
     ) {
-        this.dataService.createNewNode(
-            this.data,
-            callback
-        );
+        if (this._localParentID !== 0) {
+            this.dataService.createNewNodeWithParent(
+                this.data,
+                this._localParentID,
+                callback
+            );
+        } else {
+            this.dataService.createNewNode(
+                this.data,
+                callback
+            );
+        }
     }
 
     protected saveChangesToObjectInDatabase(

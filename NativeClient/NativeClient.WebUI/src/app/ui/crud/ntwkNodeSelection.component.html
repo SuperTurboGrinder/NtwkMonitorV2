@@ -12,20 +12,32 @@
     <ng-template>
         <div class="p-0 m-0 container-fluid">
             <div class="row m-0 p-0 text-center" *ngFor="let node of dataList">
-                <div class="col-8 text-left border-bottom">
+                <div class="col-7 text-left border-bottom">
                     <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
                     -->{{node.prefix}}<!--
                     --></span><!--
                     --><b>[{{node.name}}]</b>
                 </div>
-                <div class="col-4 border-bottom text-right">
+                <div
+                    *ngIf="isInMoveMode === false; else moveModeButtons"
+                    class="col-5 border-bottom text-right"
+                >
                     <button
+                        *ngIf="node.depth < 30"
                         type="button"
                         class="btn btn-primary square p-0 px-1 mr-1"
                         i18n="@@addNewLabel"
                         [routerLink]="['/node/', node.id, 'new']"
                     >
                         Add new
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-warning square p-0 px-1 mr-1"
+                        i18n="@@moveButtonLabel"
+                        (click)="setMoveModeFor(node)"
+                    >
+                        Move
                     </button>
                     <button
                         type="button"
@@ -44,16 +56,54 @@
                         Remove
                     </button>
                 </div>
+                <ng-template #moveModeButtons>
+                    <div
+                        class="col-5 border-bottom text-right"
+                    >
+                        <button
+                            *ngIf="isNodeToMove(node.id) === false; else cancelMoveButton"
+                            type="button"
+                            class="btn btn-warning square p-0 px-1 mr-1"
+                            i18n="@@toThisButtonLabel"
+                            (click)="tryToMove(node)"
+                        >
+                            To this
+                        </button>
+                        <ng-template #cancelMoveButton>
+                            <button
+                                type="button"
+                                class="btn btn-secondary square p-0 px-1 mr-1"
+                                i18n="@@cancelButtonLabel"
+                                (click)="setMoveModeFor(null)"
+                            >
+                                Cancel
+                            </button>
+                        </ng-template>
+                    </div>
+                </ng-template>
             </div>
             <div class="row p-0 m-0 text-center">
                 <div class="w-100">
-                    <span
+                    <button
+                        *ngIf="isInMoveMode === false; else moveToRootButton"
+                        type="button"
                         class="btn btn-primary square py-0 px-1 my-1"
                         [routerLink]="['/node/new']"
                         i18n="@@addNewOnRootButtonLabel"
                     >
                         Add new on root
-                    </span>
+                    </button>
+                    <ng-template #moveToRootButton>
+                        <button
+                            *ngIf="isNodeToMoveOnRoot() === false"
+                            type="button"
+                            class="btn btn-warning square p-0 px-1 mr-1"
+                            i18n="@@moveToRooButtonLabel"
+                            (click)="tryToMove(null)"
+                        >
+                            Move to root
+                        </button>
+                    </ng-template>
                 </div>
             </div>
         </div>
@@ -65,4 +115,14 @@
 >
     <span i18n="@@deleteLabel">Delete</span>
     <span> "{{nodeToRemoveName}}"?</span>
+</app-confirmation-popup>
+<app-confirmation-popup
+    [display]="displayLocalMoveMessage"
+    (answerEvent)="moveHandler($event)"
+>
+    <span i18n="@@moveLabel">Move</span>
+    <span> "{{nodeToMoveName}}" </span>
+    <span i18n="@@toLabel">to</span>
+    <span> "{{nodeToMoveNewParentName}}" </span>
+    <span i18n="@@toLabel"> children?</span>
 </app-confirmation-popup>

@@ -738,6 +738,7 @@ public static class EFDataSourceLogic {
         int nodeID,
         int newParentID
     ) {
+        int? newParentIDOrNull = newParentID == 0 ? (int?)null : newParentID;
         IQueryable<int> subtreeNodesIDs = context.NodesClosureTable
             .Where(c => c.AncestorID == nodeID)
             .Select(c => c.DescendantID)
@@ -765,7 +766,10 @@ public static class EFDataSourceLogic {
                 )
                 .Select(c => new { c.DescendantID, c.Distance });
         List<NodeClosure> newClosuresUnderSubtreeForSubtreeRoot = 
-            await __CreateNewNodeClosures(context, newParentID, nodeID);
+            await __CreateNewNodeClosures(
+                context,
+                newParentIDOrNull,
+                nodeID);
         newClosuresUnderSubtreeForSubtreeRoot.Remove(
             newClosuresUnderSubtreeForSubtreeRoot
                 .Single(c => c.AncestorID == c.DescendantID)
@@ -785,7 +789,7 @@ public static class EFDataSourceLogic {
                 .ToArrayAsync();
         NtwkNode subtreeRootNode = await context.Nodes.FindAsync(nodeID);
 
-        subtreeRootNode.ParentID = newParentID;
+        subtreeRootNode.ParentID = newParentIDOrNull;
         context.NodesClosureTable.RemoveRange(oldClosuresUnderSubtree);
         context.NodesClosureTable.AddRange(newClosuresUnderSubtreeForSubtreeRoot);
         context.NodesClosureTable.AddRange(newClosuresUnderSubtreeForNodesAboveSubtreeRoot);

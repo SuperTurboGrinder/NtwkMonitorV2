@@ -53,6 +53,34 @@ export class NodesService {
         );
     }
 
+    public createNewNodeWithParent(
+        node: NtwkNode,
+        parentID: number,
+        callback: (success: boolean) => void
+    ) {
+        return this.httpDatasource.dataRequest(
+            'post',
+            this.baseUrl + `/${parentID}/new`,
+            node
+        ).subscribe(
+            (result: HTTPResult<NtwkNode>) => callback(result.success)
+        );
+    }
+
+    // api/nodes/1/changeParentTo/2
+    public moveNodeToNewParent(
+        nodeID: number,
+        newParentID: number,
+        callback: (success: boolean) => void
+    ) {
+        return this.httpDatasource.operationRequest(
+            'put',
+            this.baseUrl + `/${nodeID}/changeParentTo/${newParentID}`
+        ).subscribe(
+            callback
+        );
+    }
+
     public updateNode(
         newNodeState: NtwkNode,
         callback: (success: boolean) => void
