@@ -36,6 +36,8 @@ import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.compo
 import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
 import { IPValidatorDirective } from './directives/ipvalidator.directive';
+import { TagsBindingFormComponent } from './crud/tagsBindingForm.component';
+import { TagsBindingComponent } from './crud/tagsBinding.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +68,9 @@ import { IPValidatorDirective } from './directives/ipvalidator.directive';
     CustomWebServiceSelectionComponent,
     CustomWebServiceFormComponent,
     NtwkNodeSelectionComponent,
-    NtwkNodeFormComponent
+    NtwkNodeFormComponent,
+    TagsBindingFormComponent,
+    TagsBindingComponent
   ],
   imports: [
     BrowserAnimationsModule,
