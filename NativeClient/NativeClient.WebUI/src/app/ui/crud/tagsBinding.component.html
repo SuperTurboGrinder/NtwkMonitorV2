@@ -1,3 +1,32 @@
-<div *ngFor="let t of setTags">
-    {{t.name}}
+<div style="max-height: 100%">
+
+        <div class="w-100 px-2 py-1">
+                <button
+                    type="button"
+                    class="btn btn-success square w-100 m-0 px-1"
+                >
+                    Apply
+                </button>
+            </div>
+            <div class="container-fluid m-0 p-0 h-100">
+                <div class="row p-0 m-0">
+                    <div class="col-6 m-0 p-0" style="max-height: 100%; overflow-y: scroll">
+                        <div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div>
+                        <!--<div
+                            *ngFor="let t of availableTags"
+                            class="text-right px-1"
+                        >
+                            {{t.name}}
+                        </div>-->
+                    </div>
+                    <div class="col-6 m-0 p-0 h-100">
+                        <div
+                            *ngFor="let t of setTags"
+                            class="text-left px-1"
+                        >
+                            {{t.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
 </div>
