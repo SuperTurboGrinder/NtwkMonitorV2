@@ -40,6 +40,20 @@ export class NodesService {
         );
     }
 
+    public setNodeTags(
+        nodeID: number,
+        tagsIDs: number[],
+        callback: (success: boolean) => void
+    ) {
+        return this.httpDatasource.dataOperationRequest(
+            'put',
+            this.baseUrl + `/${nodeID}/setTags`,
+            tagsIDs
+        ).subscribe(
+            callback
+        );
+    }
+
     public createNewNode(
         node: NtwkNode,
         callback: (success: boolean) => void
@@ -67,7 +81,6 @@ export class NodesService {
         );
     }
 
-    // api/nodes/1/changeParentTo/2
     public moveNodeToNewParent(
         nodeID: number,
         newParentID: number,

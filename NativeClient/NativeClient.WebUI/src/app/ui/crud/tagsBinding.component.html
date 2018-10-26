@@ -1,32 +1,71 @@
-<div style="max-height: 100%">
-
-        <div class="w-100 px-2 py-1">
-                <button
-                    type="button"
-                    class="btn btn-success square w-100 m-0 px-1"
+<div class="bg-light" style="height: 100%">
+    <div *ngIf="isNoSelection === false">
+        <div class="container-fluid m-0 p-0">
+            <div
+                class="row p-0 m-0 text-center"
+                style="height: 33px; font-size: 18px"
+            >
+                <div
+                    class="col-6 border-right border-bottom nonselectable-collumn"
+                    style="padding-top: 3px; padding-bottom: 3px"
                 >
-                    Apply
-                </button>
+                    <strong i18n="@@availableTagsLable">Available</strong>
+                </div>
+                <div
+                    class="col-6 border-left border-bottom nonselectable-collumn"
+                    style="padding-top: 3px; padding-bottom: 3px"
+                >
+                    <strong i18n="@@setTagsLable">Set</strong>
+                </div>
             </div>
-            <div class="container-fluid m-0 p-0 h-100">
-                <div class="row p-0 m-0">
-                    <div class="col-6 m-0 p-0" style="max-height: 100%; overflow-y: scroll">
-                        <div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div><div>TEST</div>
-                        <!--<div
-                            *ngFor="let t of availableTags"
-                            class="text-right px-1"
+            <div class="row p-0 m-0 bg-white">
+                <div
+                    class="col-6 m-0 p-0 text-right"
+                    style="direction: rtl; height: calc(100vh - 78px); overflow-y: scroll"
+                >
+                    <div
+                        *ngFor="let t of availableTags; let i = index"
+                        class="text-right px-1"
+                    >
+                        <span
+                            class="px-2 py-1 badge badge-info badge-pill btn btn-info"
+                            (click)="selectTag(i)"
                         >
-                            {{t.name}}
-                        </div>-->
+                            < {{t.name}}
+                        </span>
                     </div>
-                    <div class="col-6 m-0 p-0 h-100">
-                        <div
-                            *ngFor="let t of setTags"
-                            class="text-left px-1"
+                </div>
+                <div
+                    class="col-6 m-0 p-0 text-left"
+                    style="height: calc(100vh - 78px); overflow-y: scroll"
+                >
+                    <div
+                        *ngFor="let t of setTags; let i = index"
+                        class="px-1"
+                    >
+                        <span
+                            class="px-2 py-1 badge badge-success badge-pill btn btn-success"
+                            (click)="deselectTag(i)"
                         >
-                            {{t.name}}
-                        </div>
+                            < {{t.name}}
+                        </span>
                     </div>
                 </div>
             </div>
+        </div>
+        <div
+            class="w-100"
+            style="height: 43px; padding-left: 6px; padding-right: 6px; padding-top: 3px; padding-bottom: 3px"
+        >
+            <button
+                type="button"
+                class="btn btn-success square w-100 m-0 p-0"
+                style="height: 40px; font-size: 18px"
+                (click)="applyChanges()"
+                i18n="@@applyLable"
+            >
+                Apply
+            </button>
+        </div>
+    </div>
 </div>

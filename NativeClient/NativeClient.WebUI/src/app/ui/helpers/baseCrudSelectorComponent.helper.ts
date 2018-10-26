@@ -28,7 +28,7 @@ export abstract class BaseCrudSelectorComponent<DataType, DataService> {
         return this.data;
     }
 
-    get isLoadingError(): boolean {
+    public get isLoadingError(): boolean {
         return this.loadingError;
     }
 

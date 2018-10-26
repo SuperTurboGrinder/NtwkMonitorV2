@@ -1,11 +1,14 @@
-<div style="width: 100%; height: 100%">
+<div
+    style="width: 100%; height: 100%"
+    *ngIf="displayOperationInProgress === false; else operationInProgressBlock"
+>
     <div class="p-0 m-0 container-fluid h-100">
         <div class="row p-0 m-0 h-100">
             <div class="col-7 p-0 m-0">
                 <app-crud-selector-template
                     [isCustomView]="true"
                     [dataLoaded]="dataList !== null"
-                    [displayOperationInProgress]="displayOperationInProgress"
+                    [displayOperationInProgress]="false"
                     [isLoadingError]="isLoadingError"
                     (refreshEvent)="refresh($event)"
                     (deleteAnswerEvent)="deleteObject($event)"
@@ -15,8 +18,18 @@
                 >
                     <ng-template>
                         <div class="p-0 m-0 container-fluid">
-                            <div class="row m-0 p-0 text-center" *ngFor="let node of dataList">
-                                <div class="col-12 text-left border-bottom">
+                            <div
+                                class="row m-0 p-0 text-center"
+                                *ngFor="let node of dataList"
+                            >
+                                <div
+                                    class="col-12 btn-light text-left border-bottom"
+                                    [ngClass]="{
+                                        'btn-light': isSelectedNode(node.id) === false,
+                                        'bg-info': isSelectedNode(node.id) === true
+                                    }"
+                                    (click)="selectNode(node)"
+                                >
                                     <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
                                     -->{{node.prefix}}<!--
                                     --></span><!--
@@ -29,16 +42,16 @@
             </div>
             <div class="col-5 p-0 m-0">
                 <app-tags-binding
-                    [originalSetTags]="testSet"
+                    [originalSetTags]="selectedNodeTagsSet"
+                    (applyEvent)="setSelectedNodeTags($event)"
                 ></app-tags-binding>
             </div>
         </div>
     </div>
 </div>
-<!--<app-confirmation-popup
-    [display]="displayLocalDeleteMessage"
-    (answerEvent)="deleteHandler($event)"
->
-    <span i18n="@@deleteLabel">Delete</span>
-    <span> "{{nodeToRemoveName}}"?</span>
-</app-confirmation-popup>-->
+<ng-template #operationInProgressBlock>
+    <app-loading-indicator
+        [isError]="isLoadingError"
+        (refreshEvent)="refresh($event)"
+    ></app-loading-indicator>
+</ng-template>

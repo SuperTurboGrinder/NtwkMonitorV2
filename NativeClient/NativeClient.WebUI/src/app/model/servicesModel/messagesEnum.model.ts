@@ -4,5 +4,6 @@ export enum MessagesEnum {
     UpdatedSuccessfully = 102,
     DeletedSuccessfully = 103,
     NoChangesDetected = 104,
-    NodeMovedSuccessfully = 105
+    NodeMovedSuccessfully = 105,
+    SetTagsSuccessfully = 106
 }

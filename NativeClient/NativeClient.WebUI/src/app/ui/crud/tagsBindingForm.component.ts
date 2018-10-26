@@ -7,6 +7,7 @@ import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.
 import { HTTPResult } from 'src/app/model/servicesModel/httpResult.model';
 import { NodeLineData } from 'src/app/model/viewModel/nodeLineData.model';
 import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
+import { NodeData } from 'src/app/model/httpModel/nodeData.model';
 
 @Component({
     selector: 'app-tags-binding-form-selection',
@@ -14,13 +15,52 @@ import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
 })
 export class TagsBindingFormComponent
     extends BaseCrudSelectorComponent<NodeLineData, NodesService> {
-    public testSet = [2, 3, 4];
+
+    private allNodesData: NodeData[] = null;
+    private selectedNodeData: NodeData = null;
+    public currentTagsSet: number[] = [];
 
     constructor(
         messager: MessagingService,
         dataService: NodesService
     ) {
         super(messager, dataService);
+    }
+
+    public selectNode(node: NodeLineData) {
+        const nodeData = this.allNodesData.find(nd => nd.node.id === node.id);
+        this.selectedNodeData = nodeData;
+    }
+
+    public isSelectedNode(nodeID: number) {
+        return this.selectedNodeData !== null
+            ? this.selectedNodeData.node.id === nodeID
+            : false;
+    }
+
+    public get selectedNodeTagsSet(): number[] {
+        return this.selectedNodeData !== null
+            ? this.selectedNodeData.tagsIDs
+            : null;
+    }
+
+    public setSelectedNodeTags(tagsIDs: number[]) {
+        if (this.selectedNodeData !== null) {
+            this.displayOperationInProgress = true;
+            this.dataService.setNodeTags(
+                this.selectedNodeData.node.id,
+                tagsIDs,
+                success => {
+                    if (success === true) {
+                        this.selectedNodeData.tagsIDs = tagsIDs;
+                    }
+                    this.confirmOperationSuccess(
+                        success,
+                        MessagesEnum.SetTagsSuccessfully
+                    );
+                }
+            );
+        }
     }
 
     protected updateDataList() {
@@ -38,6 +78,8 @@ export class TagsBindingFormComponent
                     0,
                     treeLayersCount
                 );
+                this.allNodesData = treeResult.data.nodesTree.allNodes
+                    .map(c => c.nodeData);
                 this.setNewData(HTTPResult.Successful(
                     displayTreeHelper.displayedNodesIndexes.map(
                         (dni, index) => {
@@ -56,5 +98,5 @@ export class TagsBindingFormComponent
     protected deleteObjectPermanently(
         nodeID: number,
         callback: (success: boolean) => void
-    ) { }
+    ) { } // not used
 }
