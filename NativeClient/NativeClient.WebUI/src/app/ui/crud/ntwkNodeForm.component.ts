@@ -50,7 +50,7 @@ export class NtwkNodeFormComponent
     ) {
         super(messager, location, route, nodesService);
         const routeSnapshot: ActivatedRouteSnapshot = route.snapshot;
-        if (routeSnapshot.url[2].path === 'new') {
+        if (routeSnapshot.url.length > 2 && routeSnapshot.url[2].path === 'new') {
             this._localParentID = parseInt(routeSnapshot.params.parentId, 10);
         }
     }
@@ -115,7 +115,7 @@ export class NtwkNodeFormComponent
     protected saveAsNewObjectInDatabase(
         callback: (success: boolean) => void
     ) {
-        if (this._localParentID !== 0) {
+        if (this._localParentID !== null) {
             this.dataService.createNewNodeWithParent(
                 this.data,
                 this._localParentID,

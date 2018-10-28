@@ -1,24 +1,19 @@
-import { Component } from '@angular/core';
+import { Input } from '@angular/core';
 import { DisplayTreeHelper } from '../helpers/displayTreeHelper.helper';
 import { NodesService } from '../../services/nodes.service';
-import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.helper';
 import { HTTPResult } from 'src/app/model/servicesModel/httpResult.model';
 import { NodeLineData } from 'src/app/model/viewModel/nodeLineData.model';
-import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
 import { NodeData } from 'src/app/model/httpModel/nodeData.model';
 
-@Component({
-    selector: 'app-tags-binding-form-selection',
-    templateUrl: './tagsBindingForm.component.html'
-})
-export class TagsBindingFormComponent
+export class BaseCrudNodeSideSelectorComponent
     extends BaseCrudSelectorComponent<NodeLineData, NodesService> {
 
     private allNodesData: NodeData[] = null;
-    private selectedNodeData: NodeData = null;
-    public currentTagsSet: number[] = [];
+    protected selectedNodeData: NodeData = null;
+
+    @Input() isOperationInProgress = true;
 
     constructor(
         messager: MessagingService,
@@ -27,40 +22,9 @@ export class TagsBindingFormComponent
         super(messager, dataService);
     }
 
-    public selectNode(node: NodeLineData) {
-        const nodeData = this.allNodesData.find(nd => nd.node.id === node.id);
+    public selectNode(nodeID: number) {
+        const nodeData = this.allNodesData.find(nd => nd.node.id === nodeID);
         this.selectedNodeData = nodeData;
-    }
-
-    public isSelectedNode(nodeID: number) {
-        return this.selectedNodeData !== null
-            ? this.selectedNodeData.node.id === nodeID
-            : false;
-    }
-
-    public get selectedNodeTagsSet(): number[] {
-        return this.selectedNodeData !== null
-            ? this.selectedNodeData.tagsIDs
-            : null;
-    }
-
-    public setSelectedNodeTags(tagsIDs: number[]) {
-        if (this.selectedNodeData !== null) {
-            this.displayOperationInProgress = true;
-            this.dataService.setNodeTags(
-                this.selectedNodeData.node.id,
-                tagsIDs,
-                success => {
-                    if (success === true) {
-                        this.selectedNodeData.tagsIDs = tagsIDs;
-                    }
-                    this.confirmOperationSuccess(
-                        success,
-                        MessagesEnum.SetTagsSuccessfully
-                    );
-                }
-            );
-        }
     }
 
     protected updateDataList() {
@@ -91,6 +55,9 @@ export class TagsBindingFormComponent
                         }
                     )
                 ));
+                if (this.selectedNodeData !== null) {
+                    this.selectNode(this.selectedNodeData.node.id);
+                }
             }
         });
     }

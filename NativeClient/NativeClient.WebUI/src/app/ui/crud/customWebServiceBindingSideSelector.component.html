@@ -1,0 +1,16 @@
+<app-crud-node-side-selector-template
+    [dataList]="data"
+    [isLoadingError]="isLoadingError"
+    [displayOperationInProgress]="displayOperationInProgress"
+    (refreshEvent)="refresh($event)"
+    (nodeSelectionEvent)="selectNode($event)"
+>
+    <ng-template>
+        <app-custom-web-service-binding
+            [allServices]="allServices"
+            [originalBoundServicesData]="selectedNodeServicesData"
+            (bindingEvent)="bindService($event)"
+            (bindingRemovalEvent)="removeBinding($event)"
+        ></app-custom-web-service-binding>
+    </ng-template>
+</app-crud-node-side-selector-template>

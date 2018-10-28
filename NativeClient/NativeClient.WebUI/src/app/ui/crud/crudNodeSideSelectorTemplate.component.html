@@ -11,10 +11,7 @@
                     [displayOperationInProgress]="false"
                     [isLoadingError]="isLoadingError"
                     (refreshEvent)="refresh($event)"
-                    (deleteAnswerEvent)="deleteObject($event)"
-                
                     [dataList]="dataList"
-                    [baseFormLink]="'/node'"
                 >
                     <ng-template>
                         <div class="p-0 m-0 container-fluid">
@@ -41,10 +38,7 @@
                 </app-crud-selector-template>
             </div>
             <div class="col-5 p-0 m-0">
-                <app-tags-binding
-                    [originalSetTags]="selectedNodeTagsSet"
-                    (applyEvent)="setSelectedNodeTags($event)"
-                ></app-tags-binding>
+                <ng-container *ngTemplateOutlet="contentRef"></ng-container>
             </div>
         </div>
     </div>

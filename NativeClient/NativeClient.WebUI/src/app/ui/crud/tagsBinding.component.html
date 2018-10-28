@@ -1,5 +1,5 @@
 <div class="bg-light" style="height: 100%">
-    <div *ngIf="isNoSelection === false">
+    <div *ngIf="isNoSelection === false; else notSelectedBlock">
         <div class="container-fluid m-0 p-0">
             <div
                 class="row p-0 m-0 text-center"
@@ -9,27 +9,27 @@
                     class="col-6 border-right border-bottom nonselectable-collumn"
                     style="padding-top: 3px; padding-bottom: 3px"
                 >
-                    <strong i18n="@@availableTagsLable">Available</strong>
+                    <strong i18n="@@setTagsLable">Set</strong>
                 </div>
                 <div
-                    class="col-6 border-left border-bottom nonselectable-collumn"
+                    class="col-6 border-bottom nonselectable-collumn"
                     style="padding-top: 3px; padding-bottom: 3px"
                 >
-                    <strong i18n="@@setTagsLable">Set</strong>
+                    <strong i18n="@@availableTagsLable">Available</strong>
                 </div>
             </div>
             <div class="row p-0 m-0 bg-white">
                 <div
-                    class="col-6 m-0 p-0 text-right"
+                    class="col-6 m-0 p-0 text-right border-right"
                     style="direction: rtl; height: calc(100vh - 78px); overflow-y: scroll"
                 >
                     <div
-                        *ngFor="let t of availableTags; let i = index"
-                        class="text-right px-1"
+                        *ngFor="let t of setTags; let i = index"
+                        class="px-1"
                     >
                         <span
-                            class="px-2 py-1 badge badge-info badge-pill btn btn-info"
-                            (click)="selectTag(i)"
+                            class="px-2 py-1 badge badge-success badge-pill btn btn-success"
+                            (click)="deselectTag(i)"
                         >
                             < {{t.name}}
                         </span>
@@ -40,12 +40,12 @@
                     style="height: calc(100vh - 78px); overflow-y: scroll"
                 >
                     <div
-                        *ngFor="let t of setTags; let i = index"
+                        *ngFor="let t of availableTags; let i = index"
                         class="px-1"
                     >
                         <span
-                            class="px-2 py-1 badge badge-success badge-pill btn btn-success"
-                            (click)="deselectTag(i)"
+                            class="px-2 py-1 badge badge-info badge-pill btn btn-info"
+                            (click)="selectTag(i)"
                         >
                             < {{t.name}}
                         </span>
@@ -68,4 +68,9 @@
             </button>
         </div>
     </div>
+    <ng-template #notSelectedBlock>
+        <div class="h5 w-100 py-2 text-center" i18n="@@noNodeSelectedLabel">
+            No node selected
+        </div>
+    </ng-template>
 </div>

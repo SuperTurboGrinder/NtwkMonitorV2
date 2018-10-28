@@ -36,8 +36,11 @@ import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.compo
 import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
 import { IPValidatorDirective } from './directives/ipvalidator.directive';
-import { TagsBindingFormComponent } from './crud/tagsBindingForm.component';
+import { TagsBindingSideSelectorComponent } from './crud/tagsBindingSideSelector.component';
 import { TagsBindingComponent } from './crud/tagsBinding.component';
+import { CrudNodeSideSelectorTemplateComponent } from './crud/crudNodeSideSelectorTemplate.component';
+import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebServiceBindingSideSelector.component';
+import { CustomWebServiceBindingComponent } from './crud/customWebServiceBinding.component';
 
 @NgModule({
   declarations: [
@@ -69,8 +72,11 @@ import { TagsBindingComponent } from './crud/tagsBinding.component';
     CustomWebServiceFormComponent,
     NtwkNodeSelectionComponent,
     NtwkNodeFormComponent,
-    TagsBindingFormComponent,
-    TagsBindingComponent
+    TagsBindingSideSelectorComponent,
+    TagsBindingComponent,
+    CrudNodeSideSelectorTemplateComponent,
+    CustomWebServiceBindingSideSelectorComponent,
+    CustomWebServiceBindingComponent
   ],
   imports: [
     BrowserAnimationsModule,

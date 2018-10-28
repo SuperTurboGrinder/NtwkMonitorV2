@@ -1,0 +1,14 @@
+<app-crud-node-side-selector-template
+    [dataList]="data"
+    [isLoadingError]="isLoadingError"
+    [displayOperationInProgress]="displayOperationInProgress"
+    (refreshEvent)="refresh($event)"
+    (nodeSelectionEvent)="selectNode($event)"
+>
+    <ng-template>
+        <app-tags-binding
+            [originalSetTags]="selectedNodeTagsSet"
+            (applyEvent)="setSelectedNodeTags($event)"
+        ></app-tags-binding>
+    </ng-template>
+</app-crud-node-side-selector-template>

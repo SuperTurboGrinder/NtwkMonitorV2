@@ -8,7 +8,8 @@ import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelec
 import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
 import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
-import { TagsBindingFormComponent } from './crud/tagsBindingForm.component';
+import { TagsBindingSideSelectorComponent } from './crud/tagsBindingSideSelector.component';
+import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebServiceBindingSideSelector.component';
 
 
 export class UIRoutingConfig {
@@ -71,7 +72,11 @@ export class UIRoutingConfig {
         },
         {
             path: 'tagsBinding',
-            component: TagsBindingFormComponent
+            component: TagsBindingSideSelectorComponent
+        },
+        {
+            path: 'customWebServiceBinding',
+            component: CustomWebServiceBindingSideSelectorComponent
         },
         {
             path: 'tagFilteredView',
