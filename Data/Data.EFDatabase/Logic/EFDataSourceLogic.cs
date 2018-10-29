@@ -439,38 +439,54 @@ public static class EFDataSourceLogic {
 
     public static async Task<bool> CheckIfTagNameExists_Logic(
         NtwkDBContext context,
-        string name
+        string name,
+        int? exceptID
     ) {
-        return await context.Tags.AsNoTracking()
-            .Where(e => e.Name == name)
-            .AnyAsync();
+        return (exceptID != null && (await context.Tags.AsNoTracking()
+            .FirstOrDefaultAsync())?.Name == name)
+            ? false
+            : await context.Tags.AsNoTracking()
+                .Where(e => e.Name == name)
+                .AnyAsync();
     }
 
     public static async Task<bool> CheckIfNodeNameExists_Logic(
         NtwkDBContext context,
-        string name
+        string name,
+        int? exceptID
     ) {
-        return await context.Nodes.AsNoTracking()
-            .Where(e => e.Name == name)
-            .AnyAsync();
+        return exceptID != null && (await context.Nodes.AsNoTracking()
+            .FirstOrDefaultAsync())?.Name == name
+            ? false
+            : await context.Nodes.AsNoTracking()
+                .Where(e => e.Name == name)
+                .AnyAsync();
     }
 
     public static async Task<bool> CheckIfCWSNameExists_Logic(
         NtwkDBContext context,
-        string name
+        string name,
+        int? exceptID
     ) {
-        return await context.WebServices.AsNoTracking()
-            .Where(e => e.Name == name)
-            .AnyAsync();
+        return exceptID != null && (await context.WebServices.AsNoTracking()
+            .FirstOrDefaultAsync())?.Name == name
+            ? false
+            : await context.WebServices.AsNoTracking()
+                .Where(e => e.Name == name)
+                .AnyAsync();
     }
 
     public static async Task<bool> CheckIfProfileNameExists_Logic(
         NtwkDBContext context,
-        string name
+        string name,
+        int? exceptID
     ) {
-        return await context.Profiles.AsNoTracking()
-            .Where(e => e.Name == name)
-            .AnyAsync();
+        return exceptID != null && (await context.Profiles.AsNoTracking()
+            .FirstOrDefaultAsync())?.Name == name
+            ? false
+            : await context.Profiles.AsNoTracking()
+                .Where(e => e.Name == name)
+                .AnyAsync();
     }
     
     public static async Task<NodeTag> CreateTag_Logic(

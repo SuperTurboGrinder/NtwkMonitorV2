@@ -797,27 +797,69 @@ public class Data_EFDataSourceLogicTest {
 
         bool ExistingTagNames =
             await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.FirstTagName
+                context, utils.FirstTagName, null
             ) &&
             await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.SecondTagName
+                context, utils.SecondTagName, null
             ) &&
             await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.ThirdTagName
+                context, utils.ThirdTagName, null
             );
         bool NonExistingTagNames =
             await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "TestTagNonexistantName1"
+                context, "TestTagNonexistantName1", null
             ) ||
             await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "Shvabra Cadabra"
+                context, "Shvabra Cadabra", null
             ) ||
             await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "1234321"
+                context, "1234321", null
             );
         
         Assert.True(ExistingTagNames);
         Assert.False(NonExistingTagNames);
+    }
+
+    [Fact]
+    public async void CheckIfTagNameExists_WillReturnFalseIfNameSameWithExceptedTagAndWorkAsAlwaysOtherwise() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        bool ExistingTagNamesWithExcept =
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, utils.FirstTagName, IDSet.Tag1ID
+            ) ||
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, utils.SecondTagName, IDSet.Tag2ID
+            ) ||
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, utils.ThirdTagName, IDSet.Tag3ID
+            );
+        bool ExistingTagNamesWithDifferentExcept =
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, utils.FirstTagName, IDSet.Tag2ID
+            ) ||
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, utils.SecondTagName, IDSet.Tag3ID
+            ) ||
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, utils.ThirdTagName, IDSet.Tag1ID
+            );
+        bool NonExistingTagNamesWithExcepts =
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, "TestTagNonexistantName1", IDSet.Tag1ID
+            ) ||
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, "Shvabra Cadabra", IDSet.Tag1ID
+            ) ||
+            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
+                context, "1234321", IDSet.Tag1ID
+            );
+        
+        Assert.False(ExistingTagNamesWithExcept);
+        Assert.True(ExistingTagNamesWithDifferentExcept);
+        Assert.False(NonExistingTagNamesWithExcepts);
     }
 
     [Fact]
@@ -828,27 +870,69 @@ public class Data_EFDataSourceLogicTest {
 
         bool ExistingNodeNames =
             await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.FirstNodeName
+                context, utils.FirstNodeName, null
             ) &&
             await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.SecondNodeName
+                context, utils.SecondNodeName, null
             ) &&
             await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.ThirdNodeName
+                context, utils.ThirdNodeName, null
             );
         bool NonExistingNodeNames =
             await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "TestNodeNonexistantName1"
+                context, "TestNodeNonexistantName1", null
             ) ||
             await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "Shvabra Cadabra"
+                context, "Shvabra Cadabra", null
             ) ||
             await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "1234321"
+                context, "1234321", null
             );
         
         Assert.True(ExistingNodeNames);
         Assert.False(NonExistingNodeNames);
+    }
+
+    [Fact]
+    public async void CheckIfNodeNameExists_WillReturnFalseIfNameSameWithExceptedNodeAndWorkAsAlwaysOtherwise() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        bool ExistingNodeNamesWithExcept =
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, utils.FirstNodeName, IDSet.Node1ID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, utils.SecondNodeName, IDSet.Node2ID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, utils.ThirdNodeName, IDSet.Node3ID
+            );
+        bool ExistingNodeNamesWithDifferentExcept =
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, utils.FirstNodeName, IDSet.Node2ID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, utils.SecondNodeName, IDSet.Node3ID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, utils.ThirdNodeName, IDSet.Node1ID
+            );
+        bool NonExistingNodeNamesWithExcepts =
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, "TestNodeNonexistantName1", IDSet.Node1ID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, "Shvabra Cadabra", IDSet.Node1ID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, "1234321", IDSet.Node1ID
+            );
+        
+        Assert.False(ExistingNodeNamesWithExcept);
+        Assert.True(ExistingNodeNamesWithDifferentExcept);
+        Assert.False(NonExistingNodeNamesWithExcepts);
     }
 
     [Fact]
@@ -859,21 +943,46 @@ public class Data_EFDataSourceLogicTest {
 
         bool ExistingCWSName =
             await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, utils.WebInterfaceOn8080Name
+                context, utils.WebInterfaceOn8080Name, null
             );
         bool NonExistingCWSNames =
             await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "TestCWSNonexistantName1"
+                context, "TestCWSNonexistantName1", null
             ) ||
             await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "Shvabra Cadabra"
+                context, "Shvabra Cadabra", null
             ) ||
             await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "1234321"
+                context, "1234321", null
             );
         
         Assert.True(ExistingCWSName);
         Assert.False(NonExistingCWSNames);
+    }
+
+    [Fact]
+    public async void CheckIfCWSNameExists_WillReturnFalseIfNameSameWithExceptedCWSAndWorkAsAlwaysOtherwise() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        bool ExistingCWSNameWithExcept =
+            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
+                context, utils.WebInterfaceOn8080Name, IDSet.WebServiceID
+            );
+        bool NonExistingCWSNamesWithExcepts =
+            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
+                context, "TestCWSNonexistantName1", IDSet.WebServiceID
+            ) ||
+            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
+                context, "Shvabra Cadabra", IDSet.WebServiceID
+            ) ||
+            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
+                context, "1234321", IDSet.WebServiceID
+            );
+        
+        Assert.False(ExistingCWSNameWithExcept);
+        Assert.False(NonExistingCWSNamesWithExcepts);
     }
 
     [Fact]
@@ -884,21 +993,46 @@ public class Data_EFDataSourceLogicTest {
 
         bool ExistingProfileName =
             await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, context.Profiles.First().Name
+                context, context.Profiles.First().Name, null
             );
         bool NonExistingProfileNames =
             await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "TestNodeNonexistantName1"
+                context, "TestProfileNonexistantName1", null
             ) ||
             await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "Shvabra Cadabra"
+                context, "Shvabra Cadabra", null
             ) ||
             await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "1234321"
+                context, "1234321", null
             );
         
         Assert.True(ExistingProfileName);
         Assert.False(NonExistingProfileNames);
+    }
+
+    [Fact]
+    public async void CheckIfProfileNameExists_WillReturnFalseIfNameSameWithExceptedProfileAndWorkAsAlwaysOtherwise() {
+        EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
+        var context = utils.GetEmptyContext();
+        var IDSet = utils.AddTestDataSet(context);
+
+        bool ExistingProfileNameWithExcept =
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, utils.WebInterfaceOn8080Name, IDSet.ProfileID
+            );
+        bool NonExistingProfileNamesWithExcepts =
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, "TestProfileNonexistantName1", IDSet.ProfileID
+            ) ||
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, "Shvabra Cadabra", IDSet.ProfileID
+            ) ||
+            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
+                context, "1234321", IDSet.ProfileID
+            );
+        
+        Assert.False(ExistingProfileNameWithExcept);
+        Assert.False(NonExistingProfileNamesWithExcepts);
     }
 
     [Fact]

@@ -146,7 +146,8 @@ public class NodeTreeDataService
         if(nodeValidationStatus.Failure()) {
             return nodeValidationStatus;
         }
-        StatusMessage nameExistsStatus = await FailIfNodeNameExists(node.Name);
+        StatusMessage nameExistsStatus =
+            await FailIfNodeNameExists(node.Name, updatingNodeID: node.ID);
         if(nameExistsStatus.Failure()) {
             return nameExistsStatus;
         }

@@ -67,9 +67,9 @@ export class CustomWebServiceFormComponent
             id: 0,
             name: '',
             serviceStr: '',
-            parametr1Name: null,
-            parametr2Name: null,
-            parametr3Name: null
+            parametr1Name: '',
+            parametr2Name: '',
+            parametr3Name: ''
         };
     }
 
@@ -95,9 +95,15 @@ export class CustomWebServiceFormComponent
     protected saveAsNewObjectInDatabase(
         callback: (success: boolean) => void
     ) {
-        console.log(this.data);
+        const sendingData = this.makeCopy(this.data);
+        sendingData.parametr1Name = this.paramNum < 1
+            ? null : sendingData.parametr1Name;
+        sendingData.parametr2Name = this.paramNum < 2
+            ? null : sendingData.parametr2Name;
+        sendingData.parametr3Name = this.paramNum < 3
+            ? null : sendingData.parametr3Name;
         this.dataService.createNewCWS(
-            this.data,
+            sendingData,
             callback
         );
     }
@@ -216,18 +222,6 @@ export class CustomWebServiceFormComponent
         } else {
             this.paramNum = paramNum - 1;
         }
-        if (on === false) {
-            this.data.parametr1Name = paramNum === 1
-                ? null : this.data.parametr1Name;
-            this.data.parametr2Name = paramNum === 2
-                ? null : this.data.parametr2Name;
-            this.data.parametr3Name = paramNum === 3
-                ? null : this.data.parametr3Name;
-        }
-        this.data.parametr2Name = paramNum < 2
-            ? null : this.data.parametr2Name;
-        this.data.parametr3Name = paramNum < 3
-            ? null : this.data.parametr3Name;
         if (this.params[2].strPos < this.params[1].strPos) {
             this.params[2].strPos = this.params[1].strPos;
         }
@@ -326,15 +320,6 @@ export class CustomWebServiceFormComponent
             const nextIsIP = this.paramPositions[nextPosIndex] === 0;
             return nextIsIP && this.isSameStrPosByIndex(paramPosIndex, nextPosIndex);
         }
-    }
-
-    private nextIsPushable(negative: boolean, paramPosIndex: number): boolean {
-        if (this.paramPositions[paramPosIndex] !== 0) {
-            const nextPosIndex = this.nextParamIndex(negative, paramPosIndex);
-            const nextIsParam = this.paramPositions[nextPosIndex] !== 0;
-            return nextIsParam && this.isSameStrPosByIndex(paramPosIndex, nextPosIndex);
-        }
-        return false;
     }
 
     private swapParamsByIndex(paramPos1Index: number, paramPos2Index: number) {

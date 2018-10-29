@@ -144,27 +144,27 @@ public class EFDataRepository : IDataRepository {
         );
     }
     
-    public async Task<DataActionResult<bool>> CheckIfTagNameExists(string name) {
+    public async Task<DataActionResult<bool>> CheckIfTagNameExists(string name, int? exceptID) {
         return await PerformDataOperationOrLogExceptions(async () =>
-            await efDataSource.CheckIfTagNameExists(name)
+            await efDataSource.CheckIfTagNameExists(name, exceptID)
         );
     }
     
-    public async Task<DataActionResult<bool>> CheckIfNodeNameExists(string name) {
+    public async Task<DataActionResult<bool>> CheckIfNodeNameExists(string name, int? exceptID) {
         return await PerformDataOperationOrLogExceptions(async () =>
-            await efDataSource.CheckIfNodeNameExists(name)
+            await efDataSource.CheckIfNodeNameExists(name, exceptID)
         );
     }
     
-    public async Task<DataActionResult<bool>> CheckIfProfileNameExists(string name) {
+    public async Task<DataActionResult<bool>> CheckIfProfileNameExists(string name, int? exceptID) {
         return await PerformDataOperationOrLogExceptions(async () =>
-            await efDataSource.CheckIfProfileNameExists(name)
+            await efDataSource.CheckIfProfileNameExists(name, exceptID)
         );
     }
     
-    public async Task<DataActionResult<bool>> CheckIfCWSNameExists(string name) {
+    public async Task<DataActionResult<bool>> CheckIfCWSNameExists(string name, int? exceptID) {
         return await PerformDataOperationOrLogExceptions(async () =>
-            await efDataSource.CheckIfCWSNameExists(name)
+            await efDataSource.CheckIfCWSNameExists(name, exceptID)
         );
     }
     

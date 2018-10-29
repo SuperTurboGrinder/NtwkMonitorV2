@@ -49,7 +49,13 @@ export class NtwkNodeSelectionComponent
                             const node = nodeContainer.nodeData.node;
                             const prefix = displayTreeHelper.prefix(index);
                             const depth = nodeContainer.depth;
-                            return new NodeLineData(node.id, node.name, prefix, depth);
+                            return new NodeLineData(
+                                node.id,
+                                node.name,
+                                prefix,
+                                depth,
+                                nodeContainer.children.length > 0
+                            );
                         }
                     )
                 ));

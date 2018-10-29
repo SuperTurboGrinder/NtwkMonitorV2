@@ -34,10 +34,10 @@ public interface IDataRepository {
     );
     Task<DataActionResult<bool>> CheckIfTagExists(int tagID);
     Task<DataActionResult<bool>> CheckIfTagsExist(IEnumerable<int> tagsIDs);
-    Task<DataActionResult<bool>> CheckIfProfileNameExists(string name);
-    Task<DataActionResult<bool>> CheckIfTagNameExists(string name);
-    Task<DataActionResult<bool>> CheckIfNodeNameExists(string name);
-    Task<DataActionResult<bool>> CheckIfCWSNameExists(string name);
+    Task<DataActionResult<bool>> CheckIfProfileNameExists(string name, int? exceptID);
+    Task<DataActionResult<bool>> CheckIfTagNameExists(string name, int? exceptID);
+    Task<DataActionResult<bool>> CheckIfNodeNameExists(string name, int? exceptID);
+    Task<DataActionResult<bool>> CheckIfCWSNameExists(string name, int? exceptID);
     Task<DataActionResult<bool>> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
     Task<DataActionResult<int>> GetCWSParamNumber(int profileID);
 

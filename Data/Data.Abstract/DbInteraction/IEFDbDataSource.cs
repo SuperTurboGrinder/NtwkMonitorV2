@@ -31,10 +31,10 @@ public interface IEFDbDataSource {
     Task<bool> CheckIfCWSBindingExists(int cwsID, int nodeID);
     Task<bool> CheckIfTagExists(int tagID);
     Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
-    Task<bool> CheckIfTagNameExists(string name);
-    Task<bool> CheckIfNodeNameExists(string name);
-    Task<bool> CheckIfCWSNameExists(string name);
-    Task<bool> CheckIfProfileNameExists(string name);
+    Task<bool> CheckIfTagNameExists(string name, int? exceptID);
+    Task<bool> CheckIfNodeNameExists(string name, int? exceptID);
+    Task<bool> CheckIfCWSNameExists(string name, int? exceptID);
+    Task<bool> CheckIfProfileNameExists(string name, int? exceptID);
     Task<bool> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
     Task<int> GetCWSParamNumber(int cwsID); //-1 if cws does not exist
 

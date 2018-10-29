@@ -69,20 +69,40 @@ public abstract class BaseDataService {
                 : StatusMessage.Ok;
     }
 
-    protected async Task<StatusMessage> FailIfNodeNameExists(string name) {
-        return FailIfNameExists(await repo.CheckIfNodeNameExists(name));
+    protected async Task<StatusMessage> FailIfNodeNameExists(
+        string name,
+        int? updatingNodeID = null
+    ) {
+        return FailIfNameExists(
+            await repo.CheckIfNodeNameExists(name, updatingNodeID)
+        );
     }
 
-    protected async Task<StatusMessage> FailIfTagNameExists(string name) {
-        return FailIfNameExists(await repo.CheckIfTagNameExists(name));
+    protected async Task<StatusMessage> FailIfTagNameExists(
+        string name,
+        int? updatingTagID = null
+    ) {
+        return FailIfNameExists(
+            await repo.CheckIfTagNameExists(name, updatingTagID)
+        );
     }
 
-    protected async Task<StatusMessage> FailIfCWSNameExists(string name) {
-        return FailIfNameExists(await repo.CheckIfCWSNameExists(name));
+    protected async Task<StatusMessage> FailIfCWSNameExists(
+        string name,
+        int? updatingCWSID = null
+    ) {
+        return FailIfNameExists(
+            await repo.CheckIfCWSNameExists(name, updatingCWSID)
+        );
     }
 
-    protected async Task<StatusMessage> FailIfProfileNameExists(string name) {
-        return FailIfNameExists(await repo.CheckIfProfileNameExists(name));
+    protected async Task<StatusMessage> FailIfProfileNameExists(
+        string name,
+        int? updatingProfileID = null
+    ) {
+        return FailIfNameExists(
+            await repo.CheckIfProfileNameExists(name, updatingProfileID)
+        );
     }
 
     protected async Task<StatusMessage> FailIfCWSBindingExists(int cwsID, int nodeID) {

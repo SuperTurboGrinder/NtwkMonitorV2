@@ -12,9 +12,9 @@ public class ViewModelValidator : IViewModelValidator {
             ValidationUtils.IsValidName(val.Name);
         if(nameValidationStatus.Failure())
             return nameValidationStatus;
-        bool hasParam1 = !string.IsNullOrEmpty(val.Parametr1Name);
-        bool hasParam2 = !string.IsNullOrEmpty(val.Parametr2Name);
-        bool hasParam3 = !string.IsNullOrEmpty(val.Parametr3Name);
+        bool hasParam1 = val.Parametr1Name != null;
+        bool hasParam2 = val.Parametr2Name != null;
+        bool hasParam3 = val.Parametr3Name != null;
         bool AreParameterNamesInOrder =
             hasParam3
                 ? hasParam1 && hasParam2

@@ -76,20 +76,20 @@ public class EFDataSource : IEFDbDataSource {
         return await CheckIfNodeExists_Logic(context, nodeID);
     }
 
-    public async Task<bool> CheckIfTagNameExists(string name) {
-        return await CheckIfTagNameExists_Logic(context, name);
+    public async Task<bool> CheckIfTagNameExists(string name, int? exceptID) {
+        return await CheckIfTagNameExists_Logic(context, name, exceptID);
     }
 
-    public async Task<bool> CheckIfNodeNameExists(string name) {
-        return await CheckIfNodeNameExists_Logic(context, name);
+    public async Task<bool> CheckIfNodeNameExists(string name, int? exceptID) {
+        return await CheckIfNodeNameExists_Logic(context, name, exceptID);
     }
 
-    public async Task<bool> CheckIfCWSNameExists(string name) {
-        return await CheckIfCWSNameExists_Logic(context, name);
+    public async Task<bool> CheckIfCWSNameExists(string name, int? exceptID) {
+        return await CheckIfCWSNameExists_Logic(context, name, exceptID);
     }
 
-    public async Task<bool> CheckIfProfileNameExists(string name) {
-        return await CheckIfProfileNameExists_Logic(context, name);
+    public async Task<bool> CheckIfProfileNameExists(string name, int? exceptID) {
+        return await CheckIfProfileNameExists_Logic(context, name, exceptID);
     }
 
     public async Task<bool> CheckIfNodeInSubtree(
