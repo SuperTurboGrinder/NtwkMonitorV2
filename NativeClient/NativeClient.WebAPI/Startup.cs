@@ -49,7 +49,7 @@ namespace NativeClient.WebAPI
             services.AddScoped<IEFDbDataSource, EFDataSource>();
             services.AddScoped<IDataRepository, EFDataRepository>();
             //Helper services
-            services.AddTransient<IDbErrorLogger, ConsoleErrorLogger>();
+            services.AddTransient<IDbErrorLogger, FileErrorLogger>();
             services.AddTransient<IViewModelValidator, ViewModelValidator>();
             services.AddTransient<IEFModelToViewModelConverter, EFModelToViewModelConverter>();
             services.AddTransient<IViewModelToEFModelConverter, ViewModelToEFModelConverter>();

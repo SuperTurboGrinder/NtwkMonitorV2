@@ -1,0 +1,155 @@
+
+
+29.10.2018 12:29:53
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25
+
+29.10.2018 12:41:31
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25
+
+29.10.2018 12:41:32
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25
+
+29.10.2018 12:41:32
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25
+
+29.10.2018 12:41:50
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25
+
+29.10.2018 12:41:51
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25
+
+29.10.2018 12:41:51
+System.InvalidOperationException: Operation is not valid due to the current state of the object.
+   at Data.EFDatabase.Logic.EFDataSourceLogic.<RemoveNode_Logic>d__51.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\Logic\EFDataSourceLogic.cs:line 864
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataSource.<RemoveNode>d__48.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataSource.cs:line 235
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<>c__DisplayClass50_0.<<RemoveNode>b__0>d.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 352
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at Data.EFDatabase.EFDataRepository.<PerformDataOperationOrLogExceptions>d__3`1.MoveNext() in D:\Projects\NtwkMonitorV2\NtwkMonitorV2.Core\Data\Data.EFDatabase\EFDataRepository.cs:line 25

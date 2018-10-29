@@ -31,6 +31,10 @@ public class EFDataRepository : IDataRepository {
             });
             return DataActionResult<T>.Failed(StatusMessage.DatabaseInternalError);
         }
+        catch(Exception ex) {
+            logger.LogException(ex);
+            return DataActionResult<T>.Failed(StatusMessage.DatabaseInternalError);
+        }
     }
 
     async Task<StatusMessage> PerformOperationOrLogExceptions(
@@ -45,6 +49,10 @@ public class EFDataRepository : IDataRepository {
                 logger.LogException(ex);
                 return true;
             });
+            return StatusMessage.DatabaseInternalError;
+        }
+        catch(Exception ex) {
+            logger.LogException(ex);
             return StatusMessage.DatabaseInternalError;
         }
     }

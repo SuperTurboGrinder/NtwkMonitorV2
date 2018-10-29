@@ -75,8 +75,6 @@ export class HTTPDatasource {
     }
 
     private handleError(error: HttpErrorResponse) {
-        console.log('ERROR_HANDLING');
-        console.log(error);
         if (error.error instanceof ErrorEvent) {
             console.error('An error occurred:', error.error.message);
         } else {

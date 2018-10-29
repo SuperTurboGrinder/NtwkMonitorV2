@@ -40,6 +40,14 @@ export class CustomWebServiceBindingComponent {
             this._originalBountServices = data.servicesIDs.sort((a, b) => a - b);
             if (this.services !== null) {
                 this.updateBoundServices();
+                if (this.selectedService !== null) {
+                    const selectedAvailable = this.availableServices.find(
+                        s => s.id === this.selectedService.id
+                    );
+                    this.selectedService = selectedAvailable === undefined
+                        ? null
+                        : selectedAvailable;
+                }
             }
         }
     }

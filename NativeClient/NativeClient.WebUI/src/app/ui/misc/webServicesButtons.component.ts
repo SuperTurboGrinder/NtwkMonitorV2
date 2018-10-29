@@ -8,27 +8,27 @@ import { WebServicesService } from '../../services/webServices.service';
 export class WebServicesButtonsComponent {
     _webServices: {
         name: string,
-        serviceID: number
+        id: number
     }[] = [];
 
     @Input() nodeID: number;
     @Input() set webServices(ws: {
         name: string,
-        serviceID: number
+        id: number
     }[]) {
         this._webServices = ws;
     }
 
     serviceTrackBy(index: number, ws: {
         name: string,
-        serviceID: number
+        id: number
     }) {
-        return ws.serviceID;
+        return ws.id;
     }
 
     get webServices(): {
         name: string,
-        serviceID: number
+        id: number
     }[] {
         return this._webServices;
     }
