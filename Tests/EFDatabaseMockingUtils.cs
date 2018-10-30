@@ -67,6 +67,7 @@ static class EFDatabaseMockingUtils {
         context.Profiles.Add(testProfile);
         context.SaveChanges();
 
+        // tags
         NodeTag[] testTags = Enumerable.Range(0, 3)
             .Select(i => new NodeTag {
                 ID = 0,
@@ -75,6 +76,7 @@ static class EFDatabaseMockingUtils {
         context.Tags.AddRange(testTags);
         context.SaveChanges();
 
+        // nodes
         NtwkNode[] testNodes = new NtwkNode[3];
         {
             uint[] ips = new[] {
@@ -154,7 +156,7 @@ static class EFDatabaseMockingUtils {
                 null, null,
                 "80", "55315", ""
             };
-            context.WebServiceBindings.AddRange(Enumerable.Range(0, 4)
+            context.WebServiceBindings.AddRange(Enumerable.Range(0, 5)
                 .Select(i => new CustomWSBinding {
                     ID = 0,
                     Service = s[i],
@@ -225,7 +227,7 @@ static class EFDatabaseMockingUtils {
         int?[] ancestors = new int?[] {
             null, IDSet.NodesIDs[0], //Node1
             null, IDSet.NodesIDs[0], IDSet.NodesIDs[1], //Node2
-            null, IDSet.NodesIDs[1], //Node3
+            null, IDSet.NodesIDs[2], //Node3
         };
         int[] descIndex = new int[] {
             0, 0,  1, 1, 1,  2, 2
@@ -236,7 +238,7 @@ static class EFDatabaseMockingUtils {
         context.AddRange(Enumerable.Range(0, 7)
             .Select(i => new NodeClosure{
                 ID=0,
-                AncestorID = ancestors[0],
+                AncestorID = ancestors[i],
                 DescendantID = IDSet.NodesIDs[descIndex[i]],
                 Distance = distance[i]
             })

@@ -62,6 +62,11 @@ public class TagsDataService
         if(tagValidationStatus.Failure()) {
             return tagValidationStatus;
         }
+        StatusMessage nameExistsStatus =
+            await FailIfTagNameExists(tag.Name, updatingTagID: tag.ID);
+        if(nameExistsStatus.Failure()) {
+            return nameExistsStatus;
+        }
         return await repo.UpdateTag(viewToEFConverter.Convert(tag));
     }
 

@@ -121,9 +121,9 @@ public class CustomWebServicesDataService
             return validationStatus;
         }
         StatusMessage nameExistsStatus =
-            await FailIfNodeNameExists(cws.Name);
+            await FailIfCWSNameExists(cws.Name, updatingCWSID: cws.ID);
         if(nameExistsStatus.Failure()) {
-            return validationStatus;
+            return nameExistsStatus;
         }
         return await repo.UpdateCustomWebService(viewToEFConverter.Convert(cws));
     }

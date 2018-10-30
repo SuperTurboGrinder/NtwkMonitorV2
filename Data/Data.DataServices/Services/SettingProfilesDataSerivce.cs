@@ -116,13 +116,18 @@ public class SettingsProfilesDataSerivce
     }
     
     public async Task<StatusMessage> UpdateProfile(Profile profile) {
-        StatusMessage profileIDValidationStatus =await ValidateProfileID(profile.ID);
+        StatusMessage profileIDValidationStatus = await ValidateProfileID(profile.ID);
         if(profileIDValidationStatus.Failure()) {
             return profileIDValidationStatus;
         }
         StatusMessage profileValidationStatus = validator.Validate(profile);
         if(profileValidationStatus.Failure()) {
             return profileValidationStatus;
+        }
+        StatusMessage nameExistsStatus =
+            await FailIfProfileNameExists(profile.Name, updatingProfileID: profile.ID);
+        if(nameExistsStatus.Failure()) {
+            return nameExistsStatus;
         }
         return await repo.UpdateProfile(viewToEFConverter.Convert(profile));
     }
