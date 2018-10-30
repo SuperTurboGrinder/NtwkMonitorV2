@@ -17,6 +17,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.EFDatabase\Data.EFDatabase.csproj" />
+    <ProjectReference Include="..\Data\Data.DataServices\Data.DataServices.csproj" />
   </ItemGroup>
 
 </Project>

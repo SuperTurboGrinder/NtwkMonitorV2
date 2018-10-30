@@ -443,7 +443,7 @@ public static class EFDataSourceLogic {
         int? exceptID
     ) {
         return (exceptID != null && (await context.Tags.AsNoTracking()
-            .FirstOrDefaultAsync())?.Name == name)
+            .FirstOrDefaultAsync(t => t.ID == exceptID))?.Name == name)
             ? false
             : await context.Tags.AsNoTracking()
                 .Where(e => e.Name == name)
@@ -456,7 +456,7 @@ public static class EFDataSourceLogic {
         int? exceptID
     ) {
         return exceptID != null && (await context.Nodes.AsNoTracking()
-            .FirstOrDefaultAsync())?.Name == name
+            .FirstOrDefaultAsync(n => n.ID == exceptID))?.Name == name
             ? false
             : await context.Nodes.AsNoTracking()
                 .Where(e => e.Name == name)
@@ -469,7 +469,7 @@ public static class EFDataSourceLogic {
         int? exceptID
     ) {
         return exceptID != null && (await context.WebServices.AsNoTracking()
-            .FirstOrDefaultAsync())?.Name == name
+            .FirstOrDefaultAsync(ws => ws.ID == exceptID))?.Name == name
             ? false
             : await context.WebServices.AsNoTracking()
                 .Where(e => e.Name == name)
@@ -482,7 +482,7 @@ public static class EFDataSourceLogic {
         int? exceptID
     ) {
         return exceptID != null && (await context.Profiles.AsNoTracking()
-            .FirstOrDefaultAsync())?.Name == name
+            .FirstOrDefaultAsync(p => p.ID == exceptID))?.Name == name
             ? false
             : await context.Profiles.AsNoTracking()
                 .Where(e => e.Name == name)

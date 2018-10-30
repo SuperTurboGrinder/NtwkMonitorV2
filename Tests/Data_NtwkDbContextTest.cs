@@ -13,11 +13,11 @@ namespace Tests {
 
 public class Data_NtwkDbContextTest {
 
+    // test basic database structure soundness
     [Fact]
     public void ContextRelationshipsAreCorrect() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
-        var context = utils.GetEmptyContext();
-        utils.AddTestDataSet(context);
+        var (context, _, _) = utils.GetTestDataContext();
 
         var profile = context.Profiles
             .First();

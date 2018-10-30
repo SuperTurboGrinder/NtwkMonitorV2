@@ -10,26 +10,24 @@ using System.Collections.Generic;
 using Data.Model.EFDbModel;
 using Data.Model.Enums;
 using Data.EFDatabase;
-using Data.EFDatabase.Logic;
 
 namespace Tests {
 
-public class Data_EFDataSourceLogicTest {
+public class Data_dataSourceTest {
 
     private readonly ITestOutputHelper testOutput;
 
-    public Data_EFDataSourceLogicTest(ITestOutputHelper output) {
+    public Data_dataSourceTest(ITestOutputHelper output) {
         this.testOutput = output;
     }
 
     [Fact]
     public async Task GetNewSession_CreatesNewSession() {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
-        var context = utils.GetEmptyContext();
-        var IDSet = utils.AddTestDataSet(context);
+        var (context, IDSet, dataSource) = utils.GetTestDataContext();
         utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(context, IDSet);
 
-        var createdSession = await EFDataSourceLogic.GetNewSession_Logic(context, IDSet.ProfileID);
+        var createdSession = await dataSource.GetNewSession(IDSet.ProfileID);
         var sessionWithInclude = context.MonitoringSessions
             .AsNoTracking()
             .Include(s => s.CreatedByProfile)
@@ -64,8 +62,8 @@ public class Data_EFDataSourceLogicTest {
             .First()
             .ID;
 
-        int createdPulseID = (await EFDataSourceLogic.SavePulseResult_Logic(
-            context, sessionID,
+        int createdPulseID = (await dataSource.SavePulseResult(
+            sessionID,
             pulse, messages
         )).ID;
         var createdPulse = context.MonitoringPulses
@@ -120,7 +118,7 @@ public class Data_EFDataSourceLogicTest {
             .Include(s => s.Pulses)
             .Where(s => s.Pulses.Count == 0)
             .Count();
-        await EFDataSourceLogic.ClearEmptySessions_Logic(context);
+        await dataSource.ClearEmptySessions(context);
         var countSessionsAfter = context.MonitoringSessions.Count();
         var countEmptySessionsAfter = context.MonitoringSessions
             .AsNoTracking()
@@ -148,8 +146,8 @@ public class Data_EFDataSourceLogicTest {
         context.Profiles.Add(testProfile2);
         context.SaveChanges();
 
-        var sessionsForProfile1 = await EFDataSourceLogic.GetSessionsForProfile_Logic(context, IDSet.ProfileID);
-        var sessionsForProfile2 = await EFDataSourceLogic.GetSessionsForProfile_Logic(context, testProfile2.ID);
+        var sessionsForProfile1 = await dataSource.GetSessionsForProfile(IDSet.ProfileID);
+        var sessionsForProfile2 = await dataSource.GetSessionsForProfile(testProfile2.ID);
 
         Assert.Single(sessionsForProfile1);
         Assert.Empty(sessionsForProfile2);
@@ -165,7 +163,7 @@ public class Data_EFDataSourceLogicTest {
             .AsNoTracking()
             .Single(s => s.CreationTime == 1528359015)
             .ID;
-        var pulsesForSession1 = await EFDataSourceLogic.GetSessionReport_Logic(context, sessionID);
+        var pulsesForSession1 = await dataSource.GetSessionReport(sessionID);
 
         Assert.Equal(2, pulsesForSession1.Count());
         Assert.Contains(pulsesForSession1, p => p.CreationTime == 1528359015);
@@ -187,7 +185,7 @@ public class Data_EFDataSourceLogicTest {
         context.Profiles.Add(testProfile2);
         context.SaveChanges();
 
-        var profiles = await EFDataSourceLogic.GetAllProfiles_Logic(context);
+        var profiles = await dataSource.GetAllProfiles(context);
 
         Assert.Equal(2, profiles.Count());
     }
@@ -197,7 +195,7 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.CreateClosuresForTestNodes(context, IDSet);
+        utils.CreateClosuresForTestNodes(IDSet);
         var cwData = context.WebServices.AsNoTracking()
             .Select(ws => new { ws.ID, ws.Name })
             .OrderByDescending(id => id)
@@ -219,7 +217,7 @@ public class Data_EFDataSourceLogicTest {
             );
 
         Data.Model.IntermediateModel.AllRawNodesData allNodesData = 
-            await EFDataSourceLogic.GetAllNodesData_Logic(context);
+            await dataSource.GetAllNodesData(context);
     
         //Assert nodes groups structure
         Assert.Equal(2, allNodesData.NodesData.Count());
@@ -273,7 +271,7 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        var ip = await EFDataSourceLogic.GetNodeIP_Logic(context, IDSet.Node1ID);
+        var ip = await dataSource.GetNodeIP(IDSet.Node1ID);
 
         Assert.Equal(context.Nodes.Single(n => n.ID == IDSet.Node1ID).ip, ip);
     }
@@ -284,9 +282,9 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
         
-        var tag1Nodes = await EFDataSourceLogic.GetTaggedNodesIDs_Logic(context, IDSet.Tag1ID);
-        var tag2Nodes = await EFDataSourceLogic.GetTaggedNodesIDs_Logic(context, IDSet.Tag2ID);
-        var tag3Nodes = await EFDataSourceLogic.GetTaggedNodesIDs_Logic(context, IDSet.Tag3ID);
+        var tag1Nodes = await dataSource.GetTaggedNodesIDs(IDSet.Tag1ID);
+        var tag2Nodes = await dataSource.GetTaggedNodesIDs(IDSet.Tag2ID);
+        var tag3Nodes = await dataSource.GetTaggedNodesIDs(IDSet.Tag3ID);
 
         Assert.Equal(2, tag1Nodes.Count());
         Assert.Single(tag2Nodes);
@@ -303,12 +301,12 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(context, IDSet);
-        var viewNodesForTags1And2 = await EFDataSourceLogic
-            .GetIDsOfNodesBySelectedTagsInProfileView_Logic(context, IDSet.ProfileID);
-        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(context, IDSet);
-        var viewNodesForTags2And3 = await EFDataSourceLogic
-            .GetIDsOfNodesBySelectedTagsInProfileView_Logic(context, IDSet.ProfileID);
+        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(IDSet);
+        var viewNodesForTags1And2 = await dataSource
+            .GetIDsOfNodesBySelectedTagsInProfileView(IDSet.ProfileID);
+        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(IDSet);
+        var viewNodesForTags2And3 = await dataSource
+            .GetIDsOfNodesBySelectedTagsInProfileView(IDSet.ProfileID);
 
         Assert.Equal(2, viewNodesForTags1And2.Count());
         Assert.Single(viewNodesForTags1And2, IDSet.Node1ID);
@@ -324,12 +322,12 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(context, IDSet);
-        var monitorNodesForTags2And3 = await EFDataSourceLogic
-            .GetIDsOfNodesBySelectedTagsInProfileMonitor_Logic(context, IDSet.ProfileID);
-        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(context, IDSet);
-        var monitorNodesForTags1 = await EFDataSourceLogic
-            .GetIDsOfNodesBySelectedTagsInProfileMonitor_Logic(context, IDSet.ProfileID);
+        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(IDSet);
+        var monitorNodesForTags2And3 = await dataSource
+            .GetIDsOfNodesBySelectedTagsInProfileMonitor(IDSet.ProfileID);
+        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(IDSet);
+        var monitorNodesForTags1 = await dataSource
+            .GetIDsOfNodesBySelectedTagsInProfileMonitor(IDSet.ProfileID);
 
         Assert.Equal(2, monitorNodesForTags2And3.Count());
         Assert.Single(monitorNodesForTags2And3, IDSet.Node2ID);
@@ -345,7 +343,7 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        var tags = await EFDataSourceLogic.GetAllTags_Logic(context);
+        var tags = await dataSource.GetAllTags(context);
 
         Assert.Equal(3, tags.Count());
     }
@@ -356,7 +354,7 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        var cvsList = await EFDataSourceLogic.GetAllCWS_Logic(context);
+        var cvsList = await dataSource.GetAllCWS(context);
 
         Assert.Single(cvsList);
         Assert.Equal(utils.WebInterfaceOn8080Name, cvsList.First().Name);
@@ -382,9 +380,9 @@ public class Data_EFDataSourceLogicTest {
             .AsNoTracking()
             .ToList();
         newProfile.Name = newProfile1Name;
-        var net1 = await EFDataSourceLogic.CreateProfile_Logic(context, newProfile);
+        var net1 = await dataSource.CreateProfile(newProfile);
         newProfile.Name = newProfile2Name;
-        var net2 = await EFDataSourceLogic.CreateProfile_Logic(context, newProfile);
+        var net2 = await dataSource.CreateProfile(newProfile);
         var networksAfter = context.Profiles
             .AsNoTracking()
             .ToList();
@@ -416,13 +414,13 @@ public class Data_EFDataSourceLogicTest {
             new { ancestorID = (int?)IDSet.Node3ID, descendantID = IDSet.Node3ID, dist = 0 }
         };
 
-        var clN1 = await EFDataSourceLogic.__CreateNewNodeClosures(context, null, IDSet.Node1ID);
+        var clN1 = await dataSource.__CreateNewNodeClosures(null, IDSet.Node1ID);
         context.AddRange(clN1);
         context.SaveChanges();
-        var clN2 = await EFDataSourceLogic.__CreateNewNodeClosures(context, IDSet.Node1ID, IDSet.Node2ID);
+        var clN2 = await dataSource.__CreateNewNodeClosures(IDSet.Node1ID, IDSet.Node2ID);
         context.AddRange(clN2);
         context.SaveChanges();
-        var clN3 = await EFDataSourceLogic.__CreateNewNodeClosures(context, null, IDSet.Node3ID);
+        var clN3 = await dataSource.__CreateNewNodeClosures(null, IDSet.Node3ID);
         context.AddRange(clN3);
         context.SaveChanges();
         var closuresForNode1 = context.NodesClosureTable
@@ -489,12 +487,12 @@ public class Data_EFDataSourceLogicTest {
             OpenSSH = true,
             OpenPing = true
         };
-        var createdNode1 = await EFDataSourceLogic.CreateNodeOnRoot_Logic(
-            context, newNode
+        var createdNode1 = await dataSource.CreateNodeOnRoot(
+            newNode
         );
         newNode.Name = "NewNode2";
-        var createdNode2 = await EFDataSourceLogic.CreateNodeOnRoot_Logic(
-            context, newNode
+        var createdNode2 = await dataSource.CreateNodeOnRoot(
+            newNode
         );
         var createdNode1WithParent = context.Nodes
             .AsNoTracking()
@@ -531,7 +529,7 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.CreateClosuresForTestNodes(context, IDSet);
+        utils.CreateClosuresForTestNodes(IDSet);
         Action<dynamic> equalOrThrow =  (dynamic c) => {
             if(c.c1.AncestorID != c.c2.AncestorID)
                 throw new Exception($"Unexpected ancestor value {c.c1.AncestorID} != {c.c2.AncestorID}.");
@@ -552,12 +550,12 @@ public class Data_EFDataSourceLogicTest {
             OpenSSH = true,
             OpenPing = true
         };
-        var createdNode1 = await EFDataSourceLogic.CreateNodeWithParent_Logic(
-            context, newNode, IDSet.Node2ID
+        var createdNode1 = await dataSource.CreateNodeWithParent(
+            newNode, IDSet.Node2ID
         );
         newNode.Name = "NewNode2";
-        var createdNode2 = await EFDataSourceLogic.CreateNodeWithParent_Logic(
-            context, newNode, IDSet.Node3ID
+        var createdNode2 = await dataSource.CreateNodeWithParent(
+            newNode, IDSet.Node3ID
         );
         var createdNode1WithParent = context.Nodes
             .AsNoTracking()
@@ -629,16 +627,16 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.CreateClosuresForTestNodes(context, IDSet);
+        utils.CreateClosuresForTestNodes(IDSet);
         
-        bool node1HasChildren = await EFDataSourceLogic.HasChildren_Logic(
-            context, IDSet.Node1ID
+        bool node1HasChildren = await dataSource.HasChildren(
+            IDSet.Node1ID
         );
-        bool node2HasChildren = await EFDataSourceLogic.HasChildren_Logic(
-            context, IDSet.Node2ID
+        bool node2HasChildren = await dataSource.HasChildren(
+            IDSet.Node2ID
         );
-        bool node3HasChildren = await EFDataSourceLogic.HasChildren_Logic(
-            context, IDSet.Node3ID
+        bool node3HasChildren = await dataSource.HasChildren(
+            IDSet.Node3ID
         );
 
         Assert.True(node1HasChildren);
@@ -652,10 +650,10 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        bool existingProfile = await EFDataSourceLogic
-            .CheckIfProfileExists_Logic(context, IDSet.ProfileID);
-        bool nonExistingProfile = await EFDataSourceLogic
-            .CheckIfProfileExists_Logic(context, IDSet.ProfileID+199);
+        bool existingProfile = await dataSource
+            .CheckIfProfileExists(IDSet.ProfileID);
+        bool nonExistingProfile = await dataSource
+            .CheckIfProfileExists(IDSet.ProfileID+199);
         
         Assert.True(existingProfile);
         Assert.False(nonExistingProfile);
@@ -667,10 +665,10 @@ public class Data_EFDataSourceLogicTest {
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
 
-        int existingCWS = await EFDataSourceLogic
-            .GetCWSParamNumber_Logic(context, IDSet.WebServiceID);
-        int nonExistingCWS = await EFDataSourceLogic
-            .GetCWSParamNumber_Logic(context, IDSet.WebServiceID+199);
+        int existingCWS = await dataSource
+            .GetCWSParamNumber(IDSet.WebServiceID);
+        int nonExistingCWS = await dataSource
+            .GetCWSParamNumber(IDSet.WebServiceID+199);
         
         Assert.Equal(0, existingCWS);
         Assert.Equal(-1, nonExistingCWS);
@@ -683,10 +681,10 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
         int ExistingSessionID = context.MonitoringSessions.First().ID;
 
-        bool existingSession = await EFDataSourceLogic
-            .CheckIfSessionExists_Logic(context, ExistingSessionID);
-        bool nonExistingSession = await EFDataSourceLogic
-            .CheckIfSessionExists_Logic(context, ExistingSessionID+199);
+        bool existingSession = await dataSource
+            .CheckIfSessionExists(ExistingSessionID);
+        bool nonExistingSession = await dataSource
+            .CheckIfSessionExists(ExistingSessionID+199);
         
         Assert.True(existingSession);
         Assert.False(nonExistingSession);
@@ -699,24 +697,24 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool existingTags =
-            await EFDataSourceLogic.CheckIfTagExists_Logic(
-                context, IDSet.Tag1ID
+            await dataSource.CheckIfTagExists(
+                IDSet.Tag1ID
             ) &&
-            await EFDataSourceLogic.CheckIfTagExists_Logic(
-                context, IDSet.Tag2ID
+            await dataSource.CheckIfTagExists(
+                IDSet.Tag2ID
             ) &&
-            await EFDataSourceLogic.CheckIfTagExists_Logic(
-                context, IDSet.Tag3ID
+            await dataSource.CheckIfTagExists(
+                IDSet.Tag3ID
             );
         bool nonExistingTags =
-            await EFDataSourceLogic.CheckIfTagExists_Logic(
-                context, IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID
+            await dataSource.CheckIfTagExists(
+                IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagExists_Logic(
-                context, IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+1
+            await dataSource.CheckIfTagExists(
+                IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+1
             ) ||
-            await EFDataSourceLogic.CheckIfTagExists_Logic(
-                context, IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+2
+            await dataSource.CheckIfTagExists(
+                IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID+2
             );
         
         Assert.True(existingTags);
@@ -732,11 +730,11 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool existingTags =
-            await EFDataSourceLogic.CheckIfTagsExist_Logic(
-                context, new [] { IDSet.Tag1ID , IDSet.Tag2ID, IDSet.Tag3ID}
+            await dataSource.CheckIfTagsExist(
+                new [] { IDSet.Tag1ID , IDSet.Tag2ID, IDSet.Tag3ID}
             );
         bool nonExistingTags =
-            await EFDataSourceLogic.CheckIfTagsExist_Logic(
+            await dataSource.CheckIfTagsExist(
                 context,
                 new [] {
                     IDSet.Tag1ID+IDSet.Tag2ID+IDSet.Tag3ID,
@@ -745,7 +743,7 @@ public class Data_EFDataSourceLogicTest {
                 }
             );
         bool mixedTags = 
-            await EFDataSourceLogic.CheckIfTagsExist_Logic(
+            await dataSource.CheckIfTagsExist(
                 context,
                 new [] {
                     IDSet.Tag1ID , IDSet.Tag2ID,
@@ -765,24 +763,24 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingNodes =
-            await EFDataSourceLogic.CheckIfNodeExists_Logic(
-                context, IDSet.Node1ID
+            await dataSource.CheckIfNodeExists(
+                IDSet.Node1ID
             ) &&
-            await EFDataSourceLogic.CheckIfNodeExists_Logic(
-                context, IDSet.Node2ID
+            await dataSource.CheckIfNodeExists(
+                IDSet.Node2ID
             ) &&
-            await EFDataSourceLogic.CheckIfNodeExists_Logic(
-                context, IDSet.Node3ID
+            await dataSource.CheckIfNodeExists(
+                IDSet.Node3ID
             );
         bool NonExistingNodes =
-            await EFDataSourceLogic.CheckIfNodeExists_Logic(
-                context, IDSet.Node1ID+IDSet.Node2ID+IDSet.Node3ID
+            await dataSource.CheckIfNodeExists(
+                IDSet.Node1ID+IDSet.Node2ID+IDSet.Node3ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeExists_Logic(
-                context, IDSet.Node1ID+IDSet.Node2ID+IDSet.Node3ID+1
+            await dataSource.CheckIfNodeExists(
+                IDSet.Node1ID+IDSet.Node2ID+IDSet.Node3ID+1
             ) ||
-            await EFDataSourceLogic.CheckIfNodeExists_Logic(
-                context, IDSet.Node1ID+IDSet.Node2ID+IDSet.Node3ID+2
+            await dataSource.CheckIfNodeExists(
+                IDSet.Node1ID+IDSet.Node2ID+IDSet.Node3ID+2
             );
         
         Assert.True(ExistingNodes);
@@ -796,24 +794,24 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingTagNames =
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.FirstTagName, null
+            await dataSource.CheckIfTagNameExists(
+                utils.FirstTagName, null
             ) &&
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.SecondTagName, null
+            await dataSource.CheckIfTagNameExists(
+                utils.SecondTagName, null
             ) &&
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.ThirdTagName, null
+            await dataSource.CheckIfTagNameExists(
+                utils.ThirdTagName, null
             );
         bool NonExistingTagNames =
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "TestTagNonexistantName1", null
+            await dataSource.CheckIfTagNameExists(
+                "TestTagNonexistantName1", null
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "Shvabra Cadabra", null
+            await dataSource.CheckIfTagNameExists(
+                "Shvabra Cadabra", null
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "1234321", null
+            await dataSource.CheckIfTagNameExists(
+                "1234321", null
             );
         
         Assert.True(ExistingTagNames);
@@ -827,34 +825,34 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingTagNamesWithExcept =
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.FirstTagName, IDSet.Tag1ID
+            await dataSource.CheckIfTagNameExists(
+                utils.FirstTagName, IDSet.Tag1ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.SecondTagName, IDSet.Tag2ID
+            await dataSource.CheckIfTagNameExists(
+                utils.SecondTagName, IDSet.Tag2ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.ThirdTagName, IDSet.Tag3ID
+            await dataSource.CheckIfTagNameExists(
+                utils.ThirdTagName, IDSet.Tag3ID
             );
         bool ExistingTagNamesWithDifferentExcept =
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.FirstTagName, IDSet.Tag2ID
+            await dataSource.CheckIfTagNameExists(
+                utils.FirstTagName, IDSet.Tag2ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.SecondTagName, IDSet.Tag3ID
+            await dataSource.CheckIfTagNameExists(
+                utils.SecondTagName, IDSet.Tag3ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, utils.ThirdTagName, IDSet.Tag1ID
+            await dataSource.CheckIfTagNameExists(
+                utils.ThirdTagName, IDSet.Tag1ID
             );
         bool NonExistingTagNamesWithExcepts =
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "TestTagNonexistantName1", IDSet.Tag1ID
+            await dataSource.CheckIfTagNameExists(
+                "TestTagNonexistantName1", IDSet.Tag1ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "Shvabra Cadabra", IDSet.Tag1ID
+            await dataSource.CheckIfTagNameExists(
+                "Shvabra Cadabra", IDSet.Tag1ID
             ) ||
-            await EFDataSourceLogic.CheckIfTagNameExists_Logic(
-                context, "1234321", IDSet.Tag1ID
+            await dataSource.CheckIfTagNameExists(
+                "1234321", IDSet.Tag1ID
             );
         
         Assert.False(ExistingTagNamesWithExcept);
@@ -869,24 +867,24 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingNodeNames =
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.FirstNodeName, null
+            await dataSource.CheckIfNodeNameExists(
+                utils.FirstNodeName, null
             ) &&
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.SecondNodeName, null
+            await dataSource.CheckIfNodeNameExists(
+                utils.SecondNodeName, null
             ) &&
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.ThirdNodeName, null
+            await dataSource.CheckIfNodeNameExists(
+                utils.ThirdNodeName, null
             );
         bool NonExistingNodeNames =
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "TestNodeNonexistantName1", null
+            await dataSource.CheckIfNodeNameExists(
+                "TestNodeNonexistantName1", null
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "Shvabra Cadabra", null
+            await dataSource.CheckIfNodeNameExists(
+                "Shvabra Cadabra", null
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "1234321", null
+            await dataSource.CheckIfNodeNameExists(
+                "1234321", null
             );
         
         Assert.True(ExistingNodeNames);
@@ -898,36 +896,36 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-
+        
         bool ExistingNodeNamesWithExcept =
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.FirstNodeName, IDSet.Node1ID
+            await dataSource.CheckIfNodeNameExists(
+                utils.FirstNodeName, IDSet.Node1ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.SecondNodeName, IDSet.Node2ID
+            await dataSource.CheckIfNodeNameExists(
+                utils.SecondNodeName, IDSet.Node2ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.ThirdNodeName, IDSet.Node3ID
+            await dataSource.CheckIfNodeNameExists(
+                utils.ThirdNodeName, IDSet.Node3ID
             );
         bool ExistingNodeNamesWithDifferentExcept =
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.FirstNodeName, IDSet.Node2ID
+            await dataSource.CheckIfNodeNameExists(
+                utils.FirstNodeName, IDSet.Node2ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.SecondNodeName, IDSet.Node3ID
+            await dataSource.CheckIfNodeNameExists(
+                utils.SecondNodeName, IDSet.Node3ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, utils.ThirdNodeName, IDSet.Node1ID
+            await dataSource.CheckIfNodeNameExists(
+                utils.ThirdNodeName, IDSet.Node1ID
             );
         bool NonExistingNodeNamesWithExcepts =
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "TestNodeNonexistantName1", IDSet.Node1ID
+            await dataSource.CheckIfNodeNameExists(
+                "TestNodeNonexistantName1", IDSet.Node1ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "Shvabra Cadabra", IDSet.Node1ID
+            await dataSource.CheckIfNodeNameExists(
+                "Shvabra Cadabra", IDSet.Node1ID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "1234321", IDSet.Node1ID
+            await dataSource.CheckIfNodeNameExists(
+                "1234321", IDSet.Node1ID
             );
         
         Assert.False(ExistingNodeNamesWithExcept);
@@ -942,18 +940,18 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingCWSName =
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, utils.WebInterfaceOn8080Name, null
+            await dataSource.CheckIfCWSNameExists(
+                utils.WebInterfaceOn8080Name, null
             );
         bool NonExistingCWSNames =
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "TestCWSNonexistantName1", null
+            await dataSource.CheckIfCWSNameExists(
+                "TestCWSNonexistantName1", null
             ) ||
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "Shvabra Cadabra", null
+            await dataSource.CheckIfCWSNameExists(
+                "Shvabra Cadabra", null
             ) ||
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "1234321", null
+            await dataSource.CheckIfCWSNameExists(
+                "1234321", null
             );
         
         Assert.True(ExistingCWSName);
@@ -967,18 +965,18 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingCWSNameWithExcept =
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, utils.WebInterfaceOn8080Name, IDSet.WebServiceID
+            await dataSource.CheckIfCWSNameExists(
+                utils.WebInterfaceOn8080Name, IDSet.WebServiceID
             );
         bool NonExistingCWSNamesWithExcepts =
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "TestCWSNonexistantName1", IDSet.WebServiceID
+            await dataSource.CheckIfCWSNameExists(
+                "TestCWSNonexistantName1", IDSet.WebServiceID
             ) ||
-            await EFDataSourceLogic.CheckIfCWSNameExists_Logic(
-                context, "Shvabra Cadabra", IDSet.WebServiceID
+            await dataSource.CheckIfCWSNameExists(
+                "Shvabra Cadabra", IDSet.WebServiceID
             ) ||
-            await EFDataSourceLogic.CheckIfNodeNameExists_Logic(
-                context, "1234321", IDSet.WebServiceID
+            await dataSource.CheckIfNodeNameExists(
+                "1234321", IDSet.WebServiceID
             );
         
         Assert.False(ExistingCWSNameWithExcept);
@@ -992,18 +990,18 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingProfileName =
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, context.Profiles.First().Name, null
+            await dataSource.CheckIfProfileNameExists(
+                context.Profiles.First().Name, null
             );
         bool NonExistingProfileNames =
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "TestProfileNonexistantName1", null
+            await dataSource.CheckIfProfileNameExists(
+                "TestProfileNonexistantName1", null
             ) ||
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "Shvabra Cadabra", null
+            await dataSource.CheckIfProfileNameExists(
+                "Shvabra Cadabra", null
             ) ||
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "1234321", null
+            await dataSource.CheckIfProfileNameExists(
+                "1234321", null
             );
         
         Assert.True(ExistingProfileName);
@@ -1017,18 +1015,18 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         bool ExistingProfileNameWithExcept =
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, utils.WebInterfaceOn8080Name, IDSet.ProfileID
+            await dataSource.CheckIfProfileNameExists(
+                utils.WebInterfaceOn8080Name, IDSet.ProfileID
             );
         bool NonExistingProfileNamesWithExcepts =
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "TestProfileNonexistantName1", IDSet.ProfileID
+            await dataSource.CheckIfProfileNameExists(
+                "TestProfileNonexistantName1", IDSet.ProfileID
             ) ||
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "Shvabra Cadabra", IDSet.ProfileID
+            await dataSource.CheckIfProfileNameExists(
+                "Shvabra Cadabra", IDSet.ProfileID
             ) ||
-            await EFDataSourceLogic.CheckIfProfileNameExists_Logic(
-                context, "1234321", IDSet.ProfileID
+            await dataSource.CheckIfProfileNameExists(
+                "1234321", IDSet.ProfileID
             );
         
         Assert.False(ExistingProfileNameWithExcept);
@@ -1046,7 +1044,7 @@ public class Data_EFDataSourceLogicTest {
             ID = 0,
             Name = "newTag"
         };
-        NodeTag newTag = await EFDataSourceLogic.CreateTag_Logic(context, tag);
+        NodeTag newTag = await dataSource.CreateTag(tag);
         NodeTag newTagWithParentNetwrokInclude = context.Tags
             .AsNoTracking()
             .Single(t => t.ID == newTag.ID);
@@ -1068,7 +1066,7 @@ public class Data_EFDataSourceLogicTest {
             .Single(t => t.ID == IDSet.Tag1ID);
         string oldName = tag.Name;
         tag.Name = "1234567";
-        await EFDataSourceLogic.UpdateTag_Logic(context, tag);
+        await dataSource.UpdateTag(tag);
         int tagsAfter = context.Tags.Count();
 
         Assert.Equal(0, tagsAfter - tagsBefore);
@@ -1084,12 +1082,12 @@ public class Data_EFDataSourceLogicTest {
         var secondWebServiceID = utils.AddSecondWebService(context);
         var bindingsBefore = context.WebServiceBindings.AsNoTracking().ToArray();
 
-        await EFDataSourceLogic.CreateWebServiceBinding_Logic(
-            context, IDSet.Node1ID, secondWebServiceID, "80", null, null);
-        await EFDataSourceLogic.CreateWebServiceBinding_Logic(
-            context, IDSet.Node2ID, secondWebServiceID, "", null, null);
-        await EFDataSourceLogic.CreateWebServiceBinding_Logic(
-            context, IDSet.Node3ID, secondWebServiceID, "8080", null, null);
+        await dataSource.CreateWebServiceBinding(
+            IDSet.Node1ID, secondWebServiceID, "80", null, null);
+        await dataSource.CreateWebServiceBinding(
+            IDSet.Node2ID, secondWebServiceID, "", null, null);
+        await dataSource.CreateWebServiceBinding(
+            IDSet.Node3ID, secondWebServiceID, "8080", null, null);
         var bindingsAfter = context.WebServiceBindings.AsNoTracking().ToArray();
         var bindingsForNode1 = bindingsAfter.Where(b => b.NodeID == IDSet.Node1ID);
         var bindingsForNode2 = bindingsAfter.Where(b => b.NodeID == IDSet.Node2ID);
@@ -1117,14 +1115,14 @@ public class Data_EFDataSourceLogicTest {
             .AsNoTracking()
             .Where(a => a.NodeID == IDSet.Node1ID)
             .ToList();
-        await EFDataSourceLogic.SetNodeTags_Logic(context, IDSet.Node1ID, new [] {
+        await dataSource.SetNodeTags(IDSet.Node1ID, new [] {
             IDSet.Tag1ID, IDSet.Tag2ID
         });
         var attachedAfter = context.TagAttachments
             .AsNoTracking()
             .Where(a => a.NodeID == IDSet.Node1ID)
             .ToList();
-        await EFDataSourceLogic.SetNodeTags_Logic(context, IDSet.Node1ID, new [] {
+        await dataSource.SetNodeTags(IDSet.Node1ID, new [] {
             IDSet.Tag3ID
         });
         var attachedAfterSecondChange = context.TagAttachments
@@ -1145,18 +1143,18 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(context, IDSet);
+        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(IDSet);
         var selection = context.ProfilesTagSelection
             .AsNoTracking()
             .Where(pvt => pvt.BindedProfileID == IDSet.ProfileID &&
                         ProfileSelectedTagFlags.NodesListView ==
                             (pvt.Flags & ProfileSelectedTagFlags.NodesListView));
         var setBefore = selection.ToList();
-        await EFDataSourceLogic.SetProfileViewTagsSelection_Logic(context, IDSet.ProfileID, new [] {
+        await dataSource.SetProfileViewTagsSelection(IDSet.ProfileID, new [] {
             IDSet.Tag1ID, IDSet.Tag2ID, IDSet.Tag3ID
         });
         var setAfter = selection.ToList();
-        await EFDataSourceLogic.SetProfileViewTagsSelection_Logic(context, IDSet.ProfileID, new [] {
+        await dataSource.SetProfileViewTagsSelection(IDSet.ProfileID, new [] {
             IDSet.Tag2ID
         });
         var setAfterSecondChange = selection.ToList();
@@ -1175,18 +1173,18 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(context, IDSet);
+        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(IDSet);
         var selection = context.ProfilesTagSelection
             .AsNoTracking()
             .Where(pvt => pvt.BindedProfileID == IDSet.ProfileID &&
                         ProfileSelectedTagFlags.Monitor ==
                             (pvt.Flags & ProfileSelectedTagFlags.Monitor));
         var setBefore = selection.ToList();
-        await EFDataSourceLogic.SetProfileMonitorTagsSelection_Logic(context, IDSet.ProfileID, new [] {
+        await dataSource.SetProfileMonitorTagsSelection(IDSet.ProfileID, new [] {
             IDSet.Tag1ID, IDSet.Tag2ID, IDSet.Tag3ID
         });
         var setAfter = selection.ToList();
-        await EFDataSourceLogic.SetProfileMonitorTagsSelection_Logic(context, IDSet.ProfileID, new [] {
+        await dataSource.SetProfileMonitorTagsSelection(IDSet.ProfileID, new [] {
             IDSet.Tag2ID
         });
         var setAfterSecondChange = selection.ToList();
@@ -1216,22 +1214,22 @@ public class Data_EFDataSourceLogicTest {
                 (pst.Flags & ProfileSelectedTagFlags.Monitor)
             );
         //Test on the first set
-        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(context, IDSet);
+        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(IDSet);
         var set1MonitorBefore = monitorSelection.ToList();
         var set1ViewBefore = viewSelection.ToList();
-        await EFDataSourceLogic
-            .SetProfileViewTagsSelectionToProfileMonitorTagsSelection_Logic(
-                context, IDSet.ProfileID
+        await dataSource
+            .SetProfileViewTagsSelectionToProfileMonitorTagsSelection(
+                IDSet.ProfileID
             );
         var set1MonitorAfter = monitorSelection.ToList();
         var set1ViewAfter = viewSelection.ToList();
         //Test on the second set
-        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(context, IDSet);
+        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(IDSet);
         var set2MonitorBefore = monitorSelection.ToList();
         var set2ViewBefore = viewSelection.ToList();
-        await EFDataSourceLogic
-            .SetProfileViewTagsSelectionToProfileMonitorTagsSelection_Logic(
-                context, IDSet.ProfileID
+        await dataSource
+            .SetProfileViewTagsSelectionToProfileMonitorTagsSelection(
+                IDSet.ProfileID
             );
         var set2MonitorAfter = monitorSelection.ToList();
         var set2ViewAfter = viewSelection.ToList();
@@ -1269,7 +1267,7 @@ public class Data_EFDataSourceLogicTest {
             Parametr1Name = "Service Port"
         };
         int cwsCoundBefore = context.WebServices.Count();
-        var createdCWS = await EFDataSourceLogic.CreateCustomWebService_Logic(context, cvs);
+        var createdCWS = await dataSource.CreateCustomWebService(cvs);
         int cwsCoundAfter = context.WebServices.Count();
 
         Assert.Equal(1, cwsCoundAfter - cwsCoundBefore);
@@ -1292,7 +1290,7 @@ public class Data_EFDataSourceLogicTest {
             MonitorInterval = 2
         };
 
-        await EFDataSourceLogic.UpdateProfile_Logic(context, profileToUpdate);
+        await dataSource.UpdateProfile(profileToUpdate);
         var profileAfter = context.Profiles
             .AsNoTracking()
             .Single();
@@ -1325,7 +1323,7 @@ public class Data_EFDataSourceLogicTest {
             OpenTelnet = !nodeBefore.OpenTelnet
         };
 
-        await EFDataSourceLogic.UpdateNode_Logic(context, nodeToUpdate);
+        await dataSource.UpdateNode(nodeToUpdate);
         var nodeAfter = context.Nodes
             .AsNoTracking()
             .Single(n => n.ID == IDSet.Node1ID);
@@ -1355,7 +1353,7 @@ public class Data_EFDataSourceLogicTest {
             OpenTelnet = nodeBefore.OpenTelnet
         };
 
-        await EFDataSourceLogic.UpdateNode_Logic(context, nodeToUpdate);
+        await dataSource.UpdateNode(nodeToUpdate);
         var nodeAfter = context.Nodes
             .AsNoTracking()
             .Single(n => n.ID == IDSet.Node1ID);
@@ -1369,38 +1367,38 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.CreateClosuresForTestNodes(context, IDSet);
+        utils.CreateClosuresForTestNodes(IDSet);
 
         //Checks For Node 1
         bool isNode1InNode1Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node1ID, IDSet.Node1ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node1ID, IDSet.Node1ID);
         bool isNode1InNode2Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node1ID, IDSet.Node2ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node1ID, IDSet.Node2ID);
         bool isNode1InNode3Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node1ID, IDSet.Node3ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node1ID, IDSet.Node3ID);
         //Checks for node  2
         bool isNode2InNode1Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node2ID, IDSet.Node1ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node2ID, IDSet.Node1ID);
         bool isNode2InNode2Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node2ID, IDSet.Node2ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node2ID, IDSet.Node2ID);
         bool isNode2InNode3Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node2ID, IDSet.Node3ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node2ID, IDSet.Node3ID);
         //Checks for node  3
         bool isNode3InNode1Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node3ID, IDSet.Node1ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node3ID, IDSet.Node1ID);
         bool isNode3InNode2Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node3ID, IDSet.Node2ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node3ID, IDSet.Node2ID);
         bool isNode3InNode3Subtree =
-            await EFDataSourceLogic.CheckIfNodeInSubtree_Logic(
-                context, IDSet.Node3ID, IDSet.Node3ID);
+            await dataSource.CheckIfNodeInSubtree(
+                IDSet.Node3ID, IDSet.Node3ID);
         
         Assert.True(isNode1InNode1Subtree);
         Assert.True(isNode2InNode2Subtree);
@@ -1418,7 +1416,7 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.CreateClosuresForTestNodes(context, IDSet);
+        utils.CreateClosuresForTestNodes(IDSet);
         var closuresBefore = context.NodesClosureTable.AsNoTracking().ToList();
         int? nodeParentIDBefore = context.Nodes
             .AsNoTracking()
@@ -1433,7 +1431,7 @@ public class Data_EFDataSourceLogicTest {
             )
         );
         
-        await EFDataSourceLogic.MoveNodesSubtree_Logic(context, IDSet.Node1ID, IDSet.Node3ID);
+        await dataSource.MoveNodesSubtree(IDSet.Node1ID, IDSet.Node3ID);
         var closuresAfter = context.NodesClosureTable.AsNoTracking().ToList();
         int? nodeParentIDAfter = context.Nodes
             .AsNoTracking()
@@ -1477,7 +1475,7 @@ public class Data_EFDataSourceLogicTest {
             Parametr1Name=newCWSParam1Name
         };
 
-        await EFDataSourceLogic.UpdateCustomWebService_Logic(context, wsToUpdate);
+        await dataSource.UpdateCustomWebService(wsToUpdate);
         var cwsAfter = context.WebServices.AsNoTracking()
             .Single(ws => ws.ID == IDSet.WebServiceID);
 
@@ -1496,16 +1494,16 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
         var secondWebServiceID = utils.AddSecondWebService(context);
         utils.CreateBindingsForSecondWebService(
-            context, IDSet, secondWebServiceID);
+            IDSet, secondWebServiceID);
 
-        await EFDataSourceLogic.UpdateWebServiceBinding_Logic(
-            context, IDSet.Node1ID, secondWebServiceID, "123", null, null
+        await dataSource.UpdateWebServiceBinding(
+            IDSet.Node1ID, secondWebServiceID, "123", null, null
         );
-        await EFDataSourceLogic.UpdateWebServiceBinding_Logic(
-            context, IDSet.Node2ID, secondWebServiceID, "421", null, null
+        await dataSource.UpdateWebServiceBinding(
+            IDSet.Node2ID, secondWebServiceID, "421", null, null
         );
-        await EFDataSourceLogic.UpdateWebServiceBinding_Logic(
-            context, IDSet.Node3ID, secondWebServiceID, "test", null, null
+        await dataSource.UpdateWebServiceBinding(
+            IDSet.Node3ID, secondWebServiceID, "test", null, null
         );
 
         Assert.Equal("123", context.WebServiceBindings
@@ -1524,9 +1522,9 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(context, IDSet);
+        utils.SetProfileViewTagsTo2And3AndMonitorTagsTo1(IDSet);
         
-        await EFDataSourceLogic.RemoveProfile_Logic(context, IDSet.ProfileID);
+        await dataSource.RemoveProfile(IDSet.ProfileID);
 
         Assert.Empty(context.Profiles);
         Assert.Empty(context.ProfilesTagSelection);
@@ -1540,7 +1538,7 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
 
         var nodesBefore = context.Nodes.AsNoTracking().ToArray();
-        await EFDataSourceLogic.RemoveNode_Logic(context, IDSet.Node3ID);
+        await dataSource.RemoveNode(IDSet.Node3ID);
         var nodesAfter = context.Nodes.AsNoTracking().ToArray();
 
         Assert.Equal(3, nodesBefore.Length);
@@ -1548,7 +1546,7 @@ public class Data_EFDataSourceLogicTest {
         Assert.Equal(2, nodesAfter.Length);
         Assert.DoesNotContain(nodesAfter, n => n.ID == IDSet.Node3ID);
         await Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await EFDataSourceLogic.RemoveNode_Logic(context, IDSet.Node1ID)
+            async () => await dataSource.RemoveNode(IDSet.Node1ID)
         );
     }
 
@@ -1557,12 +1555,12 @@ public class Data_EFDataSourceLogicTest {
         EFDatabaseMockingUtils utils = new EFDatabaseMockingUtils();
         var context = utils.GetEmptyContext();
         var IDSet = utils.AddTestDataSet(context);
-        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(context, IDSet);
+        utils.SetProfileViewTagsTo1And2AndMonitorTagsTo2And3(IDSet);
 
         var tagsBefore = context.Tags.AsNoTracking().ToArray();
         bool wasAttachedToNodes = context.TagAttachments.Any(a => a.TagID == IDSet.Tag1ID);
         bool hadProfileViewBindings = context.ProfilesTagSelection.Any(a => a.TagID == IDSet.Tag1ID);
-        await EFDataSourceLogic.RemoveTag_Logic(context, IDSet.Tag1ID);
+        await dataSource.RemoveTag(IDSet.Tag1ID);
         var tagsAfter = context.Tags.AsNoTracking().ToArray();
         bool isAttachedToNodes = context.TagAttachments.Any(a => a.TagID == IDSet.Tag1ID);
         bool hasProfileViewBindings = context.ProfilesTagSelection.Any(a => a.TagID == IDSet.Tag1ID);
@@ -1582,13 +1580,13 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
         var secondWebServiceID = utils.AddSecondWebService(context);
         utils.CreateBindingsForSecondWebService(
-            context, IDSet, secondWebServiceID);
+            IDSet, secondWebServiceID);
         bool existedBefore = null != context.WebServices
             .SingleOrDefault(ws => ws.ID == secondWebServiceID);
         bool hadBindings = context.WebServiceBindings
             .Any(b => b.ServiceID == secondWebServiceID);
 
-        await EFDataSourceLogic.RemoveCustomWebService_Logic(context, secondWebServiceID);
+        await dataSource.RemoveCustomWebService(secondWebServiceID);
 
         Assert.True(existedBefore);
         Assert.True(hadBindings);
@@ -1605,14 +1603,14 @@ public class Data_EFDataSourceLogicTest {
         var IDSet = utils.AddTestDataSet(context);
         var secondWebServiceID = utils.AddSecondWebService(context);
         utils.CreateBindingsForSecondWebService(
-            context, IDSet, secondWebServiceID);
+            IDSet, secondWebServiceID);
         int bindingsBefore = context.WebServiceBindings.Count();
 
-        await EFDataSourceLogic.RemoveWebServiceBinding_Logic(context,
+        await dataSource.RemoveWebServiceBinding(context,
             IDSet.Node1ID, IDSet.WebServiceID);
-        await EFDataSourceLogic.RemoveWebServiceBinding_Logic(context,
+        await dataSource.RemoveWebServiceBinding(context,
             IDSet.Node2ID, secondWebServiceID);
-        await EFDataSourceLogic.RemoveWebServiceBinding_Logic(context,
+        await dataSource.RemoveWebServiceBinding(context,
             IDSet.Node3ID, secondWebServiceID);
         int bindingsAfter = context.WebServiceBindings.Count();
 
