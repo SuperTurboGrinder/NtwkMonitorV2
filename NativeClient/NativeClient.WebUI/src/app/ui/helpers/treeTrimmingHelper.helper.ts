@@ -7,6 +7,21 @@ export class TreeTrimmingHelper {
     private lastDepth = -1;
     private lastSubtree: NtwkNodesSubtree[] = null;
 
+    private static sortContainersByNodePort(
+        containers: NtwkNodeDataContainer[]
+    ) {
+        if (containers === []) {
+            return containers;
+        } else {
+            return containers
+                .filter(c => c.nodeData.node.parentPort !== null)
+                .sort((c1, c2) => c1.nodeData.node.parentPort - c2.nodeData.node.parentPort)
+                .concat(
+                    containers.filter(c => c.nodeData.node.parentPort === null)
+                );
+        }
+    }
+
     constructor(
         private wholeTreeLayers: NtwkNodeDataContainer[][],
         private treeCollapsingService: TreeCollapsingService
@@ -50,9 +65,11 @@ export class TreeTrimmingHelper {
         || (this.treeCollapsingService !== null
             && this.treeCollapsingService.isCollapsed(cont.nodeData.node.id))
                 ? []
-                : cont.children.map(
-                    c => this.nodeContainerIntoSubtree(c, maxDepth)
-                );
+                : TreeTrimmingHelper
+                    .sortContainersByNodePort(cont.children)
+                        .map(
+                            c => this.nodeContainerIntoSubtree(c, maxDepth)
+                        );
         const isBranchPingable: boolean = children.some(
             c => c.isBranchPingable
             || c.container.nodeData.node.isOpenPing

@@ -7,7 +7,6 @@ using System.Linq;
 using Data.Model.EFDbModel;
 using Data.Model.Enums;
 using Data.EFDatabase;
-using Data.EFDatabase.Logic;
 using static Tests.EFDatabaseMockingUtils;
 
 namespace Tests {
