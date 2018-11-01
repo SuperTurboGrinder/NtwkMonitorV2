@@ -1,3 +1,4 @@
+import { Route } from '@angular/router';
 import { SettingsProfileFormComponent } from './crud/settingsProfileForm.component';
 import { SettingsProfileSelectionComponent } from './crud/settingsProfileSelection.component';
 import { TagSelectionComponent } from './crud/tagSelection.component';
@@ -10,10 +11,11 @@ import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
 import { TagsBindingSideSelectorComponent } from './crud/tagsBindingSideSelector.component';
 import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebServiceBindingSideSelector.component';
+import { HubUIComponent } from './hubUI.component';
 
 
 export class UIRoutingConfig {
-    public static readonly routes = [
+    private static readonly crudRoutes: Route[] = [
         {
             path: 'profiles',
             component: SettingsProfileSelectionComponent,
@@ -78,6 +80,9 @@ export class UIRoutingConfig {
             path: 'customWebServiceBinding',
             component: CustomWebServiceBindingSideSelectorComponent
         },
+    ];
+
+    private static readonly dataRoutes: Route[] = [
         {
             path: 'tagFilteredView',
             component: TaggedNodeListComponent
@@ -86,10 +91,20 @@ export class UIRoutingConfig {
             path: 'treeView',
             component: NodesTreeViewComponent
         },
+    ];
+
+    public static readonly routes: Route[] = [
         {
             path: '',
-            redirectTo: '/profilesSelect',
-            pathMatch: 'full'
+            component: HubUIComponent,
+            children: UIRoutingConfig
+                .crudRoutes.concat(UIRoutingConfig.dataRoutes, [{
+                    path: '',
+                    redirectTo: 'profilesSelect',
+                    pathMatch: 'prefix'
+                }])
+            // redirectTo: '/profilesSelect',
+            // pathMatch: 'full'
         }
     ];
 }

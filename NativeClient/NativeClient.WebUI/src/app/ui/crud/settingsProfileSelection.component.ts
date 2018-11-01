@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SettingsProfilesService } from '../../services/settingsProfiles.service';
 import { SettingsProfile } from '../../model/httpModel/settingsProfile.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.helper';
 
@@ -11,22 +11,28 @@ import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.
 })
 export class SettingsProfileSelectionComponent
     extends BaseCrudSelectorComponent<SettingsProfile, SettingsProfilesService> {
-    public readonly isEditorView: boolean;
+    private _isEditorView: boolean;
+    private readonly pageName: string;
+
+    public get isEditorView() {
+        return this._isEditorView;
+    }
 
     constructor(
         messager: MessagingService,
+        private router: Router,
         private settingsService: SettingsProfilesService,
         route: ActivatedRoute
     ) {
         super(messager, settingsService);
-        const pageName = route.snapshot.url[0].path;
-        this.isEditorView = pageName !== 'profilesSelect';
+        this.pageName = route.snapshot.url[0].path;
+        this._isEditorView = this.pageName !== 'profilesSelect';
     }
 
     public setAndContinue(profileID: number) {
         if (!this.isCurrentProfile(profileID)) {
             this.settingsService.setCurrentProfile(profileID);
-            console.log(`Set ${profileID} as current profile.`);
+            this.router.navigateByUrl('treeView');
         }
     }
 
@@ -36,7 +42,13 @@ export class SettingsProfileSelectionComponent
 
     protected updateDataList() {
         this.dataService.getProfiles().subscribe(
-            tagsListResult => this.setNewData(tagsListResult)
+            tagsListResult => {
+                this.setNewData(tagsListResult);
+                this._isEditorView = this.pageName !== 'profilesSelect';
+                if (this.isEditorView === false && this.dataList.length === 1) {
+                    this.setAndContinue(this.dataList[0].id);
+                }
+            }
         );
     }
 

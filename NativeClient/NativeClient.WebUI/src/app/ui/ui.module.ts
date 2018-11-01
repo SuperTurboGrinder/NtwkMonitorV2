@@ -41,6 +41,7 @@ import { TagsBindingComponent } from './crud/tagsBinding.component';
 import { CrudNodeSideSelectorTemplateComponent } from './crud/crudNodeSideSelectorTemplate.component';
 import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebServiceBindingSideSelector.component';
 import { CustomWebServiceBindingComponent } from './crud/customWebServiceBinding.component';
+import { HubUIComponent } from './hubUI.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import { CustomWebServiceBindingComponent } from './crud/customWebServiceBinding
     TagsBindingComponent,
     CrudNodeSideSelectorTemplateComponent,
     CustomWebServiceBindingSideSelectorComponent,
-    CustomWebServiceBindingComponent
+    CustomWebServiceBindingComponent,
+    HubUIComponent
   ],
   imports: [
     BrowserAnimationsModule,
