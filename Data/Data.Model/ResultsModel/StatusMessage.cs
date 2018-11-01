@@ -42,7 +42,7 @@ public enum StatusMessage {
     InvalidMonitoringMessageTypeValue = 411,
 
     //controllers services errors
-    //exceutables service
+    //executables service
     NoSpecifiedExecServiceFoundInBinDirectory = 501,
     TooManyCandidatesForSpecefiedExecServiceInBinDirectory = 502,
     NotEnoughOSRightsToSearchForExecServices = 503,

@@ -18,9 +18,7 @@ public class ViewModelValidator : IViewModelValidator {
         bool AreParameterNamesInOrder =
             hasParam3
                 ? hasParam1 && hasParam2
-                : hasParam2
-                    ? hasParam1
-                    : true;
+                : !hasParam2 || hasParam1;
         if(!AreParameterNamesInOrder) {
             return StatusMessage.CWSParameterNamesAreNotInOrder;
         }
@@ -48,14 +46,14 @@ public class ViewModelValidator : IViewModelValidator {
             || (!hasParam3 && !containsP3Str);
         bool AreServiceStrParametersValid =
             isParam1Valid && isParam2Valid && isParam3Valid;
-        bool LengthCheck = hasParam1 ? true : val.ServiceStr.Length > 10;
+        bool LengthCheck = hasParam1 || val.ServiceStr.Length > 10;
         bool IsServiceStrValid = IsServiceStrStartHttp
             && AreServiceStrParametersValid
             && LengthCheck;
         /*throw new Exception($@"
             HttpStart: {IsServiceStrStartHttp},
             HasParam: {hasParam1}, {hasParam2}, {hasParam3},
-            ContainstParamStr: {containsP1Str}, {containsP2Str}, {containsP3Str},
+            ContainsParamStr: {containsP1Str}, {containsP2Str}, {containsP3Str},
             ParamValid: {isParam1Valid}, {isParam2Valid}, {isParam3Valid},
             LengthCheck: {LengthCheck},
             IsStrValid: {IsServiceStrValid}
@@ -109,10 +107,7 @@ public class ViewModelValidator : IViewModelValidator {
 
     public StatusMessage Validate(MonitoringMessage message) {
         MonitoringMessageType mt;
-        if(!Enum.TryParse(message.MessageType, out mt)) {
-            return StatusMessage.InvalidMonitoringMessageTypeValue;
-        }
-        return StatusMessage.Ok;
+        return !Enum.TryParse(message.MessageType, out mt) ? StatusMessage.InvalidMonitoringMessageTypeValue : StatusMessage.Ok;
     }
 }
 

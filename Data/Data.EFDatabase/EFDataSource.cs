@@ -159,39 +159,39 @@ public class EFDataSource : IEFDbDataSource {
     }
 
     public async Task<bool> CheckIfTagNameExists(string name, int? exceptID) {
-        return (exceptID != null && (await context.Tags.AsNoTracking()
-            .FirstOrDefaultAsync(t => t.ID == exceptID))?.Name == name)
-            ? false
-            : await context.Tags.AsNoTracking()
-                .Where(e => e.Name == name)
-                .AnyAsync();
+        return (
+                   exceptID == null
+                   || (await context.Tags.AsNoTracking().FirstOrDefaultAsync(t => t.ID == exceptID))?.Name != name
+               ) && await context.Tags.AsNoTracking()
+                   .Where(e => e.Name == name)
+                   .AnyAsync();
     }
 
     public async Task<bool> CheckIfNodeNameExists(string name, int? exceptID) {
-        return exceptID != null && (await context.Nodes.AsNoTracking()
-            .FirstOrDefaultAsync(n => n.ID == exceptID))?.Name == name
-            ? false
-            : await context.Nodes.AsNoTracking()
-                .Where(e => e.Name == name)
-                .AnyAsync();
+        return (
+                   exceptID == null
+                   || (await context.Nodes.AsNoTracking().FirstOrDefaultAsync(n => n.ID == exceptID))?.Name != name
+               ) && await context.Nodes.AsNoTracking()
+                   .Where(e => e.Name == name)
+                   .AnyAsync();
     }
 
     public async Task<bool> CheckIfCWSNameExists(string name, int? exceptID) {
-        return exceptID != null && (await context.WebServices.AsNoTracking()
-            .FirstOrDefaultAsync(ws => ws.ID == exceptID))?.Name == name
-            ? false
-            : await context.WebServices.AsNoTracking()
-                .Where(e => e.Name == name)
-                .AnyAsync();
+        return (
+                   exceptID == null
+                   || (await context.WebServices.AsNoTracking().FirstOrDefaultAsync(ws => ws.ID == exceptID))?.Name != name
+               ) && await context.WebServices.AsNoTracking()
+                   .Where(e => e.Name == name)
+                   .AnyAsync();
     }
 
     public async Task<bool> CheckIfProfileNameExists(string name, int? exceptID) {
-        return exceptID != null && (await context.Profiles.AsNoTracking()
-            .FirstOrDefaultAsync(p => p.ID == exceptID))?.Name == name
-            ? false
-            : await context.Profiles.AsNoTracking()
-                .Where(e => e.Name == name)
-                .AnyAsync();
+        return (
+                   exceptID == null
+                   || (await context.Profiles.AsNoTracking().FirstOrDefaultAsync(p => p.ID == exceptID))?.Name != name
+               ) && await context.Profiles.AsNoTracking()
+                   .Where(e => e.Name == name)
+                   .AnyAsync();
     }
 
     // building tree structure for node
@@ -240,7 +240,7 @@ public class EFDataSource : IEFDbDataSource {
         return result;
     }
 
-    // CICLE PREVENTION LOGIC
+    // CYCLE PREVENTION LOGIC
     public async Task<bool> CheckIfNodeInSubtree(
         int nodeID,
         int subtreeRootNodeID
@@ -331,7 +331,7 @@ public class EFDataSource : IEFDbDataSource {
             .ToListAsync();
         List<IEnumerable<Model.IntermediateModel.RawNodeData>> nodes = (
             await context.NodesClosureTable.AsNoTracking()
-                .Where(cl => cl.AncestorID == null) //uniqe nodes
+                .Where(cl => cl.AncestorID == null) //unique nodes
                 .Include(cl => cl.Descendant)
                     .ThenInclude(n => n.Tags)
                 .Include(cl => cl.Descendant)
@@ -580,8 +580,8 @@ public class EFDataSource : IEFDbDataSource {
         IEnumerable<ProfileSelectedTag> toReset = currentWithFlag
             .SingleOrDefault(t => !t.toStay)
             ?.col;
-        toStay = (toStay == null)?(new List<int>()):(toStay);
-        toReset = (toReset == null)?(new List<ProfileSelectedTag>()):(toReset);
+        toStay = toStay ?? (new List<int>());
+        toReset = toReset ?? (new List<ProfileSelectedTag>());
         IEnumerable<ProfileSelectedTag> currentWithoutFlag_ToSet = 
             currentSelection
                 .Where(pts => flag != (pts.Flags & flag))

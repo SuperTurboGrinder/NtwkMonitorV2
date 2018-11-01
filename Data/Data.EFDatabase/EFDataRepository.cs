@@ -10,8 +10,8 @@ using Data.Model.ResultsModel;
 namespace Data.EFDatabase {
 
 public class EFDataRepository : IDataRepository {
-    IEFDbDataSource efDataSource;
-    IDbErrorLogger logger;
+    readonly IEFDbDataSource efDataSource;
+    readonly IDbErrorLogger logger;
 
     public EFDataRepository(IEFDbDataSource dataSource, IDbErrorLogger _logger) {
         efDataSource = dataSource;

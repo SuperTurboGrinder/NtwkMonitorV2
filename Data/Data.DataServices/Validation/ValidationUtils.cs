@@ -27,10 +27,7 @@ static class ValidationUtils {
 
     private static bool IsValidEnumTypeValue<TEnum>(int value) {
         int valueRange = System.Enum.GetValues(typeof(TEnum)).Length;
-        if(value >= 0 && value < valueRange) {
-            return true;
-        }
-        return false;
+        return value >= 0 && value < valueRange;
     }
 }
 

@@ -62,9 +62,8 @@ public class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
     }
     
     public EFDbModel.MonitoringMessage Convert(MonitoringMessage message) {
-        MonitoringMessageType mt;
         //should already be validated to convert
-        Enum.TryParse(message.MessageType, out mt);
+        Enum.TryParse(message.MessageType, out MonitoringMessageType mt);
         return new EFDbModel.MonitoringMessage() {
             MessageType = mt,
             MessageSourceNodeName = message.MessageSourceNodeName,

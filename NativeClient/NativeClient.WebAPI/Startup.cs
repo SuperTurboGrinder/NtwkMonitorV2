@@ -57,7 +57,7 @@ namespace NativeClient.WebAPI
             services.AddScoped<INodeTreeDataService, NodeTreeDataService>();
             services.AddScoped<ITagsDataService, TagsDataService>();
             services.AddScoped<ICustomWebServicesDataService, CustomWebServicesDataService>();
-            services.AddScoped<ISettingsProfileDataService, SettingsProfilesDataSerivce>();
+            services.AddScoped<ISettingsProfileDataService, SettingsProfilesDataService>();
             services.AddScoped<IMonitoringDataService, MonitoringDataService>();
             services.AddScoped<INodesServicesDataService, NodesServicesDataService>();
             //Special services

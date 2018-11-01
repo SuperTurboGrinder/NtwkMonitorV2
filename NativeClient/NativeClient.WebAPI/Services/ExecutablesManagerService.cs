@@ -23,7 +23,7 @@ public class ExecutablesManagerService : IExecutablesManagerService {
         public string filename;
     }
 
-    Dictionary<ExecutableServicesTypes, ServiceData> servicesData =
+    readonly Dictionary<ExecutableServicesTypes, ServiceData> servicesData =
         new Dictionary<ExecutableServicesTypes, ServiceData>();
 
     public ExecutablesManagerService() {

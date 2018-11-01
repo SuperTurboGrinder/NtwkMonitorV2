@@ -16,10 +16,10 @@ namespace Tests {
 
 public class Data_dataSourceTest {
 
-    private readonly ITestOutputHelper testOutput;
+    private readonly ITestOutputHelper _testOutput;
 
     public Data_dataSourceTest(ITestOutputHelper output) {
-        this.testOutput = output;
+        this._testOutput = output;
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class Data_dataSourceTest {
 
     [Fact]
     public async void SavePulseResult_CreatesNewPulse() {
-        var (context, IDSet, dataSource) = GetTestDataContext();
+        var (context, idSet, dataSource) = GetTestDataContext();
         
         var pulse = new MonitoringPulseResult {
             ID = 0,
@@ -114,15 +114,13 @@ public class Data_dataSourceTest {
         var countEmptySessionsBefore = context.MonitoringSessions
             .AsNoTracking()
             .Include(s => s.Pulses)
-            .Where(s => s.Pulses.Count == 0)
-            .Count();
+            .Count(s => s.Pulses.Count == 0);
         await dataSource.ClearEmptySessions();
         var countSessionsAfter = context.MonitoringSessions.Count();
         var countEmptySessionsAfter = context.MonitoringSessions
             .AsNoTracking()
             .Include(s => s.Pulses)
-            .Where(s => s.Pulses.Count == 0)
-            .Count();
+            .Count(s => s.Pulses.Count == 0);
         
         Assert.Equal(countSessionsBefore-countEmptySessionsBefore,
             countSessionsAfter);
@@ -1346,8 +1344,8 @@ public class Data_dataSourceTest {
             .Include(n => n.Parent)
             .Single(n => n.ID == IDSet.NodesIDs[0])
             .Parent?.ID;
-        testOutput.WriteLine("Closures before.");
-        testOutput.WriteLine("[\n{0}]", string.Join(",\n",
+        _testOutput.WriteLine("Closures before.");
+        _testOutput.WriteLine("[\n{0}]", string.Join(",\n",
             context.NodesClosureTable.AsNoTracking()
                 .Select(c => (new {c.ID, c.AncestorID, c.DescendantID, c.Distance}).ToString())
                 .ToArray()
@@ -1361,8 +1359,8 @@ public class Data_dataSourceTest {
             .Include(n => n.Parent)
             .Single(n => n.ID == IDSet.NodesIDs[0])
             .Parent?.ID;
-        testOutput.WriteLine("Closures after.");
-        testOutput.WriteLine("[\n{0}]", string.Join(",\n",
+        _testOutput.WriteLine("Closures after.");
+        _testOutput.WriteLine("[\n{0}]", string.Join(",\n",
             context.NodesClosureTable.AsNoTracking()
                 .Select(c => (new {c.ID, c.AncestorID, c.DescendantID, c.Distance}).ToString())
                 .ToArray()
@@ -1371,13 +1369,13 @@ public class Data_dataSourceTest {
 
         Assert.Null(nodeParentIDBefore);
         Assert.Equal(IDSet.NodesIDs[2], nodeParentIDAfter);
-        Assert.Equal(2, closuresBefore.Where(c => c.DescendantID == IDSet.NodesIDs[0]).Count());
+        Assert.Equal(2, closuresBefore.Count(c => c.DescendantID == IDSet.NodesIDs[0]));
         Assert.Equal(0, closuresBefore.Where(c => c.DescendantID == IDSet.NodesIDs[0]).Sum(c => c.Distance));
-        Assert.Equal(3, closuresAfter.Where(c => c.DescendantID == IDSet.NodesIDs[0]).Count());
+        Assert.Equal(3, closuresAfter.Count(c => c.DescendantID == IDSet.NodesIDs[0]));
         Assert.Equal(2, closuresAfter.Where(c => c.DescendantID == IDSet.NodesIDs[0]).Sum(c => c.Distance));
-        Assert.Equal(3, closuresBefore.Where(c => c.DescendantID == IDSet.NodesIDs[1]).Count());
+        Assert.Equal(3, closuresBefore.Count(c => c.DescendantID == IDSet.NodesIDs[1]));
         Assert.Equal(2, closuresBefore.Where(c => c.DescendantID == IDSet.NodesIDs[1]).Sum(c => c.Distance));
-        Assert.Equal(4, closuresAfter.Where(c => c.DescendantID == IDSet.NodesIDs[1]).Count());
+        Assert.Equal(4, closuresAfter.Count(c => c.DescendantID == IDSet.NodesIDs[1]));
         Assert.Equal(5, closuresAfter.Where(c => c.DescendantID == IDSet.NodesIDs[1]).Sum(c => c.Distance));
     }
 

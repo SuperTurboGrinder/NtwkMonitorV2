@@ -55,7 +55,7 @@ public class PingServiceAsync: IPingService {
     public async Task<DataActionResult<PingTestData>> TestConnectionAsync(
         IPAddress ip
     ) {
-        List<PingTestData> pingReplys = new List<PingTestData>();
+        List<PingTestData> pingReplies = new List<PingTestData>();
         for(int i = 0; i < 4; i++) {
             DataActionResult<PingTestData> pingResult = await PingAsync(
                 ping,
@@ -67,12 +67,12 @@ public class PingServiceAsync: IPingService {
             if(pingResult.Status.Failure()) {
                 return DataActionResult<PingTestData>.Failed(pingResult.Status);
             }
-            pingReplys.Add(pingResult.Result);
+            pingReplies.Add(pingResult.Result);
             if(pingResult.Result.avg < 50 && pingResult.Result.failed == 0) {
                 break;
             }
         }
-        PingTestData result = pingReplys.Aggregate((current, next) => {
+        PingTestData result = pingReplies.Aggregate((current, next) => {
             current.num += next.num;
             current.avg += next.avg;
             current.failed += next.failed;

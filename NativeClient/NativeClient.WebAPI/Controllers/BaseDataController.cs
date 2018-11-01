@@ -12,7 +12,7 @@ using Data.Model.ResultsModel;
 namespace NativeClient.WebAPI.Controllers {
 
 public class BaseDataController : Controller {
-    IErrorReportAssemblerService errAssembler;
+    readonly IErrorReportAssemblerService errAssembler;
 
     protected  BaseDataController(IErrorReportAssemblerService _errAssembler) {
         errAssembler = _errAssembler;

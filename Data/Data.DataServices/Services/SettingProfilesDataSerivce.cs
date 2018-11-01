@@ -13,13 +13,13 @@ using Data.Model.ResultsModel;
 
 namespace Data.DataServices.Services {
 
-public class SettingsProfilesDataSerivce
+public class SettingsProfilesDataService
     : BaseDataService, ISettingsProfileDataService {
     readonly IViewModelValidator validator;
     readonly IViewModelToEFModelConverter viewToEFConverter;
     readonly IEFModelToViewModelConverter EFToViewConverter;
 
-    public SettingsProfilesDataSerivce(
+    public SettingsProfilesDataService(
         IDataRepository _repo,
         IViewModelValidator _validator,
         IViewModelToEFModelConverter _viewToEFConverter,

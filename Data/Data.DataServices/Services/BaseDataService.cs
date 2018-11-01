@@ -9,7 +9,7 @@ using Data.Model.ResultsModel;
 namespace Data.DataServices.Services {
 
 public abstract class BaseDataService {
-    protected IDataRepository repo;
+    protected readonly IDataRepository repo;
 
     protected BaseDataService(IDataRepository _repo) {
         repo = _repo;
