@@ -7,7 +7,7 @@
     (deleteAnswerEvent)="deleteObject($event)"
 
     [dataList]="dataList"
-    [baseFormLink]="'/profile'"
+    [baseFormLink]="'profile'"
 >
     <ng-template>
         <div class="p-0 m-0 container-fluid">
@@ -33,7 +33,7 @@
                 <div class="w-100">
                     <span
                         class="btn btn-primary square p-1 m-1"
-                        [routerLink]="['/profile/new']"
+                        [routerLink]="['/form/profile/new']"
                         i18n="@@addNewButtonLabel"
                     >
                         Add new

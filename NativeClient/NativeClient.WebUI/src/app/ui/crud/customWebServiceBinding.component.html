@@ -1,162 +1,165 @@
-<div class="bg-light" style="height: 100%">
-        <div *ngIf="isNoSelection === false; else notSelectedBlock">
-            <div class="container-fluid m-0 p-0">
+<div class="bg-light h-100">
+    <div class="h-100" *ngIf="isNoSelection === false; else notSelectedBlock">
+        <div class="container-fluid m-0 p-0 h-100">
+            <div
+                class="row p-0 m-0 text-center"
+                style="height: 33px; font-size: 18px"
+            >
                 <div
-                    class="row p-0 m-0 text-center"
-                    style="height: 33px; font-size: 18px"
+                    class="col-6 border-right border-bottom nonselectable-collumn"
+                    style="padding-top: 3px; padding-bottom: 3px"
+                >
+                    <strong i18n="@@availableLable">Available</strong>
+                </div>
+                <div
+                    class="col-6 border-bottom nonselectable-collumn"
+                    style="padding-top: 3px; padding-bottom: 3px"
+                >
+                    <strong i18n="@@boundLable">Bound</strong>
+                </div>
+            </div>
+            <div class="row p-0 m-0" style="height: calc(50% - 38px)">
+                <div
+                    class="col-6 m-0 p-0 text-left border-right h-100"
+                    style="direction: rtl; overflow-y: scroll"
                 >
                     <div
-                        class="col-6 border-right border-bottom nonselectable-collumn"
-                        style="padding-top: 3px; padding-bottom: 3px"
+                        *ngFor="let s of availableServices; let i = index"
+                        class="w-100 border-bottom px-2 py-1"
                     >
-                        <strong i18n="@@availableLable">Available</strong>
-                    </div>
-                    <div
-                        class="col-6 border-bottom nonselectable-collumn"
-                        style="padding-top: 3px; padding-bottom: 3px"
-                    >
-                        <strong i18n="@@boundLable">Bound</strong>
+                        <span
+                            class="p-1 badge badge-success badge-pill pull-right btn btn-success"
+                            (click)="selectService(s)"
+                        ><i class="fa fa-plus" aria-hidden="true"></i></span> {{s.name}}
                     </div>
                 </div>
-                <div class="row p-0 m-0">
+                <div
+                    class="col-6 m-0 p-0 text-right h-100"
+                    style="overflow-y: scroll"
+                >
                     <div
-                        class="col-6 m-0 p-0 text-left border-right"
-                        style="direction: rtl; height: calc(50vh - 38px); overflow-y: scroll"
+                        *ngFor="let s of setServices; let i = index"
+                        class="w-100 border-bottom px-2 py-1"
                     >
-                        <div
-                            *ngFor="let s of availableServices; let i = index"
-                            class="w-100 border-bottom px-2 py-1"
+                        <span
+                            class="p-1 badge badge-danger badge-pill pull-left btn btn-danger"
+                            (click)="removeServiceBinding(s)"
                         >
-                            <span
-                                class="p-1 badge badge-success badge-pill pull-right btn btn-success"
-                                (click)="selectService(s)"
-                            ><i class="fa fa-plus" aria-hidden="true"></i></span> {{s.name}}
-                        </div>
-                    </div>
-                    <div
-                        class="col-6 m-0 p-0 text-right"
-                        style="height: calc(50vh - 38px); overflow-y: scroll"
-                    >
-                        <div
-                            *ngFor="let s of setServices; let i = index"
-                            class="w-100 border-bottom px-2 py-1"
-                        >
-                            <span
-                                class="p-1 badge badge-danger badge-pill pull-left btn btn-danger"
-                                (click)="removeServiceBinding(s)"
-                            ><i class="fa fa-times" aria-hidden="true"></i></span> {{s.name}}
-                        </div>
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                        {{s.name}}
                     </div>
                 </div>
-                <div class="row p-0 m-0 border-top">
-                    <div
-                        class="col-12 m-0 p-0 text-left"
-                        style="height: 50vh; overflow-y: scroll"
-                    >
-                        <div *ngIf="selectedService !== null">
-                            <app-crud-form-header
-                                [isEditMode]="false"
-                            >
-                                <span i18n="@@nodeLabel">web service binding</span>
-                            </app-crud-form-header>
-                            <form
-                                class="pl-2 w-100"
-                                novalidate
-                                #form="ngForm"
-                                validate
-                            >
-                                <div class="container-fluid">
-                                    <div class="row" *ngIf="selectedService.parametr1Name !== null">
-                                        <div class="col-12 form-inline py-2">
-                                            <label class="pr-2">{{selectedService.parametr1Name}}</label>
-                                            <input
-                                                class="form-control"
-                                                #paramModel="ngModel"
-                                                name="param1"
-                                                [(ngModel)]="formWebServiceBinding.param1"
-                                                minlength="1"
-                                                required
-                                            />
-                                            <strong
-                                                *ngIf="paramModel.invalid && (paramModel.dirty || paramModel.touched)"
-                                                class="text-small text-danger"
-                                            >
-                                                <div
-                                                    i18n="@@nameRequiredMessge"
-                                                    *ngIf="paramModel.errors.required"
-                                                >Value required.</div>
-                                            </strong>
-                                        </div>
-                                    </div>
-
-                                    <div class="row" *ngIf="selectedService.parametr2Name !== null">
-                                        <div class="col-12 form-inline py-2">
-                                            <label class="pr-2">{{selectedService.parametr2Name}}</label>
-                                            <input
-                                                class="form-control"
-                                                #paramModel="ngModel"
-                                                name="param2"
-                                                [(ngModel)]="formWebServiceBinding.param2"
-                                                minlength="1"
-                                                required
-                                            />
-                                            <strong
-                                                *ngIf="paramModel.invalid && (paramModel.dirty || paramModel.touched)"
-                                                class="text-small text-danger"
-                                            >
-                                                <div
-                                                    i18n="@@nameRequiredMessge"
-                                                    *ngIf="paramModel.errors.required"
-                                                >Value required.</div>
-                                            </strong>
-                                        </div>
-                                    </div>
-
-                                    <div class="row" *ngIf="selectedService.parametr3Name !== null">
-                                        <div class="col-12 form-inline py-2">
-                                            <label class="pr-2">{{selectedService.parametr3Name}}</label>
-                                            <input
-                                                class="form-control"
-                                                #paramModel="ngModel"
-                                                name="param3"
-                                                [(ngModel)]="formWebServiceBinding.param3"
-                                                minlength="1"
-                                                required
-                                            />
-                                            <strong
-                                                *ngIf="paramModel.invalid && (paramModel.dirty || paramModel.touched)"
-                                                class="text-small text-danger"
-                                            >
-                                                <div
-                                                    i18n="@@nameRequiredMessge"
-                                                    *ngIf="paramModel.errors.required"
-                                                >Value required.</div>
-                                            </strong>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-12 form-inline py-2">
-                                            <button
-                                                [disabled]="form.valid === false"
-                                                type="button"
-                                                class="btn btn-primary square m-0 w-100 text-center"
-                                                (click)="bindSelectedService()"
-                                            >
-                                                <span i18n="@@bindButtonLabel">Bind</span>
-                                            </button>
-                                        </div>
+            </div>
+            <div class="row p-0 m-0 border-top h-50">
+                <div
+                    class="col-12 m-0 p-0 text-left h-100"
+                    style="overflow-y: scroll"
+                >
+                    <div *ngIf="selectedService !== null">
+                        <app-crud-form-header
+                            [isEditMode]="false"
+                        >
+                            <span i18n="@@nodeLabel">web service binding</span>
+                        </app-crud-form-header>
+                        <form
+                            class="pl-2 w-100"
+                            novalidate
+                            #form="ngForm"
+                            validate
+                        >
+                            <div class="container-fluid">
+                                <div class="row" *ngIf="selectedService.parametr1Name !== null">
+                                    <div class="col-12 form-inline py-2">
+                                        <label class="pr-2">{{selectedService.parametr1Name}}</label>
+                                        <input
+                                            class="form-control"
+                                            #paramModel="ngModel"
+                                            name="param1"
+                                            [(ngModel)]="formWebServiceBinding.param1"
+                                            minlength="1"
+                                            required
+                                        />
+                                        <strong
+                                            *ngIf="paramModel.invalid && (paramModel.dirty || paramModel.touched)"
+                                            class="text-small text-danger"
+                                        >
+                                            <div
+                                                i18n="@@nameRequiredMessge"
+                                                *ngIf="paramModel.errors.required"
+                                            >Value required.</div>
+                                        </strong>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
+
+                                <div class="row" *ngIf="selectedService.parametr2Name !== null">
+                                    <div class="col-12 form-inline py-2">
+                                        <label class="pr-2">{{selectedService.parametr2Name}}</label>
+                                        <input
+                                            class="form-control"
+                                            #paramModel="ngModel"
+                                            name="param2"
+                                            [(ngModel)]="formWebServiceBinding.param2"
+                                            minlength="1"
+                                            required
+                                        />
+                                        <strong
+                                            *ngIf="paramModel.invalid && (paramModel.dirty || paramModel.touched)"
+                                            class="text-small text-danger"
+                                        >
+                                            <div
+                                                i18n="@@nameRequiredMessge"
+                                                *ngIf="paramModel.errors.required"
+                                            >Value required.</div>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="row" *ngIf="selectedService.parametr3Name !== null">
+                                    <div class="col-12 form-inline py-2">
+                                        <label class="pr-2">{{selectedService.parametr3Name}}</label>
+                                        <input
+                                            class="form-control"
+                                            #paramModel="ngModel"
+                                            name="param3"
+                                            [(ngModel)]="formWebServiceBinding.param3"
+                                            minlength="1"
+                                            required
+                                        />
+                                        <strong
+                                            *ngIf="paramModel.invalid && (paramModel.dirty || paramModel.touched)"
+                                            class="text-small text-danger"
+                                        >
+                                            <div
+                                                i18n="@@nameRequiredMessge"
+                                                *ngIf="paramModel.errors.required"
+                                            >Value required.</div>
+                                        </strong>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 form-inline py-2">
+                                        <button
+                                            [disabled]="form.valid === false"
+                                            type="button"
+                                            class="btn btn-primary square m-0 w-100 text-center"
+                                            (click)="bindSelectedService()"
+                                        >
+                                            <span i18n="@@bindButtonLabel">Bind</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-        <ng-template #notSelectedBlock>
-            <div class="h5 w-100 py-2 text-center" i18n="@@noNodeSelectedLabel">
-                No node selected
-            </div>
-        </ng-template>
     </div>
+    <ng-template #notSelectedBlock>
+        <div class="h5 w-100 py-2 text-center" i18n="@@noNodeSelectedLabel">
+            No node selected
+        </div>
+    </ng-template>
+</div>

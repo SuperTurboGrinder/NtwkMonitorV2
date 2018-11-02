@@ -1,6 +1,6 @@
-<div class="bg-light" style="height: 100%">
-    <div *ngIf="isNoSelection === false; else notSelectedBlock">
-        <div class="container-fluid m-0 p-0">
+<div class="bg-light h-100">
+    <div class="h-100" *ngIf="isNoSelection === false; else notSelectedBlock">
+        <div class="container-fluid m-0 p-0" style="height: calc(100% - 43px)">
             <div
                 class="row p-0 m-0 text-center"
                 style="height: 33px; font-size: 18px"
@@ -18,10 +18,10 @@
                     <strong i18n="@@availableTagsLable">Available</strong>
                 </div>
             </div>
-            <div class="row p-0 m-0 bg-white">
+            <div class="row p-0 m-0" style="height: calc(100% - 33px)">
                 <div
-                    class="col-6 m-0 p-0 text-right border-right"
-                    style="direction: rtl; height: calc(100vh - 78px); overflow-y: scroll"
+                    class="col-6 m-0 p-0 text-right border-right h-100"
+                    style="direction: rtl; overflow-y: scroll"
                 >
                     <div
                         *ngFor="let t of setTags; let i = index"
@@ -36,8 +36,8 @@
                     </div>
                 </div>
                 <div
-                    class="col-6 m-0 p-0 text-left"
-                    style="height: calc(100vh - 78px); overflow-y: scroll"
+                    class="col-6 m-0 p-0 text-left h-100"
+                    style="overflow-y: scroll"
                 >
                     <div
                         *ngFor="let t of availableTags; let i = index"

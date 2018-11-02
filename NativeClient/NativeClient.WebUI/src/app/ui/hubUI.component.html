@@ -8,7 +8,7 @@
         class="border-bottom"
             style="height: calc(98vh - 30px); display: flex; padding-left: 5px; padding-right: 5px"
         >
-        <div class="" style="flex:0 0 60px">
+        <div style="flex:0 0 60px" *ngIf="hostingForms === false">
             <div class="text-center">
                 <div
                     class="border-right p-2 btn-outline-secondary"
@@ -24,12 +24,18 @@
                     <i class="fa fa-list-ul fa-3x" aria-hidden="true"></i>
                 </div>
                 <div class="border-right p-2 btn-outline-secondary"
+                    routerLink="/editor"
+                    routerLinkActive="bg-secondary text-white"
                 >
                     <i class="fa fa-pencil-square-o fa-3x" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
-        <div class="bg-light" style="height:92vh; flex:0 0 calc(100vw - 70px)">
+        <div
+            class="bg-light"
+            [ngStyle]="{'flex': '0 0 calc(100vw' + hostingForms ? ')' : ' - 70px)'}"
+            style="height:92vh; flex:0 0 calc(100vw - 70px)"
+        >
             <router-outlet></router-outlet>
         </div>
     </div>

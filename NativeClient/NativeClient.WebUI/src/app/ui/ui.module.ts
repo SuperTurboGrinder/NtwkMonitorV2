@@ -42,6 +42,8 @@ import { CrudNodeSideSelectorTemplateComponent } from './crud/crudNodeSideSelect
 import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebServiceBindingSideSelector.component';
 import { CustomWebServiceBindingComponent } from './crud/customWebServiceBinding.component';
 import { HubUIComponent } from './hubUI.component';
+import { EditorComponent } from './crud/editor.component';
+import { FormHostComponent } from './crud/formHost.component';
 
 @NgModule({
   declarations: [
@@ -78,7 +80,9 @@ import { HubUIComponent } from './hubUI.component';
     CrudNodeSideSelectorTemplateComponent,
     CustomWebServiceBindingSideSelectorComponent,
     CustomWebServiceBindingComponent,
-    HubUIComponent
+    HubUIComponent,
+    EditorComponent,
+    FormHostComponent
   ],
   imports: [
     BrowserAnimationsModule,

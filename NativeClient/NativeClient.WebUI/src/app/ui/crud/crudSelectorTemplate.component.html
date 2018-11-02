@@ -21,7 +21,7 @@
                                             type="button"
                                             class="btn btn-warning square mx-1"
                                             i18n="@@editButtonLabel"
-                                            [routerLink]="[baseFormLink, 'edit', data.id]"
+                                            [routerLink]="['/form', baseFormLink, 'edit', data.id]"
                                         >
                                             Edit
                                         </button>
@@ -40,7 +40,7 @@
                                     <div class="w-100">
                                         <span
                                             class="btn btn-primary square p-1 m-1"
-                                            [routerLink]="[baseFormLink, 'new']"
+                                            [routerLink]="['/form', baseFormLink, 'new']"
                                             i18n="@@addNewButtonLabel"
                                         >
                                             Add new

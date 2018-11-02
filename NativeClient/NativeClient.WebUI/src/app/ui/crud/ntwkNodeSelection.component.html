@@ -7,7 +7,7 @@
     (deleteAnswerEvent)="deleteObject($event)"
 
     [dataList]="dataList"
-    [baseFormLink]="'/node'"
+    [baseFormLink]="'node'"
 >
     <ng-template>
         <div class="p-0 m-0 container-fluid">
@@ -27,7 +27,7 @@
                         type="button"
                         class="btn btn-primary square p-0 px-1 mr-1"
                         i18n="@@addNewLabel"
-                        [routerLink]="['/node/', node.id, 'new']"
+                        [routerLink]="['/form/node/', node.id, 'new']"
                     >
                         Add new
                     </button>
@@ -43,7 +43,7 @@
                         type="button"
                         class="btn btn-warning square p-0 px-1 mr-1"
                         i18n="@@editButtonLabel"
-                        [routerLink]="['/node/edit', node.id]"
+                        [routerLink]="['/form/node/edit', node.id]"
                     >
                         Edit
                     </button>
@@ -89,7 +89,7 @@
                         *ngIf="isInMoveMode === false; else moveToRootButton"
                         type="button"
                         class="btn btn-primary square py-0 px-1 my-1"
-                        [routerLink]="['/node/new']"
+                        [routerLink]="['/form/node/new']"
                         i18n="@@addNewOnRootButtonLabel"
                     >
                         Add new on root

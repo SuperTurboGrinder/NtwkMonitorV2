@@ -4,7 +4,7 @@
 >
     <div class="p-0 m-0 container-fluid h-100">
         <div class="row p-0 m-0 h-100">
-            <div class="col-7 p-0 m-0">
+            <div class="col-7 p-0 m-0 h-100">
                 <app-crud-selector-template
                     [isCustomView]="true"
                     [dataLoaded]="dataList !== null"
@@ -20,7 +20,7 @@
                                 *ngFor="let node of dataList"
                             >
                                 <div
-                                    class="col-12 btn-light text-left border-bottom"
+                                    class="col-12 btn-light text-left border-bottom nonselectable-collumn"
                                     [ngClass]="{
                                         'btn-light': isSelectedNode(node.id) === false,
                                         'bg-info': isSelectedNode(node.id) === true
@@ -33,11 +33,22 @@
                                     --><b>[{{node.name}}]</b>
                                 </div>
                             </div>
+                            <div class="row m-0 p-0 text-center">
+                                <div class="col-12">
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary square py-0 m-0"
+                                        (click)="returnToPreviousLocation()"
+                                    >
+                                        Return
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </ng-template>
                 </app-crud-selector-template>
             </div>
-            <div class="col-5 p-0 m-0">
+            <div class="col-5 p-0 m-0 h-100">
                 <ng-container *ngTemplateOutlet="contentRef"></ng-container>
             </div>
         </div>

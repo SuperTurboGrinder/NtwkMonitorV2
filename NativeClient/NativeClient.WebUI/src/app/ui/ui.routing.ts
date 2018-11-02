@@ -12,29 +12,19 @@ import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
 import { TagsBindingSideSelectorComponent } from './crud/tagsBindingSideSelector.component';
 import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebServiceBindingSideSelector.component';
 import { HubUIComponent } from './hubUI.component';
+import { EditorComponent } from './crud/editor.component';
+import { FormHostComponent } from './crud/formHost.component';
 
 
 export class UIRoutingConfig {
-    private static readonly crudRoutes: Route[] = [
-        {
-            path: 'profiles',
-            component: SettingsProfileSelectionComponent,
-        },
-        {
-            path: 'profilesSelect',
-            component: SettingsProfileSelectionComponent,
-        },
-        {
-            path: 'profile/edit/:id',
-            component: SettingsProfileFormComponent
-        },
+    private static readonly crudFormsRoutes: Route[] = [
         {
             path: 'profile/new',
             component: SettingsProfileFormComponent
         },
         {
-            path: 'tags',
-            component: TagSelectionComponent
+            path: 'profile/edit/:id',
+            component: SettingsProfileFormComponent
         },
         {
             path: 'tag/new',
@@ -45,20 +35,12 @@ export class UIRoutingConfig {
             component: TagFormComponent
         },
         {
-            path: 'customWebServices',
-            component: CustomWebServiceSelectionComponent
-        },
-        {
             path: 'customWebService/new',
             component: CustomWebServiceFormComponent
         },
         {
             path: 'customWebService/edit/:id',
             component: CustomWebServiceFormComponent
-        },
-        {
-            path: 'nodes',
-            component: NtwkNodeSelectionComponent
         },
         {
             path: 'node/new',
@@ -77,9 +59,32 @@ export class UIRoutingConfig {
             component: TagsBindingSideSelectorComponent
         },
         {
-            path: 'customWebServiceBinding',
+            path: 'customWebServicesBinding',
             component: CustomWebServiceBindingSideSelectorComponent
+        }
+    ];
+
+    private static readonly crudEditorRoutes: Route[] = [
+        {
+            path: 'profiles',
+            component: SettingsProfileSelectionComponent,
         },
+        {
+            path: 'profilesSelect',
+            component: SettingsProfileSelectionComponent,
+        },
+        {
+            path: 'tags',
+            component: TagSelectionComponent
+        },
+        {
+            path: 'customWebServices',
+            component: CustomWebServiceSelectionComponent
+        },
+        {
+            path: 'nodes',
+            component: NtwkNodeSelectionComponent
+        }
     ];
 
     private static readonly dataRoutes: Route[] = [
@@ -97,12 +102,23 @@ export class UIRoutingConfig {
         {
             path: '',
             component: HubUIComponent,
-            children: UIRoutingConfig
-                .crudRoutes.concat(UIRoutingConfig.dataRoutes, [{
+            children: UIRoutingConfig.dataRoutes.concat([
+                {
                     path: '',
                     redirectTo: 'profilesSelect',
                     pathMatch: 'prefix'
-                }])
+                },
+                {
+                    path: 'editor',
+                    component: EditorComponent,
+                    children: UIRoutingConfig.crudEditorRoutes
+                },
+                {
+                    path: 'form',
+                    component: FormHostComponent,
+                    children: UIRoutingConfig.crudFormsRoutes
+                }
+            ])
             // redirectTo: '/profilesSelect',
             // pathMatch: 'full'
         }

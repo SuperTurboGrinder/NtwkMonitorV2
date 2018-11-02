@@ -4,6 +4,7 @@ import {
     ContentChild, TemplateRef
 } from '@angular/core';
 import { NodeLineData } from 'src/app/model/viewModel/nodeLineData.model';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'app-crud-node-side-selector-template',
@@ -20,8 +21,16 @@ export class CrudNodeSideSelectorTemplateComponent {
     @Output() private refreshEvent = new EventEmitter<boolean>();
     @Output() private nodeSelectionEvent = new EventEmitter<number>();
 
+    constructor(
+        private locationService: Location
+    ) {}
+
     refresh(_: boolean) {
         this.refreshEvent.emit(_);
+    }
+
+    public returnToPreviousLocation() {
+        this.locationService.back();
     }
 
     public isSelectedNode(nodeID: number) {

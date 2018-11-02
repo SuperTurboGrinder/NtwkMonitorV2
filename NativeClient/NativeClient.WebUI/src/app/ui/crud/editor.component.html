@@ -1,0 +1,52 @@
+<div class="container-fluid h-100">
+    <div class="row p-0 m-0 h-100">
+        <div class="col-3 border-right h-100">
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="nodes"
+                routerLinkActive="bg-info text-white"
+            >
+                Nodes
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="customWebServices"
+                routerLinkActive="bg-info text-white"
+            >
+                Custom web services
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="profilesSelect"
+                routerLinkActive="bg-info text-white"
+            >
+                Change settings profile
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="profiles"
+                routerLinkActive="bg-info text-white"
+            >
+                Settings profiles
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="tags"
+                routerLinkActive="bg-info text-white"
+            >
+                Tags
+            </div>
+            <div class="py-2"></div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="/form/customWebServicesBinding"
+                routerLinkActive="bg-info text-white"
+            >
+                Web service binding
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="/form/tagsBinding"
+                routerLinkActive="bg-info text-white"
+            >
+                Tag binding
+            </div>
+        </div>
+        <div class="col-9 p-0 m-0 h-100">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>
