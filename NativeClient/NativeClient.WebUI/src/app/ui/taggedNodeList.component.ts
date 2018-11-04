@@ -25,9 +25,22 @@ export class TaggedNodeListComponent {
     private loadingError = false;
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
     private nodesListIsEmpty = true;
+    private isOperationsView = false;
 
     private sorting: Sorting = Sorting.Default;
     private sortingDescending = false;
+
+    public get isFilterMode() {
+        return this.isOperationsView === false;
+    }
+
+    public switchToOperationsMode() {
+        this.isOperationsView = true;
+    }
+
+    public switchToFilterMode() {
+        this.isOperationsView = false;
+    }
 
     private defaultSortedIndexes(filteredNodesList: NodeData[], _: boolean): number[] {
         return Array.from(

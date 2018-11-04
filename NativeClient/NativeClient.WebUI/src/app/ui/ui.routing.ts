@@ -14,6 +14,7 @@ import { CustomWebServiceBindingSideSelectorComponent } from './crud/customWebSe
 import { HubUIComponent } from './hubUI.component';
 import { EditorComponent } from './crud/editor.component';
 import { FormHostComponent } from './crud/formHost.component';
+import { TagFilterComponent } from './tagFilter.component';
 
 
 export class UIRoutingConfig {
@@ -89,7 +90,20 @@ export class UIRoutingConfig {
 
     private static readonly dataRoutes: Route[] = [
         {
+            path: 'profilesSelect',
+            component: SettingsProfileSelectionComponent,
+        },
+        {
             path: 'tagFilteredView',
+            redirectTo: 'tagFilteredView/filter',
+            pathMatch: 'prefix'
+        },
+        {
+            path: 'tagFilteredView/filter',
+            component: TagFilterComponent
+        },
+        {
+            path: 'tagFilteredView/operations',
             component: TaggedNodeListComponent
         },
         {
@@ -98,27 +112,29 @@ export class UIRoutingConfig {
         },
     ];
 
+    private static readonly hubRoutes: Route[] = [
+        {
+            path: '',
+            redirectTo: 'profilesSelect',
+            pathMatch: 'prefix'
+        },
+        {
+            path: 'editor',
+            component: EditorComponent,
+            children: UIRoutingConfig.crudEditorRoutes
+        },
+        {
+            path: 'form',
+            component: FormHostComponent,
+            children: UIRoutingConfig.crudFormsRoutes
+        }
+    ];
+
     public static readonly routes: Route[] = [
         {
             path: '',
             component: HubUIComponent,
-            children: UIRoutingConfig.dataRoutes.concat([
-                {
-                    path: '',
-                    redirectTo: 'profilesSelect',
-                    pathMatch: 'prefix'
-                },
-                {
-                    path: 'editor',
-                    component: EditorComponent,
-                    children: UIRoutingConfig.crudEditorRoutes
-                },
-                {
-                    path: 'form',
-                    component: FormHostComponent,
-                    children: UIRoutingConfig.crudFormsRoutes
-                }
-            ])
+            children: UIRoutingConfig.hubRoutes.concat(UIRoutingConfig.dataRoutes)
             // redirectTo: '/profilesSelect',
             // pathMatch: 'full'
         }

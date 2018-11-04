@@ -92,9 +92,7 @@ export class CustomWebServiceFormComponent
         };
     }
 
-    protected saveAsNewObjectInDatabase(
-        callback: (success: boolean) => void
-    ) {
+    private prepareSendingData(): CustomWebService {
         const sendingData = this.makeCopy(this.data);
         sendingData.parametr1Name = this.paramNum < 1
             ? null : sendingData.parametr1Name;
@@ -102,6 +100,13 @@ export class CustomWebServiceFormComponent
             ? null : sendingData.parametr2Name;
         sendingData.parametr3Name = this.paramNum < 3
             ? null : sendingData.parametr3Name;
+        return sendingData;
+    }
+
+    protected saveAsNewObjectInDatabase(
+        callback: (success: boolean) => void
+    ) {
+        const sendingData = this.prepareSendingData();
         this.dataService.createNewCWS(
             sendingData,
             callback
@@ -111,8 +116,9 @@ export class CustomWebServiceFormComponent
     protected saveChangesToObjectInDatabase(
         callback: (success: boolean) => void
     ) {
+        const sendingData = this.prepareSendingData();
         this.dataService.updateCWS(
-            this.data,
+            sendingData,
             callback
         );
     }
@@ -174,6 +180,11 @@ export class CustomWebServiceFormComponent
         }
         this.data.serviceStr = (this.useHttp ? httpStr : httpsStr) + finalUrlTemplate;
         this.baseUrl = rawTemplate;
+    }
+
+    public swapUseHttp() {
+        this.useHttp = !this.useHttp;
+        this.buildFinalTemplate();
     }
 
     getBaseUrl() {

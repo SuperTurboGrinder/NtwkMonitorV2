@@ -57,7 +57,7 @@
                                     <button
                                         type="button"
                                         class="btn btn-outline-secondary square"
-                                        (click)="useHttp = !useHttp"
+                                        (click)="swapUseHttp()"
                                     >
                                         <span *ngIf="useHttp; else httpsButton">http://</span>
                                         <ng-template #httpsButton>https://</ng-template>

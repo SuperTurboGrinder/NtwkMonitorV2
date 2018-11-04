@@ -64,6 +64,13 @@ export class SettingsProfilesService {
         );
     }
 
+    public currentProfilesMonitorNodesIDs(): Observable<HTTPResult<number[]>> {
+        return this.httpDatasource.dataRequest<number[]>(
+            'get',
+            this.baseUrl + `/${this.currentProfileID}/monitorNodesIDs`
+        );
+    }
+
     public createNewProfile(
         newProfile: SettingsProfile,
         callback: (success: boolean) => void

@@ -1,30 +1,37 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { pipe } from 'rxjs';
+import { pipe, Subscription } from 'rxjs';
 import { filter, map, merge, mergeMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-hub-ui-main',
     templateUrl: './hubUI.component.html'
 })
-export class HubUIComponent {
-    private _hostingForm = false;
+export class HubUIComponent implements OnDestroy {
+    private _hostingForms = true;
+    private readonly routerSubscription: Subscription;
 
-    public get hostingForm() {
-        return this._hostingForm;
+    public get hostingForms() {
+        return this._hostingForms;
     }
 
     constructor(
-        private router: Router,
+        router: Router,
         private activatedRoute: ActivatedRoute
     ) {
-        this.router.events.pipe(
+        this. routerSubscription = router.events.pipe(
             filter(event => event instanceof NavigationEnd),
             map(_ => this.activatedRoute.firstChild),
+            filter(child => child !== null),
             mergeMap(route => route.url)
         ).subscribe(event => {
-            console.log('NavigationEnd:', event[0].path);
-            // this._hostingForm = segments.findIndex(s => s === 'form') === -1;
+            if (event[0].path !== 'profilesSelect') {
+                this._hostingForms = event[0].path === 'form';
+            }
         });
+    }
+
+    public ngOnDestroy() {
+        this.routerSubscription.unsubscribe();
     }
 }

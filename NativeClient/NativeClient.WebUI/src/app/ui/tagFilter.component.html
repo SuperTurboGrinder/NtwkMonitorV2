@@ -1,0 +1,72 @@
+<div class="w-100 h-100 p-0 m-0 bg-light">
+        <div class="w-100 h-100 p-0 m-0" *ngIf="viewNodes !== null; else stillEmptyBlock">
+            <div class="h-100 p-0 m-0 text-center container-fluid" style="width:calc(100% - 16px)">
+                <div class="row" style="width: 100%; height: 30px">
+                    <div class="col-3 btn-light border rounded-top p-0 m-0 nonselectable-collumn">
+                        <strong>Operations view nodes</strong>
+                    </div>
+                    <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
+                        <strong>Monitor selected nodes</strong>
+                    </div>
+                    <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
+                        <strong>Operations view tags</strong>
+                    </div>
+                    <div class="col-3 btn-light border rounded-top p-0 m-0 nonselectable-collumn">
+                        <strong>Monitor view tags</strong>
+                    </div>
+                </div>
+            
+                <div
+                    class="row p-0 py-3 m-0 text-center font-italic"
+                    *ngIf="isNoNodesLoaded(); else nodesList"
+                >
+                    <strong class="col">No saved nodes found in database.</strong>
+                </div>
+                <ng-template #nodesList>
+                    <div class="row p-0 m-0 text-center border-bottom"
+                        style="height: calc(100% - 60px); width:calc(100% + 16px)"
+                    >
+                        <div class="col-3 p-0 m-0 h-100">
+                            <div class="p-0 m-0 w-100 h-100 font-italic text-secondary"
+                                style="overflow-y: scroll"
+                            >
+                                <div class="m-0 p-0 w-100"
+                                    *ngFor="let nodeData of viewNodes"
+                                    (mouseenter)="selectViewNode(i, $event)"
+                                    (mouseleave)="deselectNode($event)"
+                                >
+                                    {{nodeData.node.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+                <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary square py-0 mx-1"
+                    >
+                        Tag filter view
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-info square py-0 mx-1 bg-info text-white"
+                    >
+                        Operations view
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-success square py-0 mx-1"
+                    >
+                        Ping filtered list
+                    </button>
+                </div>
+            </div>
+        </div>
+        <ng-template #stillEmptyBlock>
+            <app-loading-indicator
+                [isError]="isLoadingError"
+                (refreshEvent)="refresh($event)"
+            ></app-loading-indicator>
+         </ng-template>
+    </div>

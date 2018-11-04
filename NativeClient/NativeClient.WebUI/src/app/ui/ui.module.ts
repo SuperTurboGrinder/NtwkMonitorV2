@@ -44,6 +44,7 @@ import { CustomWebServiceBindingComponent } from './crud/customWebServiceBinding
 import { HubUIComponent } from './hubUI.component';
 import { EditorComponent } from './crud/editor.component';
 import { FormHostComponent } from './crud/formHost.component';
+import { TagFilterComponent } from './tagFilter.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { FormHostComponent } from './crud/formHost.component';
     CustomWebServiceBindingComponent,
     HubUIComponent,
     EditorComponent,
-    FormHostComponent
+    FormHostComponent,
+    TagFilterComponent
   ],
   imports: [
     BrowserAnimationsModule,

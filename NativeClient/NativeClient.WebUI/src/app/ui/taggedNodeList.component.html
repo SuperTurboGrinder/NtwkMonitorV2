@@ -1,8 +1,9 @@
 <div class="w-100 h-100 p-0 m-0 bg-light">
     <div class="w-100 h-100 p-0 m-0" *ngIf="sortedIndexes != null; else stillEmptyBlock">
-        <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
-            <div class="row p-0 m-0 text-center" style="height: 30px">
-                <div class="col-5 btn-light border rounded-top p-0 m-0 sortable-collumn"
+        <div class="h-100 p-0 m-0 text-center" style="width:calc(100% - 16px)">
+            <div style="display: flex; width: 100%; height: 30px">
+                <div class="btn-light border rounded-top p-0 m-0 sortable-collumn"
+                    style="flex: 0 0 calc(100% - 400px)"
                     (click)="setSortByName()"
                 >
                     <strong>
@@ -13,9 +14,18 @@
                         ></i>
                     </strong>
                 </div>
-                <div class="col-2 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"><strong>Executables</strong></div>
-                <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"><strong>Web services</strong></div>
-                <div class="col-2 btn-light border rounded-top p-0 m-0 sortable-collumn"
+                <div class="btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"
+                    style="flex: 0 0 100px"
+                >
+                    <strong>Executables</strong>
+                </div>
+                <div class="btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"
+                    style="flex: 0 0 160px"
+                >
+                    <strong>Web services</strong>
+                </div>
+                <div class="btn-light border rounded-top p-0 m-0 sortable-collumn"
+                    style="flex: 0 0 140px"
                     (click)="setSortByPing()"
                 >
                     <strong>
@@ -28,15 +38,21 @@
                 </div>
             </div>
         
-            <div class="p-0 m-0 container-fluid" style="height: calc(100% - 30px); width:calc(100% + 16px); overflow-y:scroll">
-                <div class="row p-0 py-3 m-0 text-center font-italic" *ngIf="isNoNodesLoaded(); else nodesList">
-                    <div class="col">
-                        <strong>No saved nodes found in database.</strong>
-                    </div>
+            <div class="p-0 m-0" style="height: calc(100% - 60px); width:calc(100% + 16px); overflow-y:scroll">
+                <div
+                    class="p-0 py-3 m-0 text-center font-italic w-100"
+                    *ngIf="isNoNodesLoaded(); else nodesList"
+                >
+                    <strong>No saved nodes found in database.</strong>
                 </div>
                 <ng-template #nodesList>
-                    <div class="row p-0 m-0 text-center border-bottom" *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn">
-                        <div class="col-5 p-0 m-0 font-italic text-secondary"
+                    <div
+                        class="w-100 p-0 m-0 text-center border-bottom"
+                        style="display: flex"
+                        *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn"
+                    >
+                        <div class="p-0 m-0 font-italic text-secondary"
+                            style="flex: 0 0 calc(100% - 400px)"
                         >
                             <strong class="m-0 p-0 "
                                 (mouseenter)="selectNode(i, $event)"
@@ -45,18 +61,18 @@
                                 {{node(i).name}}
                             </strong>
                         </div>
-                        <div class="col-2 p-0 m-0">
+                        <div class="p-0 m-0" style="flex: 0 0 100px">
                             <app-exec-services-buttons
                                 [node]="node(i)"
                             ></app-exec-services-buttons>
                         </div>
-                        <div class="col-3 p-0 m-0">
+                        <div class="p-0 m-0" style="flex: 0 0 160px">
                             <app-web-services-buttons
                                 [nodeID]="node(i).id"
                                 [webServices]="listWebServicesData(i)"
                             ></app-web-services-buttons>
                         </div>
-                        <div class="col-2 p-0 m-0">
+                        <div class="p-0 m-0" style="flex: 0 0 140px">
                             <app-ping-display
                                 [node]="node(i)"
                                 (changedEvent)="resortListByPing()"
@@ -64,6 +80,26 @@
                         </div>
                     </div>
                 </ng-template>
+            </div>
+            <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
+                <button
+                    type="button"
+                    class="btn btn-outline-primary square py-0 mx-1"
+                >
+                    Tag filter view
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-outline-info square py-0 mx-1 bg-info text-white"
+                >
+                    Operations view
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-success square py-0 mx-1"
+                >
+                    Ping filtered list
+                </button>
             </div>
         </div>
     </div>
