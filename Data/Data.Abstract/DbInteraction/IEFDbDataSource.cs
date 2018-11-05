@@ -43,8 +43,8 @@ public interface IEFDbDataSource {
     Task<Model.IntermediateModel.AllRawNodesData> GetAllNodesData();
     Task<uint> GetNodeIP(int nodeID);
     Task<IEnumerable<int>> GetTaggedNodesIDs(int tagID);
-    Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
-    Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
+    Task<Model.ViewModel.TagFilterData> GetProfileViewTagFilterData(int profileID);
+    Task<Model.ViewModel.TagFilterData> GetProfileMonitorTagFilterData(int profileID);
     Task<IEnumerable<NodeTag>> GetAllTags();
     Task<IEnumerable<CustomWebService>> GetAllCWS();
     Task<string> GetCWSBoundingString(int nodeID, int cwsID);

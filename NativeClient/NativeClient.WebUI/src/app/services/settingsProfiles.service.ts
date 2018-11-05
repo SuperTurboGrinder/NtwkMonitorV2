@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { map, switchMap, concatMap } from 'rxjs/operators';
 
 import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { HTTPDatasource } from './http.datasource';
@@ -49,10 +49,6 @@ export class SettingsProfilesService {
         );
     }
 
-    public get currentProfile(): Observable<SettingsProfile> {
-        return this.currentProfileSubject;
-    }
-
     public isCurrentProfileID(id: number): boolean {
         return this.currentProfileID === id;
     }
@@ -68,6 +64,55 @@ export class SettingsProfilesService {
         return this.httpDatasource.dataRequest<number[]>(
             'get',
             this.baseUrl + `/${this.currentProfileID}/monitorNodesIDs`
+        );
+    }
+// POST api/settingsProfiles/1/setViewTags
+// POST api/settingsProfiles/1/setMonitorTags
+// PUT api/settingsProfiles/1/setViewTagsToMonitorTags
+// PUT api/settingsProfiles/1/setMonitorTagsToViewTags
+
+    private updateCurrentProfileTagSet(
+        urlSuffix: string,
+        newTagsIDs: number[]
+    ): Observable<boolean> {
+        return this.httpDatasource.dataOperationRequest(
+            'post',
+            this.baseUrl + `/${this.currentProfileID}/${urlSuffix}`,
+            newTagsIDs
+        ).pipe(
+            concatMap(success => success
+                ? this.setCurrentProfile(this.currentProfileID)
+                        .pipe(map(pr => success))
+                : of(success)
+            )
+        );
+    }
+
+    public setCurrentProfilesViewTags(newTagsIDs: number[]): Observable<boolean> {
+        return this.updateCurrentProfileTagSet(
+            'setViewTags',
+            newTagsIDs
+        );
+    }
+
+    public setCurrentProfilesMonitorTags(newTagsIDs: number[]): Observable<boolean> {
+        return this.updateCurrentProfileTagSet(
+            'setMonitorTags',
+            newTagsIDs
+        );
+    }
+
+    public setCurrentProfilesViewTagsToMonitorTags() {
+        return this.httpDatasource.operationRequest(
+            'post',
+            this.baseUrl + `/${this.currentProfileID}/setViewTagsToMonitorTags`
+        );
+    }
+
+    public setCurrentProfilesMonitorTagsToViewTags() {
+        return this.httpDatasource.operationRequest(
+            'post',
+            this.baseUrl + `/${this.currentProfileID}/setMonitorTagsToViewTags`
         );
     }
 

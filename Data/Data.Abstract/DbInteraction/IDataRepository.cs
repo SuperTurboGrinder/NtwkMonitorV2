@@ -46,8 +46,8 @@ public interface IDataRepository {
     Task<DataActionResult<Model.IntermediateModel.AllRawNodesData>> GetAllNodesData();
     Task<DataActionResult<uint>> GetNodeIP(int nodeID);
     Task<DataActionResult<IEnumerable<int>>> GetTaggedNodesIDs(int tagID);
-    Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
-    Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
+    Task<DataActionResult<Model.ViewModel.TagFilterData>> GetProfileViewTagFilterData(int profileID);
+    Task<DataActionResult<Model.ViewModel.TagFilterData>> GetProfileMonitorTagFilterData(int profileID);
     Task<DataActionResult<IEnumerable<NodeTag>>> GetAllTags();
     Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCWS();
     Task<DataActionResult<string>> GetCWSBoundingString(int nodeID, int cwsID);

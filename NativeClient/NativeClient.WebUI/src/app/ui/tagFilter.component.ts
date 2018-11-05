@@ -64,11 +64,49 @@ export class TagFilterComponent {
     }
 
     public get monitorNodes(): NodeData[] {
-        return this.filteredViewNodesList;
+        return this.filteredMonitorNodesList;
+    }
+
+    public getViewNodesIDs(): number[] {
+        return this.viewNodesIDs;
+    }
+
+    public getMonitorNodesIDs(): number[] {
+        return this.monitorNodesIDs;
     }
 
     public deselectNode() {
         this.nodeInfoPopupService.setData(null);
+    }
+
+    public applyOperationsViewNodesChange(newNodesIDs: number[]) {
+        this.filteredViewNodesList = null;
+        this.loadingError = false;
+        this.settingsService.setCurrentProfilesViewTags(newNodesIDs)
+        .subscribe(success => {
+            this.refresh(true);
+        });
+    }
+
+    public applyMonitoredNodesChange(newNodesIDs: number[]) {
+        this.filteredViewNodesList = null;
+        this.loadingError = false;
+        this.settingsService.setCurrentProfilesMonitorTags(newNodesIDs)
+        .subscribe(success => {
+            if (success) {
+                this.refresh(true);
+            }
+        });
+    }
+
+    public refresh(_: boolean) {
+        this.filteredViewNodesList = null;
+        this.loadingError = false;
+        this.initialize();
+    }
+
+    public get isLoadingError() {
+        return this.loadingError;
     }
 
     constructor(
@@ -86,11 +124,6 @@ export class TagFilterComponent {
             this.settingsService.currentProfilesViewNodesIDs(),
             this.settingsService.currentProfilesMonitorNodesIDs()
         ).subscribe(results => {
-            this.viewNodesIDs = results[1].data;
-            this.monitorNodesIDs = results[2].data;
-            const allNodes = results[0].data.nodesTree.allNodes;
-            const cwsData = results[0].data.cwsData;
-            const nodesNum = allNodes.length;
             if (
                 results[0].success === false
                 || results[1].success === false
@@ -99,6 +132,11 @@ export class TagFilterComponent {
                 this.loadingError = true;
                 return;
             }
+            this.viewNodesIDs = results[1].data;
+            this.monitorNodesIDs = results[2].data;
+            const allNodes = results[0].data.nodesTree.allNodes;
+            const cwsData = results[0].data.cwsData;
+            const nodesNum = allNodes.length;
             if (nodesNum === 0) {
                 this.nodesListIsEmpty = true;
                 this.filteredViewNodesList = [null];

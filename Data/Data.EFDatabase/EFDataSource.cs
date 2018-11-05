@@ -376,7 +376,7 @@ public class EFDataSource : IEFDbDataSource {
             .ToListAsync();
     }
 
-    private static async Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfile(
+    private static async Task<Model.ViewModel.TagFilterData> GetProfileTagFilterData(
         NtwkDBContext context,
         int profileID,
         ProfileSelectedTagFlags flag
@@ -389,14 +389,14 @@ public class EFDataSource : IEFDbDataSource {
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileView(
+    public async Task<Model.ViewModel.TagFilterData> GetProfileViewTagFilterData(
         int profileID
     ) {
         return await GetIDsOfNodesBySelectedTagsInProfile(
             context, profileID, ProfileSelectedTagFlags.NodesListView);
     }
 
-    public async Task<IEnumerable<int>> GetIDsOfNodesBySelectedTagsInProfileMonitor(
+    public async Task<Model.ViewModel.TagFilterData> GetProfileMonitorTagFilterData(
         int profileID
     ) {
         return await GetIDsOfNodesBySelectedTagsInProfile(
