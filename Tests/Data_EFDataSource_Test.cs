@@ -281,22 +281,28 @@ public class Data_dataSourceTest {
     }
 
     [Fact]
-    public async void GetIDsOfNodesBySelectedTagsInProfileView_WillGetAllNodesWithTagsSpecifiedInProfileView() {   
+    public async void GetProfileViewTagFilterData_WillGetAllNodesWithTagsSpecifiedInProfileView() {   
         var (context, IDSet, dataSource) = GetTestDataContext();
         
         SetProfileVTagsTo1_2AndMTagsTo2_3(context, IDSet);
         var viewNodesForTags1And2 = await dataSource
-            .GetIDsOfNodesBySelectedTagsInProfileView(IDSet.ProfileID);
+            .GetProfileViewTagFilterData(IDSet.ProfileID);
         SetProfileVTagsTo2_3AndMTagsTo1(context, IDSet);
         var viewNodesForTags2And3 = await dataSource
-            .GetIDsOfNodesBySelectedTagsInProfileView(IDSet.ProfileID);
+            .GetProfileViewTagFilterData(IDSet.ProfileID);
 
-        Assert.Equal(2, viewNodesForTags1And2.Count());
-        Assert.Single(viewNodesForTags1And2, IDSet.NodesIDs[0]);
-        Assert.Single(viewNodesForTags1And2, IDSet.NodesIDs[1]);
-        Assert.Equal(2, viewNodesForTags2And3.Count());
-        Assert.Single(viewNodesForTags2And3, IDSet.NodesIDs[1]);
-        Assert.Single(viewNodesForTags2And3, IDSet.NodesIDs[2]);
+        Assert.Equal(2, viewNodesForTags1And2.TagsIDs.Count());
+        Assert.Equal(2, viewNodesForTags1And2.NodesIDs.Count());
+        Assert.Single(viewNodesForTags1And2.NodesIDs, IDSet.NodesIDs[0]);
+        Assert.Single(viewNodesForTags1And2.NodesIDs, IDSet.NodesIDs[1]);
+        Assert.Single(viewNodesForTags1And2.TagsIDs, IDSet.TagsIDs[0]);
+        Assert.Single(viewNodesForTags1And2.TagsIDs, IDSet.TagsIDs[1]);
+        Assert.Equal(2, viewNodesForTags2And3.TagsIDs.Count());
+        Assert.Equal(2, viewNodesForTags2And3.NodesIDs.Count());
+        Assert.Single(viewNodesForTags2And3.TagsIDs, IDSet.TagsIDs[1]);
+        Assert.Single(viewNodesForTags2And3.TagsIDs, IDSet.TagsIDs[2]);
+        Assert.Single(viewNodesForTags2And3.NodesIDs, IDSet.NodesIDs[1]);
+        Assert.Single(viewNodesForTags2And3.NodesIDs, IDSet.NodesIDs[2]);
     }
 
     [Fact]
@@ -305,17 +311,22 @@ public class Data_dataSourceTest {
         
         SetProfileVTagsTo1_2AndMTagsTo2_3(context, IDSet);
         var monitorNodesForTags2And3 = await dataSource
-            .GetIDsOfNodesBySelectedTagsInProfileMonitor(IDSet.ProfileID);
+            .GetProfileMonitorTagFilterData(IDSet.ProfileID);
         SetProfileVTagsTo2_3AndMTagsTo1(context, IDSet);
         var monitorNodesForTags1 = await dataSource
-            .GetIDsOfNodesBySelectedTagsInProfileMonitor(IDSet.ProfileID);
+            .GetProfileMonitorTagFilterData(IDSet.ProfileID);
 
-        Assert.Equal(2, monitorNodesForTags2And3.Count());
-        Assert.Single(monitorNodesForTags2And3, IDSet.NodesIDs[1]);
-        Assert.Single(monitorNodesForTags2And3, IDSet.NodesIDs[2]);
-        Assert.Equal(2, monitorNodesForTags1.Count());
-        Assert.Single(monitorNodesForTags1, IDSet.NodesIDs[0]);
-        Assert.Single(monitorNodesForTags1, IDSet.NodesIDs[1]);
+        Assert.Equal(2, monitorNodesForTags2And3.TagsIDs.Count());
+        Assert.Equal(2, monitorNodesForTags2And3.NodesIDs.Count());
+        Assert.Single(monitorNodesForTags2And3.TagsIDs, IDSet.TagsIDs[1]);
+        Assert.Single(monitorNodesForTags2And3.TagsIDs, IDSet.TagsIDs[2]);
+        Assert.Single(monitorNodesForTags2And3.NodesIDs, IDSet.NodesIDs[1]);
+        Assert.Single(monitorNodesForTags2And3.NodesIDs, IDSet.NodesIDs[2]);
+        Assert.Equal(1, monitorNodesForTags1.TagsIDs.Count());
+        Assert.Equal(2, monitorNodesForTags1.NodesIDs.Count());
+        Assert.Single(monitorNodesForTags1.TagsIDs, IDSet.TagsIDs[0]);
+        Assert.Single(monitorNodesForTags1.NodesIDs, IDSet.NodesIDs[0]);
+        Assert.Single(monitorNodesForTags1.NodesIDs, IDSet.NodesIDs[1]);
     }
 
     [Fact]

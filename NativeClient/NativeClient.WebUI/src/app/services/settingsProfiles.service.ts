@@ -1,11 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { map, switchMap, concatMap } from 'rxjs/operators';
+import { map, first, switchMap, concatMap } from 'rxjs/operators';
 
 import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { HTTPDatasource } from './http.datasource';
 import { HTTPResult } from '../model/servicesModel/httpResult.model';
 import { BaseURL } from './baseUrl.token';
+import { TagFilterData } from '../model/httpModel/tagFilterData.model';
 
 @Injectable()
 export class SettingsProfilesService {
@@ -53,23 +54,19 @@ export class SettingsProfilesService {
         return this.currentProfileID === id;
     }
 
-    public currentProfilesViewNodesIDs(): Observable<HTTPResult<number[]>> {
-        return this.httpDatasource.dataRequest<number[]>(
+    public currentProfilesViewTagFilterData(): Observable<HTTPResult<TagFilterData>> {
+        return this.httpDatasource.dataRequest<TagFilterData>(
             'get',
-            this.baseUrl + `/${this.currentProfileID}/mainViewNodesIDs`
+            this.baseUrl + `/${this.currentProfileID}/mainViewTagFilterData`
         );
     }
 
-    public currentProfilesMonitorNodesIDs(): Observable<HTTPResult<number[]>> {
-        return this.httpDatasource.dataRequest<number[]>(
+    public currentProfilesMonitorTagFilterData(): Observable<HTTPResult<TagFilterData>> {
+        return this.httpDatasource.dataRequest<TagFilterData>(
             'get',
-            this.baseUrl + `/${this.currentProfileID}/monitorNodesIDs`
+            this.baseUrl + `/${this.currentProfileID}/monitorTagFilterData`
         );
     }
-// POST api/settingsProfiles/1/setViewTags
-// POST api/settingsProfiles/1/setMonitorTags
-// PUT api/settingsProfiles/1/setViewTagsToMonitorTags
-// PUT api/settingsProfiles/1/setMonitorTagsToViewTags
 
     private updateCurrentProfileTagSet(
         urlSuffix: string,
@@ -82,7 +79,7 @@ export class SettingsProfilesService {
         ).pipe(
             concatMap(success => success
                 ? this.setCurrentProfile(this.currentProfileID)
-                        .pipe(map(pr => success))
+                        .pipe(map(pr => success), first())
                 : of(success)
             )
         );

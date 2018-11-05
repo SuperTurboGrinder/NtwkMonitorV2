@@ -43,7 +43,7 @@
                         <div class="p-0 m-0 w-100 h-100"
                         >
                         <app-tags-binding
-                            [originalSetTags]="getViewNodesIDs()"
+                            [originalSetTags]="getViewTagsIDs()"
                             (applyEvent)="applyOperationsViewNodesChange($event)"
                         ></app-tags-binding>
                         </div>
@@ -65,35 +65,31 @@
                         <div class="p-0 m-0 w-100 h-100"
                         >
                         <app-tags-binding
-                            [originalSetTags]="getMonitorNodesIDs()"
-                            (applyEvent)="applyOperationsViewNodesChange($event)"
+                            [originalSetTags]="getMonitorTagsIDs()"
+                            (applyEvent)="applyMonitoredNodesChange($event)"
                         ></app-tags-binding>
                         </div>
                     </div>
                 </div>
             </ng-template>
             <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
-                <button
-                    type="button"
+                <span
                     disabled
                     class="btn btn-outline-primary square py-0 mx-1 bg-info text-white"
                 >
                     Tag filter view
-                </button>
-                <button
-                    type="button"
+                </span>
+                <span
                     class="btn btn-outline-info square py-0 mx-1"
                     routerLink="/tagFilteredView/operations"
                 >
                     Operations view
-                </button>
-                <button
-                    type="button"
-                    disabled
-                    class="btn btn-success square py-0 mx-1"
+                </span>
+                <span
+                    class="btn btn-success disabled square py-0 mx-1"
                 >
                     Ping filtered list
-                </button>
+                </span>
             </div>
         </div>
     </div>
@@ -102,5 +98,5 @@
             [isError]="isLoadingError"
             (refreshEvent)="refresh($event)"
         ></app-loading-indicator>
-        </ng-template>
+    </ng-template>
 </div>

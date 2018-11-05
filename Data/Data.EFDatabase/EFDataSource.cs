@@ -381,25 +381,31 @@ public class EFDataSource : IEFDbDataSource {
         int profileID,
         ProfileSelectedTagFlags flag
     ) {
-        return await context.ProfilesTagSelection.AsNoTracking()
+        var data = await context.ProfilesTagSelection.AsNoTracking()
             .Where(pst => pst.BindedProfileID == profileID &&
                         flag == (pst.Flags & flag))
-            .SelectMany(pst => pst.Tag.Attachments.Select(a => a.Node.ID))
-            .Distinct()
+            .Select(pst => new {
+                tagID = pst.TagID,
+                nodesIDs = pst.Tag.Attachments.Select(a => a.Node.ID)
+            })
             .ToListAsync();
+        return new Model.ViewModel.TagFilterData() {
+            TagsIDs = data.Select(d => d.tagID),
+            NodesIDs = data.SelectMany(d => d.nodesIDs).Distinct()
+        };
     }
 
     public async Task<Model.ViewModel.TagFilterData> GetProfileViewTagFilterData(
         int profileID
     ) {
-        return await GetIDsOfNodesBySelectedTagsInProfile(
+        return await GetProfileTagFilterData(
             context, profileID, ProfileSelectedTagFlags.NodesListView);
     }
 
     public async Task<Model.ViewModel.TagFilterData> GetProfileMonitorTagFilterData(
         int profileID
     ) {
-        return await GetIDsOfNodesBySelectedTagsInProfile(
+        return await GetProfileTagFilterData(
             context, profileID, ProfileSelectedTagFlags.Monitor);
     }
     

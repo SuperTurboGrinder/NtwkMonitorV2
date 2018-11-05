@@ -37,20 +37,20 @@ public class SettingsProfilesDataService
         );
     }
     
-    public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID) {
+    public async Task<DataActionResult<TagFilterData>> GetProfileViewTagFilterData(int profileID) {
         StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
         if(profileIDValidationStatus.Failure()) {
-            return DataActionResult<IEnumerable<int>>.Failed(profileIDValidationStatus);
+            return DataActionResult<TagFilterData>.Failed(profileIDValidationStatus);
         }
-        return await repo.GetIDsOfNodesBySelectedTagsInProfileView(profileID);
+        return await repo.GetProfileViewTagFilterData(profileID);
     }
     
-    public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID) {
+    public async Task<DataActionResult<TagFilterData>> GetProfileMonitorTagFilterData(int profileID) {
         StatusMessage profileIDValidationStatus =await ValidateProfileID(profileID);
         if(profileIDValidationStatus.Failure()) {
-            return DataActionResult<IEnumerable<int>>.Failed(profileIDValidationStatus);
+            return DataActionResult<TagFilterData>.Failed(profileIDValidationStatus);
         }
-        return await repo.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID);
+        return await repo.GetProfileMonitorTagFilterData(profileID);
     }
 
     public async Task<DataActionResult<Profile>> CreateProfile(Profile profile) {

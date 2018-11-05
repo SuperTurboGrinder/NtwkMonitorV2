@@ -7,6 +7,9 @@ import { NodeInfoDataCache } from './helpers/nodesInfoDataCache.helper';
 import { Observable, forkJoin } from 'rxjs';
 import { NodeInfoPopupDataService } from '../services/nodeInfoPopupData.service';
 import { NtwkNode } from '../model/httpModel/ntwkNode.model';
+import { TagFilterData } from '../model/httpModel/tagFilterData.model';
+import { MessagingService } from '../services/messaging.service';
+import { MessagesEnum } from '../model/servicesModel/messagesEnum.model';
 
 @Component({
     selector: 'app-tag-filter',
@@ -17,8 +20,8 @@ export class TagFilterComponent {
     private nodesListIsEmpty = false;
     private filteredViewNodesList: NodeData[] = null;
     private filteredMonitorNodesList: NodeData[] = null;
-    private viewNodesIDs: number[] = [];
-    private monitorNodesIDs: number[] = [];
+    private viewFilterData: TagFilterData = null;
+    private monitorFilterData: TagFilterData = null;
     private viewNodesInfoPopupDataCache: NodeInfoDataCache;
     private monitorNodesInfoPopupDataCache: NodeInfoDataCache;
 
@@ -67,35 +70,39 @@ export class TagFilterComponent {
         return this.filteredMonitorNodesList;
     }
 
-    public getViewNodesIDs(): number[] {
-        return this.viewNodesIDs;
+    public getViewTagsIDs(): number[] {
+        return this.viewFilterData.tagsIDs;
     }
 
-    public getMonitorNodesIDs(): number[] {
-        return this.monitorNodesIDs;
+    public getMonitorTagsIDs(): number[] {
+        return this.monitorFilterData.tagsIDs;
     }
 
     public deselectNode() {
         this.nodeInfoPopupService.setData(null);
     }
 
-    public applyOperationsViewNodesChange(newNodesIDs: number[]) {
+    public applyOperationsViewNodesChange(newTagsIDs: number[]) {
         this.filteredViewNodesList = null;
         this.loadingError = false;
-        this.settingsService.setCurrentProfilesViewTags(newNodesIDs)
+        this.settingsService.setCurrentProfilesViewTags(newTagsIDs)
         .subscribe(success => {
+            if (success) {
+                this.messaging.showMessage(MessagesEnum.UpdatedSuccessfully);
+            }
             this.refresh(true);
         });
     }
 
-    public applyMonitoredNodesChange(newNodesIDs: number[]) {
+    public applyMonitoredNodesChange(newTagsIDs: number[]) {
         this.filteredViewNodesList = null;
         this.loadingError = false;
-        this.settingsService.setCurrentProfilesMonitorTags(newNodesIDs)
+        this.settingsService.setCurrentProfilesMonitorTags(newTagsIDs)
         .subscribe(success => {
             if (success) {
-                this.refresh(true);
+                this.messaging.showMessage(MessagesEnum.UpdatedSuccessfully);
             }
+            this.refresh(true);
         });
     }
 
@@ -110,6 +117,7 @@ export class TagFilterComponent {
     }
 
     constructor(
+        private messaging: MessagingService,
         private nodeInfoPopupService: NodeInfoPopupDataService,
         private tagsService: TagsService,
         private nodesService: NodesService,
@@ -121,8 +129,8 @@ export class TagFilterComponent {
     private initialize() {
         forkJoin(
             this.nodesService.getNodesTree(),
-            this.settingsService.currentProfilesViewNodesIDs(),
-            this.settingsService.currentProfilesMonitorNodesIDs()
+            this.settingsService.currentProfilesViewTagFilterData(),
+            this.settingsService.currentProfilesMonitorTagFilterData()
         ).subscribe(results => {
             if (
                 results[0].success === false
@@ -132,8 +140,8 @@ export class TagFilterComponent {
                 this.loadingError = true;
                 return;
             }
-            this.viewNodesIDs = results[1].data;
-            this.monitorNodesIDs = results[2].data;
+            this.viewFilterData = results[1].data;
+            this.monitorFilterData = results[2].data;
             const allNodes = results[0].data.nodesTree.allNodes;
             const cwsData = results[0].data.cwsData;
             const nodesNum = allNodes.length;
@@ -145,12 +153,12 @@ export class TagFilterComponent {
             }
             this.filteredViewNodesList = allNodes
                 .filter(nData =>
-                    this.viewNodesIDs.includes(nData.nodeData.node.id)
+                    this.viewFilterData.nodesIDs.includes(nData.nodeData.node.id)
                 )
                 .map(nData => nData.nodeData);
             this.filteredMonitorNodesList = allNodes
                 .filter(nData =>
-                    this.monitorNodesIDs.includes(nData.nodeData.node.id)
+                    this.monitorFilterData.nodesIDs.includes(nData.nodeData.node.id)
                 )
                 .map(nData => nData.nodeData);
             this.viewNodesInfoPopupDataCache =

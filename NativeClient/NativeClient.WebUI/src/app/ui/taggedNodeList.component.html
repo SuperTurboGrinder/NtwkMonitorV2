@@ -82,24 +82,22 @@
                 </ng-template>
             </div>
             <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
-                <button
-                    type="button"
+                <span
                     class="btn btn-outline-primary square py-0 mx-1"
+                    routerLink="/tagFilteredView/filter"
                 >
                     Tag filter view
-                </button>
-                <button
-                    type="button"
+                </span>
+                <span
                     class="btn btn-outline-info square py-0 mx-1 bg-info text-white"
                 >
                     Operations view
-                </button>
-                <button
-                    type="button"
+                </span>
+                <span
                     class="btn btn-success square py-0 mx-1"
                 >
                     Ping filtered list
-                </button>
+                </span>
             </div>
         </div>
     </div>

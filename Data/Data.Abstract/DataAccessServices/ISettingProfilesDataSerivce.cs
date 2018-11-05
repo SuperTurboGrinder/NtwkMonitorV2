@@ -12,8 +12,8 @@ namespace Data.Abstract.DataAccessServices {
 //reporting errors through DataActionResult
 public interface ISettingsProfileDataService {
     Task<DataActionResult<IEnumerable<Profile>>> GetAllProfiles();
-    Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID);
-    Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID);
+    Task<DataActionResult<TagFilterData>> GetProfileViewTagFilterData(int profileID);
+    Task<DataActionResult<TagFilterData>> GetProfileMonitorTagFilterData(int profileID);
     Task<DataActionResult<Profile>> CreateProfile(Profile profile);
     Task<StatusMessage> SetProfileViewTagsSelection(int profileID, IEnumerable<int> tagIDs);
     Task<StatusMessage> SetProfileViewTagsSelectionToProfileMonitorFlagsSelection(int profileID);

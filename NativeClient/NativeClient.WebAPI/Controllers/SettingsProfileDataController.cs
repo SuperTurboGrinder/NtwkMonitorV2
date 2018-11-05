@@ -30,19 +30,19 @@ public class SettingsProfileDataController : BaseDataController {
         );
     }
     
-    // GET api/settingsProfiles/1/mainViewNodesIDs
-    [HttpGet("{profileID:int}/mainViewNodesIDs")]
-    public async Task<ActionResult> GetIDsOfNodesBySelectedTagsInProfileView(int profileID) {
+    // GET api/settingsProfiles/1/mainViewTagFilterData
+    [HttpGet("{profileID:int}/mainViewTagFilterData")]
+    public async Task<ActionResult> GetProfileViewTagFilterData(int profileID) {
         return ObserveDataOperationResult(
-            await data.GetIDsOfNodesBySelectedTagsInProfileView(profileID)
+            await data.GetProfileViewTagFilterData(profileID)
         );
     }
 
-    // GET api/settingsProfiles/1/monitorNodesIDs
-    [HttpGet("{profileID:int}/monitorNodesIDs")]
-    public async Task<ActionResult> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID) {
+    // GET api/settingsProfiles/1/monitorTagFilterData
+    [HttpGet("{profileID:int}/monitorTagFilterData")]
+    public async Task<ActionResult> GetProfileMonitorTagFilterData(int profileID) {
         return ObserveDataOperationResult(
-            await data.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID)
+            await data.GetProfileMonitorTagFilterData(profileID)
         );
     }
 

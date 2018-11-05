@@ -205,15 +205,15 @@ public class EFDataRepository : IDataRepository {
         );
     }
     
-    public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileView(int profileID) {
+    public async Task<DataActionResult<Model.ViewModel.TagFilterData>> GetProfileViewTagFilterData(int profileID) {
         return await PerformDataOperationOrLogExceptions(async () =>
-            await efDataSource.GetIDsOfNodesBySelectedTagsInProfileView(profileID)
+            await efDataSource.GetProfileViewTagFilterData(profileID)
         );
     }
     
-    public async Task<DataActionResult<IEnumerable<int>>> GetIDsOfNodesBySelectedTagsInProfileMonitor(int profileID) {
+    public async Task<DataActionResult<Model.ViewModel.TagFilterData>> GetProfileMonitorTagFilterData(int profileID) {
         return await PerformDataOperationOrLogExceptions(async () =>
-            await efDataSource.GetIDsOfNodesBySelectedTagsInProfileMonitor(profileID)
+            await efDataSource.GetProfileMonitorTagFilterData(profileID)
         );
     }
     
