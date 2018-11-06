@@ -68,19 +68,27 @@ export class SettingsProfilesService {
         );
     }
 
-    private updateCurrentProfileTagSet(
-        urlSuffix: string,
-        newTagsIDs: number[]
+    private pipeThroughCurrentProfileUpdateOnTrue(
+        orig: Observable<boolean>
     ): Observable<boolean> {
-        return this.httpDatasource.dataOperationRequest(
-            'post',
-            this.baseUrl + `/${this.currentProfileID}/${urlSuffix}`,
-            newTagsIDs
-        ).pipe(
+        return orig.pipe(
             concatMap(success => success
                 ? this.setCurrentProfile(this.currentProfileID)
                         .pipe(map(pr => success), first())
                 : of(success)
+            )
+        );
+    }
+
+    private updateCurrentProfileTagSet(
+        urlSuffix: string,
+        newTagsIDs: number[]
+    ): Observable<boolean> {
+        return this.pipeThroughCurrentProfileUpdateOnTrue(
+                this.httpDatasource.dataOperationRequest(
+                'post',
+                this.baseUrl + `/${this.currentProfileID}/${urlSuffix}`,
+                newTagsIDs
             )
         );
     }
@@ -100,16 +108,20 @@ export class SettingsProfilesService {
     }
 
     public setCurrentProfilesViewTagsToMonitorTags() {
-        return this.httpDatasource.operationRequest(
-            'post',
-            this.baseUrl + `/${this.currentProfileID}/setViewTagsToMonitorTags`
+        return this.pipeThroughCurrentProfileUpdateOnTrue(
+                this.httpDatasource.operationRequest(
+                'post',
+                this.baseUrl + `/${this.currentProfileID}/setViewTagsToMonitorTags`
+            )
         );
     }
 
     public setCurrentProfilesMonitorTagsToViewTags() {
-        return this.httpDatasource.operationRequest(
-            'post',
-            this.baseUrl + `/${this.currentProfileID}/setMonitorTagsToViewTags`
+        return this.pipeThroughCurrentProfileUpdateOnTrue(
+                this.httpDatasource.operationRequest(
+                'post',
+                this.baseUrl + `/${this.currentProfileID}/setMonitorTagsToViewTags`
+            )
         );
     }
 
@@ -130,10 +142,12 @@ export class SettingsProfilesService {
         newProfileState: SettingsProfile,
         callback: (success: boolean) => void
     ) {
-        return this.httpDatasource.dataOperationRequest(
-            'put',
-            this.baseUrl + `/${newProfileState.id}/update`,
-            newProfileState
+        return  this.pipeThroughCurrentProfileUpdateOnTrue(
+            this.httpDatasource.dataOperationRequest(
+                'put',
+                this.baseUrl + `/${newProfileState.id}/update`,
+                newProfileState
+            )
         ).subscribe(
             callback
         );

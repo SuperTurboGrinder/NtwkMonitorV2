@@ -2,17 +2,11 @@
     <div class="w-100 h-100 p-0 m-0" *ngIf="viewNodes !== null && isLoadingError === false; else stillEmptyBlock">
         <div class="h-100 p-0 m-0 text-center container-fluid" style="width:calc(100% - 16px)">
             <div class="row p-0 m-0" style="height: 30px; width:calc(100% + 16px)">
-                <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong>Operations view nodes</strong>
+                <div class="col-6 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
+                    <strong>Operations view filtered by tag</strong>
                 </div>
-                <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong>Operations view tags</strong>
-                </div>
-                <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong>Monitor selected nodes</strong>
-                </div>
-                <div class="col-3 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong>Monitor view tags</strong>
+                <div class="col-6 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
+                    <strong>Monitored nodes filtered by tag</strong>
                 </div>
             </div>
         
@@ -74,21 +68,10 @@
             </ng-template>
             <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
                 <span
-                    disabled
-                    class="btn btn-outline-primary square py-0 mx-1 bg-info text-white"
-                >
-                    Tag filter view
-                </span>
-                <span
-                    class="btn btn-outline-info square py-0 mx-1"
+                    class="btn btn-outline-info h-100 square mt-1 py-0 mr-2"
                     routerLink="/tagFilteredView/operations"
                 >
-                    Operations view
-                </span>
-                <span
-                    class="btn btn-success disabled square py-0 mx-1"
-                >
-                    Ping filtered list
+                    Back to operations view
                 </span>
             </div>
         </div>

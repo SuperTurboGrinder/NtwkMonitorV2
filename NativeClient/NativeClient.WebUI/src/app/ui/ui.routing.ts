@@ -95,7 +95,7 @@ export class UIRoutingConfig {
         },
         {
             path: 'tagFilteredView',
-            redirectTo: 'tagFilteredView/filter',
+            redirectTo: 'tagFilteredView/operations',
             pathMatch: 'prefix'
         },
         {

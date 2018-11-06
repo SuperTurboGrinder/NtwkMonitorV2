@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subscription, BehaviorSubject } from 'rxjs';
+import { Subscription, BehaviorSubject, forkJoin } from 'rxjs';
 import { first, skip } from 'rxjs/operators';
 
 import { PingService } from './ping.service';
@@ -87,13 +87,110 @@ export class PingCacheService {
         this.pingByID(nodeID);
     }
 
+    private pingListByID(
+        nodesIDs: number[],
+        finishCallback: () => void
+    ) {
+        const cellsAndIDs = nodesIDs.map(id => ({
+            id: id,
+            cell: this.getCell(id)
+        })).filter(val => val.cell.isLocked === false);
+        forkJoin(
+            cellsAndIDs.map(cellAndId => {
+                cellAndId.cell.setLock();
+                return this.pingService.getPing(cellAndId.id);
+            })
+        ).subscribe(pingResults => {
+            for (let i = 0; i < pingResults.length; i++) {
+                const cell = cellsAndIDs[i].cell;
+                cell.resetLock();
+                cell.value.next(
+                    pingResults[i].success === true
+                        ? pingResults[i].data
+                        : null
+                );
+            }
+            finishCallback();
+        });
+    }
+
+    public updateValues(
+        nodesIDs: number[],
+        finishCallback: () => void
+    ) {
+        this.pingListByID(nodesIDs, finishCallback);
+    }
+
     public silentTreeUpdate(roots: PingTree[]) {
-        roots.forEach((tree) => {
-            this.pingTree(tree, null);
+        this.pingTree(roots, null);
+        // roots.forEach((tree) => {
+        //    this.pingTree(tree, null);
+        // });
+    }
+
+    private extractPingTreeRoot(root: PingTree): {
+        id: number,
+        cell: PingCacheCell,
+        pingTree: PingTree
+    } {
+        return ({
+            id: root.id,
+            cell: this.getCell(root.id),
+            pingTree: root
         });
     }
 
     private pingTree(
+        roots: PingTree[],
+        errorCallback: (currentRoot: PingTree) => void
+    ) {
+        const thisLayerPingDataList = roots.
+            filter(r => r.isPingable === true)
+            .map(r => this.extractPingTreeRoot(r))
+            .concat(
+                roots
+                    .filter(r => r.isPingable === false)
+                    .map(r => r.children
+                        .map(c => this.extractPingTreeRoot(c))
+                    )
+                    .reduce((a, b) => a.concat(b))
+            )
+            .filter(val => val.cell.isLocked === false);
+        const nonPingable
+        console.log(currentPingDataList);
+        forkJoin(
+            currentPingDataList.map(data => {
+                data.cell.setLock();
+                return this.pingService.getPing(data.id);
+            })
+        ).subscribe(pingResults => {
+            for (let i = 0; i < pingResults.length; i++) {
+                const cell = currentPingDataList[i].cell;
+                const pingData = pingResults[i].data;
+                cell.resetLock();
+                cell.value.next(
+                    pingResults[i].success === true
+                        ? pingData
+                        : null
+                );
+                const success = pingResults[i].success
+                    && pingData.failed !== pingData.num;
+                const children = currentPingDataList[i].pingTree.children;
+                if (success) {
+                    this.pingTree(
+                        children, errorCallback
+                    );
+                } else {
+                    this.setFailedBranch(children);
+                    if (errorCallback) {
+                        errorCallback(currentPingDataList[i].pingTree);
+                    }
+                }
+            }
+        });
+    }
+
+    private pingTreeOld(
         root: PingTree,
         errorCallback: (currentRoot: PingTree) => void
     ) {
@@ -101,11 +198,11 @@ export class PingCacheService {
             this.subscribeToNextOnly(root.id,
                 ptd => {
                     if (ptd.failed !== ptd.num) {
-                        root.childrenIDs.forEach(
-                            nextRoot => this.pingTree(nextRoot, errorCallback)
+                        root.children.forEach(
+                            nextRoot => this.pingTreeOld(nextRoot, errorCallback)
                         );
                     } else {
-                        this.setFailedBranch(root.childrenIDs);
+                        this.setFailedBranch(root.children);
                         if (errorCallback) {
                             errorCallback(root);
                         }
@@ -114,8 +211,8 @@ export class PingCacheService {
             );
             this.pingByID(root.id);
         } else {
-            root.childrenIDs.forEach(
-                nextRoot => this.pingTree(nextRoot, errorCallback)
+            root.children.forEach(
+                nextRoot => this.pingTreeOld(nextRoot, errorCallback)
             );
         }
     }
@@ -128,7 +225,7 @@ export class PingCacheService {
                 num: 0,
                 avg: 0
             });
-            this.setFailedBranch(root.childrenIDs);
+            this.setFailedBranch(root.children);
         });
     }
 }
@@ -137,7 +234,7 @@ export class PingTree {
     public id: number;
     public isPingable: boolean;
     public isBranchPingable: boolean;
-    public childrenIDs: PingTree[];
+    public children: PingTree[];
 }
 
 class PingCacheCell {

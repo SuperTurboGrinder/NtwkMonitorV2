@@ -27,6 +27,7 @@ export class TaggedNodeListComponent {
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
     private nodesListIsEmpty = true;
     private isOperationsView = false;
+    private sortingByPingBlocked = false;
 
     private sorting: Sorting = Sorting.Default;
     private sortingDescending = false;
@@ -96,7 +97,9 @@ export class TaggedNodeListComponent {
     }
 
     public resortListByPing() {
-        if (this.sorting !== Sorting.ByPing) {
+        if (this.sorting !== Sorting.ByPing
+             || this.sortingByPingBlocked === true
+        ) {
             return;
         }
         this.sortedIndexes = this.pingSortedIndexes(this.filteredNodesList, this.sortingDescending);
@@ -176,6 +179,19 @@ export class TaggedNodeListComponent {
 
     public get isLoadingError() {
         return this.loadingError;
+    }
+
+    public pingFilteredList() {
+        this.sortingByPingBlocked = true;
+        this.pingCacheService.updateValues(
+            this.filteredNodesList.map(n => n.node.id),
+            () => {
+                this.sortingByPingBlocked = false;
+                if (this.sorting === Sorting.ByPing) {
+                    this.resortListByPing();
+                }
+            }
+        );
     }
 
     nodeTrackByFn(node_index: number) {

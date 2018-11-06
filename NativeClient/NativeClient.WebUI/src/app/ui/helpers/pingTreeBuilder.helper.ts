@@ -4,22 +4,19 @@ import { PingTree } from '../../services/pingCache.service';
 
 export class PingTreeBuilder {
     private static nodesSubtreeToPingTree(subtree: NtwkNodesSubtree): PingTree  {
-        const childrenPingTree: PingTree[] = [].concat(
-            ...subtree.children.map(
-                c => this.nodesSubtreeToPingTree(c)
-            )
-        );
         return {
             id: subtree.container.nodeData.node.id,
             isPingable: subtree.isPingable,
             isBranchPingable: subtree.isBranchPingable,
-            childrenIDs: childrenPingTree
+            children: subtree.children.map(
+                c => this.nodesSubtreeToPingTree(c)
+            )
         };
     }
 
     private static flattenPingTrees(roots: PingTree[]): PingTree[] {
-        const flatten = root => [root].concat(
-            ...root.childrenIDs.map(flatten)
+        const flatten = (root: PingTree) => [root].concat(
+            ...root.children.map(flatten)
         );
         return [].concat(...roots.map(flatten));
     }
@@ -33,8 +30,8 @@ export class PingTreeBuilder {
                 ? null : root
         ).filter(root => root != null);
         result.forEach(root =>
-            root.childrenIDs = this.cleanTreesFromUnpingableNodes(
-                root.childrenIDs
+            root.children = this.cleanTreesFromUnpingableNodes(
+                root.children
             )
         );
         return result;
