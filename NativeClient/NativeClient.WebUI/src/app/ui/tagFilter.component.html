@@ -24,7 +24,7 @@
                         <div class="p-0 m-0 w-100 h-100 font-italic text-secondary"
                             style="overflow-y: scroll"
                         >
-                            <div class="m-0 p-0 w-100"
+                            <div class="m-0 p-0 w-100 btn-light border-bottom"
                                 *ngFor="let nodeData of viewNodes; let i = index"
                                 (mouseenter)="selectViewNode(i, $event)"
                                 (mouseleave)="deselectNode($event)"
@@ -46,7 +46,7 @@
                         <div class="p-0 m-0 w-100 h-100 font-italic text-secondary"
                             style="overflow-y: scroll"
                         >
-                            <div class="m-0 p-0 w-100"
+                            <div class="m-0 p-0 w-100 btn-light border-bottom"
                                 *ngFor="let nodeData of monitorNodes; let i = index"
                                 (mouseenter)="selectMonitorNode(i, $event)"
                                 (mouseleave)="deselectNode($event)"
@@ -72,6 +72,16 @@
                     routerLink="/tagFilteredView/operations"
                 >
                     Back to operations view
+                </span>
+                <span
+                    class="btn btn-warning h-100 square mt-1 py-0 mr-2"
+                >
+                    Apply saved filter from mon. to op.
+                </span>
+                <span
+                    class="btn btn-warning h-100 square mt-1 py-0 mr-2"
+                >
+                    Apply saved filter from op. to mon.
                 </span>
             </div>
         </div>

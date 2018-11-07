@@ -1,7 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, AfterViewInit, HostListener } from '@angular/core';
 
 import { NodeInfoPopupData } from '../../model/viewModel/nodeInfoPopupData.model';
-import { ScreenSizeService } from '../../services/screenSize.service';
 import { Subscription } from 'rxjs';
 import { NodeInfoPopupDataService } from '../../services/nodeInfoPopupData.service';
 
@@ -9,10 +8,9 @@ import { NodeInfoPopupDataService } from '../../services/nodeInfoPopupData.servi
     selector: 'app-node-info-popup',
     templateUrl: './nodeInfoPopup.component.html'
 })
-export class NodeInfoPopupComponent implements OnDestroy {
+export class NodeInfoPopupComponent implements AfterViewInit {
     private data: NodeInfoPopupData = null;
-    private screenWH: {width: number, height: number};
-    private screenSizeSubscription: Subscription;
+    private screenWH = ({width: 800, height: 600});
     private nodeInfoPopupDataSubscription: Subscription;
 
     nodeName(): string { return this.data.node.name; }
@@ -21,18 +19,20 @@ export class NodeInfoPopupComponent implements OnDestroy {
     webServicesNames(): string[] { return this.data.webServicesNames; }
 
     constructor(
-        screenSizeService: ScreenSizeService,
         nodeInfoPopupDataService: NodeInfoPopupDataService
     ) {
-        this.screenSizeSubscription = screenSizeService
-            .subscribeToScreenSize(scrSize => this.screenWH = scrSize);
         this.nodeInfoPopupDataSubscription = nodeInfoPopupDataService
             .subscribeToData(data => this.data = data);
     }
 
-    ngOnDestroy() {
-        this.screenSizeSubscription.unsubscribe();
-        this.nodeInfoPopupDataSubscription.unsubscribe();
+    ngAfterViewInit() {
+        this.onResize();
+    }
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.screenWH.width = document.body.clientWidth;
+        this.screenWH.height = document.body.clientHeight;
     }
 
     get positionStyles(): any {
@@ -40,10 +40,16 @@ export class NodeInfoPopupComponent implements OnDestroy {
         const isLeft = this.data.screenPos.x < this.screenWH.width / 2;
         const isTop = this.data.screenPos.y < this.screenWH.height / 2;
         const shift = { x: isLeft ? +3 : -3, y: isTop ? +3 : -3 };
+        const posX = !isLeft
+            ? this.screenWH.width - this.data.screenPos.x
+            : this.data.screenPos.x;
+        const posY = !isTop
+            ? this.screenWH.height - this.data.screenPos.y
+            : this.data.screenPos.y;
         styles[isTop ? 'top' : 'bottom']
-            = `${this.data.screenPos.y + shift.y}px`;
+            = `${posY + shift.y}px`;
         styles[isLeft ? 'left' : 'right']
-            = `${this.data.screenPos.x + shift.x}px`;
+            = `${posX + shift.x}px`;
         return styles;
     }
 

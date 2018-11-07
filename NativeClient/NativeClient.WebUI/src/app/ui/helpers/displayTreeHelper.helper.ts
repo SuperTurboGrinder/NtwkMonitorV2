@@ -170,8 +170,8 @@ export class DisplayTreeHelper {
                 } else { // current < prev
                     // use last on stack or empty
                     prefix = branchLengthStack.length === 0 ? prefixes[0]
-                        : prefix.substr(0, currentLayer - startLayer)
-                            +  (lastOn(branchLengthStack) === 1) ? '└' : '├';
+                        : prefix.substr(0, currentLayer - startLayer - 1)
+                            +  ((lastOn(branchLengthStack) === 1) ? '└' : '├');
                     if (branchLengthStack.length > 0) {
                         decrementLastValue(branchLengthStack);
                         if (lastOn(branchLengthStack) === 0) {

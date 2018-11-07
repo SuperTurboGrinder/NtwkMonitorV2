@@ -184,7 +184,9 @@ export class TaggedNodeListComponent {
     public pingFilteredList() {
         this.sortingByPingBlocked = true;
         this.pingCacheService.updateValues(
-            this.filteredNodesList.map(n => n.node.id),
+            this.filteredNodesList
+                .filter(n => n.node.isOpenPing === true)
+                .map(n => n.node.id),
             () => {
                 this.sortingByPingBlocked = false;
                 if (this.sorting === Sorting.ByPing) {

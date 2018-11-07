@@ -12,7 +12,6 @@ import { NodesService } from './nodes.service';
 import { TagsService } from './tags.service';
 import { SettingsProfilesService } from './settingsProfiles.service';
 import { BaseURL } from './baseUrl.token';
-import { ScreenSizeService } from './screenSize.service';
 import { NodeInfoPopupDataService } from './nodeInfoPopupData.service';
 import { TreeCollapsingService } from './treeCollapsing.service';
 import { CustomWebServicesService } from './customWebServices.service';
@@ -27,7 +26,6 @@ import { CustomWebServicesService } from './customWebServices.service';
   providers: [
     { provide: BaseURL, useValue: 'http://localhost:5001/api/' },
     HttpClient,
-    ScreenSizeService,
     TreeCollapsingService,
     NodeInfoPopupDataService,
     MessagingService,

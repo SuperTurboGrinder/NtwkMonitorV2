@@ -140,32 +140,36 @@ export class PingCacheService {
         });
     }
 
+    private preparePingDataLayer(treeRoots: PingTree[]): {
+        id: number,
+        cell: PingCacheCell,
+        pingTree: PingTree
+    }[] {
+        return treeRoots
+            .filter(r => r.isPingable === true)
+            .map(r => this.extractPingTreeRoot(r))
+            .concat(
+                treeRoots
+                    .filter(r => r.isPingable === false)
+                    .map(r => this.preparePingDataLayer(r.children))
+                    .reduce((a, b) => a.concat(b), [])
+            );
+    }
+
     private pingTree(
         roots: PingTree[],
         errorCallback: (currentRoot: PingTree) => void
     ) {
-        const thisLayerPingDataList = roots.
-            filter(r => r.isPingable === true)
-            .map(r => this.extractPingTreeRoot(r))
-            .concat(
-                roots
-                    .filter(r => r.isPingable === false)
-                    .map(r => r.children
-                        .map(c => this.extractPingTreeRoot(c))
-                    )
-                    .reduce((a, b) => a.concat(b))
-            )
-            .filter(val => val.cell.isLocked === false);
-        const nonPingable
-        console.log(currentPingDataList);
+        const thisLayerPingDataList =
+            this.preparePingDataLayer(roots);
         forkJoin(
-            currentPingDataList.map(data => {
+            thisLayerPingDataList.map(data => {
                 data.cell.setLock();
                 return this.pingService.getPing(data.id);
             })
         ).subscribe(pingResults => {
             for (let i = 0; i < pingResults.length; i++) {
-                const cell = currentPingDataList[i].cell;
+                const cell = thisLayerPingDataList[i].cell;
                 const pingData = pingResults[i].data;
                 cell.resetLock();
                 cell.value.next(
@@ -175,7 +179,7 @@ export class PingCacheService {
                 );
                 const success = pingResults[i].success
                     && pingData.failed !== pingData.num;
-                const children = currentPingDataList[i].pingTree.children;
+                const children = thisLayerPingDataList[i].pingTree.children;
                 if (success) {
                     this.pingTree(
                         children, errorCallback
@@ -183,7 +187,7 @@ export class PingCacheService {
                 } else {
                     this.setFailedBranch(children);
                     if (errorCallback) {
-                        errorCallback(currentPingDataList[i].pingTree);
+                        errorCallback(thisLayerPingDataList[i].pingTree);
                     }
                 }
             }
