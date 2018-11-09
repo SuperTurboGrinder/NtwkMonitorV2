@@ -4,13 +4,15 @@ import { first, skip } from 'rxjs/operators';
 
 import { PingService } from './ping.service';
 import { PingTestData } from '../model/httpModel/pingTestData.model';
+import { SoundNotificatonService } from './soundNotificationService';
 
 @Injectable()
 export class PingCacheService {
     private pingCache = new Map<number, PingCacheCell>();
 
     constructor(
-        private pingService: PingService
+        private pingService: PingService,
+        private sounds: SoundNotificatonService
     ) {}
 
     isLocked(nodeID: number): boolean {
@@ -121,8 +123,11 @@ export class PingCacheService {
         this.pingListByID(nodesIDs, finishCallback);
     }
 
-    public silentTreeUpdate(roots: PingTree[]) {
-        this.pingTree(roots, null);
+    public noMessagesTreeUpdate(roots: PingTree[]) {
+        this.pingTree(
+            roots,
+            _ => this.sounds.playFailedPingAlarm()
+        );
         // roots.forEach((tree) => {
         //    this.pingTree(tree, null);
         // });
@@ -158,7 +163,8 @@ export class PingCacheService {
 
     private pingTree(
         roots: PingTree[],
-        errorCallback: (currentRoot: PingTree) => void
+        errorCallback: (currentRoot: PingTree) => void,
+        skipChildrenOfFailedNodes = true
     ) {
         const thisLayerPingDataList =
             this.preparePingDataLayer(roots);
@@ -180,45 +186,19 @@ export class PingCacheService {
                 const success = pingResults[i].success
                     && pingData.failed !== pingData.num;
                 const children = thisLayerPingDataList[i].pingTree.children;
-                if (success) {
+                if (success === false
+                && skipChildrenOfFailedNodes === true) {
+                    this.setFailedBranch(children);
+                } else {
                     this.pingTree(
                         children, errorCallback
                     );
-                } else {
-                    this.setFailedBranch(children);
-                    if (errorCallback) {
-                        errorCallback(thisLayerPingDataList[i].pingTree);
-                    }
+                }
+                if (success === false && errorCallback !== null) {
+                    errorCallback(thisLayerPingDataList[i].pingTree);
                 }
             }
         });
-    }
-
-    private pingTreeOld(
-        root: PingTree,
-        errorCallback: (currentRoot: PingTree) => void
-    ) {
-        if (root.isPingable) {
-            this.subscribeToNextOnly(root.id,
-                ptd => {
-                    if (ptd.failed !== ptd.num) {
-                        root.children.forEach(
-                            nextRoot => this.pingTreeOld(nextRoot, errorCallback)
-                        );
-                    } else {
-                        this.setFailedBranch(root.children);
-                        if (errorCallback) {
-                            errorCallback(root);
-                        }
-                    }
-                }
-            );
-            this.pingByID(root.id);
-        } else {
-            root.children.forEach(
-                nextRoot => this.pingTreeOld(nextRoot, errorCallback)
-            );
-        }
     }
 
     setFailedBranch(roots: PingTree[]) {

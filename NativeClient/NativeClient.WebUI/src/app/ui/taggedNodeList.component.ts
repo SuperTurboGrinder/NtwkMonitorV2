@@ -27,13 +27,17 @@ export class TaggedNodeListComponent {
     private nodeInfoPopupDataCache: NodeInfoDataCache = null;
     private nodesListIsEmpty = true;
     private isOperationsView = false;
-    private sortingByPingBlocked = false;
+    private filteredNodesListPingInProgress = false;
 
     private sorting: Sorting = Sorting.Default;
     private sortingDescending = false;
 
     public get isFilterMode() {
         return this.isOperationsView === false;
+    }
+
+    public get isWholeListPingInProgress() {
+        return this.filteredNodesListPingInProgress;
     }
 
     public switchToOperationsMode() {
@@ -98,7 +102,7 @@ export class TaggedNodeListComponent {
 
     public resortListByPing() {
         if (this.sorting !== Sorting.ByPing
-             || this.sortingByPingBlocked === true
+             || this.filteredNodesListPingInProgress === true
         ) {
             return;
         }
@@ -182,13 +186,13 @@ export class TaggedNodeListComponent {
     }
 
     public pingFilteredList() {
-        this.sortingByPingBlocked = true;
+        this.filteredNodesListPingInProgress = true;
         this.pingCacheService.updateValues(
             this.filteredNodesList
                 .filter(n => n.node.isOpenPing === true)
                 .map(n => n.node.id),
             () => {
-                this.sortingByPingBlocked = false;
+                this.filteredNodesListPingInProgress = false;
                 if (this.sorting === Sorting.ByPing) {
                     this.resortListByPing();
                 }
@@ -213,7 +217,7 @@ export class TaggedNodeListComponent {
         private nodeInfoPopupService: NodeInfoPopupDataService,
         private tagsService: TagsService,
         private nodesService: NodesService,
-        private settingsService: SettingsProfilesService,
+        private settingsService: SettingsProfilesService
     ) {
         this.initialize();
     }
@@ -226,8 +230,7 @@ export class TaggedNodeListComponent {
         .subscribe(results => {
             const treeResult = results[0];
             const viewTagFilterDataResult = results[1];
-            if (treeResult.success === false
-            || viewTagFilterDataResult.success === false) {
+            if (treeResult.success === false) {
                 this.loadingError = true;
                 return;
             }
@@ -238,7 +241,7 @@ export class TaggedNodeListComponent {
             } else {
                 this.nodesListIsEmpty = false;
             }
-            const viewNodesIDs = viewTagFilterDataResult.data.nodesIDs;
+            const viewNodesIDs = viewTagFilterDataResult.nodesIDs;
             const allNodes = treeResult.data.nodesTree.allNodes;
             this.filteredNodesList = allNodes
                 .filter(nData =>

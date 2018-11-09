@@ -15,6 +15,8 @@ import { BaseURL } from './baseUrl.token';
 import { NodeInfoPopupDataService } from './nodeInfoPopupData.service';
 import { TreeCollapsingService } from './treeCollapsing.service';
 import { CustomWebServicesService } from './customWebServices.service';
+import { SoundNotificatonService } from './soundNotificationService';
+import { PingMonitorService } from './pingMonitor.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,9 @@ import { CustomWebServicesService } from './customWebServices.service';
     NodesService,
     TagsService,
     SettingsProfilesService,
-    CustomWebServicesService
+    CustomWebServicesService,
+    SoundNotificatonService,
+    PingMonitorService
   ],
 })
 export class ServicesModule { }

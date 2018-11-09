@@ -21,6 +21,7 @@ export class PingDisplayComponent implements OnDestroy {
         this._node = node;
         if (this.subsctiption != null) {
             this.subsctiption.unsubscribe();
+            this.pingValue = null;
         }
         this.subsctiption = this.pingCache.subscribeToValue(
             this.node.id,

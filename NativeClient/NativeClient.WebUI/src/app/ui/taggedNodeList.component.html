@@ -81,12 +81,14 @@
                 </ng-template>
             </div>
             <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
-                <span
+                <button
+                    type="button"
                     class="btn btn-success h-100 square mt-1 py-0 mr-3"
+                    [disabled]="isWholeListPingInProgress"
                     (click)="pingFilteredList()"
                 >
                     Ping filtered list
-                </span>
+                </button>
                 <span
                     class="btn btn-outline-primary h-100 square mt-1 py-0"
                     routerLink="/tagFilteredView/filter"

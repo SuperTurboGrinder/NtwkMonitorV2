@@ -39,7 +39,7 @@ export class NodeInfoPopupComponent implements AfterViewInit {
         const styles: {[k: string]: any} = {};
         const isLeft = this.data.screenPos.x < this.screenWH.width / 2;
         const isTop = this.data.screenPos.y < this.screenWH.height / 2;
-        const shift = { x: isLeft ? +3 : -3, y: isTop ? +3 : -3 };
+        const offset = 10;
         const posX = !isLeft
             ? this.screenWH.width - this.data.screenPos.x
             : this.data.screenPos.x;
@@ -47,9 +47,9 @@ export class NodeInfoPopupComponent implements AfterViewInit {
             ? this.screenWH.height - this.data.screenPos.y
             : this.data.screenPos.y;
         styles[isTop ? 'top' : 'bottom']
-            = `${posY + shift.y}px`;
+            = `${posY + offset}px`;
         styles[isLeft ? 'left' : 'right']
-            = `${posX + shift.x}px`;
+            = `${posX + offset}px`;
         return styles;
     }
 

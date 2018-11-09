@@ -134,14 +134,12 @@ export class TagFilterComponent {
         ).subscribe(results => {
             if (
                 results[0].success === false
-                || results[1].success === false
-                || results[2].success === false
             ) {
                 this.loadingError = true;
                 return;
             }
-            this.viewFilterData = results[1].data;
-            this.monitorFilterData = results[2].data;
+            this.viewFilterData = results[1];
+            this.monitorFilterData = results[2];
             const allNodes = results[0].data.nodesTree.allNodes;
             const cwsData = results[0].data.cwsData;
             const nodesNum = allNodes.length;
