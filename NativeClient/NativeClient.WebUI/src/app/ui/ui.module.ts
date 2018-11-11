@@ -45,6 +45,7 @@ import { HubUIComponent } from './hubUI.component';
 import { EditorComponent } from './crud/editor.component';
 import { FormHostComponent } from './crud/formHost.component';
 import { TagFilterComponent } from './tagFilter.component';
+import { PingMonitorPanelComponent } from './pingMonitorPanel.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { TagFilterComponent } from './tagFilter.component';
     HubUIComponent,
     EditorComponent,
     FormHostComponent,
-    TagFilterComponent
+    TagFilterComponent,
+    PingMonitorPanelComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -98,6 +100,7 @@ import { TagFilterComponent } from './tagFilter.component';
   exports: [
     NodeInfoPopupComponent,
     MessageDisplayComponent,
+    PingMonitorPanelComponent,
     UIMainComponent
   ],
   providers: [],

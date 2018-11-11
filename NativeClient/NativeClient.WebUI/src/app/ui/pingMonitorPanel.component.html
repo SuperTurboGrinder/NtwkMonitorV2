@@ -1,0 +1,57 @@
+<div style="position:fixed;top:0;right:0; width: 65%"
+    class="px-2"
+>
+    <div
+        class="border-left border-right border-secondary bg-light p-2"
+        style="border-width: 6px !important"
+        *ngIf="isOpened"
+    >
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+        <div>test</div>
+    </div>
+    <div class="w-100 text-center bg-secondary border border-secondary border-top-0 rounded-bottom">
+        <span
+            class="btn btn-light square rounded-bottom py-0 pb-1 px-2"
+            [ngClass]="{
+                'rounded-bottom': isOpened === false,
+                'rounded-top': isOpened
+            }"
+            style="line-height: 6px;"
+            (click)="isOpened = !isOpened"
+        >
+            <strong *ngIf="isOpened === false; else closeButtonBlock">
+                <i style="line-height: 6px" 
+                    class="fa fa-angle-down" aria-hidden="true"
+                ></i>
+                <i style="line-height: 6px"
+                    class="fa fa-angle-down px-1" aria-hidden="true"
+                ></i>
+                <i style="line-height: 6px" 
+                    class="fa fa-angle-down" aria-hidden="true"
+                ></i>
+            </strong>
+            <ng-template #closeButtonBlock>
+                <strong>
+                    <i style="line-height: 6px" 
+                        class="fa fa-angle-up" aria-hidden="true"
+                    ></i>
+                    <i style="line-height: 6px"
+                        class="fa fa-angle-up px-1" aria-hidden="true"
+                    ></i>
+                    <i style="line-height: 6px" 
+                        class="fa fa-angle-up" aria-hidden="true"
+                    ></i>
+                </strong>
+            </ng-template>
+        </span>
+    </div>
+</div>

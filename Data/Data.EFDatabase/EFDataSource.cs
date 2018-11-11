@@ -261,13 +261,6 @@ public class EFDataSource : IEFDbDataSource {
             .Where(c => c.AncestorID == nodeID)
             .Select(c => c.DescendantID)
             .Distinct();
-        NodeClosure subtreeRootToTreeRootClosure = 
-            await context.NodesClosureTable
-                .AsNoTracking()
-                .SingleAsync(c =>
-                    c.AncestorID == null &&
-                    c.DescendantID == nodeID
-                );
         IQueryable<NodeClosure> oldSubtreeClosures = context.NodesClosureTable
             .Where(c => subtreeNodesIDs.Contains(c.DescendantID));
         IQueryable<NodeClosure> oldClosuresUnderSubtree = oldSubtreeClosures
@@ -278,9 +271,8 @@ public class EFDataSource : IEFDbDataSource {
         var subtreeNodesAboveSubtreeRoot =
             oldSubtreeClosures
                 .Where(c => 
-                    (c.AncestorID == c.DescendantID &&
-                    subtreeNodesIDs.Contains((int)c.AncestorID)) &&
-                    c.DescendantID != nodeID
+                    c.AncestorID == nodeID && c.DescendantID != nodeID &&
+                    subtreeNodesIDs.Contains(c.DescendantID)
                 )
                 .Select(c => new { c.DescendantID, c.Distance });
         List<NodeClosure> newClosuresUnderSubtreeForSubtreeRoot = 
@@ -300,7 +292,8 @@ public class EFDataSource : IEFDbDataSource {
                             ID = 0,
                             AncestorID = c.AncestorID,
                             DescendantID = d.DescendantID,
-                            Distance = c.Distance + d.Distance + 1
+                            Distance = c.Distance + d.Distance
+                                + (c.AncestorID == null ? 0 : 1)
                         }
                     )
                 ).SelectMany(cl => cl)
@@ -308,10 +301,24 @@ public class EFDataSource : IEFDbDataSource {
         NtwkNode subtreeRootNode = await context.Nodes.FindAsync(nodeID);
 
         subtreeRootNode.ParentID = newParentIDOrNull;
+        /* Debug output
+        Action<string, NodeClosure[]> output = (title, arr) => {
+            Console.WriteLine(title);
+            foreach(var t in arr) {
+                Console.WriteLine($"A-D-d ({t.AncestorID}, {t.DescendantID}, {t.Distance})");
+            }
+        };
+        output("Old closures under subtree", oldClosuresUnderSubtree.ToArray());
+        output("New closures under subtree for root", newClosuresUnderSubtreeForSubtreeRoot.ToArray());
+        output("New closures under subtree for other subtree nodes", newClosuresUnderSubtreeForNodesAboveSubtreeRoot.ToArray());
+        */
         context.NodesClosureTable.RemoveRange(oldClosuresUnderSubtree);
         context.NodesClosureTable.AddRange(newClosuresUnderSubtreeForSubtreeRoot);
         context.NodesClosureTable.AddRange(newClosuresUnderSubtreeForNodesAboveSubtreeRoot);
+        var oldSubtreeClosuresArray = oldSubtreeClosures.ToArray();
         await context.SaveChangesAsync();
+        //output("All old subtree closures", oldSubtreeClosuresArray);
+        //output("All new subtree closures", oldSubtreeClosures.ToArray());
     }
 
     public async Task<IEnumerable<Profile>> GetAllProfiles() {

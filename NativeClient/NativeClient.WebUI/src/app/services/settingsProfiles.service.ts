@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, BehaviorSubject, of, Subscription, forkJoin } from 'rxjs';
-import { map, first, switchMap, concatMap, take } from 'rxjs/operators';
+import { map, first, switchMap, concatMap, take, filter, last } from 'rxjs/operators';
 
 import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { HTTPDatasource } from './http.datasource';
@@ -17,8 +17,7 @@ class CurrentProfileData {
 @Injectable()
 export class SettingsProfilesService {
     private currentProfileID = -1; // not assigned
-    private currentProfileDataSubject:
-        BehaviorSubject<CurrentProfileData> = null;
+    private currentProfileDataSubject = new BehaviorSubject<CurrentProfileData>(null);
     private baseUrl: string = null;
 
     constructor(
@@ -42,14 +41,17 @@ export class SettingsProfilesService {
             monitorTagFilter: TagFilterData
         }) => void
     ): Subscription {
-        return this.currentProfileDataSubject.subscribe(callback);
+        return this.currentProfileDataSubject.pipe(
+            filter(data => data !== null)
+        )
+        .subscribe(callback);
     }
 
     public isCurrentProfileSet() {
         return this.currentProfileID !== -1;
     }
 
-    public setCurrentProfile(id: number): Observable<CurrentProfileData> {
+    public setCurrentProfile(id: number) {
         this.currentProfileID = id;
         const newCurrentProfile = this.getProfiles().pipe(
             map(
@@ -70,7 +72,7 @@ export class SettingsProfilesService {
                 'get',
                 this.baseUrl + `/${this.currentProfileID}/monitorTagFilterData`
             );
-        return forkJoin(
+        const resultObservable = forkJoin(
             newCurrentProfile,
             newCurrentPrifileViewFilterData,
             newCurrentProfileMonitorFilterData
@@ -85,14 +87,12 @@ export class SettingsProfilesService {
                 viewTagFilter:  results[1].data,
                 monitorTagFilter: results[2].data
             });
-            if (this.currentProfileDataSubject == null) {
-                this.currentProfileDataSubject =
-                    new BehaviorSubject(data);
-            } else {
-                this.currentProfileDataSubject.next(data);
-            }
-            return this.currentProfileDataSubject;
+            return of(data);
         }));
+        resultObservable.subscribe(data => {
+            this.currentProfileDataSubject.next(data);
+        });
+        return resultObservable;
     }
 
     public isCurrentProfileID(id: number): boolean {
@@ -101,15 +101,17 @@ export class SettingsProfilesService {
 
     public currentProfilesViewTagFilterData(): Observable<TagFilterData> {
         return this.currentProfileDataSubject.asObservable().pipe(
-            map(data => data.viewTagFilter),
-            take(1)
+            filter(data => data !== null),
+            take(1),
+            map(data => data.viewTagFilter)
         );
     }
 
     public currentProfilesMonitorTagFilterData(): Observable<TagFilterData> {
         return this.currentProfileDataSubject.asObservable().pipe(
-            map(data => data.monitorTagFilter),
-            take(1)
+            filter(data => data !== null),
+            take(1),
+            map(data => data.monitorTagFilter)
         );
     }
 
