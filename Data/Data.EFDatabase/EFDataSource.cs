@@ -293,7 +293,6 @@ public class EFDataSource : IEFDbDataSource {
                             AncestorID = c.AncestorID,
                             DescendantID = d.DescendantID,
                             Distance = c.Distance + d.Distance
-                                + (c.AncestorID == null ? 0 : 1)
                         }
                     )
                 ).SelectMany(cl => cl)
