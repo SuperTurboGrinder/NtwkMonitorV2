@@ -17,6 +17,8 @@ import { TreeCollapsingService } from './treeCollapsing.service';
 import { CustomWebServicesService } from './customWebServices.service';
 import { SoundNotificatonService } from './soundNotificationService';
 import { PingMonitorService } from './pingMonitor.service';
+import { MonitoringDataService } from './monitoringData.service';
+import { CurrentMonitoringSessionDataService } from './currentMonitorSessionData.service';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,9 @@ import { PingMonitorService } from './pingMonitor.service';
     SettingsProfilesService,
     CustomWebServicesService,
     SoundNotificatonService,
-    PingMonitorService
+    PingMonitorService,
+    MonitoringDataService,
+    CurrentMonitoringSessionDataService
   ],
 })
 export class ServicesModule { }

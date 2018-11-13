@@ -123,14 +123,35 @@ export class PingCacheService {
         this.pingListByID(nodesIDs, finishCallback);
     }
 
-    public noMessagesTreeUpdate(roots: PingTree[]) {
+    public treeUpdateWithoutCallback(roots: PingTree[]) {
         this.pingTree(
             roots,
-            _ => this.sounds.playFailedPingAlarm()
+            (success, _) => {
+                if (success === false) {
+                    this.sounds.playFailedPingAlarm();
+                }
+            }
         );
-        // roots.forEach((tree) => {
-        //    this.pingTree(tree, null);
-        // });
+    }
+
+    public treeUpdateWithCallback(
+        roots: PingTree[],
+        forEachPingedCallback: (
+            success: boolean,
+            currentRoot: PingTree
+        ) => void,
+        skipChildrenOfFailedNodes: boolean
+    ) {
+        this.pingTree(
+            roots,
+            (success, pingTreeNode) => {
+                if (success === false) {
+                    this.sounds.playFailedPingAlarm();
+                }
+                forEachPingedCallback(success, pingTreeNode);
+            },
+            skipChildrenOfFailedNodes
+        );
     }
 
     private extractPingTreeRoot(root: PingTree): {
@@ -163,7 +184,56 @@ export class PingCacheService {
 
     private pingTree(
         roots: PingTree[],
-        errorCallback: (currentRoot: PingTree) => void,
+        forEachPingedCallback: (
+            success: boolean,
+            currentRoot: PingTree
+        ) => void,
+        skipChildrenOfFailedNodes = true
+    ) {
+        const thisLayerPingDataList =
+            this.preparePingDataLayer(roots);
+        const pingObservables = thisLayerPingDataList.map(data => {
+            data.cell.setLock();
+            return this.pingService.getPing(data.id);
+        });
+        for (let i = 0; i < pingObservables.length; i++) {
+            pingObservables[i].subscribe(pingResult => {
+                const cell = thisLayerPingDataList[i].cell;
+                const pingData = pingResult.data;
+                cell.resetLock();
+                cell.value.next(
+                    pingResult.success === true
+                        ? pingData
+                        : null
+                );
+                const success = pingResult.success
+                    && pingData.failed !== pingData.num;
+                const children = thisLayerPingDataList[i].pingTree.children;
+                if (forEachPingedCallback !== null) {
+                    forEachPingedCallback(
+                        success,
+                        thisLayerPingDataList[i].pingTree
+                    );
+                }
+
+                if (success === false
+                && skipChildrenOfFailedNodes === true) {
+                    this.setFailedBranch(children);
+                } else {
+                    this.pingTree(
+                        children, forEachPingedCallback
+                    );
+                }
+           });
+        }
+    }
+
+    private joinedPingTree(
+        roots: PingTree[],
+        forEachPingedCallback: (
+            success: boolean,
+            currentRoot: PingTree
+        ) => void,
         skipChildrenOfFailedNodes = true
     ) {
         const thisLayerPingDataList =
@@ -186,16 +256,20 @@ export class PingCacheService {
                 const success = pingResults[i].success
                     && pingData.failed !== pingData.num;
                 const children = thisLayerPingDataList[i].pingTree.children;
+                if (forEachPingedCallback !== null) {
+                    forEachPingedCallback(
+                        success,
+                        thisLayerPingDataList[i].pingTree
+                    );
+                }
+
                 if (success === false
                 && skipChildrenOfFailedNodes === true) {
                     this.setFailedBranch(children);
                 } else {
                     this.pingTree(
-                        children, errorCallback
+                        children, forEachPingedCallback
                     );
-                }
-                if (success === false && errorCallback !== null) {
-                    errorCallback(thisLayerPingDataList[i].pingTree);
                 }
             }
         });

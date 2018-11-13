@@ -127,7 +127,7 @@ export class NodesTreeViewComponent {
     public pingBranch(i: number) {
         const branch = this.displayTreeHelper.flatPingTree[i];
         if (branch !== null) {
-            this.pingCacheService.noMessagesTreeUpdate(
+            this.pingCacheService.treeUpdateWithoutCallback(
                 [branch]
             );
         }
