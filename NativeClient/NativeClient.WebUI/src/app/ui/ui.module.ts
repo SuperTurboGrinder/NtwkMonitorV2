@@ -46,6 +46,7 @@ import { EditorComponent } from './crud/editor.component';
 import { FormHostComponent } from './crud/formHost.component';
 import { TagFilterComponent } from './tagFilter.component';
 import { PingMonitorPanelComponent } from './pingMonitorPanel.component';
+import { MonitorSessionViewerComponent } from './misc/monitorSessionViewer.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { PingMonitorPanelComponent } from './pingMonitorPanel.component';
     EditorComponent,
     FormHostComponent,
     TagFilterComponent,
-    PingMonitorPanelComponent
+    PingMonitorPanelComponent,
+    MonitorSessionViewerComponent
   ],
   imports: [
     BrowserAnimationsModule,

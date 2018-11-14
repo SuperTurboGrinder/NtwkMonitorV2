@@ -6,6 +6,7 @@ export class PingTreeBuilder {
     private static nodesSubtreeToPingTree(subtree: NtwkNodesSubtree): PingTree  {
         return {
             id: subtree.container.nodeData.node.id,
+            name: subtree.container.nodeData.node.name,
             isPingable: subtree.isPingable,
             isBranchPingable: subtree.isBranchPingable,
             children: subtree.children.map(

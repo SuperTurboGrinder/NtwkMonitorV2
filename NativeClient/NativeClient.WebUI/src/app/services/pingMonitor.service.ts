@@ -4,10 +4,9 @@ import { Subscription, Observable, timer, of } from 'rxjs';
 import { TagFilterData } from '../model/httpModel/tagFilterData.model';
 import { NodesService } from './nodes.service';
 import { map, switchMap } from 'rxjs/operators';
-import { PingTree, PingCacheService } from './pingCache.service';
+import { PingTree, PingCacheService, TreePingFinishedData } from './pingCache.service';
 import { PingTreeBuilder } from '../ui/helpers/pingTreeBuilder.helper';
 import { TreeTrimmingHelper } from '../ui/helpers/treeTrimmingHelper.helper';
-import { MonitoringDataService } from './monitoringData.service';
 import { HTTPResult } from '../model/servicesModel/httpResult.model';
 import { CWSData } from '../model/httpModel/cwsData.model';
 import { NtwkNodesTree } from '../model/viewModel/ntwkNodesTree.model';
@@ -28,9 +27,7 @@ export class PingMonitorService {
     private lastTickHourValue: number;
 
     private monitorPulseInProgress = false;
-    private monitorPulse: MonitoringPulseResult;
-    private monitorPulseNodesNumber: number;
-    private monitorPulseProgress: number;
+    private monitorPulseMessages: MonitoringMessage[] = [];
 
     public get isActive() {
         return this.monitorSubscription !== null;
@@ -77,7 +74,7 @@ export class PingMonitorService {
         if (this.monitorSubscription === null) {
             this.currentMonitorDataService.createNewSession(
                 this.settings.id,
-                sessionID => {
+                _ => {
                     this.unsubscribeFromSettingsChange();
                     const monitorObservable: Observable<PingTree[]> =
                         this.nodesService.getNodesTree().pipe(
@@ -103,40 +100,35 @@ export class PingMonitorService {
         }
     }
 
-    private startNewPulseResult() {
-        this.monitorPulseInProgress = true;
-        this.monitorPulseProgress = 0;
-        this.monitorPulse = new MonitoringPulseResult(
-            0, 0, 0, 0, []
-        );
-    }
-
-    private updatePulseResult(
-        success: boolean,
-        skippedNodesCount: number
+    private addFailedPingMessage(
+        skipped: number,
+        name: string
     ) {
-        if (success) {
-            this.monitorPulse.responded++;
-        } else {
-            this.monitorPulse.silent++;
-            this.monitorPulse.skipped += skippedNodesCount;
-            const msg = new MonitoringMessage(
-                skippedNodesCount === 0
-                    ? MonitoringMessageType.Danger_NoPingReturned
-                    : MonitoringMessageType.Danger_NoPingReturned_SkippedChildren,
-                '',
-                skippedNodesCount
-            );
-            this.monitorPulse.messages.push(msg);
-        }
+        const msg = new MonitoringMessage(
+            skipped === 0
+                ? MonitoringMessageType.Danger_NoPingReturned
+                : MonitoringMessageType.Danger_NoPingReturned_SkippedChildren,
+            name,
+            skipped
+        );
+        this.monitorPulseMessages.push(msg);
     }
 
-    private finishPulseResult() {
-        this.currentMonitorDataService.addNewPulse(
-            this.monitorPulse
-        );
-        this.monitorPulse = null;
+    private resetPulseData() {
+        this.monitorPulseMessages = [];
         this.monitorPulseInProgress = false;
+    }
+
+    private savePulseData(pingFinishedData: TreePingFinishedData) {
+        const pulse = new MonitoringPulseResult(
+            pingFinishedData.successful,
+            pingFinishedData.failed,
+            pingFinishedData.skipped,
+            0,
+            this.monitorPulseMessages
+        );
+        this.currentMonitorDataService.addNewPulse(pulse);
+        this.resetPulseData();
     }
 
     private treeResultToMonitorSessionObservable(
@@ -160,9 +152,7 @@ export class PingMonitorService {
                 .filter(ptRoot => nodeTreeLayer0IDs.includes(ptRoot.id))
         );
         const intervalMs = 1000 * 60 * this.settings.monitorInterval;
-        this.monitorPulseNodesNumber =
-            this.countPingTreeNodes(filteredPingTreeLayer0);
-        this.startNewPulseResult();
+        this.resetPulseData();
         return timer(0, intervalMs).pipe(
             map(_ => filteredPingTreeLayer0)
         );
@@ -184,9 +174,12 @@ export class PingMonitorService {
             }
             this.pingCache.treeUpdateWithCallback(
                 pingTree,
-                (success, pingTreeNode) =>
-                    this.treeNodeUpdateCallback(success, pingTreeNode)
+                (success, skipped, pingTreeNode) =>
+                    this.treeNodeUpdateCallback(success, skipped, pingTreeNode)
                 ,
+                pingFinishedResult => {
+                    this.savePulseData(pingFinishedResult);
+                },
                 this.settings.depthMonitoring
             );
         }
@@ -194,27 +187,14 @@ export class PingMonitorService {
 
     private treeNodeUpdateCallback(
         success: boolean,
+        skipped: number,
         pingTreeNode: PingTree
     ) {
-        const successNodesCount = success ? 1 : 0;
-        const failureNodesCount = success ? 0 : 1;
-        const skippedNodesCount = (success
-        && this.settings.depthMonitoring === true)
-            ? 0
-            : this.countPingTreeNodes(
-                pingTreeNode.children
+        if (success === false) {
+            this.addFailedPingMessage(
+                skipped,
+                pingTreeNode.name
             );
-        const summCount = successNodesCount
-            + failureNodesCount + skippedNodesCount;
-        this.monitorPulseProgress += summCount;
-        /*this.updatePulseResult(
-            success,
-            pingTreeNode.
-            skippedNodesCount
-        );*/
-        if (this.monitorPulseProgress
-        === this.monitorPulseNodesNumber) {
-            this.finishPulseResult();
         }
     }
 
@@ -229,13 +209,5 @@ export class PingMonitorService {
                     })
                     : this.filterPingTree(subroot.children)
             ).reduce((a, b) => a.concat(b), []);
-    }
-
-    private countPingTreeNodes(pingTreeBranch: PingTree[]): number {
-        let counter = 0;
-        for (const p of pingTreeBranch) {
-            counter += 1 + this.countPingTreeNodes(p.children);
-        }
-        return counter;
     }
 }

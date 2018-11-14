@@ -1,25 +1,20 @@
 <div style="position:fixed;top:0;right:0"
-    class="px-2 py-0 w-75"
+    class="px-2 py-0 w-75 h-75"
 >
     <div
-        class="border-left border-right border-primary bg-light p-2"
+        class="border-left border-right border-primary bg-light p-2 w-100"
+        style="height: calc(100% - 20px)"
         *ngIf="isOpened"
     >
-        <div class="border border-secondary">
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
-            <div>test</div>
+        <div class="border-top border-bottom h-100 w-100">
+            <div class="w-100 h-100">
+                <app-monitor-session-viewer></app-monitor-session-viewer>
+            </div>
         </div>
     </div>
-    <div class="w-100 text-center bg-light border border-primary border-top-0 rounded-bottom">
+    <div class="w-100 text-center bg-light border border-primary border-top-0 rounded-bottom"
+        style="height: 20px"
+    >
         <span
             class="btn btn-light square rounded-bottom py-0 pb-1 my-0 px-2"
             [ngClass]="{

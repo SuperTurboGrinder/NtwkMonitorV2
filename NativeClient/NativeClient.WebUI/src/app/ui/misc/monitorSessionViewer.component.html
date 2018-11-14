@@ -1,0 +1,25 @@
+<div style="width: 100%; height: 100vh">
+    <div class="w-100" style="height: 20px">session info</div>
+    <div
+        class="w-100 border"
+        style="height: calc(50vh - 20px); overflow-y: scroll; scroll-behavior: smooth;"
+    >
+        <div
+            class="float-left p-0 pt-1 pl-1 m-0"
+            *ngFor="let pulse of pulses"
+        >
+            <div
+                class="border rounded"
+                style="width: 20px; height: 20px"
+                [ngClass]="{
+                    'bg-success rounded-circle': pulse.silent === 0,
+                    'bg-danger': pulse.silent > 0
+                }"
+            ></div>
+        </div>
+    </div>
+    <div class="w-100" style="height: 20px">pulse info</div>
+    <div class="w-100" style="height: calc(50% - 20px)">
+        test
+    </div>
+</div>
