@@ -1,0 +1,8 @@
+<div
+    *ngIf="screenPos !== null"
+    style="position:fixed"
+    class="text-small text-white p-2 bg-info border border-secondary rounded"
+    [ngStyle]="positionStyles"
+>
+    <ng-container *ngTemplateOutlet="contentRef"></ng-container>
+</div>
