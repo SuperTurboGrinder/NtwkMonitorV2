@@ -1,25 +1,96 @@
-<div style="width: 100%; height: 100vh">
-    <div class="w-100" style="height: 20px">session info</div>
-    <div
-        class="w-100 border"
-        style="height: calc(50vh - 20px); overflow-y: scroll; scroll-behavior: smooth;"
-    >
-        <div
-            class="float-left p-0 pt-1 pl-1 m-0"
-            *ngFor="let pulse of pulses"
-        >
-            <div
-                class="border rounded"
-                style="width: 20px; height: 20px"
-                [ngClass]="{
-                    'bg-success rounded-circle': pulse.silent === 0,
-                    'bg-danger': pulse.silent > 0
-                }"
-            ></div>
+<div style="width: 100%; height: 100%"
+    *ngIf="session !== null"
+>
+    <div class="w-100" style="height: 30px">
+        <div class="container-fluid p-0 m-0">
+            <div class="row p-0 m-0">
+                <div class="col-9 p-0 m-0 text-center"
+                    *ngIf="isCurrentSession; else sessionInfo"
+                >
+                    <strong>Current monitor session</strong>
+                </div>
+                <ng-template #sessionInfo>
+                    <div class="col-5 p-0 pl-1 m-0">
+                        <span>Session </span> ({{sessionDate}})
+                    </div>
+                    <div class="col-4 p-0 m-0">
+                        {{sessionStartTime}}
+                        <span> to </span> {{sessionEndTime}}
+                    </div>
+                </ng-template>
+                <div class="col-3 p-0 pr-1 m-0 text-right">
+                        <span>Tagged nodes </span> {{session.participatingNodesNum}}
+                </div>
+            </div>
         </div>
     </div>
-    <div class="w-100" style="height: 20px">pulse info</div>
-    <div class="w-100" style="height: calc(50% - 20px)">
-        test
+    <div
+        class="w-100 border"
+        style="height: calc(50% - 30px)"
+    >
+        <div
+            class="w-100 h-100 border"
+            style="overflow-y: scroll; scroll-behavior: smooth"
+        >
+            <div
+                class="float-left p-0 pt-1 pl-1 m-0"
+                *ngFor="let pulse of pulses; trackBy: pulseTrackByFn; let i = index"
+            >
+                <div
+                    style="width: 20px; height: 20px;"
+                    (mouseenter)="selectPulse(i)"
+                    (mouseleave)="deselectPulse()"
+                    (click)="fixPulse(i)"
+                    [ngClass]="{
+                        'btn-success rounded rounded-circle': pulse.silent === 0,
+                        'btn-danger': pulse.silent > 0
+                    }"
+                    class="border focusable"
+                >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="height: 50%" *ngIf="selectedPulse !== null">
+        <div class="w-100" style="height: 30px">
+            <strong class="container-fluid p-0 m-0">
+                <div class="row p-0 m-0">
+                    <div class="col-3 p-0 pl-1 m-0">
+                        <span>Pulse </span>
+                        {{selectedPulseCreationTime}}
+                    </div>
+                    <div class="col-9 p-0 m-0 text-center">
+                        <span>Ping: </span>
+                        <span class="text-success">{{selectedPulse.responded}}</span><!----
+                        -->/{{session.participatingNodesNum}}
+                        <span *ngIf="selectedPulse.silent > 0">
+                            <span> (Failed: </span>
+                            <span class="text-danger">{{selectedPulse.silent}}</span><!----
+                            --><span *ngIf="selectedPulse.skipped > 0"><!----
+                                -->;<span> Skipped: </span>
+                                <span class="text-danger">{{selectedPulse.skipped}}</span>)
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </strong>
+        </div>
+        <div class="w-100 border"
+            style="height: calc(100% - 30px)"
+        >
+            <div
+                class="w-100 h-100 border text-italic"
+                style="overflow-y: scroll; scroll-behavior: smooth"
+            >
+                <div class="w-100 px-1 border-bottom text-warning"
+                    [ngClass]="{
+                        'text-danger': isMessageDanger(message)
+                    }"
+                    *ngFor="let message of selectedPulseMessages"
+                >
+                    {{formatMessage(message)}}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
