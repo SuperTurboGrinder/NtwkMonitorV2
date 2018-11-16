@@ -29,7 +29,12 @@ public class EFDataSource : IEFDbDataSource {
     public async Task<MonitoringSession> GetNewSession(
         int profileID
     ) {
-        int monitoredNodesNum = await context.ProfilesTagSelection
+        bool hasMonitorTagFilter = await context.ProfilesTagSelection
+            .AnyAsync(pts => pts.BindedProfileID == profileID &&
+                          ProfileSelectedTagFlags.Monitor ==
+                            (pts.Flags & ProfileSelectedTagFlags.Monitor));
+        int monitoredNodesNum = hasMonitorTagFilter
+            ? await context.ProfilesTagSelection
             .Where(pts => pts.BindedProfileID == profileID &&
                           ProfileSelectedTagFlags.Monitor ==
                             (pts.Flags & ProfileSelectedTagFlags.Monitor))
@@ -37,7 +42,8 @@ public class EFDataSource : IEFDbDataSource {
                 .ThenInclude(t => t.Attachments)
             .SelectMany(pts => pts.Tag.Attachments.Select(ta => ta.NodeID))
             .Distinct()
-            .CountAsync();
+            .CountAsync()
+            : await context.Nodes.CountAsync();
         MonitoringSession newSession = new MonitoringSession {
             ID = 0,
             CreatedByProfileID = profileID,
@@ -77,7 +83,9 @@ public class EFDataSource : IEFDbDataSource {
             pulseWithMessages.Messages.Add(messageEntity);
         }
         await context.SaveChangesAsync();
-        return pulseResult;
+        context.Entry(pulseWithMessages).State = EntityState.Detached;
+        Console.WriteLine(pulseWithMessages.Messages.Count);
+        return pulseWithMessages;
     }
 
     public async Task ClearEmptySessions() {

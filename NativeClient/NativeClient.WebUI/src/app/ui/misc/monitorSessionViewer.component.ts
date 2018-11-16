@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MonitoringSession } from 'src/app/model/httpModel/monitoringSession.model';
 import { MonitoringPulseResult } from 'src/app/model/httpModel/monitoringPulseResult.model';
 import { MonitoringMessage } from 'src/app/model/httpModel/monitoringMessage.model';
@@ -6,9 +6,19 @@ import { MonitoringMessageType } from 'src/app/model/httpModel/monitoringMessage
 
 @Component({
     selector: 'app-monitor-session-viewer',
-    templateUrl: './monitorSessionViewer.component.html'
+    templateUrl: './monitorSessionViewer.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MonitorSessionViewerComponent {
+    private static testSession = null;
+    private static testPulses = null;
+    private static readonly emptyPulse = (() => {
+        const pulse = new MonitoringPulseResult(
+            0, 0, 0, 0, []
+        );
+        MonitoringPulseResult.convertJSTime(pulse);
+        return pulse;
+    })();
     @Input() session: MonitoringSession = null;
     @Input() pulses: MonitoringPulseResult[] = [];
     @Input() isCurrentSession = false;
@@ -16,10 +26,22 @@ export class MonitorSessionViewerComponent {
     private _selectedPulse: MonitoringPulseResult = null;
     public fixedPulse: MonitoringPulseResult = null;
 
+    public get cdTest(): string {
+        const time = new Date().toLocaleTimeString();
+        console.log(`Change check (${time})`);
+        return time;
+    }
+
     public get selectedPulse(): MonitoringPulseResult {
         return this._selectedPulse !== null
             ? this._selectedPulse
-            : this.fixedPulse;
+            : this.fixedPulse !== null
+                ? this.fixedPulse
+                : MonitorSessionViewerComponent.emptyPulse;
+    }
+
+    public get isSelected(): boolean {
+        return this.fixedPulse !== null || this._selectedPulse !== null;
     }
 
     public get sessionStartTime(): string {
@@ -71,12 +93,12 @@ export class MonitorSessionViewerComponent {
         }
     }
 
-    public selectPulse(i: number) {
-        this._selectedPulse = this.pulses[i];
+    public selectPulse(pulse: MonitoringPulseResult) {
+        this._selectedPulse = pulse;
     }
 
-    public fixPulse(i: number) {
-        this.fixedPulse = this.pulses[i];
+    public fixPulse(pulse: MonitoringPulseResult) {
+        this.fixedPulse = pulse;
     }
 
     public deselectPulse(_: MouseEvent) {
@@ -88,56 +110,60 @@ export class MonitorSessionViewerComponent {
     }
 
     constructor() {
-        this.testValuesGeneration();
+        // this.testValuesGeneration();
     }
 
     testValuesGeneration() {
-        const sessionStart = Math.random() * 90000000000;
-        const sessionEnd = sessionStart + Math.random() * 9000000;
-        this.session =
-            new MonitoringSession(0, 0, 38, sessionStart, sessionEnd);
-        this.session.convertJSTime();
+        if (MonitorSessionViewerComponent.testSession === null) {
+            const sessionStart = Math.random() * 90000000000;
+            const sessionEnd = sessionStart + Math.random() * 9000000;
+            MonitorSessionViewerComponent.testSession =
+                new MonitoringSession(0, 0, 38, sessionStart, sessionEnd);
+            MonitorSessionViewerComponent.testSession.convertJSTime();
 
-        const pingedNodes = 38;
-        const result: MonitoringPulseResult[] = [];
-        for (let i = 0; i < 120; i++) {
-            const success = Math.random() > 0.5;
-            if (success) {
-                for (let j = 0; j < 10; j++) {
-                    const pulse = new MonitoringPulseResult(
-                        pingedNodes, 0, 0, Math.random() * 90000000000, []
-                    );
-                    pulse.convertJSTime();
-                    result.push(pulse);
-                }
-            } else {
-                const failedNodes = 2;
-                const skippedNodes = Math.floor((pingedNodes - 2) * Math.random());
-                for (let j = 0; j < 10; j++) {
-                    const pulse = new MonitoringPulseResult(
-                        pingedNodes - skippedNodes - failedNodes,
-                        failedNodes,
-                        skippedNodes,
-                        0,
-                        [
-                            new MonitoringMessage(
-                                MonitoringMessageType.Danger_NoPingReturned,
-                                'nodeNameTest1',
-                                0
-                            ),
-                            new MonitoringMessage(
-                                MonitoringMessageType.Danger_NoPingReturned_SkippedChildren,
-                                'nodeNameTest2',
-                                skippedNodes
-                            )
-                        ]
-                    );
-                    pulse.convertJSTime();
-                    result.push(pulse);
+            const pingedNodes = 38;
+            const result: MonitoringPulseResult[] = [];
+            for (let i = 0; i < 120; i++) {
+                const success = Math.random() > 0.5;
+                if (success) {
+                    for (let j = 0; j < 10; j++) {
+                        const pulse = new MonitoringPulseResult(
+                            pingedNodes, 0, 0, Math.random() * 90000000000, []
+                        );
+                        MonitoringPulseResult.convertJSTime(pulse);
+                        result.push(pulse);
+                    }
+                } else {
+                    const failedNodes = 2;
+                    const skippedNodes = Math.floor((pingedNodes - 2) * Math.random());
+                    for (let j = 0; j < 10; j++) {
+                        const pulse = new MonitoringPulseResult(
+                            pingedNodes - skippedNodes - failedNodes,
+                            failedNodes,
+                            skippedNodes,
+                            0,
+                            [
+                                new MonitoringMessage(
+                                    MonitoringMessageType.Danger_NoPingReturned,
+                                    'nodeNameTest1',
+                                    0
+                                ),
+                                new MonitoringMessage(
+                                    MonitoringMessageType.Danger_NoPingReturned_SkippedChildren,
+                                    'nodeNameTest2',
+                                    skippedNodes
+                                )
+                            ]
+                        );
+                        MonitoringPulseResult.convertJSTime(pulse);
+                        result.push(pulse);
+                    }
                 }
             }
+            MonitorSessionViewerComponent.testPulses = result;
         }
-        this.pulses = result;
+        this.session = MonitorSessionViewerComponent.testSession;
+        this.pulses = MonitorSessionViewerComponent.testPulses;
     }
 
 }

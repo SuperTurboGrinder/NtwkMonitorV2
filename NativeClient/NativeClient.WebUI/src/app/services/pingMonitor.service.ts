@@ -33,6 +33,10 @@ export class PingMonitorService {
         return this.monitorSubscription !== null;
     }
 
+    public get isPulsing() {
+        return this.monitorPulseInProgress === true;
+    }
+
     constructor(
         private settingsService: SettingsProfilesService,
         private currentMonitorDataService: CurrentMonitoringSessionDataService,

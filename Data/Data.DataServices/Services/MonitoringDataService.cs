@@ -69,8 +69,18 @@ public class MonitoringDataService
             .Select(m => viewToEFConverter.Convert(m));
         return FailOrConvert(
             await repo.SavePulseResult(sessionID, convertedPulseResult, convertedMessages),
-            pr => EFToViewConverter.Convert(pr)
+            pr => ConvertPulseResult(pr)
         );
+    }
+
+    private MonitoringPulseResult ConvertPulseResult(
+        EFDbModel.MonitoringPulseResult pulseResult
+    ) {
+        IEnumerable<MonitoringMessage> messages = pulseResult.Messages
+            .Select(m => EFToViewConverter.Convert(m));
+        MonitoringPulseResult pulse = EFToViewConverter.Convert(pulseResult);
+        pulse.Messages = messages;
+        return pulse;
     }
     
     public async Task<StatusMessage> ClearEmptySessions() {
@@ -102,13 +112,7 @@ public class MonitoringDataService
         }
         return FailOrConvert(
             await repo.GetSessionReport(monitoringSessionID),
-            pulses => pulses.Select(p => {
-                IEnumerable<MonitoringMessage> messages = p.Messages
-                    .Select(m => EFToViewConverter.Convert(m));
-                MonitoringPulseResult pulse = EFToViewConverter.Convert(p);
-                pulse.Messages = messages;
-                return pulse;
-            })
+            pulses => pulses.Select(p => ConvertPulseResult(p))
         );
     }
 }

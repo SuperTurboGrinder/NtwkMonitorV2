@@ -14,6 +14,14 @@ export class CurrentMonitoringSessionDataService {
         private monitoringDataService: MonitoringDataService
     ) { }
 
+    public get session(): MonitoringSession {
+        return this.currentSession;
+    }
+
+    public get pulses(): MonitoringPulseResult[] {
+        return this.currentSessionPulses;
+    }
+
     public createNewSession(
         settingsProfileID: number,
         onSuccess: (sessionID: number) => void
@@ -47,6 +55,7 @@ export class CurrentMonitoringSessionDataService {
             ).subscribe(savedPulse => {
                 if (savedPulse.success === true
                 && this.currentSession.id === sessionID) {
+                    MonitoringPulseResult.convertJSTime(savedPulse.data);
                     this.currentSessionPulses.push(savedPulse.data);
                 }
             });

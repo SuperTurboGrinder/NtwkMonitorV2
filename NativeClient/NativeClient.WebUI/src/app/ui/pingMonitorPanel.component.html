@@ -1,55 +1,71 @@
 <div style="position:fixed;top:0;right:0"
-    class="px-2 py-0 w-75 h-75"
+    class="px-2 py-0 w-75"
+    [ngClass]="{'h-75': isOpened === true}"
 >
     <div
         class="border-left border-right border-primary bg-light p-2 w-100"
         style="height: calc(100% - 20px)"
-        *ngIf="isOpened"
+        [ngClass]="{'d-none': isOpened === false}"
     >
         <div class="border-top border-bottom h-100 w-100">
             <div class="w-100 h-100">
                 <app-monitor-session-viewer
+                    [session]="currentSession"
+                    [pulses]="currentSessionPulses"
                     [isCurrentSession]="true"
                 ></app-monitor-session-viewer>
             </div>
         </div>
     </div>
     <div class="w-100 text-center bg-light border border-primary border-top-0 rounded-bottom"
-        style="height: 20px"
+        style="height: 20px; line-height: 6px;"
     >
-        <span
-            class="btn btn-light square rounded-bottom py-0 pb-1 my-0 px-2"
-            [ngClass]="{
-                'rounded-bottom': isOpened === false,
-                'rounded-top': isOpened
-            }"
-            style="line-height: 6px;"
-            (click)="isOpened = !isOpened"
-        >
-            <strong *ngIf="isOpened === false; else closeButtonBlock">
-                <i style="line-height: 6px" 
-                    class="fa fa-angle-down" aria-hidden="true"
-                ></i>
-                <i style="line-height: 6px"
-                    class="fa fa-angle-down px-1" aria-hidden="true"
-                ></i>
-                <i style="line-height: 6px" 
-                    class="fa fa-angle-down" aria-hidden="true"
-                ></i>
-            </strong>
-            <ng-template #closeButtonBlock>
-                <strong>
-                    <i style="line-height: 6px" 
-                        class="fa fa-angle-up" aria-hidden="true"
-                    ></i>
-                    <i style="line-height: 6px"
-                        class="fa fa-angle-up px-1" aria-hidden="true"
-                    ></i>
-                    <i style="line-height: 6px" 
-                        class="fa fa-angle-up" aria-hidden="true"
-                    ></i>
-                </strong>
-            </ng-template>
-        </span>
+        <div class="container-fluid p-0 m-0">
+            <div class="row p-0 m-0">
+                <div class="col-5 p-0 m-0">
+
+                </div>
+                <div class="col-2 p-0 m-0"
+                    style="line-height: 6px"
+                >
+                    <span *ngIf="isActive === true"
+                        class="btn btn-light square rounded-bottom py-0 pb-1 my-0 px-2"
+                        [ngClass]="{
+                            'rounded-top': isOpened
+                        }"
+                        style="line-height: 6px;"
+                        (click)="openCloseSwitch()"
+                    >
+                        <strong *ngIf="isOpened === false; else closeButtonBlock">
+                            <i style="line-height: 6px" 
+                                class="fa fa-angle-down" aria-hidden="true"
+                            ></i>
+                            <i style="line-height: 6px"
+                                class="fa fa-angle-down px-1" aria-hidden="true"
+                            ></i>
+                            <i style="line-height: 6px" 
+                                class="fa fa-angle-down" aria-hidden="true"
+                            ></i>
+                        </strong>
+                        <ng-template #closeButtonBlock>
+                            <strong>
+                                <i style="line-height: 6px" 
+                                    class="fa fa-angle-up" aria-hidden="true"
+                                ></i>
+                                <i style="line-height: 6px"
+                                    class="fa fa-angle-up px-1" aria-hidden="true"
+                                ></i>
+                                <i style="line-height: 6px" 
+                                    class="fa fa-angle-up" aria-hidden="true"
+                                ></i>
+                            </strong>
+                        </ng-template>
+                    </span>
+                </div>
+                <div class="col-5 p-0 m-0">
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
