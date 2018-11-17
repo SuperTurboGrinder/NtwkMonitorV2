@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
 import { ExecServicesService } from '../../services/execServices.service';
 
 @Component({
     selector: 'app-exec-services-buttons',
-    templateUrl: './execServicesButtons.component.html'
+    templateUrl: './execServicesButtons.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExecServicesButtonsComponent {
     @Input() node: NtwkNode;

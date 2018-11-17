@@ -78,7 +78,7 @@ export class PingMonitorService {
         if (this.monitorSubscription === null) {
             this.currentMonitorDataService.createNewSession(
                 this.settings.id,
-                _ => {
+                () => {
                     this.unsubscribeFromSettingsChange();
                     const monitorObservable: Observable<PingTree[]> =
                         this.nodesService.getNodesTree().pipe(

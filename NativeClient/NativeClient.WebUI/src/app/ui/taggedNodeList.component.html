@@ -74,7 +74,7 @@
                         <div class="p-0 m-0" style="flex: 0 0 140px">
                             <app-ping-display
                                 [node]="node(i)"
-                                (changedEvent)="resortListByPing()"
+                                (changedEvent)="resortListByPingIfChanged($event)"
                             ></app-ping-display>
                         </div>
                     </div>

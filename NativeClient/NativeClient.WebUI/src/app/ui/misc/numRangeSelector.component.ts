@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 
 export class Range {
     constructor(
@@ -40,7 +40,8 @@ export class Range {
 
 @Component({
     selector: 'app-num-range-selector',
-    templateUrl: './numRangeSelector.component.html'
+    templateUrl: './numRangeSelector.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NumRangeSelectorComponent {
     private _range: Range = new Range(0, 1);

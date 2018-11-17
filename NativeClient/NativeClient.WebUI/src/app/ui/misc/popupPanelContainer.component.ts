@@ -1,8 +1,9 @@
-import { Component, AfterViewInit, HostListener, Input, ContentChild, TemplateRef } from '@angular/core';
+import { Component, AfterViewInit, HostListener, Input, ContentChild, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-popup-panel-container',
-    templateUrl: './popupPanelContainer.component.html'
+    templateUrl: './popupPanelContainer.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PopupPanelContainerComponent implements AfterViewInit {
     private screenWH = ({width: 800, height: 600});

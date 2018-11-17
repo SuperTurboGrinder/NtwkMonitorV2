@@ -19,8 +19,10 @@ export class MonitorSessionViewerComponent {
         MonitoringPulseResult.convertJSTime(pulse);
         return pulse;
     })();
-    @Input() session: MonitoringSession = null;
-    @Input() pulses: MonitoringPulseResult[] = [];
+    @Input() data: {
+        session: MonitoringSession,
+        pulses: MonitoringPulseResult[]
+    } = { session: null, pulses: [] };
     @Input() isCurrentSession = false;
     @Input() currentlyPulsing = false;
     private _selectedPulse: MonitoringPulseResult = null;
@@ -30,6 +32,14 @@ export class MonitorSessionViewerComponent {
         const time = new Date().toLocaleTimeString();
         console.log(`Change check (${time})`);
         return time;
+    }
+
+    public get session(): MonitoringSession {
+        return this.data.session;
+    }
+
+    public get pulses(): MonitoringPulseResult[] {
+        return this.data.pulses;
     }
 
     public get selectedPulse(): MonitoringPulseResult {
@@ -162,8 +172,10 @@ export class MonitorSessionViewerComponent {
             }
             MonitorSessionViewerComponent.testPulses = result;
         }
-        this.session = MonitorSessionViewerComponent.testSession;
-        this.pulses = MonitorSessionViewerComponent.testPulses;
+        this.data = {
+            session: MonitorSessionViewerComponent.testSession,
+            pulses: MonitorSessionViewerComponent.testPulses
+        };
     }
 
 }

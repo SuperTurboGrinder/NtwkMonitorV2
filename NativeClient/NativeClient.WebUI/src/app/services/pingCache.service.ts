@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subscription, BehaviorSubject, forkJoin } from 'rxjs';
+import { Subscription, BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { first, skip } from 'rxjs/operators';
 
 import { PingService } from './ping.service';
@@ -15,11 +15,11 @@ export class PingCacheService {
         private sounds: SoundNotificatonService
     ) {}
 
-    isLocked(nodeID: number): boolean {
+    public lockStatusObservable(nodeID: number): Observable<boolean> {
         const cell = this.pingCache.get(nodeID);
         return cell === undefined
-            ? false
-            : cell.isLocked;
+            ? of(false)
+            : cell.lockedStatusObservable;
     }
 
     private getCell(nodeID: number): PingCacheCell {
@@ -72,7 +72,7 @@ export class PingCacheService {
 
     private pingByID(nodeID: number) {
         const cell = this.getCell(nodeID);
-        if (cell.isLocked === false) {
+        if (cell.currentLockStatus === false) {
             cell.setLock();
             this.pingService.getPing(nodeID).subscribe(pingTestResult => {
                 cell.resetLock();
@@ -96,7 +96,7 @@ export class PingCacheService {
         const cellsAndIDs = nodesIDs.map(id => ({
             id: id,
             cell: this.getCell(id)
-        })).filter(val => val.cell.isLocked === false);
+        })).filter(val => val.cell.currentLockStatus === false);
         forkJoin(
             cellsAndIDs.map(cellAndId => {
                 cellAndId.cell.setLock();
@@ -351,18 +351,22 @@ export class TreePingFinishedData {
 
 class PingCacheCell {
     public value: BehaviorSubject<PingTestData>;
-    private _isLocked = false;
+    private lockStatus = new BehaviorSubject<boolean>(false);
 
-    get isLocked(): boolean {
-        return this._isLocked;
+    public get currentLockStatus(): boolean {
+        return this.lockStatus.value;
     }
 
-    setLock() {
-        this._isLocked = true;
+    public get lockedStatusObservable(): Observable<boolean> {
+        return this.lockStatus.asObservable();
     }
 
-    resetLock() {
-        this._isLocked = false;
+    public setLock() {
+        this.lockStatus.next(true);
+    }
+
+    public resetLock() {
+        this.lockStatus.next(false);
     }
 
     constructor(

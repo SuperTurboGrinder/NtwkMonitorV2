@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnDestroy, Input } from '@angular/core';
+import { Component, Output, EventEmitter, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { PingCacheService } from '../../services/pingCache.service';
 import { Subscription } from 'rxjs';
 import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
@@ -6,37 +6,44 @@ import { PingTestData } from '../../model/httpModel/pingTestData.model';
 
 @Component({
     selector: 'app-ping-display',
-    templateUrl: './pingDisplay.component.html'
+    templateUrl: './pingDisplay.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PingDisplayComponent implements OnDestroy {
     private _node: NtwkNode;
     private pingValue: PingTestData = null;
-    private subsctiption: Subscription = null;
+    private subsctiptions: Subscription[] = [];
     public isTryingToPing = false;
+    private cacheIsLocked = true;
 
     @Output() changedEvent = new EventEmitter<boolean>();
 
     @Input()
     set node(node: NtwkNode) {
         this._node = node;
-        if (this.subsctiption != null) {
-            this.subsctiption.unsubscribe();
+        if (this.subsctiptions.length !== 0) {
+            this.unsubscribeFromPingCacheCellData();
             this.pingValue = null;
         }
-        this.subsctiption = this.pingCache.subscribeToValue(
+        const valueSubsctiption = this.pingCache.subscribeToValue(
             this.node.id,
             (ptd) => {
                 this.isTryingToPing = false;
 
-                if (this.pingValue === null
+                const wasChanged = this.pingValue === null
                     || (this.pingValue.avg !== ptd.avg
                     || this.pingValue.num !== ptd.num
-                    || this.pingValue.failed !== ptd.failed)) {
-                        this.changedEvent.emit(true);
-                        this.pingValue = ptd;
-                    }
+                    || this.pingValue.failed !== ptd.failed);
+                this.changedEvent.emit(wasChanged);
+                this.pingValue = ptd;
             }
         );
+        const lockSubscription = this.pingCache.lockStatusObservable(this.node.id)
+            .subscribe(lockStatus => {
+                this.cacheIsLocked = lockStatus;
+                this.changedEvent.emit(false);
+            });
+        this.subsctiptions = [valueSubsctiption, lockSubscription];
     }
 
     get node() {
@@ -46,6 +53,10 @@ export class PingDisplayComponent implements OnDestroy {
     constructor(
         private pingCache: PingCacheService
     ) {}
+
+    private unsubscribeFromPingCacheCellData() {
+        this.subsctiptions.forEach(sub => sub.unsubscribe());
+    }
 
     public pingAverage(): string {
         return this.pingValue === null
@@ -108,10 +119,10 @@ export class PingDisplayComponent implements OnDestroy {
     get isButtonDisabled() {
         return this.node.isOpenPing === false
             || this.isTryingToPing
-            || this.pingCache.isLocked(this.node.id);
+            || this.cacheIsLocked;
     }
 
     ngOnDestroy() {
-        this.subsctiption.unsubscribe();
+        this.unsubscribeFromPingCacheCellData();
     }
 }

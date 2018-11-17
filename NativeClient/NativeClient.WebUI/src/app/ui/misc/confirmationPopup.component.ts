@@ -1,8 +1,9 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-confirmation-popup',
-    templateUrl: './confirmationPopup.component.html'
+    templateUrl: './confirmationPopup.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConfirmationPopupComponent {
     @Output() private answerEvent = new EventEmitter<boolean>();

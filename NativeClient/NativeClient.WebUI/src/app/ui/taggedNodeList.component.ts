@@ -100,13 +100,19 @@ export class TaggedNodeListComponent {
         this.sortedIndexes = this.nameSortedIndexes(this.filteredNodesList, this.sortingDescending);
     }
 
-    public resortListByPing() {
+    private resortListByPing() {
         if (this.sorting !== Sorting.ByPing
              || this.filteredNodesListPingInProgress === true
         ) {
             return;
         }
         this.sortedIndexes = this.pingSortedIndexes(this.filteredNodesList, this.sortingDescending);
+    }
+
+    public resortListByPingIfChanged(isChanged: boolean) {
+        if (isChanged === true) {
+            this.resortListByPing();
+        }
     }
 
     private resortIndexList() {

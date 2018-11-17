@@ -2,29 +2,41 @@ import { Injectable } from '@angular/core';
 import { MonitoringSession } from '../model/httpModel/monitoringSession.model';
 import { MonitoringPulseResult } from '../model/httpModel/monitoringPulseResult.model';
 import { MonitoringDataService } from './monitoringData.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription, BehaviorSubject } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 
 @Injectable()
 export class CurrentMonitoringSessionDataService {
     private currentSession: MonitoringSession = null;
     private currentSessionPulses: MonitoringPulseResult[] = [];
+    private dataSubject = new BehaviorSubject<{
+        session: MonitoringSession,
+        pulses: MonitoringPulseResult[]
+    }>({ session: null, pulses: [] });
 
     constructor(
         private monitoringDataService: MonitoringDataService
     ) { }
 
-    public get session(): MonitoringSession {
-        return this.currentSession;
+    public subscribeToSessionData(callback: (data: {
+        session: MonitoringSession,
+        pulses: MonitoringPulseResult[]
+    }) => void): Subscription {
+        return this.dataSubject.asObservable().subscribe(
+            callback
+        );
     }
 
-    public get pulses(): MonitoringPulseResult[] {
-        return this.currentSessionPulses;
+    private sendData() {
+        this.dataSubject.next({
+            session: this.currentSession,
+            pulses: this.currentSessionPulses
+        });
     }
 
     public createNewSession(
         settingsProfileID: number,
-        onSuccess: (sessionID: number) => void
+        onSuccess: () => void
     ) {
         this.currentSession = null;
         this.currentSessionPulses = [];
@@ -33,15 +45,15 @@ export class CurrentMonitoringSessionDataService {
                 switchMap(sessionResult => {
                     if (sessionResult.success === true) {
                         this.currentSession = sessionResult.data;
-                        return of(this.currentSession.id);
+                        this.sendData();
                     }
-                    return of(<number>null);
+                    return of(sessionResult.success);
                 }),
                 take(1)
             )
-            .subscribe(sessionID => {
-                if (sessionID !== null) {
-                    onSuccess(sessionID);
+            .subscribe(success => {
+                if (success === true) {
+                    onSuccess();
                 }
             });
     }
@@ -57,6 +69,7 @@ export class CurrentMonitoringSessionDataService {
                 && this.currentSession.id === sessionID) {
                     MonitoringPulseResult.convertJSTime(savedPulse.data);
                     this.currentSessionPulses.push(savedPulse.data);
+                    this.sendData();
                 }
             });
         }

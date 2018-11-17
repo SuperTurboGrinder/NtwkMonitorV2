@@ -1,8 +1,9 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-num-value-switch',
-    templateUrl: './numValueSwitch.component.html'
+    templateUrl: './numValueSwitch.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NumValueSwitchComponent {
     private _min = 0;
