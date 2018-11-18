@@ -22,7 +22,7 @@ export class MonitorSessionViewerComponent {
     @Input() data: {
         session: MonitoringSession,
         pulses: MonitoringPulseResult[]
-    } = { session: null, pulses: [] };
+    } =  ({ session: null, pulses: [] });
     @Input() isCurrentSession = false;
     @Input() currentlyPulsing = false;
     private _selectedPulse: MonitoringPulseResult = null;
@@ -30,7 +30,6 @@ export class MonitorSessionViewerComponent {
 
     public get cdTest(): string {
         const time = new Date().toLocaleTimeString();
-        console.log(`Change check (${time})`);
         return time;
     }
 
@@ -43,11 +42,12 @@ export class MonitorSessionViewerComponent {
     }
 
     public get selectedPulse(): MonitoringPulseResult {
-        return this._selectedPulse !== null
+        const selected = this._selectedPulse !== null
             ? this._selectedPulse
             : this.fixedPulse !== null
                 ? this.fixedPulse
                 : MonitorSessionViewerComponent.emptyPulse;
+        return selected;
     }
 
     public get isSelected(): boolean {
@@ -96,8 +96,8 @@ export class MonitorSessionViewerComponent {
             case MonitoringMessageType.Danger_NoPingReturned:
                 return `No ping returned from ${message.messageSourceNodeName}`;
             case MonitoringMessageType.Danger_NoPingReturned_SkippedChildren:
-                return `No ping returned from ${message.messageSourceNodeName}
-                ; Skipped ${message.numSkippedChildren} child nodes`;
+                return `No ping returned from ${message.messageSourceNodeName};
+                Skipped ${message.numSkippedChildren} child nodes`;
             case MonitoringMessageType.Warning_InconsistentPing:
                 return `Some ping packets lost to ${message.messageSourceNodeName}`;
         }

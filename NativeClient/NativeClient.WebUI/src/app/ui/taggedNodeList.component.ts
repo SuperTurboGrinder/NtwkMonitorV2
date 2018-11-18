@@ -28,6 +28,7 @@ export class TaggedNodeListComponent {
     private nodesListIsEmpty = true;
     private isOperationsView = false;
     private filteredNodesListPingInProgress = false;
+    private stringCollator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
     private sorting: Sorting = Sorting.Default;
     private sortingDescending = false;
@@ -61,8 +62,8 @@ export class TaggedNodeListComponent {
                 (nd, i) => ({i: i, name: nd.node.name})
             )
             .sort((a, b) => !descending
-                ? a.name.localeCompare(b.name)
-                : b.name.localeCompare(a.name)
+                ? this.stringCollator.compare(a.name, b.name)
+                : this.stringCollator.compare(b.name, a.name)
             )
             .map<number>(v => v.i);
     }

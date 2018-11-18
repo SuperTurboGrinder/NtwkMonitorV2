@@ -7,6 +7,8 @@ import { CustomWebServicesService } from 'src/app/services/customWebServices.ser
 import { CustomWebService } from 'src/app/model/httpModel/customWebService.model';
 import { HTTPResult } from 'src/app/model/servicesModel/httpResult.model';
 import { CustomWebServiceBinding } from 'src/app/model/httpModel/cwsBindingData.model';
+import { NodeInfoPopupDataService } from 'src/app/services/nodeInfoPopupData.service';
+import { TagsService } from 'src/app/services/tags.service';
 
 @Component({
     selector: 'app-custom-web-service-binding-side-selector',
@@ -21,9 +23,11 @@ export class CustomWebServiceBindingSideSelectorComponent
     constructor(
         messager: MessagingService,
         dataService: NodesService,
+        nodeInfoPopupService: NodeInfoPopupDataService,
+        tagsService: TagsService,
         private cwsService: CustomWebServicesService
     ) {
-        super(messager, dataService);
+        super(nodeInfoPopupService, tagsService, messager, dataService);
         this.updateServicesList();
     }
 

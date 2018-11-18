@@ -10,102 +10,109 @@
     [baseFormLink]="'node'"
 >
     <ng-template>
-        <div class="p-0 m-0 container-fluid">
-            <div class="row m-0 p-0 text-center" *ngFor="let node of dataList">
-                <div class="col-7 text-left border-bottom">
-                    <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
-                    -->{{node.prefix}}<!--
-                    --></span><!--
-                    --><b>[{{node.name}}]</b>
-                </div>
+        <div class="m-0 p-0 text-center hoverselection"
+            style="display: flex"
+            *ngFor="let node of dataList"
+        >
+            <div class="text-left border-bottom"
+                style="flex: 0 0 calc(100% - 250px)"
+                (mouseenter)="showNodeInfo(node, $event)"
+                (mouseleave)="hideNodeInfo()"
+            >
+                <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
+                -->{{node.prefix}}<!--
+                --></span><!--
+                --><b>[{{node.name}}]</b>
+            </div>
+            <div
+                *ngIf="isInMoveMode === false; else moveModeButtons"
+                class="border-bottom text-right"
+                style="flex: 0 0 250px"
+            >
+                <button
+                    *ngIf="node.depth < 30"
+                    type="button"
+                    class="btn btn-primary square p-0 px-1 mr-1"
+                    i18n="@@addNewLabel"
+                    [routerLink]="['/form/node/', node.id, 'new']"
+                >
+                    Add new
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-warning square p-0 px-1 mr-1"
+                    i18n="@@moveButtonLabel"
+                    (click)="setMoveModeFor(node)"
+                >
+                    Move
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-warning square p-0 px-1 mr-1"
+                    i18n="@@editButtonLabel"
+                    [routerLink]="['/form/node/edit', node.id]"
+                >
+                    Edit
+                </button>
+                <button
+                    [disabled]="node.hasChildren"
+                    type="button"
+                    class="btn btn-danger square p-0 px-1 mr-1"
+                    i18n="@@removeButtonLabel"
+                    (click)="tryRemove(node)"
+                >
+                    Remove
+                </button>
+            </div>
+            <ng-template #moveModeButtons>
                 <div
-                    *ngIf="isInMoveMode === false; else moveModeButtons"
-                    class="col-5 border-bottom text-right"
+                    class="border-bottom text-right"
+                    style="flex: 0 0 250px"
                 >
                     <button
-                        *ngIf="node.depth < 30"
-                        type="button"
-                        class="btn btn-primary square p-0 px-1 mr-1"
-                        i18n="@@addNewLabel"
-                        [routerLink]="['/form/node/', node.id, 'new']"
-                    >
-                        Add new
-                    </button>
-                    <button
+                        *ngIf="isNodeToMove(node.id) === false; else cancelMoveButton"
                         type="button"
                         class="btn btn-warning square p-0 px-1 mr-1"
-                        i18n="@@moveButtonLabel"
-                        (click)="setMoveModeFor(node)"
+                        i18n="@@toThisButtonLabel"
+                        (click)="tryToMove(node)"
                     >
-                        Move
+                        To this
                     </button>
-                    <button
-                        type="button"
-                        class="btn btn-warning square p-0 px-1 mr-1"
-                        i18n="@@editButtonLabel"
-                        [routerLink]="['/form/node/edit', node.id]"
-                    >
-                        Edit
-                    </button>
-                    <button
-                        [disabled]="node.hasChildren"
-                        type="button"
-                        class="btn btn-danger square p-0 px-1 mr-1"
-                        i18n="@@removeButtonLabel"
-                        (click)="tryRemove(node)"
-                    >
-                        Remove
-                    </button>
-                </div>
-                <ng-template #moveModeButtons>
-                    <div
-                        class="col-5 border-bottom text-right"
-                    >
+                    <ng-template #cancelMoveButton>
                         <button
-                            *ngIf="isNodeToMove(node.id) === false; else cancelMoveButton"
                             type="button"
-                            class="btn btn-warning square p-0 px-1 mr-1"
-                            i18n="@@toThisButtonLabel"
-                            (click)="tryToMove(node)"
+                            class="btn btn-secondary square p-0 px-1 mr-1"
+                            i18n="@@cancelButtonLabel"
+                            (click)="setMoveModeFor(null)"
                         >
-                            To this
-                        </button>
-                        <ng-template #cancelMoveButton>
-                            <button
-                                type="button"
-                                class="btn btn-secondary square p-0 px-1 mr-1"
-                                i18n="@@cancelButtonLabel"
-                                (click)="setMoveModeFor(null)"
-                            >
-                                Cancel
-                            </button>
-                        </ng-template>
-                    </div>
-                </ng-template>
-            </div>
-            <div class="row p-0 m-0 text-center">
-                <div class="w-100">
-                    <button
-                        *ngIf="isInMoveMode === false; else moveToRootButton"
-                        type="button"
-                        class="btn btn-primary square py-0 px-1 my-1"
-                        [routerLink]="['/form/node/new']"
-                        i18n="@@addNewOnRootButtonLabel"
-                    >
-                        Add new on root
-                    </button>
-                    <ng-template #moveToRootButton>
-                        <button
-                            *ngIf="isNodeToMoveOnRoot() === false"
-                            type="button"
-                            class="btn btn-warning square p-0 px-1 mr-1"
-                            i18n="@@moveToRooButtonLabel"
-                            (click)="tryToMove(null)"
-                        >
-                            Move to root
+                            Cancel
                         </button>
                     </ng-template>
                 </div>
+            </ng-template>
+        </div>
+        <div class="row p-0 m-0 text-center">
+            <div class="w-100">
+                <button
+                    *ngIf="isInMoveMode === false; else moveToRootButton"
+                    type="button"
+                    class="btn btn-primary square py-0 px-1 my-1"
+                    [routerLink]="['/form/node/new']"
+                    i18n="@@addNewOnRootButtonLabel"
+                >
+                    Add new on root
+                </button>
+                <ng-template #moveToRootButton>
+                    <button
+                        *ngIf="isNodeToMoveOnRoot() === false"
+                        type="button"
+                        class="btn btn-warning square p-0 px-1 mr-1"
+                        i18n="@@moveToRooButtonLabel"
+                        (click)="tryToMove(null)"
+                    >
+                        Move to root
+                    </button>
+                </ng-template>
             </div>
         </div>
     </ng-template>

@@ -25,11 +25,13 @@
                 </div>
                 <ng-template #nodesList>
                     <div
-                        class="w-100 p-0 m-0 text-center border-bottom"
+                        class="w-100 p-0 m-0 text-center hoverselection border-bottom nonselectable-collumn"
                         style="display: flex"
                         *ngFor="let i of displayedNodesIndexes; trackBy: nodeTrackByFn; let indexIndex = index"
                     >
                         <div class="p-0 m-0 font-italic text-secondary text-left"
+                            (mouseenter)="selectNode(i, $event)"
+                            (mouseleave)="deselectNode($event)"
                             style="flex: 0 0 calc(100% - 400px)"
                         >
                             <strong class="m-0 p-0 pl-2">
@@ -53,12 +55,9 @@
                                     </ng-template>
                                 </span><!--
                                 --><span
-                                    (mouseenter)="selectNode(i, $event)"
-                                    (mouseleave)="deselectNode($event)"
                                     (click)="pingBranch(indexIndex)"
                                     [ngClass]="{ 'btn btn-success square p-0 px-1 m-0 mx-1' : isBranchPingable(indexIndex) }"
                                 >[{{node(i).name}}]</span>
-                                
                             </strong>
                         </div>
                         <div class="col-2 p-0 m-0" style="flex: 0 0 100px">

@@ -47,11 +47,11 @@
                 </div>
                 <ng-template #nodesList>
                     <div
-                        class="w-100 p-0 m-0 text-center border-bottom"
+                        class="w-100 p-0 m-0 text-center border-bottom hoverselection"
                         style="display: flex"
                         *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn"
                     >
-                        <div class="btn-light p-0 m-0 font-italic"
+                        <div class="p-0 m-0 font-italic"
                             style="flex: 0 0 calc(100% - 400px)"
                             (mouseenter)="selectNode(i, $event)"
                             (mouseleave)="deselectNode($event)"

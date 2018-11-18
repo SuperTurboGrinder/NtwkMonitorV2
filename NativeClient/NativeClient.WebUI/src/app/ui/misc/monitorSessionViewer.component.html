@@ -42,6 +42,10 @@
                     {{pulse.silent === 0 ? 'btn-success rounded' : 'btn-danger'}}
                 "
             ></div><!--should be faster than ngClass-->
+            <div style="width: 20px; height: 20px; margin-top: 1px; margin-left: 1px"
+                class="float-left p-0 mb-0 mr-0 border border-secondary pulse_animation
+                {{currentlyPulsing === true ? '' : 'd-none'}}"
+            ></div>
         </div>
     </div>
     <div style="height: 50%"
@@ -70,7 +74,6 @@
                 </div>
             </strong>
         </div>
-        {{cdTest}}
         <div class="w-100 border"
             style="height: calc(100% - 30px)"
         >
@@ -84,6 +87,7 @@
                     }"
                     *ngFor="let message of selectedPulseMessages"
                 >
+                {{cdTest}}
                     {{formatMessage(message)}}
                 </div>
             </div>

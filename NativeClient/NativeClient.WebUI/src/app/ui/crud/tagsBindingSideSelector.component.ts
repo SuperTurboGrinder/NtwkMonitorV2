@@ -3,6 +3,8 @@ import { NodesService } from '../../services/nodes.service';
 import { MessagingService } from 'src/app/services/messaging.service';
 import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
 import { BaseCrudNodeSideSelectorComponent } from '../helpers/baseCrudNodeSideSelectorComponent.helper';
+import { NodeInfoPopupDataService } from 'src/app/services/nodeInfoPopupData.service';
+import { TagsService } from 'src/app/services/tags.service';
 
 @Component({
     selector: 'app-tags-binding-side-selector',
@@ -12,10 +14,12 @@ export class TagsBindingSideSelectorComponent
     extends BaseCrudNodeSideSelectorComponent {
 
     constructor(
+        nodeInfoPopupService: NodeInfoPopupDataService,
+        tagsService: TagsService,
         messager: MessagingService,
         dataService: NodesService
     ) {
-        super(messager, dataService);
+        super(nodeInfoPopupService, tagsService, messager, dataService);
     }
 
     public get selectedNodeTagsSet(): number[] {

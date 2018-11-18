@@ -84,7 +84,6 @@ public class EFDataSource : IEFDbDataSource {
         }
         await context.SaveChangesAsync();
         context.Entry(pulseWithMessages).State = EntityState.Detached;
-        Console.WriteLine(pulseWithMessages.Messages.Count);
         return pulseWithMessages;
     }
 

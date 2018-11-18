@@ -20,6 +20,11 @@ export class CrudNodeSideSelectorTemplateComponent {
     @Input() displayOperationInProgress = false;
     @Output() private refreshEvent = new EventEmitter<boolean>();
     @Output() private nodeSelectionEvent = new EventEmitter<number>();
+    @Output() private showInfoEvent = new EventEmitter<{
+        lineData: NodeLineData
+        mousePos: { x: number, y: number }
+    }>();
+    @Output() private hideInfoEvent = new EventEmitter();
 
     constructor(
         private locationService: Location
@@ -42,5 +47,16 @@ export class CrudNodeSideSelectorTemplateComponent {
     public selectNode(node: NodeLineData) {
         this.selectedNodeLine = node;
         this.nodeSelectionEvent.emit(node.id);
+    }
+
+    public showInfo(lineData: NodeLineData, event: MouseEvent) {
+        this.showInfoEvent.emit({
+            lineData: lineData,
+            mousePos: {x: event.clientX, y: event.clientY}
+        });
+    }
+
+    public hideInfo() {
+        this.hideInfoEvent.emit();
     }
 }

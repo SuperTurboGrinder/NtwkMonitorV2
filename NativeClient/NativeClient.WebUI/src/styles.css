@@ -63,3 +63,23 @@
 .ng-invalid:not(form)  {
     border-left: 5px solid #a94442; /* red */
 }
+
+@keyframes current_ping_pulse_animation {
+    0% {background-color: beige;}
+    50% {background-color: gray;}
+    100% {background-color: beige;}
+}
+
+/* The element to apply the animation to */
+.pulse_animation {
+    animation-name: current_ping_pulse_animation;
+    animation-duration: 2s;
+    animation-iteration-count: infinite
+}
+
+/*Copypasted from bootstrap btn-light*/
+.hoverselection:hover {    
+  color: #212529;
+  background-color: #e2e6ea;
+  border-color: #dae0e5;
+}

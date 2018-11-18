@@ -16,11 +16,13 @@
                     <ng-template>
                         <div class="p-0 m-0 container-fluid">
                             <div
-                                class="row m-0 p-0 text-center"
+                                class="row m-0 p-0 text-center nonselectable-collumn"
                                 *ngFor="let node of dataList"
+                                (mouseenter)="showInfo(node, $event)"
+                                (mouseleave)="hideInfo()"
                             >
                                 <div
-                                    class="col-12 btn-light text-left border-bottom nonselectable-collumn"
+                                    class="col-12 hoverselection text-left border-bottom"
                                     [ngClass]="{
                                         'btn-light': isSelectedNode(node.id) === false,
                                         'bg-info': isSelectedNode(node.id) === true

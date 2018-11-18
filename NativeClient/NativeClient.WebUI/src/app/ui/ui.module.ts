@@ -102,9 +102,6 @@ import { PopupPanelContainerComponent } from './misc/popupPanelContainer.compone
     RouterModule.forRoot(UIRoutingConfig.routes)
   ],
   exports: [
-    NodeInfoPopupComponent,
-    MessageDisplayComponent,
-    PingMonitorPanelComponent,
     UIMainComponent
   ],
   providers: [],

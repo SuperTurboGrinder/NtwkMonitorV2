@@ -4,6 +4,8 @@
     [displayOperationInProgress]="displayOperationInProgress"
     (refreshEvent)="refresh($event)"
     (nodeSelectionEvent)="selectNode($event)"
+    (showInfoEvent)="showNodeInfo($event)"
+    (hideInfoEvent)="hideNodeInfo()"
 >
     <ng-template>
         <app-tags-binding

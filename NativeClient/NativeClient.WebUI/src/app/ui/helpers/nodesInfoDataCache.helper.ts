@@ -51,7 +51,7 @@ export class NodeInfoDataCache {
         nodeTagsIDs: number[]
     ): string[] {
         if (this.tagsList === null) {
-            return null;
+            return [];
         }
         if (this.tagsNames[i].length === 0 && nodeTagsIDs.length > 0) {
             this.tagsNames[i] = this.tagsList

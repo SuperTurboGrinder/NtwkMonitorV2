@@ -23,7 +23,11 @@
         >
             <i
                 class="fa" aria-hidden="true"
-                [ngClass]="{ 'fa-ban': node.isOpenPing==false, 'fa-refresh fa-spin fa-fw': node.isOpenPing==true && isButtonDisabled, 'fa-exchange': !isButtonDisabled }"
+                [ngClass]="{
+                    'fa-ban': node.isOpenPing==false,
+                    'fa-refresh fa-spin fa-fw': node.isOpenPing==true && isButtonDisabled,
+                    'fa-exchange': !isButtonDisabled
+                }"
             ></i>
         </button>
     </div>

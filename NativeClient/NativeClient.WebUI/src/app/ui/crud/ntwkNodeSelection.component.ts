@@ -7,6 +7,9 @@ import { BaseCrudSelectorComponent } from '../helpers/baseCrudSelectorComponent.
 import { HTTPResult } from 'src/app/model/servicesModel/httpResult.model';
 import { NodeLineData } from 'src/app/model/viewModel/nodeLineData.model';
 import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
+import { NodeInfoPopupDataService } from 'src/app/services/nodeInfoPopupData.service';
+import { TagsService } from 'src/app/services/tags.service';
+import { NodeInfoDataCache } from '../helpers/nodesInfoDataCache.helper';
 
 @Component({
     selector: 'app-node-selection',
@@ -19,12 +22,33 @@ export class NtwkNodeSelectionComponent
     private nodeToRemove: NodeLineData = null;
     private nodeToMove: NodeLineData = null;
     private nodeToMoveNewParent: NodeLineData = null;
+    private nodeInfoPopupDataCache: NodeInfoDataCache = null;
+    private displayTreeHelper: DisplayTreeHelper = null;
 
     constructor(
         messager: MessagingService,
-        dataService: NodesService
+        dataService: NodesService,
+        private nodeInfoPopupService: NodeInfoPopupDataService,
+        private tagsService: TagsService
     ) {
         super(messager, dataService);
+    }
+
+    public showNodeInfo(
+        lineData: NodeLineData,
+        mouseEvent: MouseEvent
+    ) {
+        this.nodeInfoPopupService.setData(
+            this.nodeInfoPopupDataCache.formNodeInfoPopupData(
+                lineData.infoIndex,
+                this.displayTreeHelper.nodeData(lineData.infoIndex),
+                { x: mouseEvent.clientX, y: mouseEvent.clientY }
+            )
+        );
+    }
+
+    public hideNodeInfo() {
+        this.nodeInfoPopupService.setData(null);
     }
 
     protected updateDataList() {
@@ -35,26 +59,32 @@ export class NtwkNodeSelectionComponent
                 this.setNewData(HTTPResult.Successful([]));
             } else {
                 const treeLayersCount = treeResult.data.nodesTree.treeLayers.length;
-                const displayTreeHelper = new DisplayTreeHelper(
+                this.displayTreeHelper = new DisplayTreeHelper(
                     null,
                     treeResult.data.nodesTree.allNodes,
                     treeResult.data.nodesTree.treeLayers,
                     0,
                     treeLayersCount
                 );
+                this.nodeInfoPopupDataCache = new NodeInfoDataCache(
+                    treeResult.data.nodesTree.allNodes.length,
+                    treeResult.data.cwsData,
+                    this.tagsService
+                );
                 this.setNewData(HTTPResult.Successful(
-                    displayTreeHelper.displayedNodesIndexes.map(
+                    this.displayTreeHelper.displayedNodesIndexes.map(
                         (dni, index) => {
                             const nodeContainer = treeResult.data.nodesTree.allNodes[dni];
                             const node = nodeContainer.nodeData.node;
-                            const prefix = displayTreeHelper.prefix(index);
+                            const prefix = this.displayTreeHelper.prefix(index);
                             const depth = nodeContainer.depth;
                             return new NodeLineData(
                                 node.id,
                                 node.name,
                                 prefix,
                                 depth,
-                                nodeContainer.children.length > 0
+                                nodeContainer.children.length > 0,
+                                dni
                             );
                         }
                     )
