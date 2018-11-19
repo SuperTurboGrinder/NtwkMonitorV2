@@ -93,3 +93,12 @@
         </div>
     </div>
 </div>
+
+<app-confirmation-popup
+    [display]="displaySessionEndMessage"
+    (answerEvent)="endSession($event)"
+>
+    <span i18n="@@saveChangesToDatabaseLabel">
+        End current monitor session?
+    </span>
+</app-confirmation-popup>

@@ -24,7 +24,7 @@
                         <div class="p-0 m-0 w-100 h-100 font-italic text-secondary"
                             style="overflow-y: scroll"
                         >
-                            <div class="m-0 p-0 w-100 btn-light border-bottom"
+                            <div class="m-0 p-0 w-100 border-bottom hoverselection"
                                 *ngFor="let nodeData of viewNodes; let i = index"
                                 (mouseenter)="selectViewNode(i, $event)"
                                 (mouseleave)="deselectNode($event)"
@@ -46,7 +46,7 @@
                         <div class="p-0 m-0 w-100 h-100 font-italic text-secondary"
                             style="overflow-y: scroll"
                         >
-                            <div class="m-0 p-0 w-100 btn-light border-bottom"
+                            <div class="m-0 p-0 w-100 border-bottom hoverselection"
                                 *ngFor="let nodeData of monitorNodes; let i = index"
                                 (mouseenter)="selectMonitorNode(i, $event)"
                                 (mouseleave)="deselectNode($event)"
@@ -56,12 +56,12 @@
                         </div>
                     </div>
                     <div class="col-3 p-0 m-0 h-100">
-                        <div class="p-0 m-0 w-100 h-100"
-                        >
-                        <app-tags-binding
-                            [originalSetTags]="getMonitorTagsIDs()"
-                            (applyEvent)="applyMonitoredNodesChange($event)"
-                        ></app-tags-binding>
+                        <div class="p-0 m-0 w-100 h-100">
+                            <app-tags-binding
+                                [originalSetTags]="getMonitorTagsIDs()"
+                                (applyEvent)="applyMonitoredNodesChange($event)"
+                            ></app-tags-binding>
+                            <app-monitor-mutability-block></app-monitor-mutability-block>
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                     class="btn btn-outline-info h-100 square mt-1 py-0 mr-2"
                     routerLink="/tagFilteredView/operations"
                 >
-                    Back to operations view
+                    Back to list view
                 </span>
                 <!--
                 <span

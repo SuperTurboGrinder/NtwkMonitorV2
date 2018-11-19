@@ -1,57 +1,57 @@
 <div style="position: fixed; width: calc(100% - 70px); height: calc(100% - 30px)">
-        <div class="p-0 m-0 h-100" style="display: flex">
-            <div class="border-right h-100 px-2" 
-                style="flex: 0 0 200px"
+    <div class="p-0 m-0 h-100" style="display: flex">
+        <div class="border-right h-100 px-2" 
+            style="flex: 0 0 200px"
+        >
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="nodes"
+                routerLinkActive="bg-info text-white"
             >
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="nodes"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Nodes
-                </div>
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="customWebServices"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Custom web services
-                </div>
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="profilesSelect"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Change settings profile
-                </div>
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="profiles"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Settings profiles
-                </div>
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="tags"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Tags
-                </div>
-                <div class="py-2"></div>
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="/form/customWebServicesBinding"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Web service binding
-                </div>
-                <div class="btn btn-sm btn-outline-info square w-100 mb-1"
-                    routerLink="/form/tagsBinding"
-                    routerLinkActive="bg-info text-white"
-                >
-                    Tag binding
-                </div>
+                Nodes
             </div>
-            <div class="p-0 m-0 h-100"
-                style="flex: 0 0 calc(100% - 200px)"
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="customWebServices"
+                routerLinkActive="bg-info text-white"
             >
-                <router-outlet></router-outlet>
+                Custom web services
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="profilesSelect"
+                routerLinkActive="bg-info text-white"
+            >
+                Change settings profile
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="profiles"
+                routerLinkActive="bg-info text-white"
+            >
+                Settings profiles
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="tags"
+                routerLinkActive="bg-info text-white"
+            >
+                Tags
+            </div>
+            <div class="py-2"></div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="/form/customWebServicesBinding"
+                routerLinkActive="bg-info text-white"
+            >
+                Web service binding
+            </div>
+            <div class="btn btn-sm btn-outline-info square w-100 mb-1"
+                routerLink="/form/tagsBinding"
+                routerLinkActive="bg-info text-white"
+            >
+                Tag binding
             </div>
         </div>
+        <div class="p-0 m-0 h-100"
+            style="flex: 0 0 calc(100% - 200px)"
+        >
+            <router-outlet></router-outlet>
+        </div>
+    </div>
     <app-monitor-mutability-block></app-monitor-mutability-block>
 </div>

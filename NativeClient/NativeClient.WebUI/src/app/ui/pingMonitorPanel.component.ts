@@ -24,6 +24,7 @@ export class PingMonitorPanelComponent implements OnDestroy {
         session: MonitoringSession,
         pulses: MonitoringPulseResult[]
     };
+    private _displaySessionEndMessage = false;
     private currentDataSubscription: Subscription = null;
     private timerSubscription: Subscription = null;
 
@@ -42,6 +43,10 @@ export class PingMonitorPanelComponent implements OnDestroy {
         this.timerSubscription = timer(1000, 1000).subscribe(
             _ => this.updateTimeToNextPulse()
         );
+    }
+
+    public get displaySessionEndMessage(): boolean {
+        return this._displaySessionEndMessage;
     }
 
     public get isActive(): boolean {
@@ -69,11 +74,22 @@ export class PingMonitorPanelComponent implements OnDestroy {
 
     public monitorSwitch() {
         if (this.pingMonitorService.isActive) {
-            this.pingMonitorService.stopMonitor();
-            this.isOpened = false;
+            this.tryEndSession();
         } else {
             this.pingMonitorService.startMonitor();
         }
+    }
+
+    public tryEndSession() {
+        this._displaySessionEndMessage = true;
+    }
+
+    public endSession(shouldEnd: boolean) {
+        if (shouldEnd === true) {
+            this.pingMonitorService.stopMonitor();
+            this.isOpened = false;
+        }
+        this._displaySessionEndMessage = false;
     }
 
     private updateTimeToNextPulse() {
