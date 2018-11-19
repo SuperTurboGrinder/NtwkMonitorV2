@@ -48,6 +48,7 @@ import { TagFilterComponent } from './tagFilter.component';
 import { PingMonitorPanelComponent } from './pingMonitorPanel.component';
 import { MonitorSessionViewerComponent } from './misc/monitorSessionViewer.component';
 import { PopupPanelContainerComponent } from './misc/popupPanelContainer.component';
+import { MonitorMutabilityBlockComponent } from './misc/monitorMutabilityBlock.component';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { PopupPanelContainerComponent } from './misc/popupPanelContainer.compone
     TagFilterComponent,
     PingMonitorPanelComponent,
     MonitorSessionViewerComponent,
-    PopupPanelContainerComponent
+    PopupPanelContainerComponent,
+    MonitorMutabilityBlockComponent
   ],
   imports: [
     BrowserAnimationsModule,

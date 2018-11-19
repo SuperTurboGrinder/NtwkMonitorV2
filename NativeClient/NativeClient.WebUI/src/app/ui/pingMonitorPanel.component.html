@@ -1,6 +1,9 @@
 <div style="position:fixed;top:0;right:0"
     class="px-2 py-0 w-75"
-    [ngClass]="{'h-75': isOpened === true}"
+    [ngClass]="{
+        'h-75': isOpened === true,
+        'd-none': shouldHide === true
+    }"
 >
     <div
         class="border-left border-right border-secondary bg-light p-2 w-100"

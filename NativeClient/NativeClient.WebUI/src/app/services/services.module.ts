@@ -19,6 +19,7 @@ import { SoundNotificatonService } from './soundNotificationService';
 import { PingMonitorService } from './pingMonitor.service';
 import { MonitoringDataService } from './monitoringData.service';
 import { CurrentMonitoringSessionDataService } from './currentMonitorSessionData.service';
+import { MonitorBlockerService } from './monitorBlocker.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { CurrentMonitoringSessionDataService } from './currentMonitorSessionData
     SoundNotificatonService,
     PingMonitorService,
     MonitoringDataService,
-    CurrentMonitoringSessionDataService
+    CurrentMonitoringSessionDataService,
+    MonitorBlockerService
   ],
 })
 export class ServicesModule { }

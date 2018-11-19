@@ -4,6 +4,7 @@ import { CurrentMonitoringSessionDataService } from '../services/currentMonitorS
 import { MonitoringSession } from '../model/httpModel/monitoringSession.model';
 import { MonitoringPulseResult } from '../model/httpModel/monitoringPulseResult.model';
 import { Subscription, Observable, timer } from 'rxjs';
+import { MonitorBlockerService } from '../services/monitorBlocker.service';
 
 @Component({
     selector: 'app-ping-monitor-panel',
@@ -32,6 +33,7 @@ export class PingMonitorPanelComponent implements OnDestroy {
     }
 
     constructor(
+        private monitorBlocker: MonitorBlockerService,
         private pingMonitorService: PingMonitorService,
         private currentMonitorDataService: CurrentMonitoringSessionDataService
     ) {
@@ -98,5 +100,10 @@ export class PingMonitorPanelComponent implements OnDestroy {
         || this.sessionData.pulses.length === 0
             ? PingMonitorPanelComponent.emptyPulse
             : this.sessionData.pulses[this.sessionData.pulses.length - 1];
+    }
+
+    public get shouldHide(): boolean {
+        return this.isActive !== true
+        && this.monitorBlocker.isMonitorPanelHidden;
     }
 }

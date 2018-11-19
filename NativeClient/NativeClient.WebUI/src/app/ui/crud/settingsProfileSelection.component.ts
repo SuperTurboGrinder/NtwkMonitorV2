@@ -43,10 +43,19 @@ export class SettingsProfileSelectionComponent
     protected updateDataList() {
         this.dataService.getProfiles().subscribe(
             tagsListResult => {
-                this.setNewData(tagsListResult);
                 this._isEditorView = this.pageName !== 'profilesSelect';
-                if (this.isEditorView === false && this.dataList.length === 1) {
-                    this.setAndContinue(this.dataList[0].id);
+                if (this.isEditorView === false) {
+                    this.setNewData(tagsListResult);
+                    if (this.dataList.length === 1) {
+                        this.setAndContinue(this.dataList[0].id);
+                    }
+                } else {
+                    tagsListResult.data = tagsListResult.success === true
+                        ? tagsListResult.data.filter(
+                            p => this.dataService.isCurrentProfileID(p.id) === false
+                        )
+                        : tagsListResult.data;
+                    this.setNewData(tagsListResult);
                 }
             }
         );

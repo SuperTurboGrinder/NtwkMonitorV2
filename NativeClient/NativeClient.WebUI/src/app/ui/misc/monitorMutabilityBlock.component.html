@@ -1,0 +1,14 @@
+<div
+    *ngIf="shouldBlock === true"
+    style="position:absolute;left:0;top:0;width:100%;height:100%;background: rgba(0,0,0, 0.2)"
+>
+    <div style="min-height: 40vh"></div>
+    <div
+        class="bg-warning text-center border-top border-bottom"
+        style="bottom:0;top:0;left:0;right:0;"
+    >
+        <div class="h5 p-2 nonselectable-collumn">
+            <strong>Can not use while monitor is active</strong>
+        </div>
+    </div>
+</div>
