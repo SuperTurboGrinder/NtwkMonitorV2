@@ -3,7 +3,7 @@
     [ngClass]="{'h-75': isOpened === true}"
 >
     <div
-        class="border-left border-right border-primary bg-light p-2 w-100"
+        class="border-left border-right border-secondary bg-light p-2 w-100"
         style="height: calc(100% - 20px)"
         [ngClass]="{'d-none': isOpened === false}"
     >
@@ -17,20 +17,36 @@
             </div>
         </div>
     </div>
-    <div class="w-100 text-center bg-light border border-primary border-top-0 rounded-bottom"
+    <div class="w-100 text-center bg-light border border-secondary border-top-0 rounded-bottom"
         style="height: 20px; line-height: 6px;"
     >
         <div class="container-fluid p-0 m-0">
             <div class="row p-0 m-0">
-                <div class="col-5 p-0 m-0">
-
+                <div class="col-1 p-0 px-2 m-0 text-left">
+                    <i class="fa hovershrink"
+                        (click)="monitorSwitch()"
+                        [ngClass]="{
+                            'fa-toggle-off text-warning': isActive === false,
+                            'fa-toggle-on text-success': isActive === true
+                        }"
+                        style="padding-top: 2px"
+                        aria-hidden="true"
+                    ></i>
+                </div>
+                <div class="col-4 p-0 pt-1 m-0 text-left">
+                    <span *ngIf="sessionData.session !== null && isActive === true; else monitorDisabled">
+                        <span>Monitoring</span>
+                        {{sessionData.session.participatingNodesNum}}
+                        <span>nodes</span>
+                    </span>
                 </div>
                 <div class="col-2 p-0 m-0"
                     style="line-height: 6px"
                 >
                     <span *ngIf="isActive === true"
-                        class="btn btn-light square rounded-bottom py-0 pb-1 my-0 px-2"
+                        class="btn btn-light square py-0 pb-1 my-0 px-2"
                         [ngClass]="{
+                            'rounded-bottom': isOpened === false,
                             'rounded-top': isOpened
                         }"
                         style="line-height: 6px;"
@@ -62,8 +78,13 @@
                         </ng-template>
                     </span>
                 </div>
-                <div class="col-5 p-0 m-0">
-
+                <div class="col-5 p-0 m-0 text-right pt-1 px-2">
+                    <span>Prev. pulse: (</span>
+                    <span class="text-success">{{lastPulse.responded}}</span><!--
+                    -->/<span class="text-danger">{{lastPulse.silent}}</span><!--
+                    -->/<span class="text-danger">{{lastPulse.skipped}}</span>
+                    <span>); next:</span>
+                    {{timeToNextPulse()}}
                 </div>
             </div>
         </div>

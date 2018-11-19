@@ -3,22 +3,32 @@ import { PingMonitorService } from '../services/pingMonitor.service';
 import { CurrentMonitoringSessionDataService } from '../services/currentMonitorSessionData.service';
 import { MonitoringSession } from '../model/httpModel/monitoringSession.model';
 import { MonitoringPulseResult } from '../model/httpModel/monitoringPulseResult.model';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, timer } from 'rxjs';
 
 @Component({
     selector: 'app-ping-monitor-panel',
     templateUrl: './pingMonitorPanel.component.html'
 })
 export class PingMonitorPanelComponent implements OnDestroy {
+    static readonly emptyPulse = new MonitoringPulseResult(
+        0, 0, 0, 0, []
+    );
+    static readonly noTime = '--';
+    private pulseTimeCache: {
+        seconds: number,
+        val: string
+    } = ({seconds: 0, val: '--'});
     public isOpened = false;
     public currentSessionData: {
         session: MonitoringSession,
         pulses: MonitoringPulseResult[]
     };
     private currentDataSubscription: Subscription = null;
+    private timerSubscription: Subscription = null;
 
     public ngOnDestroy() {
         this.currentDataSubscription.unsubscribe();
+        this.timerSubscription.unsubscribe();
     }
 
     constructor(
@@ -27,6 +37,9 @@ export class PingMonitorPanelComponent implements OnDestroy {
     ) {
         this.currentDataSubscription = this.currentMonitorDataService
             .subscribeToSessionData(data => this.currentSessionData = data);
+        this.timerSubscription = timer(1000, 1000).subscribe(
+            _ => this.updateTimeToNextPulse()
+        );
     }
 
     public get isActive(): boolean {
@@ -50,5 +63,40 @@ export class PingMonitorPanelComponent implements OnDestroy {
         } else {
             this.isOpened = !this.isOpened;
         }
+    }
+
+    public monitorSwitch() {
+        if (this.pingMonitorService.isActive) {
+            this.pingMonitorService.stopMonitor();
+            this.isOpened = false;
+        } else {
+            this.pingMonitorService.startMonitor();
+        }
+    }
+
+    private updateTimeToNextPulse() {
+        const toNextPulse = this.pingMonitorService.toNextPulse;
+        if (toNextPulse === null || toNextPulse < 0) {
+            this.pulseTimeCache.seconds = 0;
+            this.pulseTimeCache.val = PingMonitorPanelComponent.noTime;
+        } else {
+            const secondsToPulse = Math.floor(toNextPulse / 1000);
+            if (this.pulseTimeCache.seconds !== secondsToPulse) {
+                this.pulseTimeCache.seconds = secondsToPulse;
+                const minutesToPulse = Math.floor(secondsToPulse / 60);
+                this.pulseTimeCache.val = `${minutesToPulse}:${secondsToPulse - (minutesToPulse * 60)}`;
+            }
+        }
+    }
+
+    public timeToNextPulse(): string {
+        return this.pulseTimeCache.val;
+    }
+
+    public get lastPulse() {
+        return this.isActive === false
+        || this.sessionData.pulses.length === 0
+            ? PingMonitorPanelComponent.emptyPulse
+            : this.sessionData.pulses[this.sessionData.pulses.length - 1];
     }
 }

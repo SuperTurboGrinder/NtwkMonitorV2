@@ -4,7 +4,7 @@
     <div class="w-100" style="height: 30px">
         <div class="container-fluid p-0 m-0">
             <div class="row p-0 m-0">
-                <div class="col-9 p-0 m-0 text-center"
+                <div class="col-12 p-0 m-0 text-center"
                     *ngIf="isCurrentSession; else sessionInfo"
                 >
                     <strong>Current monitor session</strong>
@@ -17,10 +17,10 @@
                         {{sessionStartTime}}
                         <span> to </span> {{sessionEndTime}}
                     </div>
+                    <div class="col-3 p-0 pr-1 m-0 text-right">
+                            <span>Selected nodes </span> {{session.participatingNodesNum}}
+                    </div>
                 </ng-template>
-                <div class="col-3 p-0 pr-1 m-0 text-right">
-                        <span>Tagged nodes </span> {{session.participatingNodesNum}}
-                </div>
             </div>
         </div>
     </div>

@@ -83,3 +83,15 @@
   background-color: #e2e6ea;
   border-color: #dae0e5;
 }
+
+.bg-monitor-panel {
+    background-color: #e2e6ea;
+}
+
+.hovershrink:hover {
+    font-size: calc(100% - 2px) !important;
+    padding-top: 3px !important;
+    padding-bottom: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 2px !important;
+}

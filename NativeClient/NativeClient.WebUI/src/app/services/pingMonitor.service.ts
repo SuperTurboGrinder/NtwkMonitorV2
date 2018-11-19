@@ -15,6 +15,7 @@ import { CurrentMonitoringSessionDataService } from './currentMonitorSessionData
 import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { MonitoringMessage } from '../model/httpModel/monitoringMessage.model';
 import { MonitoringMessageType } from '../model/httpModel/monitoringMessageType.model';
+import { ManualTimer } from '../ui/helpers/manualTimer.helper';
 
 @Injectable()
 export class PingMonitorService {
@@ -25,6 +26,7 @@ export class PingMonitorService {
     private tagFilterData = new TagFilterData([], []);
     private isInitialized = false;
     private lastTickHourValue: number;
+    private monitorManualTimer: ManualTimer = null;
 
     private monitorPulseInProgress = false;
     private monitorPulseMessages: MonitoringMessage[] = [];
@@ -35,6 +37,12 @@ export class PingMonitorService {
 
     public get isPulsing() {
         return this.monitorPulseInProgress === true;
+    }
+
+    public get toNextPulse() {
+        return this.monitorManualTimer === null
+            ? null
+            : this.monitorManualTimer.getMsToReset();
     }
 
     constructor(
@@ -100,6 +108,7 @@ export class PingMonitorService {
         if (this.monitorSubscription !== null) {
             this.monitorSubscription.unsubscribe();
             this.monitorSubscription = null;
+            this.monitorManualTimer = null;
             this.subscribeToSettingsChange();
         }
     }
@@ -156,8 +165,9 @@ export class PingMonitorService {
                 .filter(ptRoot => nodeTreeLayer0IDs.includes(ptRoot.id))
         );
         const intervalMs = 1000 * 60 * this.settings.monitorInterval;
+        this.monitorManualTimer = new ManualTimer(intervalMs);
         this.resetPulseData();
-        return timer(0, intervalMs).pipe(
+        return timer(0, 1000).pipe(
             map(_ => filteredPingTreeLayer0)
         );
     }
@@ -165,6 +175,9 @@ export class PingMonitorService {
     private monitorSubscriptionFunction(
         pingTree: PingTree[]
     ) {
+        if (this.monitorManualTimer.checkIfFinished() === false) {
+            return;
+        }
         if (this.monitorPulseInProgress === false) {
             this.monitorPulseInProgress = true;
             const currentHour = new Date().getUTCHours();
