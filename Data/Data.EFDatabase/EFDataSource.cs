@@ -66,16 +66,17 @@ public class EFDataSource : IEFDbDataSource {
         MonitoringSession session = await context.MonitoringSessions
             .Include(s => s.Pulses)
             .SingleAsync(s => s.ID == sessionID);
-        context.MonitoringPulses
-            .Add(pulseResult);
-        await context.SaveChangesAsync();
+        //context.MonitoringPulses
+        //    .Add(pulseResult);
+        session.LastPulseTime = pulseResult.CreationTime;
+        //await context.SaveChangesAsync();
         session.Pulses.Add(pulseResult);
         await context.SaveChangesAsync();
-        foreach(MonitoringMessage message in messages) {
-            context.MonitoringMessages
-                .Add(message);
-        }
-        await context.SaveChangesAsync();
+        //foreach(MonitoringMessage message in messages) {
+        //    context.MonitoringMessages.add
+        //        .Add(message);
+        //}
+        //await context.SaveChangesAsync();
         MonitoringPulseResult pulseWithMessages = await context.MonitoringPulses
             .Include(p => p.Messages)
             .SingleAsync(p => p.ID == pulseResult.ID);
@@ -106,6 +107,7 @@ public class EFDataSource : IEFDbDataSource {
         return (await context.MonitoringSessions
             .AsNoTracking()
             .Include(s => s.Pulses)
+                .ThenInclude(p => p.Messages)
             .SingleAsync(s => s.ID == monitoringSessionID))
             .Pulses;
     }

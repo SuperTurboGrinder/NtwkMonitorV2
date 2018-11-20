@@ -15,6 +15,7 @@ import { HubUIComponent } from './hubUI.component';
 import { EditorComponent } from './crud/editor.component';
 import { FormHostComponent } from './crud/formHost.component';
 import { TagFilterComponent } from './tagFilter.component';
+import { HistoryViewComponent } from './historyView.component';
 
 
 export class UIRoutingConfig {
@@ -109,6 +110,10 @@ export class UIRoutingConfig {
         {
             path: 'treeView',
             component: NodesTreeViewComponent
+        },
+        {
+            path: 'historyView',
+            component: HistoryViewComponent
         },
     ];
 

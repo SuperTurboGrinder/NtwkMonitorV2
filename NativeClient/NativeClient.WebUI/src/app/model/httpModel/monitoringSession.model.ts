@@ -11,8 +11,8 @@ export class MonitoringSession {
     ) {
     }
 
-    convertJSTime() {
-        this.creationTimeJS = new Date(this.creationTime);
-        this.lastPulseTimeJS = new Date(this.lastPulseTime);
+    public static convertJSTime(session: MonitoringSession) {
+        session.creationTimeJS = new Date(session.creationTime);
+        session.lastPulseTimeJS = new Date(session.lastPulseTime);
     }
 }

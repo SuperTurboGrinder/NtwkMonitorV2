@@ -1,0 +1,42 @@
+<div class="h-100 w-100"
+    *ngIf="sessions !== null; else sessionNotReady"
+>
+    <div style="display: flex; width: 100%; height: 30px" class="text-center">
+        <div style="flex:0 0 250px" class="border rounded-top">
+            <strong>Monitoring seessions history</strong>
+        </div>
+        <div style="flex:0 0 calc(100% - 250px)" class="border rounded-top">
+                <strong>Selected monitoring session</strong>
+        </div>
+    </div>
+    <div style="height: calc(100% - 30px); display: flex">
+        <div class="h-100" style="flex:0 0 250px">
+            <div style="height: 100%; width: 100%; overflow-y:scroll">
+                <div class="btn-light px-1 w-100 border-bottom nonselectable-collumn"
+                    *ngFor="let session of sessions"
+                    [ngClass]="{ 'bg-info': isSelectedSession(session) }"
+                    (click)="selectSession(session)"
+                >
+                    {{formatDate(session)}}
+                </div>
+            </div>
+        </div>
+        <div class="px-2" style="flex:0 0 calc(100% - 250px)">
+            <app-monitor-session-viewer
+                *ngIf="loadingReport === false; else reportLoading"
+                [data]="selectedSessionData"
+            ></app-monitor-session-viewer>
+            <ng-template #reportLoading>
+                <app-loading-indicator
+                    [isError]="false"
+                ></app-loading-indicator>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<ng-template #sessionNotReady>
+    <app-loading-indicator
+        [isError]="isLoadingError"
+        (refreshEvent)="refresh($event)"
+    ></app-loading-indicator>
+</ng-template>

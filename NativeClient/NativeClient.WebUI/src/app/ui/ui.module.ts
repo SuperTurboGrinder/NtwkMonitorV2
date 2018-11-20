@@ -49,6 +49,7 @@ import { PingMonitorPanelComponent } from './pingMonitorPanel.component';
 import { MonitorSessionViewerComponent } from './misc/monitorSessionViewer.component';
 import { PopupPanelContainerComponent } from './misc/popupPanelContainer.component';
 import { MonitorMutabilityBlockComponent } from './misc/monitorMutabilityBlock.component';
+import { HistoryViewComponent } from './historyView.component';
 
 @NgModule({
   declarations: [
@@ -92,7 +93,8 @@ import { MonitorMutabilityBlockComponent } from './misc/monitorMutabilityBlock.c
     PingMonitorPanelComponent,
     MonitorSessionViewerComponent,
     PopupPanelContainerComponent,
-    MonitorMutabilityBlockComponent
+    MonitorMutabilityBlockComponent,
+    HistoryViewComponent
   ],
   imports: [
     BrowserAnimationsModule,

@@ -88,6 +88,7 @@ export class PingMonitorPanelComponent implements OnDestroy {
         if (shouldEnd === true) {
             this.pingMonitorService.stopMonitor();
             this.isOpened = false;
+            this.currentMonitorDataService.clearData();
         }
         this._displaySessionEndMessage = false;
     }

@@ -10,14 +10,12 @@
                     <strong>Current monitor session</strong>
                 </div>
                 <ng-template #sessionInfo>
-                    <div class="col-5 p-0 pl-1 m-0">
+                    <div class="col-8 p-0 pl-1 m-0">
                         <span>Session </span> ({{sessionDate}})
-                    </div>
-                    <div class="col-4 p-0 m-0">
                         {{sessionStartTime}}
                         <span> to </span> {{sessionEndTime}}
                     </div>
-                    <div class="col-3 p-0 pr-1 m-0 text-right">
+                    <div class="col-4 p-0 pr-1 m-0 text-right">
                             <span>Selected nodes </span> {{session.participatingNodesNum}}
                     </div>
                 </ng-template>
@@ -87,7 +85,6 @@
                     }"
                     *ngFor="let message of selectedPulseMessages"
                 >
-                {{cdTest}}
                     {{formatMessage(message)}}
                 </div>
             </div>

@@ -34,6 +34,13 @@ export class CurrentMonitoringSessionDataService {
         });
     }
 
+    public clearData() {
+        this.dataSubject.next({
+            session: null,
+            pulses: []
+        });
+    }
+
     public createNewSession(
         settingsProfileID: number,
         onSuccess: () => void

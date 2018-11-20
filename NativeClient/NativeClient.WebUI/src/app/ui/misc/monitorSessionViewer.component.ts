@@ -28,11 +28,6 @@ export class MonitorSessionViewerComponent {
     private _selectedPulse: MonitoringPulseResult = null;
     public fixedPulse: MonitoringPulseResult = null;
 
-    public get cdTest(): string {
-        const time = new Date().toLocaleTimeString();
-        return time;
-    }
-
     public get session(): MonitoringSession {
         return this.data.session;
     }
