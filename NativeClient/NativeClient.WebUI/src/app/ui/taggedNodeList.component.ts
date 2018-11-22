@@ -33,6 +33,10 @@ export class TaggedNodeListComponent {
     private sorting: Sorting = Sorting.Default;
     private sortingDescending = false;
 
+    private nameSortedIndexesCacheD: number[] = null;
+    private nameSortedIndexesCacheA: number[] = null;
+    private ipSortedIndexesCache: number[] = null;
+
     public get isFilterMode() {
         return this.isOperationsView === false;
     }
@@ -49,39 +53,68 @@ export class TaggedNodeListComponent {
         this.isOperationsView = false;
     }
 
-    private defaultSortedIndexes(filteredNodesList: NodeData[], _: boolean): number[] {
-        return Array.from(
-            {length: filteredNodesList.length},
-            (__, i) => i
-        );
+    private ipSortedIndexes() { // allways descending
+        if (this.ipSortedIndexesCache !== null) {
+            return this.ipSortedIndexesCache;
+        } else {
+            this.ipSortedIndexesCache = this.filteredNodesList
+                .map((nd, i) => ({ i: i, ipParts: nd.node.ipStr.split( '.' ) }))
+                .sort((a, b) => {
+                    for (let i = 0; i < 4; i++ ) {
+                        const ipA = parseInt(a.ipParts[i], 10);
+                        const ipB = parseInt(b.ipParts[i], 10);
+                        if (ipA === ipB) {
+                            continue;
+                        } else {
+                            return ipA < ipB ? -1 : 1;
+                        }
+                    }
+                    return 0;
+                })
+                .map(d => d.i);
+            return this.ipSortedIndexesCache;
+        }
     }
 
-    private nameSortedIndexes(filteredNodesList: NodeData[], descending: boolean): number[] {
-        return filteredNodesList
-            .map<{ i: number, name: string}>(
-                (nd, i) => ({i: i, name: nd.node.name})
-            )
-            .sort((a, b) => !descending
-                ? this.stringCollator.compare(a.name, b.name)
-                : this.stringCollator.compare(b.name, a.name)
-            )
-            .map<number>(v => v.i);
+    private nameSortedIndexes(): number[] {
+        let cache = this.sortingDescending
+            ? this.nameSortedIndexesCacheD
+            : this.nameSortedIndexesCacheA;
+        if (cache !== null) {
+            return cache;
+        } else {
+            cache = this.filteredNodesList
+                .map<{ i: number, name: string}>(
+                    (nd, i) => ({i: i, name: nd.node.name})
+                )
+                .sort((a, b) => !this.sortingDescending
+                    ? this.stringCollator.compare(a.name, b.name)
+                    : this.stringCollator.compare(b.name, a.name)
+                )
+                .map<number>(v => v.i);
+            if (this.sortingDescending) {
+                this.nameSortedIndexesCacheD = cache;
+            } else {
+                this.nameSortedIndexesCacheA = cache;
+            }
+            return cache;
+        }
     }
 
-    private pingSortedIndexes(filteredNodesList: NodeData[], descending: boolean): number[] {
+    private pingSortedIndexes(): number[] {
         const unsortedFilteredNodesIndexes = new Map<number, number>(
-            filteredNodesList
+            this.filteredNodesList
                 .map<[number, number]>((nd, i) =>  [ nd.node.id, i ])
         );
         const sortedFilteredPingedNodesIndexes =
-            this.pingCacheService.getIDsSortedByPing(descending)
+            this.pingCacheService.getIDsSortedByPing(this.sortingDescending)
                 .filter(id => unsortedFilteredNodesIndexes.has(id))
                 .map<number>(id => unsortedFilteredNodesIndexes.get(id));
-        if (sortedFilteredPingedNodesIndexes.length === filteredNodesList.length) {
+        if (sortedFilteredPingedNodesIndexes.length === this.filteredNodesList.length) {
             return sortedFilteredPingedNodesIndexes;
         }
         const otherFilteredNodesIndexes: number[] = [];
-        for (let i = 0; i < filteredNodesList.length; i++) {
+        for (let i = 0; i < this.filteredNodesList.length; i++) {
             if (!sortedFilteredPingedNodesIndexes.includes(i)) {
                 otherFilteredNodesIndexes.push(i);
             }
@@ -91,14 +124,14 @@ export class TaggedNodeListComponent {
     }
 
     public resortListByDefault() {
-        this.sortedIndexes = this.defaultSortedIndexes(this.filteredNodesList, this.sortingDescending);
+        this.sortedIndexes = this.ipSortedIndexes();
     }
 
     public resortListByName() {
         if (this.sorting !== Sorting.ByName) {
             return;
         }
-        this.sortedIndexes = this.nameSortedIndexes(this.filteredNodesList, this.sortingDescending);
+        this.sortedIndexes = this.nameSortedIndexes();
     }
 
     private resortListByPing() {
@@ -107,7 +140,7 @@ export class TaggedNodeListComponent {
         ) {
             return;
         }
-        this.sortedIndexes = this.pingSortedIndexes(this.filteredNodesList, this.sortingDescending);
+        this.sortedIndexes = this.pingSortedIndexes();
     }
 
     public resortListByPingIfChanged(isChanged: boolean) {
@@ -262,7 +295,7 @@ export class TaggedNodeListComponent {
                     this.tagsService
                 );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
-            this.sortedIndexes = this.defaultSortedIndexes(this.filteredNodesList, false);
+            this.sortedIndexes = this.ipSortedIndexes();
         });
     }
 }
