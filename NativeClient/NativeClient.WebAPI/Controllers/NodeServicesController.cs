@@ -101,6 +101,15 @@ public class NodeServicesController : BaseDataController {
             webServices.Start(webServiceStringResult.Result)
         );
     }
+
+    //GET api/services/customWebServiceString/1/1
+    [HttpGet("customWebServiceString/{nodeID:int}/{cwsID:int}")]
+    public async Task<ActionResult> GetWebServiceString(int nodeID, int cwsID) {
+        //TODO: ctrl+f, rus, node_info_popup
+        return ObserveDataOperationResult(
+            await data.GetCWSBoundingString(nodeID, cwsID)
+        )
+    }
 }
 
 }

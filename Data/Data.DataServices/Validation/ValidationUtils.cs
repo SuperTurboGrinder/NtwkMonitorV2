@@ -11,8 +11,11 @@ static class ValidationUtils {
 
     public static StatusMessage IsValidName(string name) {
         return (
-            !string.IsNullOrEmpty(name)) &&
-            name.All(c => char.IsLetterOrDigit(c) || c == '_' || c == '.'
+            !string.IsNullOrEmpty(name) &&
+            name.All(c =>
+                char.IsLetterOrDigit(c)
+                || c == '-' || c == '_' || c == '.'
+            )
         )
             ? StatusMessage.Ok
             : StatusMessage.InvalidName;
