@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxElectronModule } from 'ngx-electron';
 
 import { ModelModule } from '../model/model.module';
 
@@ -50,6 +51,7 @@ import { MonitorSessionViewerComponent } from './misc/monitorSessionViewer.compo
 import { PopupPanelContainerComponent } from './misc/popupPanelContainer.component';
 import { MonitorMutabilityBlockComponent } from './misc/monitorMutabilityBlock.component';
 import { HistoryViewComponent } from './historyView.component';
+import { ElectronOnPageSearchComponent } from './misc/electronOnPageSearch.component';
 
 @NgModule({
   declarations: [
@@ -94,9 +96,11 @@ import { HistoryViewComponent } from './historyView.component';
     MonitorSessionViewerComponent,
     PopupPanelContainerComponent,
     MonitorMutabilityBlockComponent,
-    HistoryViewComponent
+    HistoryViewComponent,
+    ElectronOnPageSearchComponent
   ],
   imports: [
+    NgxElectronModule,
     BrowserAnimationsModule,
     FormsModule,
     RouterModule,

@@ -1,0 +1,10 @@
+<div style="position: fixed; bottom: 0; left: 30%; width: 40%"
+    class="bg-light border border-bottom-0 rounded-top px-2 pt-2 pb-1"
+    *ngIf="isVisible === true"
+>
+    <input
+        type="text"
+        class="w-75"
+        (input)="input($event)"
+    >
+</div>
