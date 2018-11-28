@@ -1,4 +1,4 @@
-import { Component, Renderer2, OnDestroy, OnInit } from '@angular/core';
+import { Component, Renderer2, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ElectronService } from 'ngx-electron';
 
 class SearchQuery {
@@ -15,9 +15,16 @@ class SearchQuery {
 export class ElectronOnPageSearchComponent implements OnDestroy, OnInit {
     private turnOnDefaultBehaviour: () => void = null;
     private showComponent = false;
+    private hiddenWhileSearching = false;
+    private oldInput: string = null;
+    @ViewChild('searchInput') private inputField: ElementRef;
 
     public get isVisible(): boolean {
-        return this.showComponent;
+        return this.showComponent && !this.hiddenWhileSearching;
+    }
+
+    private focus() {
+        this.inputField.nativeElement.focus();
     }
 
     constructor(
@@ -29,19 +36,29 @@ export class ElectronOnPageSearchComponent implements OnDestroy, OnInit {
         if (this.electronService.isElectronApp) {
             this.electronService.ipcRenderer.on(
                 'electronOnPageSearch-result',
-                result => {
-
+                (sender, result) => {
+                    console.log(result);
+                    this.hiddenWhileSearching = false;
+                    this.focus();
                 }
             );
             this.turnOnDefaultBehaviour = this.renderer.listen(
                 'window',
                 'keydown',
                 e => {
-                    if (e.keyCode === 114) { // f3
-                        this.tryFindNext();
-                    } else if (e.ctrlKey && e.keyCode === 70) { // ctrl+f
+                    const f3 = e.keyCode === 114;
+                    const ctrl_f = e.ctrlKey && e.keyCode === 70;
+                    if (ctrl_f || f3) {
                         e.preventDefault();
-                        this.show();
+                        if (ctrl_f) {
+                            this.show();
+                        } else if (f3) {
+                            if (e.shiftKey) {
+                                this.tryFindPrev();
+                            } else {
+                                this.tryFindNext();
+                            }
+                        }
                     }
                 }
             );
@@ -56,6 +73,7 @@ export class ElectronOnPageSearchComponent implements OnDestroy, OnInit {
 
     show() {
         this.showComponent = true;
+        this.focus();
     }
 
     hide() {
@@ -63,13 +81,22 @@ export class ElectronOnPageSearchComponent implements OnDestroy, OnInit {
     }
 
     input(event) {
-        const text = event.data;
+        const val = event.target.value;
+        if (val === this.oldInput) {
+            console.log('client find next')
+            this.tryFindNext();
+        } else {
+            console.log('client find')
+            this.oldInput = val;
+            this.tryFind(val);
+        }
     }
 
     private sendSearchQuery(type: string, content: string = null) {
+        // this.hiddenWhileSearching = true;
         this.electronService.ipcRenderer.send(
             'electronOnPageSearch-request',
-            new SearchQuery(type, content)
+            new SearchQuery(type, content === null ? this.oldInput : content)
         );
     }
 
