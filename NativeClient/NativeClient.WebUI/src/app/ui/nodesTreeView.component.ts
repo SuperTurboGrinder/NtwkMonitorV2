@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { NtwkNode } from '../model/httpModel/ntwkNode.model';
 import { NodesService } from '../services/nodes.service';
@@ -12,7 +12,8 @@ import { DisplayTreeHelper } from './helpers/displayTreeHelper.helper';
 
 @Component({
     selector: 'app-nodes-tree-view',
-    templateUrl: './nodesTreeView.component.html'
+    templateUrl: './nodesTreeView.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodesTreeViewComponent {
     private displayTreeHelper: DisplayTreeHelper = null;
@@ -25,6 +26,11 @@ export class NodesTreeViewComponent {
     private startDisplayLayer = 0;
     private displayLayersCount = 0;
     private treeLayersCount = 0;
+
+    @Output() private updateUIEvent = new EventEmitter();
+    private updateUI() {
+        this.updateUIEvent.emit();
+    }
 
     public prefix(prefixIndex: number) {
         return this.displayTreeHelper.prefix(prefixIndex);
@@ -187,6 +193,7 @@ export class NodesTreeViewComponent {
                     this.tagsService
                 );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
+            this.updateUI();
         });
     }
 }

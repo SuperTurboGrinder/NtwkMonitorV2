@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 
 import { NtwkNode } from '../model/httpModel/ntwkNode.model';
 import { NodesService } from '../services/nodes.service';
@@ -18,7 +18,8 @@ enum Sorting {
 
 @Component({
     selector: 'app-tagged-node-list',
-    templateUrl: './taggedNodeList.component.html'
+    templateUrl: './taggedNodeList.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaggedNodeListComponent {
     private filteredNodesList: NodeData[] = null;
@@ -36,6 +37,11 @@ export class TaggedNodeListComponent {
     private nameSortedIndexesCacheD: number[] = null;
     private nameSortedIndexesCacheA: number[] = null;
     private ipSortedIndexesCache: number[] = null;
+
+    @Output() private updateUIEvent = new EventEmitter();
+    private updateUI() {
+        this.updateUIEvent.emit();
+    }
 
     public get isFilterMode() {
         return this.isOperationsView === false;
@@ -296,6 +302,7 @@ export class TaggedNodeListComponent {
                 );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
             this.sortedIndexes = this.ipSortedIndexes();
+            this.updateUI();
         });
     }
 }

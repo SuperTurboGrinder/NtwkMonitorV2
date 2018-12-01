@@ -16,6 +16,8 @@ import { EditorComponent } from './crud/editor.component';
 import { FormHostComponent } from './crud/formHost.component';
 import { TagFilterComponent } from './tagFilter.component';
 import { HistoryViewComponent } from './historyView.component';
+import { TaggedNodesListUpdateListenerComponent } from './misc/taggedNodesListUpdateListener.component';
+import { NodesTreeViewUpdateListenerComponent } from './misc/nodesTreeViewUpdatesListener.component';
 
 
 export class UIRoutingConfig {
@@ -105,11 +107,11 @@ export class UIRoutingConfig {
         },
         {
             path: 'tagFilteredView/operations',
-            component: TaggedNodeListComponent
+            component: TaggedNodesListUpdateListenerComponent
         },
         {
             path: 'treeView',
-            component: NodesTreeViewComponent
+            component: NodesTreeViewUpdateListenerComponent
         },
         {
             path: 'historyView',

@@ -50,6 +50,8 @@ import { MonitorSessionViewerComponent } from './misc/monitorSessionViewer.compo
 import { PopupPanelContainerComponent } from './misc/popupPanelContainer.component';
 import { MonitorMutabilityBlockComponent } from './misc/monitorMutabilityBlock.component';
 import { HistoryViewComponent } from './historyView.component';
+import { TaggedNodesListUpdateListenerComponent } from './misc/taggedNodesListUpdateListener.component';
+import { NodesTreeViewUpdateListenerComponent } from './misc/nodesTreeViewUpdatesListener.component';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,9 @@ import { HistoryViewComponent } from './historyView.component';
     MonitorSessionViewerComponent,
     PopupPanelContainerComponent,
     MonitorMutabilityBlockComponent,
-    HistoryViewComponent
+    HistoryViewComponent,
+    TaggedNodesListUpdateListenerComponent,
+    NodesTreeViewUpdateListenerComponent
   ],
   imports: [
     BrowserAnimationsModule,
