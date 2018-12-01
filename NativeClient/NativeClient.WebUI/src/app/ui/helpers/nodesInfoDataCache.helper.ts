@@ -11,26 +11,37 @@ export class NodeInfoDataCache {
     private webServicesNames: string[][] = null;
     public loadingError = false;
     private tagsList: NodeTag[] = null;
+    private showExecServices = true;
+    private showWebServices = true;
+    private showTags = true;
 
     constructor(
         len: number,
         private cwsDataList: CWSData[],
-        tagsService: TagsService
+        tagsService: TagsService,
+        showExecServices = true,
+        showWebServices = true,
+        showTags = true
     ) {
+        this.showExecServices = showExecServices;
+        this.showWebServices = showWebServices;
+        this.showTags = showTags;
         const newArrayOfNodesCountLength = () => Array.from(
             {length: len},
             _ => []
         );
-        this.tagsNames = newArrayOfNodesCountLength();
         this.webServicesData = newArrayOfNodesCountLength();
         this.webServicesNames = newArrayOfNodesCountLength();
-        tagsService.getTagsList().subscribe(tagsListResult => {
-            if (tagsListResult.success === false) {
-                this.loadingError = true;
-            } else {
-                this.tagsList = tagsListResult.data;
-            }
-        });
+        if (tagsService !== null) {
+            this.tagsNames = newArrayOfNodesCountLength();
+            tagsService.getTagsList().subscribe(tagsListResult => {
+                if (tagsListResult.success === false) {
+                    this.loadingError = true;
+                } else {
+                    this.tagsList = tagsListResult.data;
+                }
+            });
+        }
     }
 
     public formNodeInfoPopupData(
@@ -40,6 +51,9 @@ export class NodeInfoDataCache {
     ): NodeInfoPopupData {
         return {
             node: nodeData.node,
+            showExecServices: this.showExecServices,
+            showWebServices: this.showWebServices,
+            showTags: this.showTags,
             webServicesNames: this.listWebServicesNames(index, nodeData.boundWebServicesIDs),
             tagsNames: this.listTagsNames(index, nodeData.tagsIDs),
             screenPos: screenPos

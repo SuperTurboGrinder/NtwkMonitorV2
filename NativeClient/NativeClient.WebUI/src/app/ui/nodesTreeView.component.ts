@@ -190,7 +190,8 @@ export class NodesTreeViewComponent {
                 new NodeInfoDataCache(
                     treeResult.data.nodesTree.allNodes.length,
                     treeResult.data.cwsData,
-                    this.tagsService
+                    this.tagsService,
+                    false, false
                 );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
             this.updateUI();

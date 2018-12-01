@@ -298,7 +298,8 @@ export class TaggedNodeListComponent {
                 new NodeInfoDataCache(
                     this.filteredNodesList.length,
                     treeResult.data.cwsData,
-                    this.tagsService
+                    this.tagsService,
+                    false, false
                 );
             this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
             this.sortedIndexes = this.ipSortedIndexes();

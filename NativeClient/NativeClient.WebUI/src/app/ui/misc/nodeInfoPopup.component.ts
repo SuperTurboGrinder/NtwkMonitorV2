@@ -50,6 +50,18 @@ export class NodeInfoPopupComponent implements OnDestroy {
         ) + '.';
     }
 
+    public showExecServices(): boolean {
+        return this.data.showExecServices;
+    }
+
+    public showWebServices(): boolean {
+        return this.data.showWebServices;
+    }
+
+    public showTags(): boolean {
+        return this.data.showTags;
+    }
+
     public hasWebServices(): boolean {
         return this.data.webServicesNames.length !== 0;
     }
