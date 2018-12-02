@@ -38,9 +38,9 @@
                 </div>
                 <div class="col-4 p-0 pt-1 m-0 text-left">
                     <span *ngIf="sessionData.session !== null && isActive === true; else monitorDisabled">
-                        <span>Monitoring</span>
+                        <span i18n="@@monitoringLabel">Monitoring</span>
                         {{sessionData.session.participatingNodesNum}}
-                        <span>nodes</span>
+                        <span i18n="@@nodesLabel">nodes</span>
                     </span>
                 </div>
                 <div class="col-2 p-0 m-0"
@@ -82,11 +82,11 @@
                     </span>
                 </div>
                 <div class="col-5 p-0 m-0 text-right pt-1 px-2">
-                    <span>Prev. pulse: (</span>
+                    <span i18n="@@previousPulseColonSpaceBraceLabel">Prev. pulse: (</span>
                     <span class="text-success">{{lastPulse.responded}}</span><!--
                     -->/<span class="text-danger">{{lastPulse.silent}}</span><!--
                     -->/<span class="text-danger">{{lastPulse.skipped}}</span>
-                    <span>); next:</span>
+                    <span i18n="@@closebraceSemicolonSpaceNextColonLabel">); next:</span>
                     {{timeToNextPulse()}}
                 </div>
             </div>
@@ -98,7 +98,7 @@
     [display]="displaySessionEndMessage"
     (answerEvent)="endSession($event)"
 >
-    <span i18n="@@saveChangesToDatabaseLabel">
+    <span i18n="@@endCurrentMonitorSessionQuestionLabel">
         End current monitor session?
     </span>
 </app-confirmation-popup>

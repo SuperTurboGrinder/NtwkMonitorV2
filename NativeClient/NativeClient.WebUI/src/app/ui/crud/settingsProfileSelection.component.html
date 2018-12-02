@@ -18,6 +18,15 @@
                 </div>
                 <div class="col-4 p-1 border-bottom text-right">
                     <button
+                        *ngIf="isCurrentProfile(profile.id)"
+                        type="button"
+                        class="btn btn-warning square p-0 px-1 mr-1"
+                        i18n="@@editButtonLabel"
+                        [routerLink]="['/form/node/edit', node.id]"
+                    >
+                        Edit
+                    </button>
+                    <button
                         type="button"
                         class="btn btn-outline-success square mx-1"
                         [disabled]="isCurrentProfile(profile.id)"

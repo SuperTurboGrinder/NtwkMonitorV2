@@ -36,7 +36,7 @@
                             class="text-small text-danger"
                         >
                             <div
-                                i18n="@@nameRequiredMessge"
+                                i18n="@@nameRequiredMessage"
                                 *ngIf="nameModel.errors.required"
                             >Name value required.</div>
                         </strong>
@@ -73,7 +73,9 @@
                                 i18n="@@ipRequiredMessge"
                                 *ngIf="ipModel.errors.required; else invalidFormat"
                             >IP value required.</div>
-                            <ng-template #invalidFormat>Invalid format.</ng-template>
+                            <ng-template #invalidFormat>
+                                <div i18n="@@invalidFormatMessge">Invalid format.</div>
+                            </ng-template>
                         </strong>
                     </div>
                 </div>

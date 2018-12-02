@@ -3,16 +3,16 @@
         <div class="h-100 p-0 m-0" style="width:calc(100% - 16px)">
             <div class="text-center" style="display: flex; width: 100%; height: 30px">
                 <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 calc(100% - 400px)">
-                    <strong>Name</strong>
+                    <strong i18n="@@nameLabel">Name</strong>
                 </div>
                 <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 100px">
-                    <strong>Executables</strong>
+                    <strong i18n="@@executablesLabel">Executables</strong>
                 </div>
                 <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 160px">
-                    <strong>Web services</strong>
+                    <strong i18n="@@webServicesLabel">Web services</strong>
                 </div>
                 <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 140px">
-                    <strong>Ping</strong>
+                    <strong i18n="@@pingLabel">Ping</strong>
                 </div>
             </div>
         
@@ -21,7 +21,7 @@
                     class="p-0 py-3 m-0 text-center font-italic w-100"
                     *ngIf="isNoNodesLoaded(); else nodesList"
                 >
-                    <strong>No saved nodes found in database.</strong>
+                    <strong i18n="@@noSavedNodesFoundLabel">No saved nodes found in database.</strong>
                 </div>
                 <ng-template #nodesList>
                     <div
@@ -81,7 +81,7 @@
                 </ng-template>
             </div>
             <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
-                Show tree levels
+                <span i18n="@@showTreeLevelsLabel">Show tree levels</span>
                 <app-num-range-selector
                     [maxValue]="fullTreeLayersCount()-1"
                     [maxLength]="10"

@@ -3,10 +3,10 @@
         <div class="h-100 p-0 m-0 text-center container-fluid" style="width:calc(100% - 16px)">
             <div class="row p-0 m-0" style="height: 30px; width:calc(100% + 16px)">
                 <div class="col-6 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong>Operations view filtered by tag</strong>
+                    <strong i18n="@@operationsViewFilteredByTagLabel">Operations view filtered by tag</strong>
                 </div>
                 <div class="col-6 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong>Monitored nodes filtered by tag</strong>
+                    <strong i18n="@@monitoredNodesFilteredByTagLabel">Monitored nodes filtered by tag</strong>
                 </div>
             </div>
         
@@ -14,7 +14,7 @@
                 class="row p-0 py-3 m-0 text-center font-italic"
                 *ngIf="isNoNodesLoaded(); else nodesList"
             >
-                <strong class="col">No saved nodes found in database.</strong>
+                <strong class="col" i18n="@@noNodesFoundLabel">No nodes found in database.</strong>
             </div>
             <ng-template #nodesList>
                 <div class="row p-0 m-0 text-center border-bottom"
@@ -70,6 +70,7 @@
                 <span
                     class="btn btn-outline-info square mt-1 py-0 mr-2"
                     routerLink="/tagFilteredView/operations"
+                    i18n="@@backToListViewButtonLabel"
                 >
                     Back to list view
                 </span>

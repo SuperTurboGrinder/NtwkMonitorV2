@@ -7,16 +7,18 @@
                 <div class="col-12 p-0 m-0 text-center"
                     *ngIf="isCurrentSession; else sessionInfo"
                 >
-                    <strong>Current monitor session</strong>
+                    <strong
+                        i18n="@@currentMonitorSessionLabel"
+                    >Current monitor session</strong>
                 </div>
                 <ng-template #sessionInfo>
                     <div class="col-8 p-0 pl-1 m-0">
                         <span>Session </span> ({{sessionDate}})
                         {{sessionStartTime}}
-                        <span> to </span> {{sessionEndTime}}
+                        <span i18n="spaceToSpaceLabel"> to </span> {{sessionEndTime}}
                     </div>
                     <div class="col-4 p-0 pr-1 m-0 text-right">
-                            <span>Selected nodes </span> {{session.participatingNodesNum}}
+                            <span i18n="@@selectedNodesSpaceLabel">Selected nodes </span> {{session.participatingNodesNum}}
                     </div>
                 </ng-template>
             </div>
@@ -53,18 +55,18 @@
             <strong class="container-fluid p-0 m-0">
                 <div class="row p-0 m-0">
                     <div class="col-3 p-0 pl-1 m-0">
-                        <span>Pulse </span>
+                        <span i18n="@@pulseSpaceLabel">Pulse </span>
                         {{selectedPulseCreationTime}}
                     </div>
                     <div class="col-9 p-0 m-0 text-center">
-                        <span>Ping: </span>
+                        <span i18n="@@pingСolonSpaceLabel">Ping: </span>
                         <span class="text-success">{{selectedPulse.responded}}</span><!----
                         -->/{{session.participatingNodesNum}}
                         <span *ngIf="selectedPulse.silent > 0">
-                            <span> (Failed: </span>
+                            <span i18n="@@spaceBraceFailedColonSpaceLabel"> (Failed: </span>
                             <span class="text-danger">{{selectedPulse.silent}}</span><!----
                             --><span *ngIf="selectedPulse.skipped > 0"><!----
-                                -->;<span> Skipped: </span>
+                                -->;<span i18n="@@spaceSkippedСolonSpaceLabel"> Skipped: </span>
                                 <span class="text-danger">{{selectedPulse.skipped}}</span>)
                             </span>
                         </span>

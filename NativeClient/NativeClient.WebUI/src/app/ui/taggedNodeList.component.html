@@ -7,7 +7,7 @@
                     (click)="setSortByName()"
                 >
                     <strong>
-                        <span class="p-0 m-0 px-1">Name</span>
+                        <span class="p-0 m-0 px-1" i18n="@@nameLabel">Name</span>
                         <i
                             class="fa arrow-icon-size" aria-hidden="true"
                             [ngClass]="{ 'fa-sort-down': isSortedByName() && !isSortedDescending(), 'fa-sort-up': isSortedByName() && isSortedDescending() }"
@@ -17,19 +17,19 @@
                 <div class="btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"
                     style="flex: 0 0 100px"
                 >
-                    <strong>Executables</strong>
+                    <strong i18n="@@executablesLabel">Executables</strong>
                 </div>
                 <div class="btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"
                     style="flex: 0 0 160px"
                 >
-                    <strong>Web services</strong>
+                    <strong i18n="@@webServicesLabel">Web services</strong>
                 </div>
                 <div class="btn-light border rounded-top p-0 m-0 sortable-collumn"
                     style="flex: 0 0 140px"
                     (click)="setSortByPing()"
                 >
                     <strong>
-                        <span class="p-0 m-0 px-1">Ping</span>
+                        <span class="p-0 m-0 px-1" i18n="@@pingLabel">Ping</span>
                         <i
                             class="fa arrow-icon-size" aria-hidden="true"
                             [ngClass]="{ 'fa-sort-down': isSortedByPing() && !isSortedDescending(), 'fa-sort-up': isSortedByPing() && isSortedDescending() }"
@@ -43,7 +43,7 @@
                     class="p-0 py-3 m-0 text-center font-italic w-100"
                     *ngIf="isNoNodesLoaded(); else nodesList"
                 >
-                    <strong>No saved nodes found in database.</strong>
+                    <strong i18n="@@noNodesFoundLabel">No nodes found in database.</strong>
                 </div>
                 <ng-template #nodesList>
                     <div
@@ -86,12 +86,14 @@
                     class="btn btn-success square mt-1 py-0 mr-3"
                     [disabled]="isWholeListPingInProgress"
                     (click)="pingFilteredList()"
+                    i18n="@@pingFilteredListButtonLabel"
                 >
                     Ping filtered list
                 </button>
                 <span
                     class="btn btn-outline-primary square mt-1 py-0"
                     routerLink="/tagFilteredView/filter"
+                    i18n="@@toTagFilterConfigurationButtonLabel"
                 >
                     To tag filter configuration
                 </span>
