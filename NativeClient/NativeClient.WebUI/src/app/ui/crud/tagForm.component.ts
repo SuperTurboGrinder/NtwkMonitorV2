@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { HTTPResult } from '../../model/servicesModel/httpResult.model';
@@ -6,21 +6,27 @@ import { MessagingService } from 'src/app/services/messaging.service';
 import { NodeTag } from 'src/app/model/httpModel/nodeTag.model';
 import { TagsService } from '../../services/tags.service';
 import { BaseCrudFormComponent } from '../helpers/baseCrudFormComponent.helper';
+import { SettingsProfilesService } from 'src/app/services/settingsProfiles.service';
 
 @Component({
     selector: 'app-tag-form',
     templateUrl: './tagForm.component.html'
 })
 export class TagFormComponent
-    extends BaseCrudFormComponent<NodeTag, TagsService> {
+    extends BaseCrudFormComponent<NodeTag, TagsService> implements OnDestroy {
 
     constructor(
         messager: MessagingService,
         location: Location,
         route: ActivatedRoute,
-        tagsService: TagsService
+        tagsService: TagsService,
+        private settingsService: SettingsProfilesService
     ) {
         super(messager, location, route, tagsService);
+    }
+
+    public ngOnDestroy() {
+        this.settingsService.refreshCurrentProfile();
     }
 
     protected getOriginalData(

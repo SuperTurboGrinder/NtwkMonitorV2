@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { HTTPResult } from '../../model/servicesModel/httpResult.model';
@@ -8,17 +8,22 @@ import { NodesService } from '../../services/nodes.service';
 import { BaseCrudFormComponent } from '../helpers/baseCrudFormComponent.helper';
 import { CWSData } from 'src/app/model/httpModel/cwsData.model';
 import { NtwkNodesTree } from 'src/app/model/viewModel/ntwkNodesTree.model';
+import { SettingsProfilesService } from 'src/app/services/settingsProfiles.service';
 
 @Component({
     selector: 'app-node-form',
     templateUrl: './ntwkNodeForm.component.html'
 })
 export class NtwkNodeFormComponent
-    extends BaseCrudFormComponent<NtwkNode, NodesService> {
+    extends BaseCrudFormComponent<NtwkNode, NodesService> implements OnDestroy {
 
     private _usesParentPort = false;
     private _localParentPortValue = 1;
     private _localParentID: number = null;
+
+    public ngOnDestroy() {
+        this.settingsService.refreshCurrentProfile();
+    }
 
     public get usesParentPort() {
         return this._usesParentPort;
@@ -46,7 +51,8 @@ export class NtwkNodeFormComponent
         messager: MessagingService,
         location: Location,
         route: ActivatedRoute,
-        nodesService: NodesService
+        nodesService: NodesService,
+        private settingsService: SettingsProfilesService
     ) {
         super(messager, location, route, nodesService);
         const routeSnapshot: ActivatedRouteSnapshot = route.snapshot;

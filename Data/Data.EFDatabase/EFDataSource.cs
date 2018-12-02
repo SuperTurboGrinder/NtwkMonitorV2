@@ -559,7 +559,7 @@ public class EFDataSource : IEFDbDataSource {
         IEnumerable<int> idsOfTagsToRemove = alreadyAttachedTagsIDs
             .Except(tagIDs);
         IEnumerable<TagAttachment> tagAttachmentsToRemove = await context.TagAttachments
-            .Where(a => idsOfTagsToRemove.Contains(a.TagID))
+            .Where(a => a.NodeID == nodeID && idsOfTagsToRemove.Contains(a.TagID))
             .ToArrayAsync();
         IEnumerable<TagAttachment> newTagAttachments = tagIDs
             .Except(alreadyAttachedTagsIDs)

@@ -51,6 +51,12 @@ export class SettingsProfilesService {
         return this.currentProfileID !== -1;
     }
 
+    public refreshCurrentProfile() {
+        if (this.currentProfileID !== -1) {
+            this.setCurrentProfile(this.currentProfileID);
+        }
+    }
+
     public setCurrentProfile(id: number) {
         this.currentProfileID = id;
         const newCurrentProfile = this.getProfiles().pipe(

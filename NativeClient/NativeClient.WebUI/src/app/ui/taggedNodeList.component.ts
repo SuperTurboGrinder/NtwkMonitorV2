@@ -9,6 +9,10 @@ import { TagsService } from '../services/tags.service';
 import { NodeInfoPopupDataService } from '../services/nodeInfoPopupData.service';
 import { NodeInfoDataCache } from './helpers/nodesInfoDataCache.helper';
 import { forkJoin } from 'rxjs';
+import { HTTPResult } from '../model/servicesModel/httpResult.model';
+import { NtwkNodesTree } from '../model/viewModel/ntwkNodesTree.model';
+import { CWSData } from '../model/httpModel/cwsData.model';
+import { TagFilterData } from '../model/httpModel/tagFilterData.model';
 
 enum Sorting {
     Default,
@@ -22,6 +26,10 @@ enum Sorting {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaggedNodeListComponent {
+    treeResult: HTTPResult<{
+        cwsData: CWSData[],
+        nodesTree: NtwkNodesTree
+    }> = null;
     private filteredNodesList: NodeData[] = null;
     public sortedIndexes: number[] = null;
     private loadingError = false;
@@ -274,36 +282,47 @@ export class TaggedNodeListComponent {
             this.settingsService.currentProfilesViewTagFilterData()
         )
         .subscribe(results => {
-            const treeResult = results[0];
+            this.treeResult = results[0];
             const viewTagFilterDataResult = results[1];
-            if (treeResult.success === false) {
-                this.loadingError = true;
-                return;
-            }
-            const nodesNum = treeResult.data.nodesTree.allNodes.length;
-            if (nodesNum === 0) {
-                this.nodesListIsEmpty = true;
-                this.filteredNodesList = [null];
-            } else {
-                this.nodesListIsEmpty = false;
-            }
-            const viewNodesIDs = viewTagFilterDataResult.nodesIDs;
-            const allNodes = treeResult.data.nodesTree.allNodes;
-            this.filteredNodesList = allNodes
-                .filter(nData =>
-                    viewNodesIDs.includes(nData.nodeData.node.id)
-                )
-                .map(nData => nData.nodeData);
-            this.nodeInfoPopupDataCache =
-                new NodeInfoDataCache(
-                    this.filteredNodesList.length,
-                    treeResult.data.cwsData,
-                    this.tagsService,
-                    false, false
-                );
-            this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
-            this.sortedIndexes = this.ipSortedIndexes();
-            this.updateUI();
+            this.initializationRoutine(viewTagFilterDataResult);
+            this.subscribeToSettingsChange();
         });
+    }
+
+    private subscribeToSettingsChange() {
+        this.settingsService.subscribeToSettingsChange(settings => {
+            this.initializationRoutine(settings.viewTagFilter);
+        });
+    }
+
+    private initializationRoutine(viewTagFilterDataResult: TagFilterData) {
+        if (this.treeResult.success === false) {
+            this.loadingError = true;
+            return;
+        }
+        const nodesNum = this.treeResult.data.nodesTree.allNodes.length;
+        if (nodesNum === 0) {
+            this.nodesListIsEmpty = true;
+            this.filteredNodesList = [null];
+        } else {
+            this.nodesListIsEmpty = false;
+        }
+        const viewNodesIDs = viewTagFilterDataResult.nodesIDs;
+        const allNodes = this.treeResult.data.nodesTree.allNodes;
+        this.filteredNodesList = allNodes
+            .filter(nData =>
+                viewNodesIDs.includes(nData.nodeData.node.id)
+            )
+            .map(nData => nData.nodeData);
+        this.nodeInfoPopupDataCache =
+            new NodeInfoDataCache(
+                this.filteredNodesList.length,
+                this.treeResult.data.cwsData,
+                this.tagsService,
+                false, false
+            );
+        this.loadingError = this.loadingError && this.nodeInfoPopupDataCache.loadingError;
+        this.sortedIndexes = this.ipSortedIndexes();
+        this.updateUI();
     }
 }
