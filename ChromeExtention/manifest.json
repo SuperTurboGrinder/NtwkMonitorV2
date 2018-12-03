@@ -1,0 +1,20 @@
+{
+    "manifest_version":2,
+    "name": "NtwkMonitor.UtilityButtons",
+    "description": "Create button to fire NtwkMonitor services from any web page.",
+    "version": "0.1",
+
+    "content_scripts": [
+        {
+            "matches": [
+                "file:///C:/Projects/NtwkMonitor.ButtonsExtension/test.html"
+            ],
+            "js": ["impl.js", "main.js"]
+        }
+    ],
+
+    "permissions": [
+        "storage",
+        "http://localhost:5000/*"
+    ]
+}
