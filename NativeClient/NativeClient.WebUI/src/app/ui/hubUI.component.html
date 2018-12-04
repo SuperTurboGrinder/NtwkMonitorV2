@@ -12,24 +12,35 @@
             <div class="text-center pt-1">
                 <div
                     class="border-right p-2 btn-outline-secondary"
+                    (click)="setTitleSuffix('Tree View')"
                     routerLink="/treeView"
                     routerLinkActive="bg-secondary text-white"
                 >
                     <i class="fa fa-sitemap fa-3x" aria-hidden="true"></i>
                 </div>
                 <div class="border-right p-2 btn-outline-secondary"
+                    (click)="setTitleSuffix('Filtered List View')"
                     routerLink="/tagFilteredView"
                     routerLinkActive="bg-secondary text-white"
                 >
                     <i class="fa fa-list-ul fa-3x" aria-hidden="true"></i>
                 </div>
                 <div class="border-right p-2 btn-outline-secondary"
+                    (click)="setTitleSuffix('Filter Configuration')"
+                    routerLink="/filterConfiguration"
+                    routerLinkActive="bg-secondary text-white"
+                >
+                    <i class="fa fa-filter fa-3x" aria-hidden="true"></i>
+                </div>
+                <div class="border-right p-2 btn-outline-secondary"
+                    (click)="setTitleSuffix('Monitoring Sessions History')"
                     routerLink="/historyView"
                     routerLinkActive="bg-secondary text-white"
                 >
                     <i class="fa fa-history fa-3x" aria-hidden="true"></i>
                 </div>
                 <div class="border-right p-2 btn-outline-secondary"
+                    (click)="setTitleSuffix('Editor')"
                     routerLink="/editor"
                     routerLinkActive="bg-secondary text-white"
                 >

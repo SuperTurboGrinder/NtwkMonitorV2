@@ -10,7 +10,7 @@
     [baseFormLink]="'node'"
 >
     <ng-template>
-        <div class="m-0 p-0 text-center hoverselection"
+        <div class="text-center hoverselection"
             style="display: flex"
             *ngFor="let node of dataList"
         >
@@ -91,7 +91,7 @@
                 </div>
             </ng-template>
         </div>
-        <div class="row p-0 m-0 text-center">
+        <div class="text-center">
             <div class="w-100">
                 <button
                     *ngIf="isInMoveMode === false; else moveToRootButton"

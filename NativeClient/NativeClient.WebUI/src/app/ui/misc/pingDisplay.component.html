@@ -5,7 +5,7 @@
         >
             {{pingAverage()}}
         </strong>
-        <strong class="p-0 m-0">
+        <strong>
             <span
                 [ngClass]="{ 'text-warning': pingCountWarning, 'text-danger': pingCountDanger }"
             >{{pingSuccessful()}}</span>/{{pingCount()}}

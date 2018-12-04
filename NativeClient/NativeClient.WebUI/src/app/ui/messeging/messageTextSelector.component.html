@@ -1,22 +1,22 @@
 <!--for_i18n-->
 
-<div class="m-0 p-0" [ngSwitch]="message">
-        <div *ngSwitchCase="messagesEnum.CreatedSuccessfully" i18n="@@CreatedSuccessfully" class="m-0 p-0">
+<div [ngSwitch]="message">
+        <div *ngSwitchCase="messagesEnum.CreatedSuccessfully" i18n="@@CreatedSuccessfully">
             Created successfully.
         </div>
-        <div *ngSwitchCase="messagesEnum.UpdatedSuccessfully" i18n="@@UpdatedSuccessfully" class="m-0 p-0">
+        <div *ngSwitchCase="messagesEnum.UpdatedSuccessfully" i18n="@@UpdatedSuccessfully">
             Saved changes successfully.
         </div>
-        <div *ngSwitchCase="messagesEnum.DeletedSuccessfully" i18n="@@DeletedSuccessfully" class="m-0 p-0">
+        <div *ngSwitchCase="messagesEnum.DeletedSuccessfully" i18n="@@DeletedSuccessfully">
             Deleted successfully.
         </div>
-        <div *ngSwitchCase="messagesEnum.NoChangesDetected" i18n="@@NoChangesDetected" class="m-0 p-0">
+        <div *ngSwitchCase="messagesEnum.NoChangesDetected" i18n="@@NoChangesDetected">
             No changes detected to save.
         </div>
-        <div *ngSwitchCase="messagesEnum.NodeMovedSuccessfully" i18n="@@NodeMovedSuccessfully" class="m-0 p-0">
+        <div *ngSwitchCase="messagesEnum.NodeMovedSuccessfully" i18n="@@NodeMovedSuccessfully">
             Node successfully moved to new parent.
         </div>
-        <div *ngSwitchCase="messagesEnum.SetTagsSuccessfully" i18n="@@SetTagsSuccessfully" class="m-0 p-0">
+        <div *ngSwitchCase="messagesEnum.SetTagsSuccessfully" i18n="@@SetTagsSuccessfully">
             Successfully binded selected tags to node.
         </div>
 </div>

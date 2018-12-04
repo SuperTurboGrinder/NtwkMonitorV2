@@ -1,35 +1,35 @@
-<div class="w-100 h-100 p-0 m-0 bg-light">
-    <div class="w-100 h-100 p-0 m-0" *ngIf="sortedIndexes != null; else stillEmptyBlock">
-        <div class="h-100 p-0 m-0 text-center" style="width:calc(100% - 16px)">
+<div class="w-100 h-100  bg-light">
+    <div class="w-100 h-100 " *ngIf="sortedIndexes != null; else stillEmptyBlock">
+        <div class="h-100  text-center" style="width:calc(100% - 16px)">
             <div style="display: flex; width: 100%; height: 30px">
-                <div class="btn-light border rounded-top p-0 m-0 sortable-collumn"
+                <div class="btn-light border rounded-top  sortable-collumn"
                     style="flex: 0 0 calc(100% - 400px)"
                     (click)="setSortByName()"
                 >
                     <strong>
-                        <span class="p-0 m-0 px-1" i18n="@@nameLabel">Name</span>
+                        <span class="px-1" i18n="@@nameLabel">Name</span>
                         <i
                             class="fa arrow-icon-size" aria-hidden="true"
                             [ngClass]="{ 'fa-sort-down': isSortedByName() && !isSortedDescending(), 'fa-sort-up': isSortedByName() && isSortedDescending() }"
                         ></i>
                     </strong>
                 </div>
-                <div class="btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"
+                <div class="btn-light border rounded-top disabled nonselectable-collumn"
                     style="flex: 0 0 100px"
                 >
                     <strong i18n="@@executablesLabel">Executables</strong>
                 </div>
-                <div class="btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn"
+                <div class="btn-light border rounded-top disabled nonselectable-collumn"
                     style="flex: 0 0 160px"
                 >
                     <strong i18n="@@webServicesLabel">Web services</strong>
                 </div>
-                <div class="btn-light border rounded-top p-0 m-0 sortable-collumn"
+                <div class="btn-light border rounded-top sortable-collumn"
                     style="flex: 0 0 140px"
                     (click)="setSortByPing()"
                 >
                     <strong>
-                        <span class="p-0 m-0 px-1" i18n="@@pingLabel">Ping</span>
+                        <span class="px-1" i18n="@@pingLabel">Ping</span>
                         <i
                             class="fa arrow-icon-size" aria-hidden="true"
                             [ngClass]="{ 'fa-sort-down': isSortedByPing() && !isSortedDescending(), 'fa-sort-up': isSortedByPing() && isSortedDescending() }"
@@ -38,7 +38,7 @@
                 </div>
             </div>
         
-            <div class="p-0 m-0" style="height: calc(100% - 63px); width:calc(100% + 16px); overflow-y:scroll">
+            <div style="height: calc(100% - 60px); width:calc(100% + 16px); overflow-y:scroll">
                 <div
                     class="p-0 py-3 m-0 text-center font-italic w-100"
                     *ngIf="isNoNodesLoaded(); else nodesList"
@@ -47,31 +47,31 @@
                 </div>
                 <ng-template #nodesList>
                     <div
-                        class="w-100 p-0 m-0 text-center border-bottom hoverselection"
+                        class="w-100  text-center border-bottom hoverselection"
                         style="display: flex"
                         *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn"
                     >
-                        <div class="p-0 m-0 font-italic"
+                        <div class="font-italic"
                             style="flex: 0 0 calc(100% - 400px)"
                             (mouseenter)="selectNode(i, $event)"
                             (mouseleave)="deselectNode($event)"
                         >
-                            <strong class="m-0 p-0 ">
+                            <strong>
                                 {{node(i).name}}
                             </strong>
                         </div>
-                        <div class="p-0 m-0" style="flex: 0 0 100px">
+                        <div style="flex: 0 0 100px">
                             <app-exec-services-buttons
                                 [node]="node(i)"
                             ></app-exec-services-buttons>
                         </div>
-                        <div class="p-0 m-0" style="flex: 0 0 160px">
+                        <div style="flex: 0 0 160px">
                             <app-web-services-buttons
                                 [nodeID]="node(i).id"
                                 [webServices]="listWebServicesData(i)"
                             ></app-web-services-buttons>
                         </div>
-                        <div class="p-0 m-0" style="flex: 0 0 140px">
+                        <div style="flex: 0 0 140px">
                             <app-ping-display
                                 [node]="node(i)"
                                 (changedEvent)="resortListByPingIfChanged($event)"
@@ -80,23 +80,32 @@
                     </div>
                 </ng-template>
             </div>
-            <div class="w-100 p-0 m-0 text-center" style="height: 33px"  *ngIf="!isNoNodesLoaded()">
-                <button
-                    type="button"
-                    class="btn btn-success square mt-1 py-0 mr-3"
-                    [disabled]="isWholeListPingInProgress"
-                    (click)="pingFilteredList()"
-                    i18n="@@pingFilteredListButtonLabel"
+            <div class="w-100  text-center" style="display: flex; height: 30px"  *ngIf="!isNoNodesLoaded()">
+                <div class="font-italic"
+                    style="flex: 0 0 calc(100% - 400px)"
                 >
-                    Ping filtered list
-                </button>
-                <span
-                    class="btn btn-outline-primary square mt-1 py-0"
-                    routerLink="/tagFilteredView/filter"
-                    i18n="@@toTagFilterConfigurationButtonLabel"
+                    <strong i18n="allAtOnceLabel">All at once</strong>
+                </div>
+                <div style="flex: 0 0 399px"
+                    class="text-right px-1 border-top"
                 >
-                    To tag filter configuration
-                </span>
+                    <button
+                        type="button"
+                        class="btn btn-success square m-0 p-0 mr-2"
+                        style="width: 26px; height: 26px; margin-top: 1px"
+                        [disabled]="isWholeListPingInProgress"
+                        (click)="pingFilteredList()"
+                        i18n="@@pingFilteredListButtonLabel"
+                    >
+                        <i
+                            class="fa" aria-hidden="true"
+                            [ngClass]="{
+                                'fa-exchange': isWholeListPingInProgress === false,
+                                'fa-refresh fa-spin fa-fw': isWholeListPingInProgress === true
+                            }"
+                        ></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

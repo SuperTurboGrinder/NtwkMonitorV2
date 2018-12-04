@@ -1,7 +1,7 @@
-<div class="w-100 h-100 p-0 m-0 bg-light">
-    <div class="w-100 h-100 p-0 m-0" *ngIf="dataLoaded && !displayOperationInProgress; else stillEmptyBlock">
-        <div class="h-100 container-fluid p-0 m-0" style="width:calc(100% - 16px)">
-            <div class="p-0 m-0" style="height:100%; width:calc(100% + 16px); overflow-y:scroll">
+<div class="w-100 h-100 bg-light">
+    <div class="w-100 h-100" *ngIf="dataLoaded && !displayOperationInProgress; else stillEmptyBlock">
+        <div class="h-100" style="width:calc(100% - 16px)">
+            <div style="height:100%; width:calc(100% + 16px); overflow-y:scroll">
                 <div class="d-flex align-items-center h-100 w-100">
                     <div class="d-block-inline w-100" style="max-height:100%">
                         <div *ngIf="isCustomView; else standardView">

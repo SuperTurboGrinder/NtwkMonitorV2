@@ -98,16 +98,11 @@ export class UIRoutingConfig {
         },
         {
             path: 'tagFilteredView',
-            redirectTo: 'tagFilteredView/operations',
-            pathMatch: 'prefix'
-        },
-        {
-            path: 'tagFilteredView/filter',
-            component: TagFilterComponent
-        },
-        {
-            path: 'tagFilteredView/operations',
             component: TaggedNodesListUpdateListenerComponent
+        },
+        {
+            path: 'filterConfiguration',
+            component: TagFilterComponent
         },
         {
             path: 'treeView',

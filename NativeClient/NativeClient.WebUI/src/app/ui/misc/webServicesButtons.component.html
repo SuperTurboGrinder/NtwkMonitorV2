@@ -1,9 +1,9 @@
-<div class="p-0 m-0 button-outer-container">
-    <div class="p-0 m-0 button-middle-container nmChildsHeightToThisWidth">
-        <div class="p-0 m-0 button-inner-container nmSizeSetter">
+<div class="button-outer-container">
+    <div class="button-middle-container nmChildsHeightToThisWidth">
+        <div class="button-inner-container nmSizeSetter">
             <div class="d-flex align-items-center h-100">
                 <div class="d-block-inline" style="max-height:100%">
-                    <div class="p-0 m-0" *ngFor="let service of webServices; trackBy: serviceTrackBy">
+                    <div *ngFor="let service of webServices; trackBy: serviceTrackBy">
                         <button 
                             type="button"
                             class="button-counterrotation btn btn-primary square text-center"

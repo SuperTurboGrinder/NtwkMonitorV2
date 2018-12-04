@@ -1,17 +1,17 @@
-<div class="w-100 h-100 p-0 m-0 bg-light">
-    <div class="w-100 h-100 p-0 m-0" *ngIf="isInitialized() != false; else stillEmptyBlock">
-        <div class="h-100 p-0 m-0" style="width:calc(100% - 16px)">
+<div class="w-100 h-100 bg-light">
+    <div class="w-100 h-100" *ngIf="isInitialized() != false; else stillEmptyBlock">
+        <div class="h-100" style="width:calc(100% - 16px)">
             <div class="text-center" style="display: flex; width: 100%; height: 30px">
-                <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 calc(100% - 400px)">
+                <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 calc(100% - 400px)">
                     <strong i18n="@@nameLabel">Name</strong>
                 </div>
-                <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 100px">
+                <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 100px">
                     <strong i18n="@@executablesLabel">Executables</strong>
                 </div>
-                <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 160px">
+                <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 160px">
                     <strong i18n="@@webServicesLabel">Web services</strong>
                 </div>
-                <div class="border rounded-top p-0 m-0 nonselectable-collumn" style="flex: 0 0 140px">
+                <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 140px">
                     <strong i18n="@@pingLabel">Ping</strong>
                 </div>
             </div>
@@ -25,16 +25,16 @@
                 </div>
                 <ng-template #nodesList>
                     <div
-                        class="w-100 p-0 m-0 text-center hoverselection border-bottom nonselectable-collumn"
+                        class="w-100 text-center hoverselection border-bottom nonselectable-collumn"
                         style="display: flex"
                         *ngFor="let i of displayedNodesIndexes; trackBy: nodeTrackByFn; let indexIndex = index"
                     >
-                        <div class="p-0 m-0 font-italic text-secondary text-left"
+                        <div class="font-italic text-secondary text-left"
                             (mouseenter)="selectNode(i, $event)"
                             (mouseleave)="deselectNode($event)"
                             style="flex: 0 0 calc(100% - 400px)"
                         >
-                            <strong class="m-0 p-0 pl-2">
+                            <strong class="pl-2">
                                 <span style="font-family: 'Consolas', monospace; font-size: 24px; line-height: 20px"><!--
                                 -->{{prefix(indexIndex)}}{{noChildrenChar(i)}}</span><!--
                                 --><span *ngIf="hasChildren(i)">
@@ -60,18 +60,18 @@
                                 >[{{node(i).name}}]</span>
                             </strong>
                         </div>
-                        <div class="col-2 p-0 m-0" style="flex: 0 0 100px">
+                        <div style="flex: 0 0 100px">
                             <app-exec-services-buttons
                                 [node]="node(i)"
                             ></app-exec-services-buttons>
                         </div>
-                        <div class="col-3 p-0 m-0" style="flex: 0 0 160px">
+                        <div style="flex: 0 0 160px">
                             <app-web-services-buttons
                                 [nodeID]="node(i).id"
                                 [webServices]="listWebServicesData(i)"
                             ></app-web-services-buttons>
                         </div>
-                        <div class="col-2 p-0 m-0" style="flex: 0 0 140px">
+                        <div style="flex: 0 0 140px">
                             <app-ping-display
                                 [node]="node(i)"
                                 (changedEvent)="{}"
@@ -80,8 +80,8 @@
                     </div>
                 </ng-template>
             </div>
-            <div class="w-100 p-0 m-0 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
-                <span i18n="@@showTreeLevelsLabel">Show tree levels</span>
+            <div class="w-100 text-center" style="height: 30px"  *ngIf="!isNoNodesLoaded()">
+                <span i18n="@@showTreeLevelsSpaceLabel">Show tree levels </span>
                 <app-num-range-selector
                     [maxValue]="fullTreeLayersCount()-1"
                     [maxLength]="10"
