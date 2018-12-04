@@ -31,6 +31,10 @@ export class PingMonitorService {
     private monitorPulseInProgress = false;
     private monitorPulseMessages: MonitoringMessage[] = [];
 
+    public get isReady() {
+        return this.isInitialized;
+    }
+
     public get isActive() {
         return this.monitorSubscription !== null;
     }

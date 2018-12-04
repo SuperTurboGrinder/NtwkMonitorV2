@@ -120,7 +120,8 @@ export class PingMonitorPanelComponent implements OnDestroy {
     }
 
     public get shouldHide(): boolean {
-        return this.isActive !== true
-        && this.monitorBlocker.isMonitorPanelHidden;
+        return this.pingMonitorService.isReady === false
+        || (this.isActive !== true
+        && this.monitorBlocker.isMonitorPanelHidden === true);
     }
 }
