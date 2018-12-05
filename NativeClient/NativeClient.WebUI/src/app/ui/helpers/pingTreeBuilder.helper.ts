@@ -29,7 +29,7 @@ export class PingTreeBuilder {
             root.isPingable === false
             && root.isBranchPingable === false
                 ? null : root
-        ).filter(root => root != null);
+        ).filter(root => root !== null);
         result.forEach(root =>
             root.children = this.cleanTreesFromUnpingableNodes(
                 root.children

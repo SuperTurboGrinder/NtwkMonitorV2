@@ -12,6 +12,9 @@ namespace Data.Abstract.DataAccessServices {
 //reporting errors through DataActionResult
 public interface INodesServicesDataService {
     Task<DataActionResult<IPAddress>> GetNodeIP(int nodeID);
+    Task<DataActionResult<IEnumerable<IPAddress>>> GetNodesIPs(
+        IEnumerable<int> nodesIDs
+    );
     Task<DataActionResult<string>> GetCWSBoundingString(int nodeID, int cwsID);
 }
 

@@ -43,7 +43,19 @@ public class NodeServicesController : BaseDataController {
             : ObserveDataOperationResult(
                 await operation(nodeIPResult.Result)
             );
-        
+    }
+
+    async Task<ActionResult> ObserveAsyncDataOperationResultWithIPList<T>(
+        IEnumerable<int> nodesIDs,
+        Func<IEnumerable<IPAddress>, Task<DataActionResult<T>>> operation
+    ) {
+        DataActionResult<IEnumerable<IPAddress>> nodesIPsResult =
+            await data.GetNodesIPs(nodesIDs);
+        return nodesIPsResult.Status.Failure()
+            ? BadRequest(nodesIPsResult.Status)
+            : ObserveDataOperationResult(
+                await operation(nodesIPsResult.Result)
+            );
     }
 
     async Task<ActionResult> ObserveDataOperationStatusWithIP(
@@ -74,6 +86,18 @@ public class NodeServicesController : BaseDataController {
         return await ObserveAsyncDataOperationResultWithIP(
             nodeID,
             async (IPAddress ip) => await pingService.TestConnectionAsync(ip)
+        );
+    }
+
+    // GET api/services/pingList/1
+    [HttpGet("pingList")]
+    public async Task<ActionResult> GetNodesListPing(
+        [FromBody] IEnumerable<int> nodesIDs
+    ) {
+        return await ObserveAsyncDataOperationResultWithIPList(
+            nodesIDs,
+            async (IEnumerable<IPAddress> ips) =>
+                await pingService.TestConnectionListAsync(ips)
         );
     }
 

@@ -158,10 +158,13 @@ export class PingCacheService {
         );
     }
 
-    private countPingTreeNodes(pingTreeBranch: PingTree[]): number {
+    private countPingablePingTreeNodes(pingTreeBranch: PingTree[]): number {
         let counter = 0;
         for (const p of pingTreeBranch) {
-            counter += 1 + this.countPingTreeNodes(p.children);
+            if (p !== null) {
+                counter += p.isPingable ? 1 : 0
+                    + this.countPingablePingTreeNodes(p.children);
+            }
         }
         return counter;
     }
@@ -206,16 +209,19 @@ export class PingCacheService {
         tpfr: TreePingFinishedData = null
     ) {
         tpfr = (tpfr === null) ? new TreePingFinishedData(
-            this.countPingTreeNodes(roots)
+            this.countPingablePingTreeNodes(roots)
         ) : tpfr;
         const thisLayerPingDataList =
             this.preparePingDataLayer(roots);
-        const pingObservables = thisLayerPingDataList.map(data => {
-            data.cell.setLock();
-            return this.pingService.getPing(data.id);
-        });
-        for (let i = 0; i < pingObservables.length; i++) {
-            pingObservables[i].subscribe(pingResult => {
+        forkJoin(
+            thisLayerPingDataList.map(data => {
+                data.cell.setLock();
+                return this.pingService.getPing(data.id);
+            })
+        ).subscribe(pingResults => {
+            let nextLayer: PingTree[] = [];
+            for (let i = 0; i < pingResults.length; i++) {
+                const pingResult = pingResults[i];
                 const cell = thisLayerPingDataList[i].cell;
                 const pingData = pingResult.data;
                 cell.resetLock();
@@ -229,7 +235,7 @@ export class PingCacheService {
                 const children = thisLayerPingDataList[i].pingTree.children;
                 const skipped = success === false
                 && skipChildrenOfFailedNodes === true
-                    ? this.countPingTreeNodes(
+                    ? this.countPingablePingTreeNodes(
                         thisLayerPingDataList[i].pingTree.children
                     )
                     : 0;
@@ -251,23 +257,24 @@ export class PingCacheService {
                 && skipChildrenOfFailedNodes === true) {
                     this.setFailedBranch(children);
                 } else {
-                    this.pingTree(
-                        children,
-                        forEachPingedCallback,
-                        finishedCallback,
-                        skipChildrenOfFailedNodes,
-                        tpfr
-                    );
+                    nextLayer = nextLayer.concat(children);
                 }
+            }
+            this.pingTree(
+                nextLayer,
+                forEachPingedCallback,
+                finishedCallback,
+                skipChildrenOfFailedNodes,
+                tpfr
+            );
 
-                if (finishedCallback !== null
-                && tpfr.successful
-                + tpfr.failed
-                + tpfr.skipped === tpfr.startNodesCount) {
-                    finishedCallback(tpfr);
-                }
-           });
-        }
+            if (finishedCallback !== null
+            && tpfr.successful
+            + tpfr.failed
+            + tpfr.skipped === tpfr.startNodesCount) {
+                finishedCallback(tpfr);
+            }
+        });
     }
 
     /*

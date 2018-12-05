@@ -42,6 +42,16 @@ public class NodesServicesDataService
         );
     }
 
+    public async Task<DataActionResult<IEnumerable<IPAddress>>> GetNodesIPs(
+        IEnumerable<int> nodesIDs
+    ) {
+        var results = await Task.WhenAll(nodesIDs.Select(id => GetNodeIP(id)));
+        var firstFailure = results.FirstOrDefault(r => r.Status.Failure());
+        return firstFailure != null
+            ? DataActionResult<IEnumerable<IPAddress>>.Failed(firstFailure.Status)
+            : DataActionResult<IEnumerable<IPAddress>>.Successful(results.Select(r => r.Result));
+    }
+
     public async Task<DataActionResult<string>> GetCWSBoundingString(
         int nodeID,
         int cwsID

@@ -166,7 +166,10 @@ export class PingMonitorService {
         );
         const filteredPingTreeLayer0 = this.filterPingTree(
             fullPingTree
-                .filter(ptRoot => nodeTreeLayer0IDs.includes(ptRoot.id))
+                .filter(
+                    ptRoot => ptRoot !== null
+                    && nodeTreeLayer0IDs.includes(ptRoot.id)
+                )
         );
         const intervalMs = 1000 * 60 * this.settings.monitorInterval;
         this.monitorManualTimer = new ManualTimer(intervalMs);

@@ -1,69 +1,82 @@
-<div class="w-100 h-100 p-0 m-0 bg-light">
+<div class="w-100 h-100 bg-light">
     <div class="w-100 h-100" *ngIf="viewNodes !== null && isLoadingError === false; else stillEmptyBlock">
-        <div class="h-100 p-0 m-0 text-center container-fluid" style="width:calc(100% - 16px)">
-            <div class="row p-0 m-0" style="height: 30px; width:calc(100% + 16px)">
-                <div class="col-6 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong i18n="@@operationsViewFilteredByTagLabel">Operations view filtered by tag</strong>
+        <div class="h-100 w-100 text-center">
+            <div style="height: 30px; width:calc(100%); display: flex">
+                <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 50%">
+                    <strong>
+                        <span i18n="@@nodesTagFilter">Nodes tag filter</span>
+                        (<span *ngIf="isListFilter; else monitorFilterLabel"
+                            i18n="@@listViewLabel"
+                        >list view</span>
+                        <ng-template #monitorFilterLabel>
+                            <span i18n="@@monitorLabel">monitor</span>
+                        </ng-template>)
+                        <span class="btn btn-primary square p-0 m-0 px-1"
+                            i18n="switchLabel"
+                            (click)="switchFilter()"
+                        >
+                            switch
+                        </span>
+                    </strong>
                 </div>
-                <div class="col-6 btn-light border rounded-top p-0 m-0 disabled nonselectable-collumn">
-                    <strong i18n="@@monitoredNodesFilteredByTagLabel">Monitored nodes filtered by tag</strong>
+                <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 50%">
+                    <strong i18n="@@networkNodesFilteredBySetTagsLabel">Network nodes filtered by set tags</strong>
                 </div>
             </div>
         
             <div
-                class="row p-0 py-3 m-0 text-center font-italic"
+                class="w-100 py-3 text-center font-italic"
                 *ngIf="isNoNodesLoaded(); else nodesList"
             >
-                <strong class="col" i18n="@@noNodesFoundLabel">No nodes found in database.</strong>
+                <strong class="w-100" i18n="@@noNodesFoundLabel">No nodes found in database.</strong>
             </div>
             <ng-template #nodesList>
-                <div class="row p-0 m-0 text-center border-bottom"
-                    style="height: calc(100% - 32px); width:calc(100% + 16px)"
+                <div class="w-100 text-center border-bottom"
+                    style="height: calc(100% - 32px); width:calc(100%); display: flex"
                 >
-                    <div class="col-3 border-right p-0 m-0 h-100">
-                        <div class="p-0 m-0 w-100 h-100 font-italic text-secondary"
-                            style="overflow-y: scroll"
-                        >
-                            <div class="w-100 border-bottom hoverselection"
-                                *ngFor="let nodeData of viewNodes; let i = index"
-                                (mouseenter)="selectViewNode(i, $event)"
-                                (mouseleave)="deselectNode($event)"
+                    <ng-container *ngIf="isListFilter === true; else monitorFilter">
+                        <div class="h-100 border-right" style="flex: 0 0 50%">
+                            <app-tags-binding
+                                [originalSetTags]="getViewTagsIDs()"
+                                (applyEvent)="applyOperationsViewNodesChange($event)"
+                            ></app-tags-binding>
+                        </div>
+                        <div class="h-100" style="flex: 0 0 50%">
+                            <div class="w-100 h-100  font-italic text-secondary"
+                                style="overflow-y: scroll"
                             >
-                                {{nodeData.node.name}}
+                                <div class="w-100 border-bottom hoverselection"
+                                    *ngFor="let nodeData of viewNodes; let i = index"
+                                    (mouseenter)="selectViewNode(i, $event)"
+                                    (mouseleave)="deselectNode($event)"
+                                >
+                                    {{nodeData.node.name}}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-3 border-right p-0 m-0 h-100">
-                        <div class="w-100 h-100"
-                        >
-                        <app-tags-binding
-                            [originalSetTags]="getViewTagsIDs()"
-                            (applyEvent)="applyOperationsViewNodesChange($event)"
-                        ></app-tags-binding>
-                        </div>
-                    </div>
-                    <div class="col-3 border-right p-0 m-0 h-100">
-                        <div class="w-100 h-100 font-italic text-secondary"
-                            style="overflow-y: scroll"
-                        >
-                            <div class="w-100 border-bottom hoverselection"
-                                *ngFor="let nodeData of monitorNodes; let i = index"
-                                (mouseenter)="selectMonitorNode(i, $event)"
-                                (mouseleave)="deselectNode($event)"
-                            >
-                                {{nodeData.node.name}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-3 p-0 m-0 h-100">
-                        <div class="w-100 h-100">
+                    </ng-container>
+                    <ng-template #monitorFilter>
+                        <div class="h-100 border-right" style="flex: 0 0 50%">
                             <app-tags-binding
                                 [originalSetTags]="getMonitorTagsIDs()"
                                 (applyEvent)="applyMonitoredNodesChange($event)"
                             ></app-tags-binding>
                             <app-monitor-mutability-block></app-monitor-mutability-block>
                         </div>
-                    </div>
+                        <div class="h-100" style="flex: 0 0 50%">
+                            <div class="w-100 h-100 font-italic text-secondary"
+                                style="overflow-y: scroll"
+                            >
+                                <div class="w-100 border-bottom hoverselection"
+                                    *ngFor="let nodeData of monitorNodes; let i = index"
+                                    (mouseenter)="selectMonitorNode(i, $event)"
+                                    (mouseleave)="deselectNode($event)"
+                                >
+                                    {{nodeData.node.name}}
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
                 </div>
             </ng-template>
         </div>

@@ -24,6 +24,15 @@ export class TagFilterComponent {
     private monitorFilterData: TagFilterData = null;
     private viewNodesInfoPopupDataCache: NodeInfoDataCache;
     private monitorNodesInfoPopupDataCache: NodeInfoDataCache;
+    private showingListFilter = true;
+
+    public get isListFilter() {
+        return this.showingListFilter;
+    }
+
+    public switchFilter() {
+        this.showingListFilter = !this.showingListFilter;
+    }
 
     public isNoNodesLoaded(): boolean {
         return this.nodesListIsEmpty;

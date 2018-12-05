@@ -20,6 +20,7 @@ public class PingServiceAsync: IPingService {
         .SelectMany(s=>s).ToArray();
         
     readonly int timeout = 1000;
+    readonly int maxRetry = 4;
     readonly PingOptions options = new PingOptions(64, true);
     
     static async Task<DataActionResult<PingTestData>> PingAsync(
@@ -56,7 +57,7 @@ public class PingServiceAsync: IPingService {
         IPAddress ip
     ) {
         List<PingTestData> pingReplies = new List<PingTestData>();
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < maxRetry; i++) {
             DataActionResult<PingTestData> pingResult = await PingAsync(
                 ping,
                 ip,
@@ -83,6 +84,23 @@ public class PingServiceAsync: IPingService {
             result.avg /= successful;
         }
         return DataActionResult<PingTestData>.Successful(result);
+    }
+
+    public async Task<DataActionResult<IEnumerable<PingTestData>>> TestConnectionListAsync(
+        IEnumerable<IPAddress> ips
+    ) {
+        IEnumerable<Task<DataActionResult<PingTestData>>> tasks = ips.Select(
+            ip => TestConnectionAsync(ip)
+        );
+        IEnumerable<DataActionResult<PingTestData>> results =
+            await Task.WhenAll(tasks);
+        DataActionResult<PingTestData> firstFailed =
+            results.FirstOrDefault(r => r.Status.Failure());
+        return firstFailed != null
+            ? DataActionResult<IEnumerable<PingTestData>>
+                .Failed(firstFailed.Status)
+            : DataActionResult<IEnumerable<PingTestData>>
+                .Successful(results.Select(r => r.Result));
     }
 }
 
