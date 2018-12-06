@@ -89,10 +89,10 @@ public class NodeServicesController : BaseDataController {
         );
     }
 
-    // GET api/services/pingList/1
-    [HttpGet("pingList")]
+    // POST api/services/pingList
+    [HttpPost("pingList")]
     public async Task<ActionResult> GetNodesListPing(
-        [FromBody] IEnumerable<int> nodesIDs
+        [FromBody] int[] nodesIDs
     ) {
         return await ObserveAsyncDataOperationResultWithIPList(
             nodesIDs,

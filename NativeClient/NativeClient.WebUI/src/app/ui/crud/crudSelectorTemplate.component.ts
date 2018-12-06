@@ -23,8 +23,8 @@ export class CrudSelectorTemplateComponent {
     @Input() isLoadingError = false;
 
     private objectToRemoveID: number;
-    private objectToRemoveName = '';
-    private displayDeleteMessage = false;
+    public objectToRemoveName = '';
+    public displayDeleteMessage = false;
 
     @Output() private refreshEvent = new EventEmitter<boolean>();
     @Output() private deleteAnswerEvent =

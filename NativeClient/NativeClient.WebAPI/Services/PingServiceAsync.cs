@@ -89,13 +89,18 @@ public class PingServiceAsync: IPingService {
     public async Task<DataActionResult<IEnumerable<PingTestData>>> TestConnectionListAsync(
         IEnumerable<IPAddress> ips
     ) {
-        IEnumerable<Task<DataActionResult<PingTestData>>> tasks = ips.Select(
-            ip => TestConnectionAsync(ip)
-        );
-        IEnumerable<DataActionResult<PingTestData>> results =
-            await Task.WhenAll(tasks);
-        DataActionResult<PingTestData> firstFailed =
-            results.FirstOrDefault(r => r.Status.Failure());
+        int len = ips.Count();
+        var results = new DataActionResult<PingTestData>[len];
+        int index = 0;
+        DataActionResult<PingTestData> firstFailed = null;
+        foreach (var ip in ips) {
+            results[index] = await TestConnectionAsync(ip);
+            if (results[index].Status.Failure()) {
+                firstFailed = results[index];
+                break;
+            }
+            index++;
+        }
         return firstFailed != null
             ? DataActionResult<IEnumerable<PingTestData>>
                 .Failed(firstFailed.Status)

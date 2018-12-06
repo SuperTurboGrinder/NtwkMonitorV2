@@ -14,13 +14,21 @@ export class PingService {
         private httpDatasource: HTTPDatasource,
         @Inject(BaseURL) _baseUrl: string
     ) {
-        this.baseUrl = _baseUrl + 'services/ping';
+        this.baseUrl = _baseUrl + 'services';
     }
 
     getPing(nodeID: number): Observable<HTTPResult<PingTestData>> {
         return this.httpDatasource.dataRequest<PingTestData>(
             'get',
-            this.baseUrl + `/${nodeID}`
+            this.baseUrl + `/ping/${nodeID}`
+        );
+    }
+
+    getListPing(nodesIDs: number[]): Observable<HTTPResult<PingTestData[]>> {
+        return this.httpDatasource.dataRequest<number[], PingTestData[]>(
+            'post',
+            this.baseUrl + `/pingList`,
+            nodesIDs
         );
     }
 }

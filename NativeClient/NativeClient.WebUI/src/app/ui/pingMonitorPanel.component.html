@@ -37,7 +37,7 @@
                     ></i>
                 </div>
                 <div class="col-4 p-0 pt-1 m-0 text-left">
-                    <span *ngIf="sessionData.session !== null && isActive === true; else monitorDisabled">
+                    <span *ngIf="sessionData.session !== null && isActive === true">
                         <span i18n="@@monitoringLabel">Monitoring</span>
                         {{sessionData.session.participatingNodesNum}}
                         <span i18n="@@nodesLabel">nodes</span>

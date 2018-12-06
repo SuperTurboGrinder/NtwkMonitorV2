@@ -97,19 +97,20 @@ export class PingCacheService {
             id: id,
             cell: this.getCell(id)
         })).filter(val => val.cell.currentLockStatus === false);
-        forkJoin(
-            cellsAndIDs.map(cellAndId => {
-                cellAndId.cell.setLock();
-                return this.pingService.getPing(cellAndId.id);
-            })
-        ).subscribe(pingResults => {
-            for (let i = 0; i < pingResults.length; i++) {
+        const idsToPing = cellsAndIDs.map(val => {
+            val.cell.setLock();
+            return val.id;
+        });
+        this.pingService.getListPing(idsToPing)
+        .subscribe(pingResult => {
+            const pingFailed = pingResult.success === false;
+            for (let i = 0; i < cellsAndIDs.length; i++) {
                 const cell = cellsAndIDs[i].cell;
                 cell.resetLock();
                 cell.value.next(
-                    pingResults[i].success === true
-                        ? pingResults[i].data
-                        : null
+                    pingFailed
+                        ? null
+                        : pingResult.data[i]
                 );
             }
             finishCallback();
@@ -213,32 +214,35 @@ export class PingCacheService {
         ) : tpfr;
         const thisLayerPingDataList =
             this.preparePingDataLayer(roots);
-        forkJoin(
-            thisLayerPingDataList.map(data => {
-                data.cell.setLock();
-                return this.pingService.getPing(data.id);
-            })
-        ).subscribe(pingResults => {
+        const thisLayerLockedNodesIDs = thisLayerPingDataList.map(pd => {
+            pd.cell.setLock();
+            return pd.id;
+        });
+        this.pingService.getListPing(
+            thisLayerLockedNodesIDs
+        ).subscribe(pingResult => {
+            const allFailed = pingResult.success === false;
+            const pingResults = pingResult.data;
             let nextLayer: PingTree[] = [];
-            for (let i = 0; i < pingResults.length; i++) {
-                const pingResult = pingResults[i];
+            for (let i = 0; i < thisLayerPingDataList.length; i++) {
+                const pingData = pingResults[i];
                 const cell = thisLayerPingDataList[i].cell;
-                const pingData = pingResult.data;
                 cell.resetLock();
                 cell.value.next(
-                    pingResult.success === true
-                        ? pingData
-                        : null
+                    allFailed
+                        ? null
+                        : pingData
                 );
-                const success = pingResult.success
-                    && pingData.failed !== pingData.num;
+                let success = allFailed === false;
+                let skipped = 0;
                 const children = thisLayerPingDataList[i].pingTree.children;
-                const skipped = success === false
-                && skipChildrenOfFailedNodes === true
-                    ? this.countPingablePingTreeNodes(
-                        thisLayerPingDataList[i].pingTree.children
-                    )
-                    : 0;
+                if (success) {
+                    success = pingData.failed !== pingData.num;
+                } else {
+                    skipped = skipChildrenOfFailedNodes === true
+                        ? this.countPingablePingTreeNodes(children)
+                        : 0;
+                }
                 if (forEachPingedCallback !== null) {
                     forEachPingedCallback(
                         success,
@@ -260,13 +264,15 @@ export class PingCacheService {
                     nextLayer = nextLayer.concat(children);
                 }
             }
-            this.pingTree(
-                nextLayer,
-                forEachPingedCallback,
-                finishedCallback,
-                skipChildrenOfFailedNodes,
-                tpfr
-            );
+            if (nextLayer.length > 0) {
+                this.pingTree(
+                    nextLayer,
+                    forEachPingedCallback,
+                    finishedCallback,
+                    skipChildrenOfFailedNodes,
+                    tpfr
+                );
+            }
 
             if (finishedCallback !== null
             && tpfr.successful

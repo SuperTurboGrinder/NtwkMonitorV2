@@ -16,7 +16,6 @@ import { Directive } from '@angular/core';
         }
     ]
 })
-
 export class IPValidatorDirective implements Validator {
     validator: ValidatorFn;
 

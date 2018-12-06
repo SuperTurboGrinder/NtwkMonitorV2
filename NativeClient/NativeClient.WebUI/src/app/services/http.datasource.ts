@@ -14,7 +14,7 @@ export class HTTPDatasource {
         private messager: MessagingService
     ) {}
 
-    public dataRequest<T>(method: string, url: string, body?: T): Observable<HTTPResult<T>> {
+    public dataRequest<TFrom, T = TFrom>(method: string, url: string, body?: TFrom): Observable<HTTPResult<T>> {
         return this.checkedData(
             this.httpClient.request<T>(method, url, {
                 body: body,
@@ -45,7 +45,7 @@ export class HTTPDatasource {
 
     private checkedData<T>(result: Observable<HttpResponse<T>>): Observable<HTTPResult<T>> {
         return result.pipe(
-            retry(2),
+            retry(1),
             map((response: HttpResponse<T>) => {
                 if (response.status === 204) {
                     throw new Error('Wrong response (204) when expecting 200.');

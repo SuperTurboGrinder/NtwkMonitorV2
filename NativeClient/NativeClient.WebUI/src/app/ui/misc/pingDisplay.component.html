@@ -22,12 +22,11 @@
             (click)="tryToPing()"
         >
             <i
-                class="fa" aria-hidden="true"
-                [ngClass]="{
-                    'fa-ban': node.isOpenPing==false,
-                    'fa-refresh fa-spin fa-fw': node.isOpenPing==true && isButtonDisabled,
-                    'fa-exchange': !isButtonDisabled
-                }"
+                class="fa {{node.isOpenPing === false
+                    ? 'fa-ban'
+                    : isButtonDisabled === false
+                        ? 'fa-exchange'
+                        : 'fa-refresh fa-spin fa-fw'}}" aria-hidden="true"
             ></i>
         </button>
     </div>

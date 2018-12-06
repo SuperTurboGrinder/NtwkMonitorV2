@@ -35,7 +35,7 @@ import { CustomWebServiceSelectionComponent } from './crud/customWebServiceSelec
 import { CustomWebServiceFormComponent } from './crud/customWebServiceForm.component';
 import { NtwkNodeSelectionComponent } from './crud/ntwkNodeSelection.component';
 import { NtwkNodeFormComponent } from './crud/ntwkNodeForm.component';
-import { IPValidatorDirective } from './directives/ipvalidator.directive';
+import { IPValidatorDirective } from './directives/ipValidator.directive';
 import { TagsBindingSideSelectorComponent } from './crud/tagsBindingSideSelector.component';
 import { TagsBindingComponent } from './crud/tagsBinding.component';
 import { CrudNodeSideSelectorTemplateComponent } from './crud/crudNodeSideSelectorTemplate.component';
