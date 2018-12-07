@@ -46,38 +46,40 @@
                     <strong i18n="@@noNodesFoundLabel">No nodes found in database.</strong>
                 </div>
                 <ng-template #nodesList>
-                    <div
-                        class="w-100  text-center border-bottom hoverselection"
-                        style="display: flex"
-                        *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn"
-                    >
-                        <div class="font-italic"
-                            style="flex: 0 0 calc(100% - 400px)"
-                            (mouseenter)="selectNode(i, $event)"
-                            (mouseleave)="deselectNode($event)"
+                    <cdk-virtual-scroll-viewport [itemSize]="28">
+                        <div
+                            class="text-center border-bottom hoverselection"
+                            style="display: flex; width: 800px"
+                            *cdkVirtualFor="let i of sortedIndexes"
                         >
-                            <strong>
-                                {{node(i).name}}
-                            </strong>
+                            <div class="font-italic"
+                                style="flex: 0 0 calc(100% - 400px)"
+                                (mouseenter)="selectNode(i, $event)"
+                                (mouseleave)="deselectNode($event)"
+                            >
+                                <strong>
+                                    {{node(i).name}}
+                                </strong>
+                            </div>
+                            <div style="flex: 0 0 100px">
+                                <app-exec-services-buttons
+                                    [node]="node(i)"
+                                ></app-exec-services-buttons>
+                            </div>
+                            <div style="flex: 0 0 160px">
+                                <app-web-services-buttons
+                                    [nodeID]="node(i).id"
+                                    [webServices]="listWebServicesData(i)"
+                                ></app-web-services-buttons>
+                            </div>
+                            <div style="flex: 0 0 140px">
+                                <app-ping-display
+                                    [node]="node(i)"
+                                    (changedEvent)="resortListByPingIfChanged($event)"
+                                ></app-ping-display>
+                            </div>
                         </div>
-                        <div style="flex: 0 0 100px">
-                            <app-exec-services-buttons
-                                [node]="node(i)"
-                            ></app-exec-services-buttons>
-                        </div>
-                        <div style="flex: 0 0 160px">
-                            <app-web-services-buttons
-                                [nodeID]="node(i).id"
-                                [webServices]="listWebServicesData(i)"
-                            ></app-web-services-buttons>
-                        </div>
-                        <div style="flex: 0 0 140px">
-                            <app-ping-display
-                                [node]="node(i)"
-                                (changedEvent)="resortListByPingIfChanged($event)"
-                            ></app-ping-display>
-                        </div>
-                    </div>
+                    </cdk-virtual-scroll-viewport>
                 </ng-template>
             </div>
             <div class="w-100  text-center" style="display: flex; height: 30px"  *ngIf="!isNoNodesLoaded()">

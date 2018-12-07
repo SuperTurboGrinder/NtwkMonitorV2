@@ -11,7 +11,7 @@ import { Title } from '@angular/platform-browser';
 export class HubUIComponent implements OnDestroy {
     private _hostingForms = true;
     private readonly routerSubscription: Subscription;
-    private baseTitleString = 'NetworkMonitorV2';
+    private baseTitleString = 'Network Monitor V2';
 
     public get hostingForms() {
         return this._hostingForms;
@@ -28,7 +28,7 @@ export class HubUIComponent implements OnDestroy {
             filter(child => child !== null),
             mergeMap(route => route.url)
         ).subscribe(event => {
-            if (event[0].path !== 'profilesSelect') {
+            if (event[0].path !== 'initialProfilesSelect') {
                 this._hostingForms = event[0].path === 'form';
             }
         });

@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ModelModule } from '../model/model.module';
-
 import { ChildsHeightToThisWidthDirective } from './directives/childsHeightToThisWidth.directive';
 import { SizeSetterDirective } from './directives/sizeSetter.directive';
-
 import { PingDisplayComponent } from './misc/pingDisplay.component';
 import { WebServicesButtonsComponent } from './misc/webServicesButtons.component';
 import { ExecServicesButtonsComponent } from './misc/execServicesButtons.component';
@@ -103,8 +102,8 @@ import { NodesTreeViewUpdateListenerComponent } from './misc/nodesTreeViewUpdate
   imports: [
     BrowserAnimationsModule,
     FormsModule,
-    RouterModule,
     CommonModule,
+    ScrollingModule,
     ModelModule,
     RouterModule,
     RouterModule.forRoot(UIRoutingConfig.routes)

@@ -34,7 +34,7 @@
                     type="button"
                     class="btn btn-primary square p-0 px-1 mr-1"
                     i18n="@@addNewLabel"
-                    [routerLink]="['/form/node/', node.id, 'new']"
+                    [routerLink]="['/ui/form/node/', node.id, 'new']"
                 >
                     Add new
                 </button>
@@ -50,7 +50,7 @@
                     type="button"
                     class="btn btn-warning square p-0 px-1 mr-1"
                     i18n="@@editButtonLabel"
-                    [routerLink]="['/form/node/edit', node.id]"
+                    [routerLink]="['/ui/form/node/edit', node.id]"
                 >
                     Edit
                 </button>
@@ -97,7 +97,7 @@
                     *ngIf="isInMoveMode === false; else moveToRootButton"
                     type="button"
                     class="btn btn-primary square py-0 px-1 my-1"
-                    [routerLink]="['/form/node/new']"
+                    [routerLink]="['/ui/form/node/new']"
                     i18n="@@addNewOnRootButtonLabel"
                 >
                     Add new on root

@@ -20,6 +20,10 @@ export class BaseCrudNodeSideSelectorComponent
 
     @Input() isOperationInProgress = true;
 
+    public get nodesLines() {
+        return this.data;
+    }
+
     constructor(
         private nodeInfoPopupService: NodeInfoPopupDataService,
         private tagsService: TagsService,

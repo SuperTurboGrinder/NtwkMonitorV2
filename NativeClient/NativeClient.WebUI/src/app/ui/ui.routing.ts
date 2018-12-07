@@ -91,9 +91,26 @@ export class UIRoutingConfig {
         }
     ];
 
-    private static readonly dataRoutes: Route[] = [
+    private static readonly hubRoutes: Route[] = [
         {
-            path: 'profilesSelect',
+            path: '',
+            redirectTo: 'initialProfilesSelect',
+            pathMatch: 'full'
+        },
+        {
+            path: 'editor',
+            component: EditorComponent,
+            children: UIRoutingConfig.crudEditorRoutes
+        },
+        {
+            path: 'form',
+            component: FormHostComponent,
+            children: UIRoutingConfig.crudFormsRoutes
+        },
+
+        // data display coponents
+        {
+            path: 'initialProfilesSelect',
             component: SettingsProfileSelectionComponent,
         },
         {
@@ -111,32 +128,19 @@ export class UIRoutingConfig {
         {
             path: 'historyView',
             component: HistoryViewComponent
-        },
-    ];
-
-    private static readonly hubRoutes: Route[] = [
-        {
-            path: '',
-            redirectTo: 'profilesSelect',
-            pathMatch: 'prefix'
-        },
-        {
-            path: 'editor',
-            component: EditorComponent,
-            children: UIRoutingConfig.crudEditorRoutes
-        },
-        {
-            path: 'form',
-            component: FormHostComponent,
-            children: UIRoutingConfig.crudFormsRoutes
         }
     ];
 
-    public static readonly routes: Route[] = [
+    public static routes: Route[] = [
         {
             path: '',
+            redirectTo: 'ui',
+            pathMatch: 'full'
+        },
+        {
+            path: 'ui',
             component: HubUIComponent,
-            children: UIRoutingConfig.hubRoutes.concat(UIRoutingConfig.dataRoutes)
+            children: UIRoutingConfig.hubRoutes
             // redirectTo: '/profilesSelect',
             // pathMatch: 'full'
         }

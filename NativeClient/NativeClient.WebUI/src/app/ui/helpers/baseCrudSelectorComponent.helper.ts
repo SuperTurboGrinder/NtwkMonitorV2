@@ -3,7 +3,7 @@ import { MessagingService } from 'src/app/services/messaging.service';
 import { MessagesEnum } from 'src/app/model/servicesModel/messagesEnum.model';
 
 export abstract class BaseCrudSelectorComponent<DataType, DataService> {
-    private data: DataType[] = null;
+    protected data: DataType[] = null;
     private loadingError = false;
     public displayOperationInProgress = false;
 
