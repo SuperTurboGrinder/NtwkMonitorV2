@@ -33,6 +33,7 @@ export abstract class BaseCrudSelectorComponent<DataType, DataService> {
     }
 
     public refresh(_: boolean) {
+        this.loadingError = false;
         this.updateDataList();
     }
 

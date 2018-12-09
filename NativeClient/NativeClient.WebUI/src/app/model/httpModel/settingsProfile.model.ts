@@ -8,5 +8,6 @@ export class SettingsProfile {
         public startMonitoringOnLaunch: boolean,
         public depthMonitoring: boolean,
         public monitorInterval: number, // minutes
+        public realTimePingUIUpdate
     ) {}
 }

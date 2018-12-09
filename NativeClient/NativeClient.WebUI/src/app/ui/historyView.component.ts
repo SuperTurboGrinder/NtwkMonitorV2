@@ -86,6 +86,7 @@ export class HistoryViewComponent implements OnDestroy {
     }
 
     refresh(_: boolean) {
+        // todo: think how to use loading error indicator with this component (probably impossible/unneeded)
         this.loadSessions(this.currentSettingsProfileID);
     }
 

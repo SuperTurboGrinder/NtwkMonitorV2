@@ -16,6 +16,7 @@ public class Profile {
     //will skip children if there is no response from the parent
     public bool DepthMonitoring { get; set; }
     public int MonitorInterval { get; set; } //in minutes
+    public bool RealTimePingUIUpdate {get; set; }
 }
 
 }

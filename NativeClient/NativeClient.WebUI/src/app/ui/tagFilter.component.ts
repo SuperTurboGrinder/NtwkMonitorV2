@@ -136,53 +136,53 @@ export class TagFilterComponent {
     }
 
     private initialize() {
-        forkJoin(
-            this.nodesService.getNodesTree(),
-            this.settingsService.currentProfilesViewTagFilterData(),
-            this.settingsService.currentProfilesMonitorTagFilterData()
-        ).subscribe(results => {
-            if (
-                results[0].success === false
-            ) {
+        this.nodesService.getNodesTree()
+        .subscribe(nodeTreeResult => {
+            if (nodeTreeResult.success === false) {
                 this.loadingError = true;
                 return;
             }
-            this.viewFilterData = results[1];
-            this.monitorFilterData = results[2];
-            const allNodes = results[0].data.nodesTree.allNodes;
-            const cwsData = results[0].data.cwsData;
-            const nodesNum = allNodes.length;
-            if (nodesNum === 0) {
-                this.nodesListIsEmpty = true;
-                this.filteredViewNodesList = [null];
-            } else {
-                this.nodesListIsEmpty = false;
-            }
-            this.filteredViewNodesList = allNodes
-                .filter(nData =>
-                    this.viewFilterData.nodesIDs.includes(nData.nodeData.node.id)
-                )
-                .map(nData => nData.nodeData);
-            this.filteredMonitorNodesList = allNodes
-                .filter(nData =>
-                    this.monitorFilterData.nodesIDs.includes(nData.nodeData.node.id)
-                )
-                .map(nData => nData.nodeData);
-            this.viewNodesInfoPopupDataCache =
-                new NodeInfoDataCache(
-                    this.filteredViewNodesList.length,
-                    cwsData,
-                    this.tagsService
-                );
-            this.monitorNodesInfoPopupDataCache =
-                new NodeInfoDataCache(
-                    this.filteredMonitorNodesList.length,
-                    cwsData,
-                    this.tagsService
-                );
-            this.loadingError = this.loadingError
-                && this.viewNodesInfoPopupDataCache.loadingError
-                && this.monitorNodesInfoPopupDataCache.loadingError;
+            forkJoin(
+                this.settingsService.currentProfilesViewTagFilterData(),
+                this.settingsService.currentProfilesMonitorTagFilterData()
+            ).subscribe(results => {
+                this.viewFilterData = results[0];
+                this.monitorFilterData = results[1];
+                const allNodes = nodeTreeResult.data.nodesTree.allNodes;
+                const cwsData = nodeTreeResult.data.cwsData;
+                const nodesNum = allNodes.length;
+                if (nodesNum === 0) {
+                    this.nodesListIsEmpty = true;
+                    this.filteredViewNodesList = [null];
+                } else {
+                    this.nodesListIsEmpty = false;
+                }
+                this.filteredViewNodesList = allNodes
+                    .filter(nData =>
+                        this.viewFilterData.nodesIDs.includes(nData.nodeData.node.id)
+                    )
+                    .map(nData => nData.nodeData);
+                this.filteredMonitorNodesList = allNodes
+                    .filter(nData =>
+                        this.monitorFilterData.nodesIDs.includes(nData.nodeData.node.id)
+                    )
+                    .map(nData => nData.nodeData);
+                this.viewNodesInfoPopupDataCache =
+                    new NodeInfoDataCache(
+                        this.filteredViewNodesList.length,
+                        cwsData,
+                        this.tagsService
+                    );
+                this.monitorNodesInfoPopupDataCache =
+                    new NodeInfoDataCache(
+                        this.filteredMonitorNodesList.length,
+                        cwsData,
+                        this.tagsService
+                    );
+                this.loadingError = this.loadingError
+                    && this.viewNodesInfoPopupDataCache.loadingError
+                    && this.monitorNodesInfoPopupDataCache.loadingError;
+            });
         });
     }
 }

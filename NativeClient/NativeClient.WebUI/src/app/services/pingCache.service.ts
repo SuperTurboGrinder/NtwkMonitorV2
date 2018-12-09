@@ -5,10 +5,12 @@ import { first, skip } from 'rxjs/operators';
 import { PingService } from './ping.service';
 import { PingTestData } from '../model/httpModel/pingTestData.model';
 import { SoundNotificatonService } from './soundNotificationService';
+import { PingTree } from './massPing.service';
 
 @Injectable()
 export class PingCacheService {
     private pingCache = new Map<number, PingCacheCell>();
+    private massPingInProgress = false;
 
     constructor(
         private pingService: PingService,
@@ -89,16 +91,17 @@ export class PingCacheService {
         this.pingByID(nodeID);
     }
 
-    private pingListByID(
+    public pingListByID(
         nodesIDs: number[],
-        finishCallback: () => void
+        lock: boolean,
+        finishCallback: (data: PingTestData[]) => void
     ) {
         const cellsAndIDs = nodesIDs.map(id => ({
             id: id,
             cell: this.getCell(id)
         })).filter(val => val.cell.currentLockStatus === false);
         const idsToPing = cellsAndIDs.map(val => {
-            val.cell.setLock();
+            if (lock === true) { val.cell.setLock(); }
             return val.id;
         });
         this.pingService.getListPing(idsToPing)
@@ -113,224 +116,9 @@ export class PingCacheService {
                         : pingResult.data[i]
                 );
             }
-            finishCallback();
+            finishCallback(pingResult.data);
         });
     }
-
-    public updateValues(
-        nodesIDs: number[],
-        finishCallback: () => void
-    ) {
-        this.pingListByID(nodesIDs, finishCallback);
-    }
-
-    public treeUpdateWithoutCallback(roots: PingTree[]) {
-        this.pingTree(
-            roots,
-            (success, _1, _2) => {
-                if (success === false) {
-                    this.sounds.playFailedPingAlarm();
-                }
-            },
-            null
-        );
-    }
-
-    public treeUpdateWithCallback(
-        roots: PingTree[],
-        forEachPingedCallback: (
-            success: boolean,
-            skipped: number,
-            currentRoot: PingTree
-        ) => void,
-        finishedCallback: (result: TreePingFinishedData) => void,
-        skipChildrenOfFailedNodes: boolean
-    ) {
-        this.pingTree(
-            roots,
-            (success, skipped, pingTreeNode) => {
-                if (success === false) {
-                    this.sounds.playFailedPingAlarm();
-                }
-                forEachPingedCallback(success, skipped, pingTreeNode);
-            },
-            finishedCallback,
-            skipChildrenOfFailedNodes
-        );
-    }
-
-    private countPingablePingTreeNodes(pingTreeBranch: PingTree[]): number {
-        let counter = 0;
-        for (const p of pingTreeBranch) {
-            if (p !== null) {
-                counter += p.isPingable ? 1 : 0
-                    + this.countPingablePingTreeNodes(p.children);
-            }
-        }
-        return counter;
-    }
-
-    private extractPingTreeRoot(root: PingTree): {
-        id: number,
-        cell: PingCacheCell,
-        pingTree: PingTree
-    } {
-        return ({
-            id: root.id,
-            cell: this.getCell(root.id),
-            pingTree: root
-        });
-    }
-
-    private preparePingDataLayer(treeRoots: PingTree[]): {
-        id: number,
-        cell: PingCacheCell,
-        pingTree: PingTree
-    }[] {
-        return treeRoots
-            .filter(r => r.isPingable === true)
-            .map(r => this.extractPingTreeRoot(r))
-            .concat(
-                treeRoots
-                    .filter(r => r.isPingable === false)
-                    .map(r => this.preparePingDataLayer(r.children))
-                    .reduce((a, b) => a.concat(b), [])
-            );
-    }
-
-    private pingTree(
-        roots: PingTree[],
-        forEachPingedCallback: (
-            success: boolean,
-            skipped: number,
-            currentRoot: PingTree
-        ) => void,
-        finishedCallback: (result: TreePingFinishedData) => void,
-        skipChildrenOfFailedNodes = true,
-        tpfr: TreePingFinishedData = null
-    ) {
-        tpfr = (tpfr === null) ? new TreePingFinishedData(
-            this.countPingablePingTreeNodes(roots)
-        ) : tpfr;
-        const thisLayerPingDataList =
-            this.preparePingDataLayer(roots);
-        const thisLayerLockedNodesIDs = thisLayerPingDataList.map(pd => {
-            pd.cell.setLock();
-            return pd.id;
-        });
-        this.pingService.getListPing(
-            thisLayerLockedNodesIDs
-        ).subscribe(pingResult => {
-            const allFailed = pingResult.success === false;
-            const pingResults = pingResult.data;
-            let nextLayer: PingTree[] = [];
-            for (let i = 0; i < thisLayerPingDataList.length; i++) {
-                const pingData = pingResults[i];
-                const cell = thisLayerPingDataList[i].cell;
-                cell.resetLock();
-                cell.value.next(
-                    allFailed
-                        ? null
-                        : pingData
-                );
-                let success = allFailed === false;
-                let skipped = 0;
-                const children = thisLayerPingDataList[i].pingTree.children;
-                if (success) {
-                    success = pingData.failed !== pingData.num;
-                } else {
-                    skipped = skipChildrenOfFailedNodes === true
-                        ? this.countPingablePingTreeNodes(children)
-                        : 0;
-                }
-                if (forEachPingedCallback !== null) {
-                    forEachPingedCallback(
-                        success,
-                        skipped,
-                        thisLayerPingDataList[i].pingTree
-                    );
-                }
-                if (success) {
-                    tpfr.successful++;
-                } else {
-                    tpfr.failed++;
-                }
-                tpfr.skipped += skipped;
-
-                if (success === false
-                && skipChildrenOfFailedNodes === true) {
-                    this.setFailedBranch(children);
-                } else {
-                    nextLayer = nextLayer.concat(children);
-                }
-            }
-            if (nextLayer.length > 0) {
-                this.pingTree(
-                    nextLayer,
-                    forEachPingedCallback,
-                    finishedCallback,
-                    skipChildrenOfFailedNodes,
-                    tpfr
-                );
-            }
-
-            if (finishedCallback !== null
-            && tpfr.successful
-            + tpfr.failed
-            + tpfr.skipped === tpfr.startNodesCount) {
-                finishedCallback(tpfr);
-            }
-        });
-    }
-
-    /*
-    private joinedPingTree(
-        roots: PingTree[],
-        forEachPingedCallback: (
-            success: boolean,
-            currentRoot: PingTree
-        ) => void,
-        skipChildrenOfFailedNodes = true
-    ) {
-        const thisLayerPingDataList =
-            this.preparePingDataLayer(roots);
-        forkJoin(
-            thisLayerPingDataList.map(data => {
-                data.cell.setLock();
-                return this.pingService.getPing(data.id);
-            })
-        ).subscribe(pingResults => {
-            for (let i = 0; i < pingResults.length; i++) {
-                const cell = thisLayerPingDataList[i].cell;
-                const pingData = pingResults[i].data;
-                cell.resetLock();
-                cell.value.next(
-                    pingResults[i].success === true
-                        ? pingData
-                        : null
-                );
-                const success = pingResults[i].success
-                    && pingData.failed !== pingData.num;
-                const children = thisLayerPingDataList[i].pingTree.children;
-                if (forEachPingedCallback !== null) {
-                    forEachPingedCallback(
-                        success,
-                        thisLayerPingDataList[i].pingTree
-                    );
-                }
-
-                if (success === false
-                && skipChildrenOfFailedNodes === true) {
-                    this.setFailedBranch(children);
-                } else {
-                    this.pingTree(
-                        children, forEachPingedCallback
-                    );
-                }
-            }
-        });
-    }
-    */
 
     setFailedBranch(roots: PingTree[]) {
         roots.forEach(root => {
@@ -343,23 +131,6 @@ export class PingCacheService {
             this.setFailedBranch(root.children);
         });
     }
-}
-
-export class PingTree {
-    public id: number;
-    public name: string;
-    public isPingable: boolean;
-    public isBranchPingable: boolean;
-    public children: PingTree[];
-}
-
-export class TreePingFinishedData {
-    constructor(
-        public startNodesCount: number,
-        public successful: number = 0,
-        public failed: number = 0,
-        public skipped: number = 0
-    ) {}
 }
 
 class PingCacheCell {

@@ -8,6 +8,7 @@ public class Profile {
     public bool StartMonitoringOnLaunch;
     public bool DepthMonitoring;
     public int MonitorInterval; //minutes
+    public bool RealTimePingUIUpdate;
 }
 
 }

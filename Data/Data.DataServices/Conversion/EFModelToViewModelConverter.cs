@@ -25,7 +25,8 @@ public class EFModelToViewModelConverter : IEFModelToViewModelConverter {
             MonitoringStartHour = profile.MonitoringStartHour,
             MonitoringSessionDuration = profile.MonitoringSessionDuration,
             MonitorInterval = profile.MonitorInterval,
-            DepthMonitoring = profile.DepthMonitoring
+            DepthMonitoring = profile.DepthMonitoring,
+            RealTimePingUIUpdate = profile.RealTimePingUIUpdate
         };
     }
     

@@ -471,7 +471,8 @@ public class EFDataSource : IEFDbDataSource {
             MonitoringSessionDuration = profile.MonitoringSessionDuration,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
             DepthMonitoring = profile.DepthMonitoring,
-            MonitorInterval = profile.MonitorInterval
+            MonitorInterval = profile.MonitorInterval,
+            RealTimePingUIUpdate = profile.RealTimePingUIUpdate
         };
 
         context.Profiles.Add(newProfile);
@@ -711,6 +712,7 @@ public class EFDataSource : IEFDbDataSource {
         profile.StartMonitoringOnLaunch = newProfileData.StartMonitoringOnLaunch;
         profile.DepthMonitoring = newProfileData.DepthMonitoring;
         profile.MonitorInterval = newProfileData.MonitorInterval;
+        profile.RealTimePingUIUpdate = newProfileData.RealTimePingUIUpdate;
         await context.SaveChangesAsync();
     }
 

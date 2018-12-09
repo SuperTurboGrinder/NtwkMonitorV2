@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { ModelModule } from '../model/model.module';
 import { ChildsHeightToThisWidthDirective } from './directives/childsHeightToThisWidth.directive';
@@ -51,6 +50,7 @@ import { MonitorMutabilityBlockComponent } from './misc/monitorMutabilityBlock.c
 import { HistoryViewComponent } from './historyView.component';
 import { TaggedNodesListUpdateListenerComponent } from './misc/taggedNodesListUpdateListener.component';
 import { NodesTreeViewUpdateListenerComponent } from './misc/nodesTreeViewUpdatesListener.component';
+import { MassPingIndicationComponent } from './misc/massPingIndication.component';
 
 @NgModule({
   declarations: [
@@ -97,13 +97,13 @@ import { NodesTreeViewUpdateListenerComponent } from './misc/nodesTreeViewUpdate
     MonitorMutabilityBlockComponent,
     HistoryViewComponent,
     TaggedNodesListUpdateListenerComponent,
-    NodesTreeViewUpdateListenerComponent
+    NodesTreeViewUpdateListenerComponent,
+    MassPingIndicationComponent
   ],
   imports: [
     BrowserAnimationsModule,
     FormsModule,
     CommonModule,
-    ScrollingModule,
     ModelModule,
     RouterModule,
     RouterModule.forRoot(UIRoutingConfig.routes)

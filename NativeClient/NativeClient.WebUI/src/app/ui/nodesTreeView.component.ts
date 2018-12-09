@@ -163,6 +163,7 @@ export class NodesTreeViewComponent {
         this.nodesService.getNodesTree().subscribe(treeResult => {
             if (treeResult.success === false) {
                 this.loadingError = true;
+                this.updateUI();
                 return;
             }
             this.initialized = true;

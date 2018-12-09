@@ -60,7 +60,7 @@ export class SettingsProfileFormComponent
 
     protected newEmptyData(): SettingsProfile {
         return new SettingsProfile(
-            0, '', 0, 24, true, true, 1
+            0, '', 0, 24, true, true, 1, false
         );
     }
 
@@ -70,7 +70,8 @@ export class SettingsProfileFormComponent
             && obj.monitoringSessionDuration === this.data.monitoringSessionDuration
             && obj.startMonitoringOnLaunch === this.data.startMonitoringOnLaunch
             && obj.depthMonitoring === this.data.depthMonitoring
-            && obj.monitorInterval === this.data.monitorInterval;
+            && obj.monitorInterval === this.data.monitorInterval
+            && obj.realTimePingUIUpdate === this.data.realTimePingUIUpdate;
     }
 
     protected makeCopy(orig: SettingsProfile): SettingsProfile {
@@ -81,7 +82,8 @@ export class SettingsProfileFormComponent
             orig.monitoringSessionDuration,
             orig.startMonitoringOnLaunch,
             orig.depthMonitoring,
-            orig.monitorInterval
+            orig.monitorInterval,
+            orig.realTimePingUIUpdate
         );
     }
 

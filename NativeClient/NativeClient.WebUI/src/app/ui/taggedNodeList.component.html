@@ -1,6 +1,6 @@
 <div class="w-100 h-100  bg-light">
     <div class="w-100 h-100 " *ngIf="sortedIndexes != null; else stillEmptyBlock">
-        <div class="h-100  text-center" style="width:calc(100% - 16px)">
+        <div class="h-100  text-center" style="width:calc(100% - 16px); position: relative">
             <div style="display: flex; width: 100%; height: 30px">
                 <div class="btn-light border rounded-top  sortable-collumn"
                     style="flex: 0 0 calc(100% - 400px)"
@@ -46,40 +46,44 @@
                     <strong i18n="@@noNodesFoundLabel">No nodes found in database.</strong>
                 </div>
                 <ng-template #nodesList>
-                    <cdk-virtual-scroll-viewport [itemSize]="28">
-                        <div
-                            class="text-center border-bottom hoverselection"
-                            style="display: flex; width: 800px"
-                            *cdkVirtualFor="let i of sortedIndexes"
+                    <div
+                        class="text-center border-bottom hoverselection"
+                        style="display: flex"
+                        *ngFor="let i of sortedIndexes; trackBy: nodeTrackByFn"
+                    >
+                        <div class="font-italic"
+                            style="flex: 0 0 calc(100% - 400px)"
+                            (mouseenter)="selectNode(i, $event)"
+                            (mouseleave)="deselectNode($event)"
                         >
-                            <div class="font-italic"
-                                style="flex: 0 0 calc(100% - 400px)"
-                                (mouseenter)="selectNode(i, $event)"
-                                (mouseleave)="deselectNode($event)"
-                            >
-                                <strong>
-                                    {{node(i).name}}
-                                </strong>
-                            </div>
-                            <div style="flex: 0 0 100px">
-                                <app-exec-services-buttons
-                                    [node]="node(i)"
-                                ></app-exec-services-buttons>
-                            </div>
-                            <div style="flex: 0 0 160px">
-                                <app-web-services-buttons
-                                    [nodeID]="node(i).id"
-                                    [webServices]="listWebServicesData(i)"
-                                ></app-web-services-buttons>
-                            </div>
-                            <div style="flex: 0 0 140px">
-                                <app-ping-display
-                                    [node]="node(i)"
-                                    (changedEvent)="resortListByPingIfChanged($event)"
-                                ></app-ping-display>
-                            </div>
+                            <strong>
+                                {{node(i).name}}
+                            </strong>
                         </div>
-                    </cdk-virtual-scroll-viewport>
+                        <div style="flex: 0 0 100px">
+                            <app-exec-services-buttons
+                                [node]="node(i)"
+                            ></app-exec-services-buttons>
+                        </div>
+                        <div style="flex: 0 0 160px">
+                            <app-web-services-buttons
+                                [nodeID]="node(i).id"
+                                [webServices]="listWebServicesData(i)"
+                            ></app-web-services-buttons>
+                        </div>
+                        <div style="flex: 0 0 140px">
+                            <app-ping-display
+                                [node]="node(i)"
+                                (changedEvent)="resortListByPingIfChanged($event)"
+                            ></app-ping-display>
+                        </div>
+                    </div>
+                    <div class="h-100" style="position:absolute;right:0;top:0;width:140px">
+                        <app-mass-ping-indication
+                            [participantsNum]="10"
+                            [pingedNum]="2"
+                        ></app-mass-ping-indication>
+                    </div>
                 </ng-template>
             </div>
             <div class="w-100  text-center" style="display: flex; height: 30px"  *ngIf="!isNoNodesLoaded()">

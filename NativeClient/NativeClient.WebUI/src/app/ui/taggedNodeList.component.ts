@@ -277,15 +277,20 @@ export class TaggedNodeListComponent {
     }
 
     private initialize() {
-        forkJoin(
-            this.nodesService.getNodesTree(),
+        // should not use forkJoin - would break loading error indicator
+        this.nodesService.getNodesTree()
+        .subscribe(result => {
+            this.treeResult = result;
+            if (this.treeResult.success === false) {
+                this.loadingError = true;
+                this.updateUI();
+                return;
+            }
             this.settingsService.currentProfilesViewTagFilterData()
-        )
-        .subscribe(results => {
-            this.treeResult = results[0];
-            const viewTagFilterDataResult = results[1];
-            this.initializationRoutine(viewTagFilterDataResult);
-            this.subscribeToSettingsChange();
+            .subscribe(viewTagFilterDataResult => {
+                this.initializationRoutine(viewTagFilterDataResult);
+                this.subscribeToSettingsChange();
+            });
         });
     }
 
@@ -298,6 +303,7 @@ export class TaggedNodeListComponent {
     private initializationRoutine(viewTagFilterDataResult: TagFilterData) {
         if (this.treeResult.success === false) {
             this.loadingError = true;
+            this.updateUI();
             return;
         }
         const nodesNum = this.treeResult.data.nodesTree.allNodes.length;
