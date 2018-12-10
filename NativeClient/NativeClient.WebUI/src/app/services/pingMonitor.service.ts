@@ -4,7 +4,6 @@ import { Subscription, Observable, timer, of } from 'rxjs';
 import { TagFilterData } from '../model/httpModel/tagFilterData.model';
 import { NodesService } from './nodes.service';
 import { map, switchMap } from 'rxjs/operators';
-import { PingTree, PingCacheService, TreePingFinishedData } from './pingCache.service';
 import { PingTreeBuilder } from '../ui/helpers/pingTreeBuilder.helper';
 import { TreeTrimmingHelper } from '../ui/helpers/treeTrimmingHelper.helper';
 import { HTTPResult } from '../model/servicesModel/httpResult.model';
@@ -16,6 +15,7 @@ import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { MonitoringMessage } from '../model/httpModel/monitoringMessage.model';
 import { MonitoringMessageType } from '../model/httpModel/monitoringMessageType.model';
 import { ManualTimer } from '../ui/helpers/manualTimer.helper';
+import { PingTree, MassPingService, TreePingFinishedData } from './massPing.service';
 
 @Injectable()
 export class PingMonitorService {
@@ -53,7 +53,7 @@ export class PingMonitorService {
         private settingsService: SettingsProfilesService,
         private currentMonitorDataService: CurrentMonitoringSessionDataService,
         private nodesService: NodesService,
-        private pingCache: PingCacheService
+        private massPingService: MassPingService
     ) {
         this.subscribeToSettingsChange();
     }
@@ -182,7 +182,8 @@ export class PingMonitorService {
     private monitorSubscriptionFunction(
         pingTree: PingTree[]
     ) {
-        if (this.monitorManualTimer.checkIfFinished() === false) {
+        if (this.monitorManualTimer.checkIfFinished() === false
+         || this.massPingService.inProgress === true) {
             return;
         }
         if (this.monitorPulseInProgress === false) {
@@ -196,11 +197,10 @@ export class PingMonitorService {
                 this.stopMonitor();
                 return;
             }
-            this.pingCache.treeUpdateWithCallback(
+            this.massPingService.pingTreeWithCallback(
                 pingTree,
                 (success, skipped, pingTreeNode) =>
-                    this.treeNodeUpdateCallback(success, skipped, pingTreeNode)
-                ,
+                    this.treeNodeUpdateCallback(success, skipped, pingTreeNode),
                 pingFinishedResult => {
                     this.savePulseData(pingFinishedResult);
                 },

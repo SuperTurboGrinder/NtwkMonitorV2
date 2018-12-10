@@ -4,7 +4,7 @@ import { NtwkNodeDataContainer } from '../../model/viewModel/ntwkNodeDataContain
 import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
 import { NodeData } from '../../model/httpModel/nodeData.model';
 import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
-import { PingTree } from '../../services/pingCache.service';
+import { PingTree } from '../../services/massPing.service';
 import { PingTreeBuilder } from './pingTreeBuilder.helper';
 
 export class DisplayTreeHelper {

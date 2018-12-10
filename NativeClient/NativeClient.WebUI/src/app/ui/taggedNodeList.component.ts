@@ -5,10 +5,10 @@ import { NodesService } from '../services/nodes.service';
 import { NodeData } from '../model/httpModel/nodeData.model';
 import { SettingsProfilesService } from '../services/settingsProfiles.service';
 import { PingCacheService } from '../services/pingCache.service';
+import { MassPingService } from '../services/massPing.service';
 import { TagsService } from '../services/tags.service';
 import { NodeInfoPopupDataService } from '../services/nodeInfoPopupData.service';
 import { NodeInfoDataCache } from './helpers/nodesInfoDataCache.helper';
-import { forkJoin } from 'rxjs';
 import { HTTPResult } from '../model/servicesModel/httpResult.model';
 import { NtwkNodesTree } from '../model/viewModel/ntwkNodesTree.model';
 import { CWSData } from '../model/httpModel/cwsData.model';
@@ -241,7 +241,7 @@ export class TaggedNodeListComponent {
 
     public pingFilteredList() {
         this.filteredNodesListPingInProgress = true;
-        this.pingCacheService.updateValues(
+        this.massPingService.pingRange(
             this.filteredNodesList
                 .filter(n => n.node.isOpenPing === true)
                 .map(n => n.node.id),
@@ -268,6 +268,7 @@ export class TaggedNodeListComponent {
 
     constructor(
         private pingCacheService: PingCacheService,
+        private massPingService: MassPingService,
         private nodeInfoPopupService: NodeInfoPopupDataService,
         private tagsService: TagsService,
         private nodesService: NodesService,

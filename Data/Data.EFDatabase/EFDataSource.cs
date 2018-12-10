@@ -34,16 +34,19 @@ public class EFDataSource : IEFDbDataSource {
                           ProfileSelectedTagFlags.Monitor ==
                             (pts.Flags & ProfileSelectedTagFlags.Monitor));
         int monitoredNodesNum = hasMonitorTagFilter
-            ? await context.ProfilesTagSelection
+            ? await context.ProfilesTagSelection.AsNoTracking()
             .Where(pts => pts.BindedProfileID == profileID &&
                           ProfileSelectedTagFlags.Monitor ==
                             (pts.Flags & ProfileSelectedTagFlags.Monitor))
             .Include(pts => pts.Tag)
                 .ThenInclude(t => t.Attachments)
-            .SelectMany(pts => pts.Tag.Attachments.Select(ta => ta.NodeID))
+                    .ThenInclude(ta => ta.Node)
+            .SelectMany(pts => pts.Tag.Attachments.Select(ta => ta.Node))
+            .Where(n => n.OpenPing)
+            .Select(n => n.ID)
             .Distinct()
             .CountAsync()
-            : await context.Nodes.CountAsync();
+            : await context.Nodes.CountAsync(n => n.OpenPing);
         MonitoringSession newSession = new MonitoringSession {
             ID = 0,
             CreatedByProfileID = profileID,

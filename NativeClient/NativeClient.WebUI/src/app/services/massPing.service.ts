@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Subscription, BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { first, skip } from 'rxjs/operators';
 
-import { PingService } from './ping.service';
 import { PingTestData } from '../model/httpModel/pingTestData.model';
 import { SoundNotificatonService } from './soundNotificationService';
 import { PingCacheService } from './pingCache.service';
+import { BehaviorSubject, Subscription } from 'rxjs';
 
 export class PingTree {
     public id: number;
@@ -24,39 +22,64 @@ export class TreePingFinishedData {
     ) {}
 }
 
+export class PingProgress {
+    constructor(
+        public current: number,
+        public end: number
+    ) {}
+}
+
 @Injectable()
 export class MassPingService {
+    private pingProgressSubject = new BehaviorSubject<PingProgress>(null);
+    private isInProgress = false;
+
     constructor(
         private pingCacheService: PingCacheService,
         private sounds: SoundNotificatonService
     ) {}
 
+    public get inProgress(): boolean {
+        return this.isInProgress;
+    }
+
+    public subscribeToPingProgress(
+        callback: (PingProgress) => void
+    ): Subscription {
+        return this.pingProgressSubject.asObservable().subscribe(callback);
+    }
+
     public pingRange(
         nodesIDs: number[],
         finishCallback: () => void
     ) {
-        this.pingCacheService.pingListByID(nodesIDs, null, (_) => finishCallback());
+        if (this.setInProgress(-1)) {
+            this.pingCacheService.pingListByID(
+                nodesIDs,
+                true,
+                (_) => {
+                    this.resetInProgress();
+                    finishCallback();
+                });
+        }
     }
 
     public pingTreeWithoutCallback(
         roots: PingTree[],
-        count: (count: number) => void
     ) {
         this.pingTree(
             roots,
-            count,
             (success, _1, _2) => {
                 if (success === false) {
                     this.sounds.playFailedPingAlarm();
                 }
             },
-            null
+            _ => this.resetInProgress()
         );
     }
 
     public pingTreeWithCallback(
         roots: PingTree[],
-        count: (count: number) => void,
         forEachPingedCallback: (
             success: boolean,
             skipped: number,
@@ -67,23 +90,49 @@ export class MassPingService {
     ) {
         this.pingTree(
             roots,
-            count,
             (success, skipped, pingTreeNode) => {
                 if (success === false) {
                     this.sounds.playFailedPingAlarm();
                 }
                 forEachPingedCallback(success, skipped, pingTreeNode);
             },
-            finishedCallback,
+            result => {
+                this.resetInProgress();
+                finishedCallback(result);
+            },
             skipChildrenOfFailedNodes
         );
+    }
+
+    private setInProgress(numParticipants: number): boolean {
+        if (this.isInProgress === true) {
+            return false;
+        }
+        this.isInProgress = true;
+        this.pingProgressSubject.next(
+            new PingProgress(0, numParticipants)
+        );
+        return true;
+    }
+
+    private resetInProgress() {
+        this.isInProgress = false;
+    }
+
+    private nextProgress(numDone: number) {
+        const current = this.pingProgressSubject.value;
+        if (current !== null) {
+            this.pingProgressSubject.next(
+                new PingProgress(current.current + numDone, current.end)
+            );
+        }
     }
 
     private countPingablePingTreeNodes(pingTreeBranch: PingTree[]): number {
         let counter = 0;
         for (const p of pingTreeBranch) {
             if (p !== null) {
-                counter += p.isPingable ? 1 : 0
+                counter += (p.isPingable ? 1 : 0)
                     + this.countPingablePingTreeNodes(p.children);
             }
         }
@@ -103,7 +152,6 @@ export class MassPingService {
 
     private pingTree(
         roots: PingTree[],
-        startedCallback: (allCount: number) => void,
         forEachPingedCallback: (
             success: boolean,
             skipped: number,
@@ -114,10 +162,12 @@ export class MassPingService {
         tpfr: TreePingFinishedData = null
     ) {
         if (tpfr === null) {
-            tpfr = new TreePingFinishedData(
-                this.countPingablePingTreeNodes(roots)
-            );
-            if (startedCallback !== null) { startedCallback(tpfr.startNodesCount); }
+            const count = this.countPingablePingTreeNodes(roots);
+            if (this.setInProgress(count)) {
+                tpfr = new TreePingFinishedData(count);
+            } else {
+                return;
+            }
         }
         const thisLayerPingDataList =
             this.preparePingDataLayer(roots);
@@ -129,6 +179,7 @@ export class MassPingService {
             thisLayerLockedNodesIDs,
             true,
             (data: PingTestData[]) => {
+                this.nextProgress(thisLayerLockedNodesIDs.length);
                 const allFailed = data === null;
                 if (allFailed) { return; }
                 for (let i = 0; i < thisLayerPingDataList.length; i++) {
@@ -167,7 +218,6 @@ export class MassPingService {
                 if (nextLayer.length > 0) {
                     this.pingTree(
                         nextLayer,
-                        startedCallback,
                         forEachPingedCallback,
                         finishedCallback,
                         skipChildrenOfFailedNodes,
@@ -175,11 +225,13 @@ export class MassPingService {
                     );
                 }
 
-                if (finishedCallback !== null
-                && tpfr.successful
-                + tpfr.failed
-                + tpfr.skipped === tpfr.startNodesCount) {
-                    finishedCallback(tpfr);
+                const finished = tpfr.successful + tpfr.failed
+                + tpfr.skipped === tpfr.startNodesCount;
+                if (finished === true) {
+                    this.resetInProgress();
+                    if (finishedCallback !== null) {
+                        finishedCallback(tpfr);
+                    }
                 }
             }
         );

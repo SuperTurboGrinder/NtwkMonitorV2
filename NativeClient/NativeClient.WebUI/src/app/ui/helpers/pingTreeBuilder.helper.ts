@@ -1,5 +1,5 @@
 import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
-import { PingTree } from '../../services/pingCache.service';
+import { PingTree } from '../../services/massPing.service';
 
 
 export class PingTreeBuilder {

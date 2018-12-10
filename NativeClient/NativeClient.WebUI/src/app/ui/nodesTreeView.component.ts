@@ -2,13 +2,13 @@ import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angul
 
 import { NtwkNode } from '../model/httpModel/ntwkNode.model';
 import { NodesService } from '../services/nodes.service';
-import { PingCacheService } from '../services/pingCache.service';
 import { TagsService } from '../services/tags.service';
 import { NodeInfoPopupDataService } from '../services/nodeInfoPopupData.service';
 import { NodeInfoDataCache } from './helpers/nodesInfoDataCache.helper';
 import { TreeCollapsingService } from '../services/treeCollapsing.service';
 import { Range } from '../ui/misc/numRangeSelector.component';
 import { DisplayTreeHelper } from './helpers/displayTreeHelper.helper';
+import { MassPingService } from '../services/massPing.service';
 
 @Component({
     selector: 'app-nodes-tree-view',
@@ -133,7 +133,7 @@ export class NodesTreeViewComponent {
     public pingBranch(i: number) {
         const branch = this.displayTreeHelper.flatPingTree[i];
         if (branch !== null) {
-            this.pingCacheService.treeUpdateWithoutCallback(
+            this.massPingService.pingTreeWithoutCallback(
                 [branch]
             );
         }
@@ -150,7 +150,7 @@ export class NodesTreeViewComponent {
     }
 
     constructor(
-        private pingCacheService: PingCacheService,
+        private massPingService: MassPingService,
         private nodeInfoPopupService: NodeInfoPopupDataService,
         private treeCollapsingService: TreeCollapsingService,
         private tagsService: TagsService,
