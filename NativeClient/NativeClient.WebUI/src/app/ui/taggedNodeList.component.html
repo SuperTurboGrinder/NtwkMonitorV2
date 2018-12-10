@@ -78,11 +78,8 @@
                             ></app-ping-display>
                         </div>
                     </div>
-                    <div class="h-100" style="position:absolute;right:0;top:0;width:140px">
-                        <app-mass-ping-indication
-                            [participantsNum]="10"
-                            [pingedNum]="2"
-                        ></app-mass-ping-indication>
+                    <div style="position:absolute;right:0;top:0;width:140px;height: calc(100% - 30px)">
+                        <app-mass-ping-indication></app-mass-ping-indication>
                     </div>
                 </ng-template>
             </div>

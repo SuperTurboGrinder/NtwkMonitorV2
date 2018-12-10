@@ -117,6 +117,7 @@ export class MassPingService {
 
     private resetInProgress() {
         this.isInProgress = false;
+        this.pingProgressSubject.next(null);
     }
 
     private nextProgress(numDone: number) {
@@ -179,42 +180,57 @@ export class MassPingService {
             thisLayerLockedNodesIDs,
             true,
             (data: PingTestData[]) => {
-                this.nextProgress(thisLayerLockedNodesIDs.length);
                 const allFailed = data === null;
-                if (allFailed) { return; }
-                for (let i = 0; i < thisLayerPingDataList.length; i++) {
-                    const pingData = data[i];
-                    let success = allFailed === false;
-                    let skipped = 0;
-                    const children = thisLayerPingDataList[i].children;
-                    if (success) {
-                        success = pingData.failed !== pingData.num;
-                    } else {
-                        skipped = skipChildrenOfFailedNodes === true
+                if (allFailed) {
+                    let skippedSumm = 0;
+                    for (let i = 0; i < thisLayerPingDataList.length; i++) {
+                        const children = thisLayerPingDataList[i].children;
+                        const skipped = skipChildrenOfFailedNodes === true
                             ? this.countPingablePingTreeNodes(children)
                             : 0;
-                    }
-                    if (forEachPingedCallback !== null) {
-                        forEachPingedCallback(
-                            success,
-                            skipped,
-                            thisLayerPingDataList[i]
-                        );
-                    }
-                    if (success) {
-                        tpfr.successful++;
-                    } else {
                         tpfr.failed++;
+                        skippedSumm += skipped;
+                        tpfr.skipped += skipped;
+                        if (skipChildrenOfFailedNodes === true) {
+                            this.pingCacheService.setFailedBranch(children);
+                        }
+                        if (forEachPingedCallback !== null) {
+                            forEachPingedCallback(
+                                false,
+                                skipped,
+                                thisLayerPingDataList[i]
+                            );
+                        }
                     }
-                    tpfr.skipped += skipped;
-
-                    if (success === false
-                    && skipChildrenOfFailedNodes === true) {
-                        this.pingCacheService.setFailedBranch(children);
-                    } else {
-                        nextLayer = nextLayer.concat(children);
+                    this.nextProgress(skippedSumm);
+                } else {
+                    for (let i = 0; i < thisLayerPingDataList.length; i++) {
+                        const pingData = data[i];
+                        const success = pingData.failed !== pingData.num;
+                        const children = thisLayerPingDataList[i].children;
+                        let skipped = 0;
+                        if (success) {
+                            tpfr.successful++;
+                            nextLayer = nextLayer.concat(children);
+                        } else {
+                            tpfr.failed++;
+                            if (skipChildrenOfFailedNodes === true) {
+                                skipped = this.countPingablePingTreeNodes(children);
+                                tpfr.skipped += skipped;
+                                this.nextProgress(skipped);
+                                this.pingCacheService.setFailedBranch(children);
+                            }
+                        }
+                        if (forEachPingedCallback !== null) {
+                            forEachPingedCallback(
+                                success,
+                                skipped,
+                                thisLayerPingDataList[i]
+                            );
+                        }
                     }
                 }
+                this.nextProgress(thisLayerLockedNodesIDs.length);
                 if (nextLayer.length > 0) {
                     this.pingTree(
                         nextLayer,
@@ -225,8 +241,7 @@ export class MassPingService {
                     );
                 }
 
-                const finished = tpfr.successful + tpfr.failed
-                + tpfr.skipped === tpfr.startNodesCount;
+                const finished = tpfr.successful + tpfr.failed + tpfr.skipped === tpfr.startNodesCount;
                 if (finished === true) {
                     this.resetInProgress();
                     if (finishedCallback !== null) {

@@ -239,19 +239,25 @@ export class TaggedNodeListComponent {
         return this.loadingError;
     }
 
+    public showMassPingPanel() {
+        
+    }
+
     public pingFilteredList() {
-        this.filteredNodesListPingInProgress = true;
-        this.massPingService.pingRange(
-            this.filteredNodesList
-                .filter(n => n.node.isOpenPing === true)
-                .map(n => n.node.id),
-            () => {
-                this.filteredNodesListPingInProgress = false;
-                if (this.sorting === Sorting.ByPing) {
-                    this.resortListByPing();
+        if (this.massPingService.inProgress === false) {
+            this.filteredNodesListPingInProgress = true;
+            this.massPingService.pingRange(
+                this.filteredNodesList
+                    .filter(n => n.node.isOpenPing === true)
+                    .map(n => n.node.id),
+                () => {
+                    this.filteredNodesListPingInProgress = false;
+                    if (this.sorting === Sorting.ByPing) {
+                        this.resortListByPing();
+                    }
                 }
-            }
-        );
+            );
+        }
     }
 
     nodeTrackByFn(node_index: number) {

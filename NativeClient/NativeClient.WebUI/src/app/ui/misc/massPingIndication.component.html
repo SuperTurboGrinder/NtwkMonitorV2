@@ -1,6 +1,6 @@
-<div class="w-100 h-100 rounded-top blocking-overlay text-center text-success">
+<div *ngIf="pingProgress !== null" class="w-100 h-100 rounded-top blocking-overlay text-center text-success">
     <div style="height: 46%"> </div>
-    <div class="w-100 bg-dark">
-        <strong>{{pingedNum}}/{{participantsNum}}</strong>
+    <div *ngIf="pingProgress.end !== -1" class="w-100 bg-dark">
+        <strong>{{pingProgress.current}}/{{pingProgress.end}}</strong>
     </div>
 </div>
