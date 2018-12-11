@@ -29,8 +29,12 @@ export class PingMonitorPanelComponent implements OnDestroy {
     private timerSubscription: Subscription = null;
 
     public ngOnDestroy() {
-        this.currentDataSubscription.unsubscribe();
-        this.timerSubscription.unsubscribe();
+        if (this.currentDataSubscription !== null) {
+            this.currentDataSubscription.unsubscribe();
+        }
+        if (this.timerSubscription !== null) {
+            this.timerSubscription.unsubscribe();
+        }
     }
 
     constructor(

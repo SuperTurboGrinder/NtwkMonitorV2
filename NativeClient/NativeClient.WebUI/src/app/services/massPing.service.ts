@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 import { PingTestData } from '../model/httpModel/pingTestData.model';
 import { SoundNotificatonService } from './soundNotificationService';
 import { PingCacheService } from './pingCache.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
+import { SettingsProfilesService } from './settingsProfiles.service';
 
 export class PingTree {
     public id: number;
@@ -30,17 +31,35 @@ export class PingProgress {
 }
 
 @Injectable()
-export class MassPingService {
+export class MassPingService implements OnDestroy {
     private pingProgressSubject = new BehaviorSubject<PingProgress>(null);
     private isInProgress = false;
+    private settingsSubscription: Subscription = null;
+    private realTimePingUpdate = false;
 
     constructor(
         private pingCacheService: PingCacheService,
-        private sounds: SoundNotificatonService
-    ) {}
+        private sounds: SoundNotificatonService,
+        settingsService: SettingsProfilesService
+    ) {
+        this.settingsSubscription = settingsService.subscribeToSettingsChange(
+            settings => {
+                this.realTimePingUpdate = settings.profile.realTimePingUIUpdate;
+        });
+    }
+
+    public ngOnDestroy() {
+        if (this.settingsSubscription !== null) {
+            this.settingsSubscription.unsubscribe();
+        }
+    }
 
     public get inProgress(): boolean {
         return this.isInProgress;
+    }
+
+    public get showIndicator(): boolean {
+        return this.realTimePingUpdate === false && this.isInProgress;
     }
 
     public subscribeToPingProgress(
@@ -56,7 +75,7 @@ export class MassPingService {
         if (this.setInProgress(-1)) {
             this.pingCacheService.pingListByID(
                 nodesIDs,
-                true,
+                this.realTimePingUpdate,
                 (_) => {
                     this.resetInProgress();
                     finishCallback();
@@ -178,7 +197,7 @@ export class MassPingService {
         let nextLayer: PingTree[] = [];
         this.pingCacheService.pingListByID(
             thisLayerLockedNodesIDs,
-            true,
+            this.realTimePingUpdate,
             (data: PingTestData[]) => {
                 const allFailed = data === null;
                 if (allFailed) {

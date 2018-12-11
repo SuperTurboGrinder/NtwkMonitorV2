@@ -239,8 +239,8 @@ export class TaggedNodeListComponent {
         return this.loadingError;
     }
 
-    public showMassPingPanel() {
-        
+    public get showMassPingPanel(): boolean {
+        return this.massPingService.showIndicator;
     }
 
     public pingFilteredList() {

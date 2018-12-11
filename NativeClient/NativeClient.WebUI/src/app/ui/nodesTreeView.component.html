@@ -1,6 +1,6 @@
 <div class="w-100 h-100 bg-light">
     <div class="w-100 h-100" *ngIf="isInitialized() != false; else stillEmptyBlock">
-        <div class="h-100" style="width:calc(100% - 16px)">
+        <div class="h-100" style="width:calc(100% - 16px); position: relative">
             <div class="text-center" style="display: flex; width: 100%; height: 30px">
                 <div class="border rounded-top nonselectable-collumn" style="flex: 0 0 calc(100% - 400px)">
                     <strong i18n="@@nameLabel">Name</strong>
@@ -77,6 +77,11 @@
                                 (changedEvent)="{}"
                             ></app-ping-display>
                         </div>
+                    </div>
+                    <div *ngIf="showMassPingPanel === true"
+                        style="position:absolute;right:0;top:0;width:140px;height: calc(100% - 30px)"
+                    >
+                        <app-mass-ping-indication></app-mass-ping-indication>
                     </div>
                 </ng-template>
             </div>

@@ -78,7 +78,9 @@
                             ></app-ping-display>
                         </div>
                     </div>
-                    <div style="position:absolute;right:0;top:0;width:140px;height: calc(100% - 30px)">
+                    <div *ngIf="showMassPingPanel === true"
+                        style="position:absolute;right:0;top:0;width:140px;height: calc(100% - 30px)"
+                    >
                         <app-mass-ping-indication></app-mass-ping-indication>
                     </div>
                 </ng-template>

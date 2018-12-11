@@ -101,6 +101,10 @@ export class NodesTreeViewComponent {
         return this.loadingError;
     }
 
+    public get showMassPingPanel(): boolean {
+        return this.massPingService.showIndicator;
+    }
+
     nodeTrackByFn(index: number, node_index: number) {
         if (!this.displayTreeHelper) {
             return null;
