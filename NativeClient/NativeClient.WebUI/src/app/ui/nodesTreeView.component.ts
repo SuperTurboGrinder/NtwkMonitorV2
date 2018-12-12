@@ -174,6 +174,7 @@ export class NodesTreeViewComponent {
 
             if (treeResult.data.nodesTree.allNodes.length === 0) {
                 this.nodesListIsEmpty = true;
+                this.updateUI();
                 return;
             } else {
                 this.nodesListIsEmpty = false;

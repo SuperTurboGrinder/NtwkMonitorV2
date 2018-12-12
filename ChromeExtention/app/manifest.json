@@ -1,15 +1,17 @@
 {
     "manifest_version":2,
-    "name": "NtwkMonitor.UtilityButtons",
-    "description": "Create button to fire NtwkMonitor services from any web page.",
+    "name": "NtwkMonitorV2.UtilityButtons",
+    "description": "Use NtwkMonitorV2 nodes api from any web page.",
     "version": "0.1",
 
     "content_scripts": [
         {
             "matches": [
-                "file:///C:/Projects/NtwkMonitor.ButtonsExtension/test.html"
+                "file:///**/ChromeExtention/test.html"
             ],
-            "js": ["impl.js", "main.js"]
+            "js": [
+                "js/main.js"
+            ]
         }
     ],
 

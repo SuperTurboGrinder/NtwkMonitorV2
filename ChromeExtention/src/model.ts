@@ -33,9 +33,19 @@ export class AllNodesData {
     ) {}
 }
 
+/*
 export class NodeTag {
     constructor(
         public id: number,
         public name: string
+    ) {}
+}
+*/
+
+export class PingTestData {
+    constructor(
+        public num: number,
+        public failed: number,
+        public avg: number,
     ) {}
 }

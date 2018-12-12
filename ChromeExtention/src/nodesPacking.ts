@@ -1,4 +1,5 @@
-import { NodeData, CWSData } from "./model";
+import { NodeData, CWSData, PingTestData } from "./model";
+import { HttpNodeServices } from "./httpServices";
 
 class NodeCoord {
     constructor(
@@ -23,6 +24,7 @@ export class SmartNodeContainer {
         private readonly nodeCoordIndex: number,
         private readonly nodeData: NodeData,
         private readonly cwsData: CWSData[],
+        private readonly httpNodeServices: HttpNodeServices
     ) {}
     
     get webServicesNames(): string[] {
@@ -56,28 +58,43 @@ export class SmartNodeContainer {
         return this.nodeData.node.isOpenSSH;
     }
 
+    get hasPing(): boolean {
+        return this.nodeData.node.isOpenPing;
+    }
+
     openTelnet() {
         if (!this.hasTelnet) {
             throw new Error(`openTelnet(): ${this.nodeData.node.name} has no telnet service`);
         }
-
+        this.httpNodeServices.telnet(this.nodeData.node.id);
     }
 
     openSSH() {
         if (!this.hasSSH) {
             throw new Error(`openSSH(): ${this.nodeData.node.name} has no ssh service`);
         }
-
+        this.httpNodeServices.ssh(this.nodeData.node.id);
+    }
+    
+    getPing(callback: (testData: PingTestData) => void) {
+        if (!this.hasSSH) {
+            throw new Error(`openPing(): ${this.nodeData.node.name} has no ping service`);
+        }
+        this.httpNodeServices.ping(this.nodeData.node.id, callback);
     }
 
     openWebService(name: string) {
         const cws = this.cwsByName(name);
-
+        this.httpNodeServices.webService(this.nodeData.node.id, cws.id);
     }
 
-    getWebServiceString(name: string): string {
+    getWebServiceString(
+        name: string,
+        callback: (serviceUrl: string) => void
+    ) {
         const cws = this.cwsByName(name);
-
+        this.httpNodeServices
+            .webServiceString(this.nodeData.node.id, cws.id, callback);
     }
 
     private cwsByName(name: string) {
@@ -95,7 +112,8 @@ export class NodesTreeMap {
 
     constructor(
         private nodeDataLayers: NodeData[][],
-        private wsData: CWSData[]
+        private wsData: CWSData[],
+        private httpNodeServices: HttpNodeServices
     ) {
         this.containersMap = nodeDataLayers.reduce(
             (prev, current) => {
@@ -132,6 +150,9 @@ export class NodesTreeMap {
         pred: (coord: NodeCoord) => boolean
     ): SmartNodeContainer {
         const coordIndex = this.nodesCoords.findIndex(pred);
+        if (coordIndex === -1) {
+            return null;
+        }
         return this.getContainerByCoordIndex(coordIndex);
     }
 
@@ -162,11 +183,13 @@ export class NodesTreeMap {
         const data = this.nodeDataLayers[coord.layer][coord.index];
         const container =
             new SmartNodeContainer(
+                this,
                 coordIndex,
                 data,
                 this.wsData.filter(
                     wsd => data.boundWebServicesIDs.includes(wsd.id)
-                )
+                ),
+                this.httpNodeServices
             );
         this.containersMap[coord.layer][coord.index] = container;
         return container;

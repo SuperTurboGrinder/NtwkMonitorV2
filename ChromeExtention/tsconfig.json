@@ -2,10 +2,13 @@
   "extends": "./node_modules/gts/tsconfig-google.json",
   "compilerOptions": {
     "strictNullChecks": false,
-    "module": "es2015",
-    "target": "es5",
-    "rootDir": ".",
-    "outDir": "app",
+    "module": "commonjs",
+    "rootDir": "src",
+    "outDir": "app/js",
+    "target": "es6",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "declaration": false,
     "typeRoots": [
       "node_modules/@types"
     ],

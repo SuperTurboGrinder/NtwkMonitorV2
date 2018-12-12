@@ -1,4 +1,3 @@
-import { NodeTag, CWSData, NodeData, AllNodesData } from "./model";
 
 export class HTTPResult<T> {
     constructor(
@@ -80,37 +79,5 @@ export class ExtHttpClient {
                 }
             }
         }, body);
-    }
-}
-
-export class HttpDatasource {
-    constructor(
-        private httpClient: ExtHttpClient
-    ) {}
-
-    private getTagsList(callback: (tags: NodeTag[]) => void) {
-        this.httpClient.dataRequest<NodeTag[]>('nodeTags', 'GET', result => {
-            if (result.isSuccess()) {
-                callback(result.data);
-            }
-        });
-    }
-    
-    getAllNodesData(
-        callback: (
-            nodeDataLayers: NodeData[][],
-            wsData: CWSData[],
-            tagsList: NodeTag[]
-        ) => void
-    ) {
-        this.httpClient.dataRequest<AllNodesData>('nodes', 'GET', result => {
-            if (result.isSuccess()) {
-                const wsData = result.data.webServicesData;
-                const nodesDataLayers = result.data.nodesData;
-                this.getTagsList(tagsList => 
-                    callback(nodesDataLayers, wsData, tagsList)
-                );
-            }
-        });
     }
 }
