@@ -94,30 +94,26 @@ export class PingCacheService {
     public pingListByID(
         nodesIDs: number[],
         lock: boolean,
-        finishCallback: (data: PingTestData[]) => void
+        perResultCallback: (id: number, data: PingTestData) => void
     ) {
-        const cellsAndIDs = nodesIDs.map(id => ({
-            id: id,
-            cell: this.getCell(id)
-        })).filter(val => val.cell.currentLockStatus === false);
-        const idsToPing = cellsAndIDs.map(val => {
-            if (lock === true) { val.cell.setLock(); }
-            return val.id;
+        const cells = nodesIDs.map(id => {
+            const cell = this.getCell(id);
+            if (lock === true) { cell.setLock(); }
+            return cell;
         });
-        this.pingService.getListPing(idsToPing)
-        .subscribe(pingResult => {
-            const pingFailed = pingResult.success === false;
-            for (let i = 0; i < cellsAndIDs.length; i++) {
-                const cell = cellsAndIDs[i].cell;
-                cell.resetLock();
-                cell.value.next(
-                    pingFailed
-                        ? null
-                        : pingResult.data[i]
-                );
-            }
-            finishCallback(pingResult.data);
-        });
+        const pingObservables = nodesIDs.map(
+            id => this.pingService.getPing(id)
+        );
+        for (let i = 0; i < nodesIDs.length; i++) {
+            pingObservables[i].subscribe(result => {
+                cells[i].resetLock();
+                const value = result.success === false
+                    ? null
+                    : result.data;
+                cells[i].value.next(value);
+                perResultCallback(nodesIDs[i], value);
+            });
+        }
     }
 
     setFailedBranch(roots: PingTree[]) {

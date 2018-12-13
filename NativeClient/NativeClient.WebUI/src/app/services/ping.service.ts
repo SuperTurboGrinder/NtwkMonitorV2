@@ -24,6 +24,9 @@ export class PingService {
         );
     }
 
+    // should not use this one with ui
+    // multiple failed pings can be very slow (4sec per node)
+    // would look like it is not working
     getListPing(nodesIDs: number[]): Observable<HTTPResult<PingTestData[]>> {
         return this.httpDatasource.dataRequest<number[], PingTestData[]>(
             'post',

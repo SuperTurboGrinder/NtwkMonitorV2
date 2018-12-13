@@ -72,13 +72,18 @@ export class MassPingService implements OnDestroy {
         nodesIDs: number[],
         finishCallback: () => void
     ) {
-        if (this.setInProgress(-1)) {
+        if (this.setInProgress(nodesIDs.length)) {
+            let counter = 0;
             this.pingCacheService.pingListByID(
                 nodesIDs,
                 this.realTimePingUpdate,
                 (_) => {
-                    this.resetInProgress();
-                    finishCallback();
+                    counter++;
+                    this.nextProgress(1);
+                    if (counter === nodesIDs.length) {
+                        this.resetInProgress();
+                        finishCallback();
+                    }
                 });
         }
     }
@@ -93,7 +98,7 @@ export class MassPingService implements OnDestroy {
                     this.sounds.playFailedPingAlarm();
                 }
             },
-            _ => this.resetInProgress()
+            null
         );
     }
 
@@ -115,10 +120,7 @@ export class MassPingService implements OnDestroy {
                 }
                 forEachPingedCallback(success, skipped, pingTreeNode);
             },
-            result => {
-                this.resetInProgress();
-                finishedCallback(result);
-            },
+            finishedCallback,
             skipChildrenOfFailedNodes
         );
     }
@@ -191,66 +193,43 @@ export class MassPingService implements OnDestroy {
         }
         const thisLayerPingDataList =
             this.preparePingDataLayer(roots);
-        const thisLayerLockedNodesIDs = thisLayerPingDataList.map(pd => {
+        const thisLayerNodesIDs = thisLayerPingDataList.map(pd => {
             return pd.id;
         });
         let nextLayer: PingTree[] = [];
+        let thisLayerDone = 0;
         this.pingCacheService.pingListByID(
-            thisLayerLockedNodesIDs,
+            thisLayerNodesIDs,
             this.realTimePingUpdate,
-            (data: PingTestData[]) => {
-                const allFailed = data === null;
-                if (allFailed) {
-                    let skippedSumm = 0;
-                    for (let i = 0; i < thisLayerPingDataList.length; i++) {
-                        const children = thisLayerPingDataList[i].children;
-                        const skipped = skipChildrenOfFailedNodes === true
-                            ? this.countPingablePingTreeNodes(children)
-                            : 0;
-                        tpfr.failed++;
-                        skippedSumm += skipped;
-                        tpfr.skipped += skipped;
-                        if (skipChildrenOfFailedNodes === true) {
-                            this.pingCacheService.setFailedBranch(children);
-                        }
-                        if (forEachPingedCallback !== null) {
-                            forEachPingedCallback(
-                                false,
-                                skipped,
-                                thisLayerPingDataList[i]
-                            );
-                        }
-                    }
-                    this.nextProgress(skippedSumm);
+            (id: number, data: PingTestData) => {
+                const success = data !== null
+                && data.failed !== data.num;
+                const pingTreeNode = thisLayerPingDataList.find(n => n.id === id);
+                const children = pingTreeNode.children;
+                let skipped = 0;
+                if (success) {
+                    tpfr.successful++;
+                    nextLayer = nextLayer.concat(children);
+                    this.nextProgress(1);
                 } else {
-                    for (let i = 0; i < thisLayerPingDataList.length; i++) {
-                        const pingData = data[i];
-                        const success = pingData.failed !== pingData.num;
-                        const children = thisLayerPingDataList[i].children;
-                        let skipped = 0;
-                        if (success) {
-                            tpfr.successful++;
-                            nextLayer = nextLayer.concat(children);
-                        } else {
-                            tpfr.failed++;
-                            if (skipChildrenOfFailedNodes === true) {
-                                skipped = this.countPingablePingTreeNodes(children);
-                                tpfr.skipped += skipped;
-                                this.nextProgress(skipped);
-                                this.pingCacheService.setFailedBranch(children);
-                            }
-                        }
-                        if (forEachPingedCallback !== null) {
-                            forEachPingedCallback(
-                                success,
-                                skipped,
-                                thisLayerPingDataList[i]
-                            );
-                        }
+                    tpfr.failed++;
+                    if (skipChildrenOfFailedNodes === true) {
+                        skipped = this.countPingablePingTreeNodes(children);
+                        tpfr.skipped += skipped;
+                        this.pingCacheService.setFailedBranch(children);
                     }
+                    this.nextProgress(1 + skipped);
                 }
-                this.nextProgress(thisLayerLockedNodesIDs.length);
-                if (nextLayer.length > 0) {
+                if (forEachPingedCallback !== null) {
+                    forEachPingedCallback(
+                        success,
+                        skipped,
+                        pingTreeNode
+                    );
+                }
+                thisLayerDone++;
+                if (thisLayerDone === thisLayerNodesIDs.length
+                && nextLayer.length > 0) {
                     this.pingTree(
                         nextLayer,
                         forEachPingedCallback,
