@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
     mode: 'production',
     entry: {
-        main: path.join(__dirname, 'src/main.ts')
+        plugin: path.join(__dirname, 'src/plugin.ts')
     },
     output: {
         path: path.join(__dirname, 'app/js'),

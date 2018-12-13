@@ -10,15 +10,10 @@
   "license": "MIT",
   "keywords": [],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "tsc -p .",
-    "fix": "gts fix",
     "build": "webpack --config webpack.config.js",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
-    "posttest": "npm run check"
+    "wp-watch": "webpack --config webpack.config.js --watch"
   },
   "devDependencies": {
     "gts": "^0.9.0",

@@ -45,8 +45,8 @@ export class HttpNodeServices {
         callback: (pingResult: PingTestData) => void
     ) {
         this.httpClient.dataRequest<PingTestData>(
-            'GET',
             `services/ping/${id}`,
+            'GET',
             pingResult => {
                 if (pingResult.isSuccess()) {
                     callback(pingResult.data);
@@ -57,24 +57,24 @@ export class HttpNodeServices {
 
     telnet(id: number) {
         this.httpClient.operationRequest(
+            `services/telnet/${id}`,
             'GET',
-            `api/services/telnet/${id}`,
             () => {}
         );
     }
 
     ssh(id: number) {
         this.httpClient.operationRequest(
+            `services/ssh/${id}`,
             'GET',
-            `api/services/ssh/${id}`,
             () => {}
         );
     }
 
     webService(nodeID: number, serviceID: number) {
         this.httpClient.operationRequest(
+            `services/customWebService/${nodeID}/${serviceID}`,
             'GET',
-            `api/services/customWebService/${nodeID}/${serviceID}`,
             () => {}
         );
     }
@@ -84,9 +84,9 @@ export class HttpNodeServices {
         serviceID: number,
         callback: (serviceUrl: string) => void
     ) {
-        this.httpClient.dataRequest<string>(
+        this.httpClient.rawDataRequest<string>(
+            `services/customWebServiceString/${nodeID}/${serviceID}`,
             'GET',
-            `api/services/customWebServiceString/${nodeID}/${serviceID}`,
             serviceStrResult => {
                 if (serviceStrResult.isSuccess()) {
                     callback(serviceStrResult.data);

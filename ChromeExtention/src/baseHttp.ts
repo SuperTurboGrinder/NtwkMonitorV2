@@ -64,6 +64,23 @@ export class ExtHttpClient {
         }, body);
     }
 
+    rawDataRequest<TFrom>(
+        path: string,
+        method: string,
+        callback: (result: HTTPResult<string>) => void,
+        body: TFrom = null
+    ) {
+        this.requestToAPI(path, method, result => {
+            if (result.isSuccess()) {
+                if (result.data.status === 204) {
+                    callback(this.buildError("Status 204 when expected 200"));
+                } else {
+                    callback(new HTTPResult<string>(result.data.responseText));
+                }
+            }
+        }, body);
+    }
+
     operationRequest<TFrom>(
         path: string,
         method: string,

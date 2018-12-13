@@ -77,7 +77,7 @@ export class SmartNodeContainer {
     }
     
     getPing(callback: (testData: PingTestData) => void) {
-        if (!this.hasSSH) {
+        if (!this.hasPing) {
             throw new Error(`openPing(): ${this.nodeData.node.name} has no ping service`);
         }
         this.httpNodeServices.ping(this.nodeData.node.id, callback);
