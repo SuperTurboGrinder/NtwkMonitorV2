@@ -11,7 +11,7 @@ export class NodeInfoPopupDataService {
         this.data.next(nodeData);
     }
 
-    subscribeToData(func: (NodeInfoPopupData) => void): Subscription {
+    subscribeToData(func: (data: NodeInfoPopupData) => void): Subscription {
         return this.data.subscribe(func);
     }
 }
