@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 })
 export class MassPingIndicationComponent {
     private pingProgressSubscription: Subscription;
-    private pingProgress: PingProgress = null;
+    public pingProgress: PingProgress = null;
 
     constructor(
         private massPingService: MassPingService

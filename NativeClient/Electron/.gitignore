@@ -3,12 +3,9 @@
 # compiled output
 /tmp
 /out-tsc
-/app/*.js
-/app/**/*.js
-/app/*.d.ts
-/app/**/*.d.ts
-/app/*.js.map
-/app/**/*.js.map
+/app/js/*.js
+/app/js/*.d.ts
+/app/js/*.js.map
 
 # dependencies
 /node_modules

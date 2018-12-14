@@ -7,6 +7,10 @@ import { Component, AfterViewInit, HostListener, Input, ContentChild, TemplateRe
 })
 export class PopupPanelContainerComponent implements AfterViewInit {
     private screenWH = ({width: 800, height: 600});
+    private readonly emptyStyles: {[k: string]: string} = {
+        'bottom': '0px',
+        'left': '0px'
+    };
     @Input() screenPos: { x: number, y: number } = null;
     @ContentChild(TemplateRef) contentRef;
 
@@ -20,8 +24,11 @@ export class PopupPanelContainerComponent implements AfterViewInit {
         this.screenWH.height = document.body.clientHeight;
     }
 
-    get positionStyles(): any {
-        const styles: {[k: string]: any} = {};
+    get positionStyles(): {[k: string]: string} {
+        if (this.screenPos === null) {
+            return this.emptyStyles;
+        }
+        const styles: {[k: string]: string} = {};
         const isLeft = this.screenPos.x < this.screenWH.width / 2;
         const isTop = this.screenPos.y < this.screenWH.height / 2;
         const offset = 10;

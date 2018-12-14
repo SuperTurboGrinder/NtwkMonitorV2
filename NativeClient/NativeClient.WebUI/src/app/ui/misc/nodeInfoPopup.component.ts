@@ -12,10 +12,18 @@ export class NodeInfoPopupComponent implements OnDestroy {
     private data: NodeInfoPopupData = null;
     private nodeInfoPopupDataSubscription: Subscription;
 
-    nodeName(): string { return this.data.node.name; }
-    nodeIP(): string { return this.data.node.ipStr; }
-    tagsNames(): string[] { return this.data.tagsNames; }
-    webServicesNames(): string[] { return this.data.webServicesNames; }
+    nodeName(): string {
+        return this.data === null ? '' : this.data.node.name;
+    }
+    nodeIP(): string {
+        return this.data === null ? '' : this.data.node.ipStr;
+    }
+    tagsNames(): string[] {
+        return this.data === null ? [] : this.data.tagsNames;
+    }
+    webServicesNames(): string[] {
+        return this.data === null ? [] : this.data.webServicesNames;
+    }
     screenPos(): { x: number, y: number } {
         return this.data === null ? null : this.data.screenPos;
     }
@@ -51,22 +59,22 @@ export class NodeInfoPopupComponent implements OnDestroy {
     }
 
     public showExecServices(): boolean {
-        return this.data.showExecServices;
+        return this.data === null ? false : this.data.showExecServices;
     }
 
     public showWebServices(): boolean {
-        return this.data.showWebServices;
+        return this.data === null ? false : this.data.showWebServices;
     }
 
     public showTags(): boolean {
-        return this.data.showTags;
+        return this.data === null ? false : this.data.showTags;
     }
 
     public hasWebServices(): boolean {
-        return this.data.webServicesNames.length !== 0;
+        return this.data === null ? false : this.data.webServicesNames.length !== 0;
     }
 
     public hasTags(): boolean {
-        return this.data.tagsNames.length !== 0;
+        return this.data === null ? false : this.data.tagsNames.length !== 0;
     }
 }

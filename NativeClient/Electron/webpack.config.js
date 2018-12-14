@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = {
     mode: 'production',
+    target: 'electron-renderer',
     entry: {
         main: path.join(__dirname, 'src/main.ts'),
         renderer: path.join(__dirname, 'src/renderer.ts')
@@ -27,7 +28,9 @@ module.exports = {
         ]
     },
     node: {
-        fs: 'empty'
+        fs: 'empty',
+        __dirname: false,
+        __filename: false
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js']

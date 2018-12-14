@@ -201,10 +201,10 @@ export class MassPingService implements OnDestroy {
         this.pingCacheService.pingListByID(
             thisLayerNodesIDs,
             this.realTimePingUpdate,
-            (id: number, data: PingTestData) => {
+            (idIndex: number, data: PingTestData) => {
                 const success = data !== null
                 && data.failed !== data.num;
-                const pingTreeNode = thisLayerPingDataList.find(n => n.id === id);
+                const pingTreeNode = thisLayerPingDataList[idIndex];
                 const children = pingTreeNode.children;
                 let skipped = 0;
                 if (success) {

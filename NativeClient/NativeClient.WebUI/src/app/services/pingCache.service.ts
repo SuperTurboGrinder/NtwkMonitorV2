@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subscription, BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { first, skip } from 'rxjs/operators';
+import { Subscription, BehaviorSubject, forkJoin, Observable, of, merge } from 'rxjs';
+import { first, skip, map } from 'rxjs/operators';
 
 import { PingService } from './ping.service';
 import { PingTestData } from '../model/httpModel/pingTestData.model';
@@ -94,7 +94,7 @@ export class PingCacheService {
     public pingListByID(
         nodesIDs: number[],
         lock: boolean,
-        perResultCallback: (id: number, data: PingTestData) => void
+        perResultCallback: (idIndex: number, data: PingTestData) => void
     ) {
         const cells = nodesIDs.map(id => {
             const cell = this.getCell(id);
@@ -102,18 +102,17 @@ export class PingCacheService {
             return cell;
         });
         const pingObservables = nodesIDs.map(
-            id => this.pingService.getPing(id)
+            (id, index) => this.pingService.getPing(id)
+                .pipe(map(result => ({index, result})))
         );
-        for (let i = 0; i < nodesIDs.length; i++) {
-            pingObservables[i].subscribe(result => {
-                cells[i].resetLock();
-                const value = result.success === false
-                    ? null
-                    : result.data;
-                cells[i].value.next(value);
-                perResultCallback(nodesIDs[i], value);
-            });
-        }
+        merge(...pingObservables).subscribe(({index, result}) => {
+            cells[index].resetLock();
+            const value = result.success === false
+                ? null
+                : result.data;
+            cells[index].value.next(value);
+            perResultCallback(index, value);
+        });
     }
 
     setFailedBranch(roots: PingTree[]) {

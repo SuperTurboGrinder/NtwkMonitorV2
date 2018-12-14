@@ -3,7 +3,7 @@ import { SettingsProfilesService } from './settingsProfiles.service';
 import { Subscription, Observable, timer, of } from 'rxjs';
 import { TagFilterData } from '../model/httpModel/tagFilterData.model';
 import { NodesService } from './nodes.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, mapTo } from 'rxjs/operators';
 import { PingTreeBuilder } from '../ui/helpers/pingTreeBuilder.helper';
 import { TreeTrimmingHelper } from '../ui/helpers/treeTrimmingHelper.helper';
 import { HTTPResult } from '../model/servicesModel/httpResult.model';
@@ -175,7 +175,7 @@ export class PingMonitorService {
         this.monitorManualTimer = new ManualTimer(intervalMs);
         this.resetPulseData();
         return timer(0, 1000).pipe(
-            map(_ => filteredPingTreeLayer0)
+            mapTo(filteredPingTreeLayer0)
         );
     }
 
