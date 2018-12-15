@@ -56,7 +56,9 @@
                         </div>
                     </ng-container>
                     <ng-template #monitorFilter>
-                        <div class="h-100 border-right" style="flex: 0 0 50%">
+                        <div style="position:relative;flex: 0 0 50%"
+                            class="h-100 border-right"
+                        >
                             <app-tags-binding
                                 [originalSetTags]="getMonitorTagsIDs()"
                                 (applyEvent)="applyMonitoredNodesChange($event)"
