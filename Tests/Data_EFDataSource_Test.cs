@@ -322,7 +322,7 @@ public class Data_dataSourceTest {
         Assert.Single(monitorNodesForTags2And3.TagsIDs, IDSet.TagsIDs[2]);
         Assert.Single(monitorNodesForTags2And3.NodesIDs, IDSet.NodesIDs[1]);
         Assert.Single(monitorNodesForTags2And3.NodesIDs, IDSet.NodesIDs[2]);
-        Assert.Equal(1, monitorNodesForTags1.TagsIDs.Count());
+        Assert.Single(monitorNodesForTags1.TagsIDs);
         Assert.Equal(2, monitorNodesForTags1.NodesIDs.Count());
         Assert.Single(monitorNodesForTags1.TagsIDs, IDSet.TagsIDs[0]);
         Assert.Single(monitorNodesForTags1.NodesIDs, IDSet.NodesIDs[0]);
