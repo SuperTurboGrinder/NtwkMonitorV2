@@ -10,7 +10,11 @@ module.exports = {
     },
     output: {
         path: path.join(__dirname, 'app/js'),
-        filename: '[name].js'
+        filename: (chunkData) => {
+            return chunkData.chunk.name === 'electron-packager.config'
+                ? '/../../[name].js'
+                : '[name].js'
+        }
     },
     optimization: {
         splitChunks: {
@@ -28,7 +32,6 @@ module.exports = {
         ]
     },
     node: {
-        fs: 'empty',
         __dirname: false,
         __filename: false
     },

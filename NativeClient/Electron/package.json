@@ -7,16 +7,19 @@
     "check": "gts check",
     "clean": "gts clean",
     "build": "webpack --config webpack.config.js",
-    "wp-watch": "webpack --config webpack.config.js --watch"
+    "wp-watch": "webpack --config webpack.config.js --watch",
+    "pack": "node electron-packager.config.js"
   },
   "devDependencies": {
+    "electron": "^1.8.4",
+    "electron-packager": "^13.0.1",
     "gts": "^0.9.0",
     "typescript": "~3.1.0",
     "webpack": "^4.27.1",
-    "webpack-cli": "^3.1.2",
-    "electron": "^1.8.4"
+    "webpack-cli": "^3.1.2"
   },
   "dependencies": {
+    "@types/electron-packager": "^13.0.0",
     "electron-in-page-search": "^1.3.2",
     "ts-loader": "^5.3.1",
     "webpack-target-electron-renderer": "^0.4.0"
