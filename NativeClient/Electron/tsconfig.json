@@ -3,7 +3,6 @@
   "compilerOptions": {
     "strictNullChecks": false,
     "module": "commonjs",
-    "rootDir": "src",
     "outDir": "app/js",
     "target": "es6",
     "noImplicitAny": true,

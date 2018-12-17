@@ -6,7 +6,8 @@ packager({
     name: 'NetMonitorV2',
     //icon: 'icon.png',
     asar: true,
-    afterExtract: [(buildPath, electronVersion, platform, arch, callback) => {
+    afterExtract: [(buildPath: string, electronVersion: string,
+    platform: string, arch: string, callback: ()=>void) => {
         console.log("afterExtract:");
         console.log(buildPath);
         console.log(electronVersion);
@@ -14,7 +15,8 @@ packager({
         console.log(arch);
         callback();
     }],
-    afterCopy: [(buildPath, electronVersion, platform, arch, callback) => {
+    afterCopy: [(buildPath: string, electronVersion: string,
+    platform: string, arch: string, callback: ()=>void) => {
         console.log("afterCopy:");
         console.log(buildPath);
         console.log(electronVersion);
@@ -22,7 +24,8 @@ packager({
         console.log(arch);
         callback();
     }],
-    afterPrune: [(buildPath, electronVersion, platform, arch, callback) => {
+    afterPrune: [(buildPath: string, electronVersion: string,
+    platform: string, arch: string, callback: ()=>void) => {
         console.log("afterPrune:");
         console.log(buildPath);
         console.log(electronVersion);
@@ -31,4 +34,4 @@ packager({
         callback();
     }]
 })
-.then(appPaths => { /* … */ });
+.then((appPath: string | string[]) => { /* … */ });
