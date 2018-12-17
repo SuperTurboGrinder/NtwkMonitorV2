@@ -1,6 +1,6 @@
 import { normalize } from 'path';
 import { spawn } from 'child_process';
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 
 class BuildPipeline {
     private componentsBuildPath = __dirname + '/../';
@@ -16,12 +16,36 @@ class BuildPipeline {
         });
     }
 
-    private isFileOK(dirpath: string): Promise<boolean> {
+    private isFileOK(path: string): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
-            fs.stat(dirpath, (err, stats) => {
+            fs.stat(normalize(path), (err, stats) => {
                 resolve(err == null);
             });
         });
+    }
+
+    private async isElectronAppBuilt(): Promise<boolean> {
+        const electronBase = __dirname+'/app/js/';
+        return await this.isFileOK(electronBase+'main.js')
+        && await this.isFileOK(electronBase+'renderer.js');
+    }
+
+    private async isUIAppBuilt(): Promise<boolean> {
+        const uiDistBase = this.componentsBuildPath+this.webUIAppDir+'dist';
+        return await this.isFileOK(uiDistBase+'WebUI');
+    }
+
+    private async isAPIAppBuilt(platform: string, arch: string): Promise<boolean> {
+        const dotnetRuntimeID =
+            this.packagerPlatformAndArchToDotnetRuntimeID(platform, arch);
+        if (dotnetRuntimeID !== null) {
+            const apiReleaseBinBase = this.componentsBuildPath+this.webAPIAppDir
+            +'/bin/release/netcoreapp2.2/';
+            return await this.isFileOK(apiReleaseBinBase+dotnetRuntimeID);
+        } else {
+            console.log(`Wrong platform (${platform}) or arch (${arch}).`);
+            return false;
+        }
     }
 
     private packagerPlatformAndArchToDotnetRuntimeID(
@@ -47,19 +71,29 @@ class BuildPipeline {
     }
 
     private buildElectronApp(): Promise<number> {
+        console.log('Building ElectronApp');
         return this.runConsoleCommand(__dirname, 'npm', ['run', 'build']);
     }
 
-    private buildWebAPI(runtimeID: string): Promise<number> {
-        const apiProjectDir = this.componentsBuildPath + this.webAPIAppDir;
-        return this.runConsoleCommand(
-            apiProjectDir,
-            'dotnet',
-            ['publish', '-c', 'release', '-r', runtimeID]
-        );
+    private async buildWebAPI(platform: string, arch: string): Promise<number> {
+        console.log('Building WebAPI');
+        const dotnetRuntimeID =
+            this.packagerPlatformAndArchToDotnetRuntimeID(platform, arch);
+        if (dotnetRuntimeID !== null) {
+            const apiProjectDir = this.componentsBuildPath + this.webAPIAppDir;
+            return this.runConsoleCommand(
+                apiProjectDir,
+                'dotnet',
+                ['publish', '-c', 'release', '-r', dotnetRuntimeID]
+            );
+        } else {
+            console.log(`Wrong platform (${platform}) or arch (${arch}).`);
+            return -1;
+        }
     }
 
     private buildWebUI(): Promise<number> {
+        console.log('Building WebUI');
         const uiProjectDir = this.componentsBuildPath + this.webUIAppDir;
         return this.runConsoleCommand(
             uiProjectDir,
@@ -68,11 +102,28 @@ class BuildPipeline {
         );
     }
 
-    async rebuildAllSubprojects(): Promise<boolean> {
+    async rebuildAllSubprojects(platform: string, arch: string): Promise<boolean> {
         const electronBuildIsOK = (await this.buildElectronApp()) === 0;
-        const apiBuildIsOK = electronBuildIsOK && (await this.buildWebAPI('')) === 0;
+        const apiBuildIsOK = electronBuildIsOK
+        && (await this.buildWebAPI(platform, arch)) === 0;
         const uiBuildISOK = apiBuildIsOK && (await this.buildWebUI()) === 0;
         return uiBuildISOK;
+    }
+    
+
+    async buildAllUnbuiltSubprojects(platform: string, arch: string): Promise<boolean> {
+        const electron = await this.isElectronAppBuilt()
+        && await this.buildElectronApp() === 0;
+        if (electron === false) return false;
+        const webUI = await this.isUIAppBuilt()
+        && await this.buildWebUI() === 0;
+        if (webUI === false) return false;
+        return await this.isAPIAppBuilt(platform, arch)
+        && await this.buildWebAPI(platform, arch) === 0;
+    }
+
+    async copyWebUITo(path: string): Promise<boolean> {
+
     }
     
 }

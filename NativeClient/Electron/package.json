@@ -11,8 +11,10 @@
     "pack": "node electron-packager.config.js"
   },
   "devDependencies": {
+    "@types/fs-extra": "^5.0.4",
     "electron": "^1.8.4",
     "electron-packager": "^13.0.1",
+    "fs-extra": "^7.0.1",
     "gts": "^0.9.0",
     "typescript": "~3.1.0",
     "webpack": "^4.27.1",
