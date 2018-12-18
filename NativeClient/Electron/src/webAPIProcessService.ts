@@ -2,7 +2,7 @@ import { exec, spawn } from 'child_process';
 import { normalize } from 'path';
 
 export class WebAPIProcessService {
-    private readonly processName = 'NativeClient.WebAPI';
+    private readonly processName = 'NetMonV2.APIServer';
     private ext = '';
     // https://stackoverflow.com/questions/38033127/node-js-how-to-check-a-process-is-running-by-the-process-name
     private checkIfProcessIsRunning(

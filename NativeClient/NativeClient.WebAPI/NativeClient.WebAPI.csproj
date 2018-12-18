@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyName>NetMonV2.APIServer</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

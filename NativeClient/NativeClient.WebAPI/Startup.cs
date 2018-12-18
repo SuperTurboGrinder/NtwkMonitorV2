@@ -42,7 +42,7 @@ namespace NativeClient.WebAPI
                 options
                     .UseSqlite(
                         Configuration.GetConnectionString("NtwkDBConnection"),
-                        b => b.MigrationsAssembly("NativeClient.WebAPI")
+                        b => b.MigrationsAssembly("NetMonV2.APIServer")
                     )
             );
             //Db data flow services

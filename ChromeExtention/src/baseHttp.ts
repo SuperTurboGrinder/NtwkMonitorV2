@@ -11,7 +11,7 @@ export class HTTPResult<T> {
 }
 
 export class ExtHttpClient {
-    private static readonly baseApiURL = 'http://localhost:5001/api/';
+    private static readonly baseApiURL = 'http://localhost:5438/api/';
 
     private requestToAPI<TFrom, T=TFrom>(
         path: string,
