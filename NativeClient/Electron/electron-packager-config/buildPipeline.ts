@@ -3,7 +3,11 @@ import { spawn } from 'child_process';
 import * as fs from 'fs-extra';
 
 export class BuildPipeline {
-    private componentsBuildPath = __dirname + '../../../../';
+    private DEBUG_BUILD_PIPELINE = false;
+    private electronProjectPath = normalize(__dirname + '/../../');
+    private componentsBuildPath = normalize(this.electronProjectPath + '../');
+    private npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+    private emptyDatabaseFilename = '__empty__.sqlite';
     private webAPIAppDir = 'NativeClient.WebAPI';
     private webUIAppDir = 'NativeClient.WebUI';
     private dotnetRuntimeID: string = null;
@@ -36,7 +40,12 @@ export class BuildPipeline {
     }
 
     private runConsoleCommand(cwd: string, cmd: string, args: string[]): Promise<number> {
-        const execution = spawn(cmd, args, { cwd });
+        const normCwd = normalize(cwd);
+        if (this.DEBUG_BUILD_PIPELINE === true) {
+            const fullCmd = args.reduce((acc, next) => `${acc} ${next}`, cmd);
+            console.log(`Running '${fullCmd}' in ${normCwd} folder`);
+        }
+        const execution = spawn(cmd, args, { cwd: normCwd });
         execution.stdout.pipe(process.stdout);
         execution.stderr.pipe(process.stderr);
         return new Promise<number>((resolve, reject) => {
@@ -44,34 +53,78 @@ export class BuildPipeline {
         });
     }
 
-    private isPathOK(path: string): Promise<boolean> {
-        return fs.pathExists(normalize(path));
+    private async isPathOK(path: string): Promise<boolean> {
+        const norm = normalize(path);
+        const exists = await fs.pathExists(norm);
+        if (this.DEBUG_BUILD_PIPELINE === true) {
+            if (exists === true) {
+                console.log(`Path exists: ${norm}`);
+            } else {
+                console.log(`Path does not exist: ${norm}`);
+            }
+        }
+        return exists;
     }
 
     private async isElectronAppBuilt(): Promise<boolean> {
-        const electronBase = __dirname+'../../../app/js/';
-        return await this.isPathOK(electronBase+'main.js')
+        const electronBase = __dirname+'/../../app/js/';
+        const result = await this.isPathOK(electronBase+'main.js')
         && await this.isPathOK(electronBase+'renderer.js');
+        if (result === true) {
+            console.log('Found built base Electron app project.');
+        } else {
+            console.log('Base electron app project is not built.');
+        }
+        return result;
     }
 
     private async isUIAppBuilt(): Promise<boolean> {
-        const uiDistBase = this.componentsBuildPath+this.webUIAppDir+'dist';
-        return await this.isPathOK(uiDistBase+'WebUI');
+        const uiDistBase = this.componentsBuildPath+this.webUIAppDir+'/dist/';
+        const result = await this.isPathOK(uiDistBase+'WebUI');
+        if (result === true) {
+            console.log('Found built UI project.');
+        } else {
+            console.log('UI project is not built.');
+        }
+        return result;
     }
 
     private async isAPIAppBuilt(): Promise<boolean> {
         const apiReleaseBinBase = this.componentsBuildPath+this.webAPIAppDir
         +'/bin/release/netcoreapp2.2/';
-        return await this.isPathOK(apiReleaseBinBase+this.dotnetRuntimeID+'/publish');
+        const result = await this.isPathOK(
+            apiReleaseBinBase+this.dotnetRuntimeID+'/publish'
+        );
+        if (result === true) {
+            console.log('Found built API project.');
+        } else {
+            console.log('API project is not built.');
+        }
+        return result;
     }
 
     private buildElectronApp(): Promise<number> {
-        console.log('Building ElectronApp');
-        return this.runConsoleCommand(__dirname+'../../../', 'npm', ['run', 'build']);
+        console.log('Building base Electron app.');
+        return this.runConsoleCommand(
+            __dirname+'/../../',
+            this.npmCommand,
+            ['run', 'build']
+        );
+    }
+
+    private buildWebUI(): Promise<number> {
+        console.log('Building WebUI.');
+        console.log('This may take some time...');
+        const uiProjectDir = this.componentsBuildPath + this.webUIAppDir;
+        return this.runConsoleCommand(
+            uiProjectDir,
+            this.npmCommand,
+            ['run', 'build']
+        );
     }
 
     private async buildWebAPI(): Promise<number> {
-        console.log('Building WebAPI');
+        console.log('Building WebAPI.');
         const apiProjectDir = this.componentsBuildPath + this.webAPIAppDir;
         return this.runConsoleCommand(
             apiProjectDir,
@@ -80,40 +133,69 @@ export class BuildPipeline {
         );
     }
 
-    private buildWebUI(): Promise<number> {
-        console.log('Building WebUI');
-        const uiProjectDir = this.componentsBuildPath + this.webUIAppDir;
-        return this.runConsoleCommand(
-            uiProjectDir,
-            'ng',
-            ['build', '--prod', '--aot']
+    private async buildEmptyAPIDatabase(forced = false): Promise<number> {
+        const apiProjectDir = this.componentsBuildPath + this.webAPIAppDir;
+        const createdEmpty = normalize(apiProjectDir+'/'+this.emptyDatabaseFilename);
+        const exists = await this.isPathOK(createdEmpty);
+        if (exists === true) {
+            if (forced === true) {
+                await fs.remove(createdEmpty);
+            } else {
+                console.log('Emtpy database already created.');
+                return 0;
+            }
+        }
+
+        console.log('Building empty database.');
+        const createdDatabase = normalize(apiProjectDir+'/DB.sqlite');
+        const tempRenamed = normalize(apiProjectDir+'/__temp_renamed__.sqlite');
+
+        const someDatabaseCreated = this.isPathOK(createdDatabase);
+        if (someDatabaseCreated) {
+            await fs.rename(createdDatabase, tempRenamed);
+        }
+        const result = await this.runConsoleCommand(
+            apiProjectDir,
+            'dotnet',
+            ['ef', 'database', 'update']
         );
+        if (result === 0) { //created ok
+            await fs.rename(createdDatabase, createdEmpty);
+        }
+        if (someDatabaseCreated) {
+            await fs.rename(tempRenamed, createdDatabase);
+        }
+        return result;
     }
 
     async rebuildAllSubprojects(): Promise<boolean> {
         const electronBuildIsOK = (await this.buildElectronApp()) === 0;
-        const apiBuildIsOK = electronBuildIsOK
-        && (await this.buildWebAPI()) === 0;
-        const uiBuildISOK = apiBuildIsOK && (await this.buildWebUI()) === 0;
-        return uiBuildISOK;
+        if (!electronBuildIsOK) { return false; }
+        const apiBuildIsOK = (await this.buildWebAPI()) === 0;
+        if (!apiBuildIsOK) { return false; }
+        const uiBuildISOK = (await this.buildWebUI()) === 0;
+        if (!uiBuildISOK) { return false; }
+        return (await this.buildEmptyAPIDatabase(true)) === 0;
     }
     
 
     async buildAllUnbuiltSubprojects(): Promise<boolean> {
         const electron = await this.isElectronAppBuilt()
-        && await this.buildElectronApp() === 0;
+        || await this.buildElectronApp() === 0;
         if (electron === false) return false;
         const webUI = await this.isUIAppBuilt()
-        && await this.buildWebUI() === 0;
+        || await this.buildWebUI() === 0;
         if (webUI === false) return false;
-        return await this.isAPIAppBuilt()
-        && await this.buildWebAPI() === 0;
+        const webAPI = await this.isAPIAppBuilt()
+        || await this.buildWebAPI() === 0;
+        if (webAPI === false) return false;
+        return await this.buildEmptyAPIDatabase() === 0;
     }
 
     async copyWebUITo(path: string): Promise<void> {
         console.log('Copying WebUI dir to electron package...');
         await fs.copy(
-            normalize(this.componentsBuildPath+this.webUIAppDir+'dist/WebUI'),
+            normalize(this.componentsBuildPath+this.webUIAppDir+'/dist/WebUI'),
             normalize(path+'/WebUI')
         );
         console.log('Finished copying WebUI dir.');
@@ -128,5 +210,14 @@ export class BuildPipeline {
             normalize(path+'/WebAPI')
         );
         console.log('Finished copying WebAPI dir.');
+    }
+
+    async copyAPIDatabaseTo(path: string): Promise<void> {
+        console.log('Copying empty database to electron package...');
+        const srcFile = normalize(this.componentsBuildPath+this.webAPIAppDir
+        +'/'+this.emptyDatabaseFilename);
+        const destFile = normalize(path+'/WebAPI/DB.sqlite');
+        await fs.copy(srcFile, destFile);
+        console.log('Finished copying empty database.');
     }
 }
