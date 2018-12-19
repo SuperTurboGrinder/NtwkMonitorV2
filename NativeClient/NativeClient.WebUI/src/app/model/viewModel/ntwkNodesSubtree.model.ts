@@ -17,14 +17,20 @@ export class NtwkNodesSubtree {
         if (subtree.length === 0) {
             return subtree;
         }
-        let flattened: NtwkNodesSubtree[] = [];
-        for (let i = 0; i < subtree.length; i++) {
-            const subroot = subtree[i];
-            flattened.push(subroot);
-            flattened = flattened.concat(NtwkNodesSubtree
-                .getFlatSubtree(subroot.children)
-            );
+        const flattened: NtwkNodesSubtree[] = [];
+        for (const st of subtree) {
+            NtwkNodesSubtree.flatten(flattened, st);
         }
         return flattened;
+    }
+
+    private static flatten(
+        acc: NtwkNodesSubtree[],
+        subtree: NtwkNodesSubtree
+    ) {
+        acc.push(subtree);
+        for (const st of subtree.children) {
+            NtwkNodesSubtree.flatten(acc, st);
+        }
     }
 }

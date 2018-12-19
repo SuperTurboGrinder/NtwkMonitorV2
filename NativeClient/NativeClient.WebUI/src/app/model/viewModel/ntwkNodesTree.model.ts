@@ -1,6 +1,7 @@
 import { NtwkNodeDataContainer } from './ntwkNodeDataContainer.model';
 import { AllNodesData } from '../httpModel/allNodesData.model';
 import { CWSData } from '../httpModel/cwsData.model';
+import * as _ from 'lodash';
 
 export class NtwkNodesTree {
     public webServicesNames: CWSData[] = [];
@@ -10,15 +11,12 @@ export class NtwkNodesTree {
     public constructor(allNodesData: AllNodesData) {
         this.webServicesNames = allNodesData.webServicesData;
         let index = 0;
-        this.treeLayers = allNodesData.nodesData.map((layer, layer_index) =>
-            layer.map(nodeData =>
-                new NtwkNodeDataContainer(index++, layer_index, nodeData)
+        this.treeLayers = allNodesData.nodesData.map(
+            (layer, layer_index) => layer.map(
+                nodeData => new NtwkNodeDataContainer(index++, layer_index, nodeData)
             )
         );
-        this.allNodes = this.treeLayers.reduce(
-            (acc, layer) => acc = acc.concat(layer),
-            []
-        );
+        this.allNodes = _(this.treeLayers).flatten().value();
         this.buildTreeBranches();
     }
 
@@ -27,15 +25,19 @@ export class NtwkNodesTree {
             for (let lIndex = 1; lIndex < this.treeLayers.length; lIndex++) {
                 const prevLayer = this.treeLayers[lIndex - 1];
                 const currentLayer = this.treeLayers[lIndex];
-                currentLayer.forEach(nodeData => {
-                    const parentID = nodeData.nodeData.node.parentID;
-                    const parent = prevLayer.find(
-                        parentNodeData =>
-                            parentNodeData.nodeData.node.id === parentID
-                    );
-                    parent.children.push(nodeData);
-                    nodeData.parent = parent;
-                });
+                const groupedByParent = _.groupBy(
+                    currentLayer,
+                    n => n.nodeData.node.parentID
+                );
+                for (const parent of prevLayer) {
+                    const children = groupedByParent[parent.nodeData.node.id];
+                    if (children !== undefined) {
+                        parent.children = children;
+                        for (const child of children) {
+                            child.parent = parent;
+                        }
+                    }
+                }
             }
         }
     }
