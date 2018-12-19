@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Subscription, BehaviorSubject, forkJoin, Observable, of, merge } from 'rxjs';
-import { first, skip, map } from 'rxjs/operators';
+import { first, skip, map, takeWhile } from 'rxjs/operators';
 
 import { PingService } from './ping.service';
 import { PingTestData } from '../model/httpModel/pingTestData.model';
 import { SoundNotificatonService } from './soundNotificationService';
 import { PingTree } from './massPing.service';
+import { MassPingCancellator } from '../model/servicesModel/massPingCancelator.model';
 
 @Injectable()
 export class PingCacheService {
     private pingCache = new Map<number, PingCacheCell>();
-    private massPingInProgress = false;
 
     constructor(
-        private pingService: PingService,
-        private sounds: SoundNotificatonService
+        private pingService: PingService
     ) {}
 
     public lockStatusObservable(nodeID: number): Observable<boolean> {
@@ -94,24 +93,37 @@ export class PingCacheService {
     public pingListByID(
         nodesIDs: number[],
         lock: boolean,
-        perResultCallback: (idIndex: number, data: PingTestData) => void
+        perResultCallback: (idIndex: number, data: PingTestData) => void,
+        cancellator: MassPingCancellator
     ) {
         const cells = nodesIDs.map(id => {
             const cell = this.getCell(id);
             if (lock === true) { cell.setLock(); }
             return cell;
         });
+        let cleanedup = lock === false;
         const pingObservables = nodesIDs.map(
             (id, index) => this.pingService.getPing(id)
                 .pipe(map(result => ({index, result})))
         );
-        merge(...pingObservables).subscribe(({index, result}) => {
-            cells[index].resetLock();
-            const value = result.success === false
-                ? null
-                : result.data;
-            cells[index].value.next(value);
-            perResultCallback(index, value);
+        merge(...pingObservables).pipe(
+            takeWhile(() => cancellator.isCancelled === false || !cleanedup)
+        ).subscribe(({index, result}) => {
+            if (!cancellator.isCancelled) {
+                cells[index].resetLock();
+                const value = result.success === false
+                    ? null
+                    : result.data;
+                cells[index].value.next(value);
+                perResultCallback(index, value);
+            } else {
+                if (!cleanedup) {
+                    for (const cell of cells) {
+                        cell.resetLock();
+                    }
+                    cleanedup = true;
+                }
+            }
         });
     }
 

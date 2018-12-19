@@ -1,6 +1,16 @@
 <div *ngIf="pingProgress !== null" class="w-100 h-100 rounded-top blocking-overlay text-center text-success">
     <div style="height: 46%"> </div>
-    <div *ngIf="pingProgress.end !== -1" class="w-100 bg-dark">
+    <div class="w-100 bg-dark">
         <strong>{{pingProgress.current}}/{{pingProgress.end}}</strong>
+    </div>
+    <div *ngIf="pingProgress.isCancellable" class="w-100 py-2">
+        <button
+            i18n="@@cancelButtonLabel"
+            type="button"
+            class="btn btn-warning py-0 px-1 border square"
+            (click)="pingProgress.cancelMassPing()"
+        >
+            Cancel
+        </button>
     </div>
 </div>

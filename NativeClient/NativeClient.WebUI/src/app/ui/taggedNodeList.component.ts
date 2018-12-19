@@ -240,7 +240,7 @@ export class TaggedNodeListComponent {
     }
 
     public get showMassPingPanel(): boolean {
-        return this.massPingService.showIndicator;
+        return this.massPingService.inProgress;
     }
 
     public pingFilteredList() {
@@ -255,7 +255,8 @@ export class TaggedNodeListComponent {
                     if (this.sorting === Sorting.ByPing) {
                         this.resortListByPing();
                     }
-                }
+                },
+                true
             );
         }
     }

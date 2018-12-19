@@ -16,6 +16,7 @@ import { MonitoringMessage } from '../model/httpModel/monitoringMessage.model';
 import { MonitoringMessageType } from '../model/httpModel/monitoringMessageType.model';
 import { ManualTimer } from '../ui/helpers/manualTimer.helper';
 import { PingTree, MassPingService, TreePingFinishedData } from './massPing.service';
+import { MassPingCancellator } from '../model/servicesModel/massPingCancelator.model';
 
 @Injectable()
 export class PingMonitorService {
@@ -27,6 +28,7 @@ export class PingMonitorService {
     private isInitialized = false;
     private lastTickHourValue: number;
     private monitorManualTimer: ManualTimer = null;
+    private cancellator: MassPingCancellator = null;
 
     private monitorPulseInProgress = false;
     private monitorPulseMessages: MonitoringMessage[] = [];
@@ -113,6 +115,10 @@ export class PingMonitorService {
             this.monitorSubscription.unsubscribe();
             this.monitorSubscription = null;
             this.monitorManualTimer = null;
+            if (this.cancellator !== null) {
+                this.cancellator.cancel();
+                this.cancellator = null;
+            }
             this.subscribeToSettingsChange();
         }
     }
@@ -197,6 +203,7 @@ export class PingMonitorService {
                 this.stopMonitor();
                 return;
             }
+            this.cancellator = new MassPingCancellator();
             this.massPingService.pingTreeWithCallback(
                 pingTree,
                 (success, skipped, pingTreeNode) =>
@@ -204,7 +211,9 @@ export class PingMonitorService {
                 pingFinishedResult => {
                     this.savePulseData(pingFinishedResult);
                 },
-                this.settings.depthMonitoring
+                this.settings.depthMonitoring,
+                false,
+                this.cancellator
             );
         }
     }

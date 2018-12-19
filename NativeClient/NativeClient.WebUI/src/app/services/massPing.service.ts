@@ -5,6 +5,7 @@ import { SoundNotificatonService } from './soundNotificationService';
 import { PingCacheService } from './pingCache.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { SettingsProfilesService } from './settingsProfiles.service';
+import { MassPingCancellator } from '../model/servicesModel/massPingCancelator.model';
 
 export class PingTree {
     public id: number;
@@ -26,8 +27,42 @@ export class TreePingFinishedData {
 export class PingProgress {
     constructor(
         public current: number,
-        public end: number
-    ) {}
+        public readonly end: number,
+        public readonly manuallyCancelable: boolean,
+        private cancellator: MassPingCancellator,
+        public resetProgressCallback: () => void,
+        public cancelCallback: () => void
+    ) {
+        if (cancellator !== null) {
+            cancellator.onCancel = () => this.resetProgressCallback();
+        }
+    }
+
+    public incremented(by: number): PingProgress {
+        return new PingProgress(
+            this.current + by,
+            this.end,
+            this.manuallyCancelable,
+            this.cancellator,
+            this.resetProgressCallback,
+            this.cancelCallback
+        );
+    }
+
+    public cancelMassPing() {
+        if (this.manuallyCancelable) {
+            this.cancelCallback();
+            this.cancellator.cancel();
+        }
+    }
+
+    get isCancellable(): boolean {
+        return this.manuallyCancelable;
+    }
+
+    get isCancelled(): boolean {
+        return this.cancellator.isCancelled;
+    }
 }
 
 @Injectable()
@@ -58,10 +93,6 @@ export class MassPingService implements OnDestroy {
         return this.isInProgress;
     }
 
-    public get showIndicator(): boolean {
-        return this.realTimePingUpdate === false && this.isInProgress;
-    }
-
     public subscribeToPingProgress(
         callback: (PingProgress) => void
     ): Subscription {
@@ -70,9 +101,16 @@ export class MassPingService implements OnDestroy {
 
     public pingRange(
         nodesIDs: number[],
-        finishCallback: () => void
+        finishCallback: () => void,
+        manuallyCancellable = true,
+        cancellator = new MassPingCancellator()
     ) {
-        if (this.setInProgress(nodesIDs.length)) {
+        if (this.setInProgress(
+            nodesIDs.length,
+            manuallyCancellable,
+            cancellator,
+            finishCallback
+        )) {
             let counter = 0;
             this.pingCacheService.pingListByID(
                 nodesIDs,
@@ -84,12 +122,15 @@ export class MassPingService implements OnDestroy {
                         this.resetInProgress();
                         finishCallback();
                     }
-                });
+                },
+                cancellator);
         }
     }
 
     public pingTreeWithoutCallback(
         roots: PingTree[],
+        manuallyCancellable = true,
+        cancellator = new MassPingCancellator()
     ) {
         this.pingTree(
             roots,
@@ -98,7 +139,9 @@ export class MassPingService implements OnDestroy {
                     this.sounds.playFailedPingAlarm();
                 }
             },
-            null
+            null,
+            manuallyCancellable,
+            cancellator
         );
     }
 
@@ -110,7 +153,9 @@ export class MassPingService implements OnDestroy {
             currentRoot: PingTree
         ) => void,
         finishedCallback: (result: TreePingFinishedData) => void,
-        skipChildrenOfFailedNodes: boolean
+        skipChildrenOfFailedNodes: boolean,
+        manuallyCancellable = true,
+        cancellator = new MassPingCancellator()
     ) {
         this.pingTree(
             roots,
@@ -121,17 +166,36 @@ export class MassPingService implements OnDestroy {
                 forEachPingedCallback(success, skipped, pingTreeNode);
             },
             finishedCallback,
+            manuallyCancellable,
+            cancellator,
             skipChildrenOfFailedNodes
         );
     }
 
-    private setInProgress(numParticipants: number): boolean {
+    private setInProgress(
+        numParticipants: number,
+        manuallyCancellable: boolean,
+        cancellator: MassPingCancellator,
+        finishedCallback: (result: TreePingFinishedData) => void
+    ): boolean {
         if (this.isInProgress === true) {
             return false;
         }
         this.isInProgress = true;
         this.pingProgressSubject.next(
-            new PingProgress(0, numParticipants)
+            new PingProgress(
+                0,
+                numParticipants,
+                manuallyCancellable,
+                cancellator,
+                () => this.resetInProgress(),
+                () => {
+                    // will be called only on manual cancel (with cancel button)
+                    if (finishedCallback !== null) {
+                        finishedCallback(new TreePingFinishedData(0));
+                    }
+                }
+            )
         );
         return true;
     }
@@ -145,7 +209,7 @@ export class MassPingService implements OnDestroy {
         const current = this.pingProgressSubject.value;
         if (current !== null) {
             this.pingProgressSubject.next(
-                new PingProgress(current.current + numDone, current.end)
+                current.incremented(numDone)
             );
         }
     }
@@ -180,12 +244,19 @@ export class MassPingService implements OnDestroy {
             currentRoot: PingTree
         ) => void,
         finishedCallback: (result: TreePingFinishedData) => void,
+        manuallyCancellable: boolean,
+        cancellator: MassPingCancellator,
         skipChildrenOfFailedNodes = true,
         tpfr: TreePingFinishedData = null
     ) {
         if (tpfr === null) {
             const count = this.countPingablePingTreeNodes(roots);
-            if (this.setInProgress(count)) {
+            if (this.setInProgress(
+                count,
+                manuallyCancellable,
+                cancellator,
+                finishedCallback
+            )) {
                 tpfr = new TreePingFinishedData(count);
             } else {
                 return;
@@ -234,6 +305,8 @@ export class MassPingService implements OnDestroy {
                         nextLayer,
                         forEachPingedCallback,
                         finishedCallback,
+                        manuallyCancellable,
+                        cancellator,
                         skipChildrenOfFailedNodes,
                         tpfr
                     );
@@ -246,7 +319,8 @@ export class MassPingService implements OnDestroy {
                         finishedCallback(tpfr);
                     }
                 }
-            }
+            },
+            cancellator
         );
     }
 }

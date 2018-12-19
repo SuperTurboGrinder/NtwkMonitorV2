@@ -102,7 +102,7 @@ export class NodesTreeViewComponent {
     }
 
     public get showMassPingPanel(): boolean {
-        return this.massPingService.showIndicator;
+        return this.massPingService.inProgress;
     }
 
     nodeTrackByFn(index: number, node_index: number) {
@@ -138,7 +138,7 @@ export class NodesTreeViewComponent {
         const branch = this.displayTreeHelper.flatPingTree[i];
         if (branch !== null) {
             this.massPingService.pingTreeWithoutCallback(
-                [branch]
+                [branch], true
             );
         }
     }
