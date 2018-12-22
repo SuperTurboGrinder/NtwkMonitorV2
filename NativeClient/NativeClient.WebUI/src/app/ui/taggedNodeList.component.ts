@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import * as _ from 'lodash';
 
 import { NtwkNode } from '../model/httpModel/ntwkNode.model';
 import { NodesService } from '../services/nodes.service';
@@ -71,7 +72,7 @@ export class TaggedNodeListComponent {
         if (this.ipSortedIndexesCache !== null) {
             return this.ipSortedIndexesCache;
         } else {
-            this.ipSortedIndexesCache = this.filteredNodesList
+            this.ipSortedIndexesCache = _.chain(this.filteredNodesList)
                 .map((nd, i) => ({ i: i, ipParts: nd.node.ipStr.split( '.' ) }))
                 .sort((a, b) => {
                     for (let i = 0; i < 4; i++ ) {
@@ -85,7 +86,8 @@ export class TaggedNodeListComponent {
                     }
                     return 0;
                 })
-                .map(d => d.i);
+                .map(d => d.i)
+                .value();
             return this.ipSortedIndexesCache;
         }
     }
@@ -97,15 +99,16 @@ export class TaggedNodeListComponent {
         if (cache !== null) {
             return cache;
         } else {
-            cache = this.filteredNodesList
-                .map<{ i: number, name: string}>(
+            cache = _.chain(this.filteredNodesList)
+                .map(
                     (nd, i) => ({i: i, name: nd.node.name})
                 )
                 .sort((a, b) => !this.sortingDescending
                     ? this.stringCollator.compare(a.name, b.name)
                     : this.stringCollator.compare(b.name, a.name)
                 )
-                .map<number>(v => v.i);
+                .map(v => v.i)
+                .value();
             if (this.sortingDescending) {
                 this.nameSortedIndexesCacheD = cache;
             } else {
@@ -123,7 +126,8 @@ export class TaggedNodeListComponent {
         const sortedFilteredPingedNodesIndexes =
             this.pingCacheService.getIDsSortedByPing(this.sortingDescending)
                 .filter(id => unsortedFilteredNodesIndexes.has(id))
-                .map<number>(id => unsortedFilteredNodesIndexes.get(id));
+                .map(id => unsortedFilteredNodesIndexes.get(id))
+                .value();
         if (sortedFilteredPingedNodesIndexes.length === this.filteredNodesList.length) {
             return sortedFilteredPingedNodesIndexes;
         }
@@ -247,9 +251,10 @@ export class TaggedNodeListComponent {
         if (this.massPingService.inProgress === false) {
             this.filteredNodesListPingInProgress = true;
             this.massPingService.pingRange(
-                this.filteredNodesList
+                _.chain(this.filteredNodesList)
                     .filter(n => n.node.isOpenPing === true)
-                    .map(n => n.node.id),
+                    .map(n => n.node.id)
+                    .value(),
                 () => {
                     this.filteredNodesListPingInProgress = false;
                     if (this.sorting === Sorting.ByPing) {
@@ -268,7 +273,7 @@ export class TaggedNodeListComponent {
         return this.filteredNodesList[node_index].node.id;
     }
 
-    public refresh(_: boolean) {
+    public refresh() {
         this.loadingError = false;
         this.initialize();
     }
@@ -323,11 +328,12 @@ export class TaggedNodeListComponent {
         }
         const viewNodesIDs = viewTagFilterDataResult.nodesIDs;
         const allNodes = this.treeResult.data.nodesTree.allNodes;
-        this.filteredNodesList = allNodes
+        this.filteredNodesList = _.chain(allNodes)
             .filter(nData =>
                 viewNodesIDs.includes(nData.nodeData.node.id)
             )
-            .map(nData => nData.nodeData);
+            .map(nData => nData.nodeData)
+            .value();
         this.nodeInfoPopupDataCache =
             new NodeInfoDataCache(
                 this.filteredNodesList.length,

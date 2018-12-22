@@ -4,8 +4,9 @@ import { NtwkNodeDataContainer } from '../../model/viewModel/ntwkNodeDataContain
 import { NtwkNode } from '../../model/httpModel/ntwkNode.model';
 import { NodeData } from '../../model/httpModel/nodeData.model';
 import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
-import { PingTree } from '../../services/massPing.service';
 import { PingTreeBuilder } from './pingTreeBuilder.helper';
+import { PingTree } from 'src/app/model/servicesModel/pingTree.model';
+import { ObjectTreeAlg } from 'src/app/model/viewModel/baseObjectTree';
 
 export class DisplayTreeHelper {
     private flattenedTreeOfDisplayedNodesIndexes: number[] = null;
@@ -101,7 +102,7 @@ export class DisplayTreeHelper {
                 this.displayedLayersCount,
                 forcedUpdate
             );
-        this.flattenedTreeOfDisplayedNodesIndexes = NtwkNodesSubtree
+        this.flattenedTreeOfDisplayedNodesIndexes = ObjectTreeAlg
             .getFlatSubtree(subtree).map(n => n.container.index);
         this.buildPrefixes(this.flattenedTreeOfDisplayedNodesIndexes);
         this.flattenedPingTree = PingTreeBuilder.buildAndFlatten(subtree);

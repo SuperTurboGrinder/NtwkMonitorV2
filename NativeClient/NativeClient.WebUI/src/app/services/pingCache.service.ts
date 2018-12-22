@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subscription, BehaviorSubject, forkJoin, Observable, of, merge } from 'rxjs';
 import { first, skip, map, takeWhile } from 'rxjs/operators';
+import * as _ from 'lodash';
 
 import { PingService } from './ping.service';
 import { PingTestData } from '../model/httpModel/pingTestData.model';
 import { SoundNotificatonService } from './soundNotificationService';
-import { PingTree } from './massPing.service';
 import { MassPingCancellator } from '../model/servicesModel/massPingCancelator.model';
+import { PingTree } from '../model/servicesModel/pingTree.model';
 
 @Injectable()
 export class PingCacheService {
@@ -32,7 +33,7 @@ export class PingCacheService {
         return cell;
     }
 
-    public getIDsSortedByPing(descending: boolean): number[] {
+    public getIDsSortedByPing(descending: boolean): _.LoDashExplicitWrapper<number[]> {
         const lessWithDescending = () => descending ? 1 : -1;
         const bothAreFailed = (val1, val2) =>
             val1.ptd.num === val1.ptd.failed && val2.ptd.num === val2.ptd.failed;
@@ -48,7 +49,7 @@ export class PingCacheService {
                 ? 0 : onlyFirstIsFailed(a, b)
                     ? -1 : onlyFirstIsFailed(b, a)
                         ? 1 : or(a, b);
-        return Array.from(this.pingCache.entries())
+        return _.chain(Array.from(this.pingCache.entries()))
             .map(val => {
                 return {id: val[0], ptd: val[1].value.getValue()};
             })

@@ -16,7 +16,7 @@ export class NtwkNodesTree {
                 nodeData => new NtwkNodeDataContainer(index++, layer_index, nodeData)
             )
         );
-        this.allNodes = _(this.treeLayers).flatten().value();
+        this.allNodes = _.flatten(this.treeLayers);
         this.buildTreeBranches();
     }
 

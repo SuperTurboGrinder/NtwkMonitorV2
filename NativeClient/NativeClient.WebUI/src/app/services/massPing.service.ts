@@ -6,14 +6,7 @@ import { PingCacheService } from './pingCache.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { SettingsProfilesService } from './settingsProfiles.service';
 import { MassPingCancellator } from '../model/servicesModel/massPingCancelator.model';
-
-export class PingTree {
-    public id: number;
-    public name: string;
-    public isPingable: boolean;
-    public isBranchPingable: boolean;
-    public children: PingTree[];
-}
+import { PingTree } from '../model/servicesModel/pingTree.model';
 
 export class TreePingFinishedData {
     constructor(

@@ -15,8 +15,9 @@ import { SettingsProfile } from '../model/httpModel/settingsProfile.model';
 import { MonitoringMessage } from '../model/httpModel/monitoringMessage.model';
 import { MonitoringMessageType } from '../model/httpModel/monitoringMessageType.model';
 import { ManualTimer } from '../ui/helpers/manualTimer.helper';
-import { PingTree, MassPingService, TreePingFinishedData } from './massPing.service';
+import { MassPingService, TreePingFinishedData } from './massPing.service';
 import { MassPingCancellator } from '../model/servicesModel/massPingCancelator.model';
+import { PingTree } from '../model/servicesModel/pingTree.model';
 
 @Injectable()
 export class PingMonitorService {

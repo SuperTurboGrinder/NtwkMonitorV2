@@ -1,6 +1,7 @@
 import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
 import { NtwkNodeDataContainer } from '../../model/viewModel/ntwkNodeDataContainer.model';
 import { TreeCollapsingService } from '../../services/treeCollapsing.service';
+import * as _ from 'lodash';
 
 export class TreeTrimmingHelper {
     private lastBottomLayer = -1;
@@ -9,11 +10,11 @@ export class TreeTrimmingHelper {
 
     private static sortContainersByNodePort(
         containers: NtwkNodeDataContainer[]
-    ) {
+    ): _.LoDashExplicitWrapper<NtwkNodeDataContainer[]> {
         if (containers === []) {
-            return containers;
+            return _.chain(containers);
         } else {
-            return containers
+            return _.chain(containers)
                 .filter(c => c.nodeData.node.parentPort !== null)
                 .sort((c1, c2) => c1.nodeData.node.parentPort - c2.nodeData.node.parentPort)
                 .concat(
@@ -69,7 +70,7 @@ export class TreeTrimmingHelper {
                     .sortContainersByNodePort(cont.children)
                         .map(
                             c => this.nodeContainerIntoSubtree(c, maxDepth)
-                        );
+                        ).value();
         const isBranchPingable: boolean = children.some(
             c => c.isBranchPingable
             || c.container.nodeData.node.isOpenPing

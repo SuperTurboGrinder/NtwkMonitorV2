@@ -3,6 +3,7 @@ import { CWSData } from '../../model/httpModel/cwsData.model';
 import { TagsService } from '../../services/tags.service';
 import { NodeData } from '../../model/httpModel/nodeData.model';
 import { NodeInfoPopupData } from '../../model/viewModel/nodeInfoPopupData.model';
+import * as _ from 'lodash';
 
 
 export class NodeInfoDataCache {
@@ -28,7 +29,7 @@ export class NodeInfoDataCache {
         this.showTags = showTags;
         const newArrayOfNodesCountLength = () => Array.from(
             {length: len},
-            _ => []
+            () => []
         );
         this.webServicesData = newArrayOfNodesCountLength();
         this.webServicesNames = newArrayOfNodesCountLength();
@@ -68,9 +69,10 @@ export class NodeInfoDataCache {
             return [];
         }
         if (this.tagsNames[i].length === 0 && nodeTagsIDs.length > 0) {
-            this.tagsNames[i] = this.tagsList
+            this.tagsNames[i] = _.chain(this.tagsList)
                 .filter(tag => nodeTagsIDs.includes(tag.id))
-                .map(tag => tag.name);
+                .map(tag => tag.name)
+                .value();
         }
         return this.tagsNames[i];
     }
@@ -102,11 +104,12 @@ export class NodeInfoDataCache {
         boundWebServicesIDs: number[]
     ) {
         if (this.webServicesData[i].length === 0 && boundWebServicesIDs.length > 0) {
-            this.webServicesData[i] = this.cwsDataList
+            this.webServicesData[i] = _.chain(this.cwsDataList)
                 .filter(cwsD => boundWebServicesIDs.includes(cwsD.id))
                 .map(cwsD => {
                     return {name: cwsD.name, id: cwsD.id };
-                });
+                })
+                .value();
             this.webServicesNames[i] = this.webServicesData[i]
                 .map(wsD => wsD.name);
         }

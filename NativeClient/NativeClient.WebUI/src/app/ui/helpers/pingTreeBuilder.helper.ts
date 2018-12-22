@@ -1,5 +1,7 @@
 import { NtwkNodesSubtree } from '../../model/viewModel/ntwkNodesSubtree.model';
-import { PingTree } from '../../services/massPing.service';
+import { PingTree } from 'src/app/model/servicesModel/pingTree.model';
+import { ObjectTreeAlg } from 'src/app/model/viewModel/baseObjectTree';
+import * as _ from 'lodash';
 
 
 export class PingTreeBuilder {
@@ -15,33 +17,25 @@ export class PingTreeBuilder {
         };
     }
 
-    private static flattenPingTrees(roots: PingTree[]): PingTree[] {
-        const flatten = (root: PingTree) => [root].concat(
-            ...root.children.map(flatten)
-        );
-        return [].concat(...roots.map(flatten));
-    }
-
     private static cleanTreesFromUnpingableNodes(
         roots: PingTree[]
     ): PingTree[] {
-        const result = roots.map(root =>
+        const result = roots.filter(root =>
             root.isPingable === false
             && root.isBranchPingable === false
-                ? null : root
-        ).filter(root => root !== null);
-        result.forEach(root =>
+        );
+        for (const root of result) {
             root.children = this.cleanTreesFromUnpingableNodes(
                 root.children
-            )
-        );
+            );
+        }
         return result;
     }
 
     public static buildAndFlatten(fromSubtree: NtwkNodesSubtree[]): PingTree[] {
         let trees = fromSubtree
             .map( c => this.nodesSubtreeToPingTree(c));
-        const result = this.flattenPingTrees(trees)
+        const result = ObjectTreeAlg.getFlatSubtree(trees)
             .map(root =>
                 root.isPingable === false
                 && root.isBranchPingable === false
