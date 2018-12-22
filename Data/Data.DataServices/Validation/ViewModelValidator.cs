@@ -85,22 +85,10 @@ public class ViewModelValidator : IViewModelValidator {
     }
 
     public StatusMessage Validate(Profile profile) {
-        const int MIDNIGHT = 0;
-        const int TWENTY_FOUR_HOURS = 24;
         StatusMessage nameValidationStatus = 
             ValidationUtils.IsValidName(profile.Name);
         if(nameValidationStatus.Failure()) {
             return nameValidationStatus;
-        }
-        if(profile.MonitoringStartHour < MIDNIGHT ||
-            profile.MonitoringStartHour > MIDNIGHT+23
-        ) {
-            return StatusMessage.MonitoringStartHourIsOutOfRange;
-        }
-        if(profile.MonitoringSessionDuration < 1 ||
-            profile.MonitoringSessionDuration > TWENTY_FOUR_HOURS
-        ) {
-            return StatusMessage.MonitoringSessionDurationIsOutOfRange;
         }
         return StatusMessage.Ok;
     }

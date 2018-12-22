@@ -470,8 +470,6 @@ public class EFDataSource : IEFDbDataSource {
         Profile newProfile = new Profile {
             ID = 0,
             Name = profile.Name,
-            MonitoringStartHour = profile.MonitoringStartHour,
-            MonitoringSessionDuration = profile.MonitoringSessionDuration,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
             DepthMonitoring = profile.DepthMonitoring,
             MonitorInterval = profile.MonitorInterval,
@@ -710,8 +708,6 @@ public class EFDataSource : IEFDbDataSource {
     public async Task UpdateProfile(Profile newProfileData) {
         Profile profile = await context.Profiles.FindAsync(newProfileData.ID);
         profile.Name = newProfileData.Name;
-        profile.MonitoringStartHour = newProfileData.MonitoringStartHour;
-        profile.MonitoringSessionDuration = newProfileData.MonitoringSessionDuration;
         profile.StartMonitoringOnLaunch = newProfileData.StartMonitoringOnLaunch;
         profile.DepthMonitoring = newProfileData.DepthMonitoring;
         profile.MonitorInterval = newProfileData.MonitorInterval;

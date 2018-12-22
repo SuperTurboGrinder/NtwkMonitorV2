@@ -26,8 +26,6 @@ public class ViewModelToEFModelConverter : IViewModelToEFModelConverter {
             ID = profile.ID,
             Name = profile.Name,
             StartMonitoringOnLaunch = profile.StartMonitoringOnLaunch,
-            MonitoringStartHour = profile.MonitoringStartHour,
-            MonitoringSessionDuration = profile.MonitoringSessionDuration,
             MonitorInterval = profile.MonitorInterval,
             DepthMonitoring = profile.DepthMonitoring,
             RealTimePingUIUpdate = profile.RealTimePingUIUpdate

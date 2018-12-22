@@ -16,28 +16,6 @@ namespace NativeClient.WebAPI.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.0-rtm-30799");
 
-            modelBuilder.Entity("Data.Model.EFDbModel.CustomWebService", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.Property<string>("Parametr1Name");
-
-                    b.Property<string>("Parametr2Name");
-
-                    b.Property<string>("Parametr3Name");
-
-                    b.Property<string>("ServiceStr")
-                        .IsRequired();
-
-                    b.HasKey("ID");
-
-                    b.ToTable("WebServices");
-                });
-
             modelBuilder.Entity("Data.Model.EFDbModel.CustomWSBinding", b =>
                 {
                     b.Property<int>("ID")
@@ -60,6 +38,28 @@ namespace NativeClient.WebAPI.Migrations
                     b.HasIndex("ServiceID");
 
                     b.ToTable("WebServiceBindings");
+                });
+
+            modelBuilder.Entity("Data.Model.EFDbModel.CustomWebService", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<string>("Parametr1Name");
+
+                    b.Property<string>("Parametr2Name");
+
+                    b.Property<string>("Parametr3Name");
+
+                    b.Property<string>("ServiceStr")
+                        .IsRequired();
+
+                    b.HasKey("ID");
+
+                    b.ToTable("WebServices");
                 });
 
             modelBuilder.Entity("Data.Model.EFDbModel.MonitoringMessage", b =>

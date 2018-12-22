@@ -24,7 +24,6 @@ export class PingMonitorService {
     private settingsSubscription: Subscription = null;
     private monitorSubscription: Subscription = null;
     private settings: SettingsProfile;
-    private endHour: number;
     private tagFilterData = new TagFilterData([], []);
     private isInitialized = false;
     private lastTickHourValue: number;
@@ -66,15 +65,11 @@ export class PingMonitorService {
             this.settingsSubscription =
                 this.settingsService.subscribeToSettingsChange(settingsProfileData => {
                     this.settings = settingsProfileData.profile;
-                    this.endHour = this.settings.monitoringStartHour
-                        + this.settings.monitoringSessionDuration;
-                    this.endHour = this.endHour === 24 ? 0 : this.endHour;
                     this.tagFilterData = settingsProfileData.monitorTagFilter;
                     if (this.isInitialized === false) {
                         this.isInitialized = true;
                         this.lastTickHourValue = new Date().getUTCHours();
-                        if (this.settings.startMonitoringOnLaunch === true
-                        && this.settings.monitoringStartHour <= this.lastTickHourValue) {
+                        if (this.settings.startMonitoringOnLaunch === true) {
                             this.startMonitor();
                         }
                     }
@@ -199,11 +194,12 @@ export class PingMonitorService {
             const isNewHour = this.lastTickHourValue < currentHour
                 || (this.lastTickHourValue === 23 && currentHour === 0);
             this.lastTickHourValue = currentHour;
-            if (isNewHour
+            // TODO: make session reset on midnight
+            /* if (isNewHour
                 && currentHour === this.endHour) {
                 this.stopMonitor();
                 return;
-            }
+            }*/
             this.cancellator = new MassPingCancellator();
             this.massPingService.pingTreeWithCallback(
                 pingTree,

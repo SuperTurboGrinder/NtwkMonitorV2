@@ -71,7 +71,7 @@
                                 name="depthMonitoring"
                                 [(ngModel)]="data.depthMonitoring"
                             >
-                            <span i18n="@@skipUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
+                            <span i18n="@@spaceDoNotPingChildrenOfUreachableNodesLabel"> Do not ping children of unreachable nodes</span>
                         </div>
                     </div>
                 </div>
@@ -85,21 +85,8 @@
                                 name="realTimePingUIUpdate"
                                 [(ngModel)]="data.realTimePingUIUpdate"
                             >
-                            <span i18n="@@realTimePingUIUpdateLabel"> Real time ping UI update</span>
+                            <span i18n="@@spaceRealTimePingUIUpdateLabel"> Real time ping UI update</span>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="row py-1">
-                    <div class="col">
-                        <span i18n="@@monitoringSessionRangeLabel">Monitoring session </span>
-                        <app-num-range-selector
-                            [maxValue]="23"
-                            [maxLength]="24"
-                            [initialValue]="originalMonitorSessionRange"
-                            (changedEvent)="updateMonitoringHoursRage($event)"
-                        ></app-num-range-selector>
-                        <span i18n="@@hoursLabel"> hours</span>
                     </div>
                 </div>
     
@@ -112,7 +99,7 @@
                             [initialValue]="originalMonitorInterval"
                             (changedValueEvent)="setMonitorInterval($event)"
                         ></app-num-value-switch>
-                        <span i18n="@@minutesLabel"> minutes</span>
+                        <span i18n="@@spaceMinutesLabel"> minutes</span>
                     </div>
                 </div>
             </div>

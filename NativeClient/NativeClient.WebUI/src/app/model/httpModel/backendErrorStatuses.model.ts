@@ -31,9 +31,7 @@ export enum BackendErrorStatuses {
     InvalidWebServiceStringFormat = 406,
     IpAddressStringIsNull = 407,
     IpAddressStringFormatIsInvalid = 408,
-    MonitoringStartHourIsOutOfRange = 409,
-    MonitoringSessionDurationIsOutOfRange = 410,
-    InvalidMonitoringMessageTypeValue = 411,
+    InvalidMonitoringMessageTypeValue = 409,
 
     // controllers services errors
     // exceutables service
