@@ -14,7 +14,6 @@ import { BaseCrudFormComponent } from '../helpers/baseCrudFormComponent.helper';
 })
 export class SettingsProfileFormComponent
     extends BaseCrudFormComponent<SettingsProfile, SettingsProfilesService> {
-    private _originalMonitorSessionRange: Range = null;
     private _originalMonitorInterval: number = null;
 
     constructor(
@@ -24,10 +23,6 @@ export class SettingsProfileFormComponent
         settingsService: SettingsProfilesService
     ) {
         super(messager, location, route, settingsService);
-    }
-
-    public get originalMonitorSessionRange() {
-        return this._originalMonitorSessionRange;
     }
 
     public get originalMonitorInterval() {
@@ -44,10 +39,6 @@ export class SettingsProfileFormComponent
                     ? profilesResult.data.find(p => p.id === id)
                     : null;
                 if (profile !== null) {
-                    this._originalMonitorSessionRange = new Range(
-                        profile.monitoringStartHour,
-                        profile.monitoringSessionDuration
-                    );
                     this._originalMonitorInterval = profile.monitorInterval;
                 }
                 callback(
@@ -60,14 +51,12 @@ export class SettingsProfileFormComponent
 
     protected newEmptyData(): SettingsProfile {
         return new SettingsProfile(
-            0, '', 0, 24, true, true, 1, false
+            0, '', true, true, 1, false
         );
     }
 
     protected currentIdenticalTo(obj: SettingsProfile): boolean {
         return obj.name === this.data.name
-            && obj.monitoringStartHour === this.data.monitoringStartHour
-            && obj.monitoringSessionDuration === this.data.monitoringSessionDuration
             && obj.startMonitoringOnLaunch === this.data.startMonitoringOnLaunch
             && obj.depthMonitoring === this.data.depthMonitoring
             && obj.monitorInterval === this.data.monitorInterval
@@ -78,8 +67,6 @@ export class SettingsProfileFormComponent
         return new SettingsProfile(
             orig.id,
             orig.name,
-            orig.monitoringStartHour,
-            orig.monitoringSessionDuration,
             orig.startMonitoringOnLaunch,
             orig.depthMonitoring,
             orig.monitorInterval,
@@ -107,10 +94,5 @@ export class SettingsProfileFormComponent
 
     public setMonitorInterval(interval: number) {
         this.data.monitorInterval = interval;
-    }
-
-    public updateMonitoringHoursRage(range: Range) {
-        this.data.monitoringStartHour = range.value;
-        this.data.monitoringSessionDuration = range.length;
     }
 }

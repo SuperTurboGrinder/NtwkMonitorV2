@@ -26,7 +26,7 @@ export class PingMonitorService {
     private settings: SettingsProfile;
     private tagFilterData = new TagFilterData([], []);
     private isInitialized = false;
-    private lastTickHourValue: number;
+    private lastTickDay: number;
     private monitorManualTimer: ManualTimer = null;
     private cancellator: MassPingCancellator = null;
 
@@ -68,7 +68,7 @@ export class PingMonitorService {
                     this.tagFilterData = settingsProfileData.monitorTagFilter;
                     if (this.isInitialized === false) {
                         this.isInitialized = true;
-                        this.lastTickHourValue = new Date().getUTCHours();
+                        this.lastTickDay = new Date().getDate();
                         if (this.settings.startMonitoringOnLaunch === true) {
                             this.startMonitor();
                         }
@@ -96,7 +96,7 @@ export class PingMonitorService {
                                 this.treeResultToMonitorSessionObservable(treeResult)
                             )
                         );
-                    this.lastTickHourValue = new Date().getUTCHours();
+                    this.lastTickDay = new Date().getDate();
                     this.monitorSubscription = monitorObservable
                         .subscribe(pt =>
                             this.monitorSubscriptionFunction(pt)
@@ -115,6 +115,7 @@ export class PingMonitorService {
                 this.cancellator.cancel();
                 this.cancellator = null;
             }
+            this.resetPulseData();
             this.subscribeToSettingsChange();
         }
     }
@@ -190,16 +191,15 @@ export class PingMonitorService {
         }
         if (this.monitorPulseInProgress === false) {
             this.monitorPulseInProgress = true;
-            const currentHour = new Date().getUTCHours();
-            const isNewHour = this.lastTickHourValue < currentHour
-                || (this.lastTickHourValue === 23 && currentHour === 0);
-            this.lastTickHourValue = currentHour;
-            // TODO: make session reset on midnight
-            /* if (isNewHour
-                && currentHour === this.endHour) {
+            const currentDay = new Date().getDate();
+            const isNewDay = this.lastTickDay !== currentDay;
+            this.lastTickDay = currentDay;
+            // reset session after midnight
+            if (isNewDay) {
                 this.stopMonitor();
+                this.startMonitor();
                 return;
-            }*/
+            }
             this.cancellator = new MassPingCancellator();
             this.massPingService.pingTreeWithCallback(
                 pingTree,

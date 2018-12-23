@@ -1,0 +1,1518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="editButtonLabel" datatype="html">
+        <source>
+                        Edit
+                    </source>
+        <target state="translated">
+                        Изменить
+                    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileSelection.component.html</context>
+          <context context-type="linenumber">26</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudSelectorTemplate.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectButtonLabel" datatype="html">
+        <source>
+                        Select
+                    </source>
+        <target state="translated">
+                        Выбрать
+                    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileSelection.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addNewButtonLabel" datatype="html">
+        <source>
+                        Add new
+                    </source>
+        <target state="translated">
+                        Добавить
+                    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileSelection.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudSelectorTemplate.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="refreshButton" datatype="html">
+        <source>Refresh</source>
+        <target state="translated">Обновить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/loadingIndicator.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ipСolonSpaceLabel" datatype="html">
+        <source>IP: </source>
+        <target state="translated">IP:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="executableServicesColonLabel" datatype="html">
+        <source>Executable services:</source>
+        <target state="translated">Выполняемые сервисы:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="webServicesColonLabel" datatype="html">
+        <source>Web services:</source>
+        <target state="translated">Веб сервисы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noneLabel" datatype="html">
+        <source>None</source>
+        <target state="translated">Нет</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="d1c4e9d07d3789fb1c66dec61f2d52c6b81b10f6" datatype="html">
+        <source>Tags:</source>
+        <target state="translated">Тэги:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+        <note priority="1" from="description">tagsColonLabel</note>
+      </trans-unit>
+      <trans-unit id="CreatedSuccessfully" datatype="html">
+        <source>
+            Created successfully.
+        </source>
+        <target state="translated">
+            Создание успешно.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageTextSelector.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="UpdatedSuccessfully" datatype="html">
+        <source>
+            Saved changes successfully.
+        </source>
+        <target state="translated">
+            Изменения сохранены успешно.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageTextSelector.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="DeletedSuccessfully" datatype="html">
+        <source>
+            Deleted successfully.
+        </source>
+        <target state="translated">
+            Удаление успешно.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageTextSelector.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="NoChangesDetected" datatype="html">
+        <source>
+            No changes detected to save.
+        </source>
+        <target state="translated">
+            Не обнаруженно изменений для сохранения.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageTextSelector.component.html</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="NodeMovedSuccessfully" datatype="html">
+        <source>
+            Node successfully moved to new parent.
+        </source>
+        <target state="translated">
+            Узел успешно перемещён.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageTextSelector.component.html</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="SetTagsSuccessfully" datatype="html">
+        <source>
+            Successfully binded selected tags to node.
+        </source>
+        <target state="translated">
+            Выбранные тэги успешно привязанны к узлу.
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageTextSelector.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="DatabaseInternalError" datatype="html">
+        <source>
+        Database error occured. Report this error please.
+    </source>
+        <target state="translated">
+        Ошибка базы данных.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ErrorWhileCheckingIDInDatabase" datatype="html">
+        <source>
+        Database error occured while checking ID value. Report this error please.
+    </source>
+        <target state="translated">
+        Ошибка базы данных во время проверки ID.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidProfileID" datatype="html">
+        <source>
+        Invalid Profile ID.
+    </source>
+        <target state="translated">
+        Неверный ID профиля.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidTagID" datatype="html">
+        <source>
+        Invalid Tag ID.
+    </source>
+        <target state="translated">
+        Неверный ID тэга.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidNodeID" datatype="html">
+        <source>
+        Invalid Node ID
+    </source>
+        <target state="translated">
+        Неверный ID узла.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidSessionID" datatype="html">
+        <source>
+        Invalid Session ID.
+    </source>
+        <target state="translated">
+        Неверный ID сессии.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidTagsIDs" datatype="html">
+        <source>
+        Invalid IDs in Tags IDs list.
+    </source>
+        <target state="translated">
+        Неверный ID в списке тэгов.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ErrorWhileCheckingNameExistanceInDatabase" datatype="html">
+        <source>
+        Database error occured while checking name value. Report this error please.
+    </source>
+        <target state="translated">
+        Ошибка базы данных во время проверки имени.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="NameAlreadyClaimed" datatype="html">
+        <source>
+        Object name already claimed by another in database.
+    </source>
+        <target state="translated">
+        Имя объекта занято другим объектом в базе данных.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ErrorWhileGetingExistanceOfWSBindingFromDatabase" datatype="html">
+        <source>
+        Database error occured while checking web service binding existance. Report this error please.
+    </source>
+        <target state="translated">
+        Ошибка базы данных во время проверки существования привязки веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="BindingBetweenSpecifiedServiceAndNodeAlreadyExists" datatype="html">
+        <source>
+        Can not create web service binding: binding between specified node and service already exists.
+    </source>
+        <target state="translated">
+        Невозмножно привязать веб сервис: этот сервис уже привязан к указанному узлу.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ErrorWhileCheckingCWSParamNumberInDatabase" datatype="html">
+        <source>
+        Database error occured while checking web service parameters number.
+    </source>
+        <target state="translated">
+        Ошибка базы данных во время проверки количества параметров веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidWebServiceID" datatype="html">
+        <source>
+        Invalid Web Service ID.
+    </source>
+        <target state="translated">
+        Неверный ID веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ServiceBindingSetParementersValueCanNotBeNull" datatype="html">
+        <source>
+        Web service parameters values can not be null.
+    </source>
+        <target state="translated">
+        Параметры переданные веб сервису не могут быть null.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="RedundantParameterValuesInServiceBinding" datatype="html">
+        <source>
+        Redundant parameter values in service binding data.
+    </source>
+        <target state="translated">
+        Лишние параметры переданы при привязке веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ErrorWhileCheckingIfNodeIsPartOfSubtree" datatype="html">
+        <source>
+        Database error occured while checking if node is part of subtree.
+    </source>
+        <target state="translated">
+        Ошибка базы данных при проверке является ли узел частью поддерева.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="NodeIsPartOfSpecifiedSubtree" datatype="html">
+        <source>
+        Can not move subtree to subroot from the same subtree.
+    </source>
+        <target state="translated">
+        Невозможно переместить поддерево на узел находящийся в этом поддереве.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="BindingBetweenSpecifiedServiceAndNodeDoesNotExist" datatype="html">
+        <source>
+        Binding between specified service and node does not exist.
+    </source>
+        <target state="translated">
+        Указанный сервис не привязан к указанному узлу.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidName" datatype="html">
+        <source>
+        Invalid name format.
+    </source>
+        <target state="translated">
+        Неверный формат имени.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidCWSParam1Name" datatype="html">
+        <source>
+        Invalid web service parameter 1 name format.
+    </source>
+        <target state="translated">
+        Неверный формат имени первого параметра веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidCWSParam2Name" datatype="html">
+        <source>
+        Invalid web service parameter 2 name format.
+    </source>
+        <target state="translated">
+        Неверный формат имени второго параметра веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidCWSParam3Name" datatype="html">
+        <source>
+        Invalid web service parameter 3 name format.
+    </source>
+        <target state="translated">
+        Неверный формат имени третьего параметра веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="CWSParameterNamesAreNotInOrder" datatype="html">
+        <source>
+        Web service parameters names are not filled in correct order.
+    </source>
+        <target state="translated">
+        Имена параметров веб сервиса заполнены не по порядку.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidWebServiceStringFormat" datatype="html">
+        <source>
+        Invalid web service string format.
+    </source>
+        <target state="translated">
+        Неверный формат выполняемой строки веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="IpAddressStringIsNull" datatype="html">
+        <source>
+        Ip address string can not be null.
+    </source>
+        <target state="translated">
+        Строка ip адреса не может быть null.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="IpAddressStringFormatIsInvalid" datatype="html">
+        <source>
+        Ip address string format is invalid.
+    </source>
+        <target state="translated">
+        Неверный формат ip адреса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="InvalidMonitoringMessageTypeValue" datatype="html">
+        <source>
+        Invalid monitoring message type value.
+    </source>
+        <target state="translated">
+        Неверный формат сообщения монитора.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="NoSpecifiedExecServiceFoundInBinDirectory" datatype="html">
+        <source>
+        No executable service found for this operation in backend server bin directory.
+    </source>
+        <target state="translated">
+        В папке bin не обнаружено подходящего выполняемого файла для заданной операции.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="TooManyCandidatesForSpecefiedExecServiceInBinDirectory" datatype="html">
+        <source>
+        Too many candidates for executable service in backend server bin directory.
+    </source>
+        <target state="translated">
+        В папке bin слишком много кандидатов для заданного выполняемого сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="NotEnoughOSRightsToSearchForExecServices" datatype="html">
+        <source>
+        Not enough rights from OS to search for executable services.
+    </source>
+        <target state="translated">
+        Недостаточно прав для запуска выполняемого сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">99</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="CouldNotFindBinDirectoryWhileSearchingForExecutableServices" datatype="html">
+        <source>
+        Could not find bin directory in backend server directory.
+    </source>
+        <target state="translated">
+        Не обнаружена папка bin в папке сервера.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="UnknownIOErrorWhileTryingToFindExecutableServices" datatype="html">
+        <source>
+        Unknown backend I/O error while searching for executable service.
+    </source>
+        <target state="translated">
+        Неизвестная ошибка ввода/вывода при попытке поиска выполняемого сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ExecutableServiceStartError" datatype="html">
+        <source>
+        Executable service start error.
+    </source>
+        <target state="translated">
+        Ошибка запуска выполняемого сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="PingExecutionServiceError" datatype="html">
+        <source>
+        Ping service sending error.
+    </source>
+        <target state="translated">
+        Ошибка при отправке пинга.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="CustomWebServiceStartError" datatype="html">
+        <source>
+        Error while trying to start custom web service.
+    </source>
+        <target state="translated">
+        Ошибка при попытке запуска веб сервиса.
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/backendErrorSelector.component.html</context>
+          <context context-type="linenumber">118</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="BadRequestErrorMessageCaption" datatype="html">
+        <source>Backend operation error:</source>
+        <target state="translated">Ошибка операции сервера:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/messeging/messageDisplay.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nameLabel" datatype="html">
+        <source>Name</source>
+        <target state="translated">Имя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/nodesTreeView.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagForm.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="executablesLabel" datatype="html">
+        <source>Executables</source>
+        <target state="translated">Программы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/nodesTreeView.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="webServicesLabel" datatype="html">
+        <source>Web services</source>
+        <target state="translated">Веб сервисы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/nodesTreeView.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pingLabel" datatype="html">
+        <source>Ping</source>
+        <target state="translated">Пинг</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/nodesTreeView.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noNodesFoundLabel" datatype="html">
+        <source>No nodes found in database.</source>
+        <target state="translated">В базе данных не обнаружено сохранённых узлов.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/nodesTreeView.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/tagFilter.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="88933d15093ef344f7bf0e8e8b5b91e88ee6f964" datatype="html">
+        <source>All at once</source>
+        <target state="translated">Весь список одновременно</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">92</context>
+        </context-group>
+        <note priority="1" from="description">allAtOnceLabel</note>
+      </trans-unit>
+      <trans-unit id="pingFilteredListButtonLabel" datatype="html">
+        <source>
+                        <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>
+                    </source>
+        <target state="translated"><x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/></target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="showTreeLevelsSpaceLabel" datatype="html">
+        <source>Show tree levels </source>
+        <target state="translated">Показанные уровни дерева </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/nodesTreeView.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="settingsProfileLabel" datatype="html">
+        <source>settings profile</source>
+        <target state="translated">профиль настроек</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nameRequiredMessage" datatype="html">
+        <source>Name value required.</source>
+        <target state="translated">Необходимо указать имя.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagForm.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">154</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="autoStartMonitoringLabel" datatype="html">
+        <source>Auto start monitoring</source>
+        <target state="translated">Автоматически начинать мониторинг при запуске</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="spaceDoNotPingChildrenOfUreachableNodesLabel" datatype="html">
+        <source> Do not ping children of unreachable nodes</source>
+        <target state="translated"> Не отправлять пинг к узлам подключенным к недоступным узлам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="spaceRealTimePingUIUpdateLabel" datatype="html">
+        <source> Real time ping UI update</source>
+        <target state="translated"> Обновление интерфейса пинга в реальном времени</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="monitoringIntervalLabel" datatype="html">
+        <source>Monitor ping every </source>
+        <target state="translated">Обновление монитора каждые </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">95</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="spaceMinutesLabel" datatype="html">
+        <source> minutes</source>
+        <target state="translated"> минут</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="saveButtonLabel" datatype="html">
+        <source>Save</source>
+        <target state="translated">Сохранить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagForm.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">175</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">120</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createButtonLabel" datatype="html">
+        <source>Create</source>
+        <target state="translated">Создать</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">121</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagForm.component.html</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">183</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="cancelButtonLabel" datatype="html">
+        <source>
+                    Cancel
+                </source>
+        <target state="translated">
+                    Отмена
+                </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/settingsProfileForm.component.html</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagForm.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">191</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">87</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/massPingIndication.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nodeTagLabel" datatype="html">
+        <source>node tag</source>
+        <target state="translated">тэг узла</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagForm.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="yesButton" datatype="html">
+        <source>Yes</source>
+        <target state="translated">Да</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/confirmationPopup.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noButton" datatype="html">
+        <source>No</source>
+        <target state="translated">Нет</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/confirmationPopup.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="removeButtonLabel" datatype="html">
+        <source>
+                                            Remove
+                                        </source>
+        <target state="translated">
+                                            Удалить
+                                        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudSelectorTemplate.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="deleteLabel" datatype="html">
+        <source>Delete</source>
+        <target state="translated">Удалить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudSelectorTemplate.component.html</context>
+          <context context-type="linenumber">68</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">124</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="discardChangesQuestionLabel" datatype="html">
+        <source>Discard changes?</source>
+        <target state="translated">Сбросить изменения?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudFormScaffolding.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="saveToDatabaseQuestionLabel" datatype="html">
+        <source>Save to database?</source>
+        <target state="translated">Сохранить в базу данных?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudFormScaffolding.component.html</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="saveChangesToDatabaseQuestionLabel" datatype="html">
+        <source>
+        Save changes to database?
+    </source>
+        <target state="translated">
+        Сохранить изменения?
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudFormScaffolding.component.html</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editorViewEditSpaceHeader" datatype="html">
+        <source>Edit </source>
+        <target state="translated">Редактировать </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudFormHeader.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="editorViewCreateSpaceHeader" datatype="html">
+        <source>New </source>
+        <target state="translated">Новый </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudFormHeader.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="customWebServiceLabel" datatype="html">
+        <source>custom web service</source>
+        <target state="translated">веб сервис</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="baseHrefLabel" datatype="html">
+        <source>Base href</source>
+        <target state="translated">Шаблон сервиса</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="useIPLabel" datatype="html">
+        <source>Use IP</source>
+        <target state="translated">Использовать IP</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="parametrLabel" datatype="html">
+        <source>Parameters</source>
+        <target state="translated">Параметры</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceForm.component.html</context>
+          <context context-type="linenumber">106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addNewLabel" datatype="html">
+        <source>
+                    Add new
+                </source>
+        <target state="translated">
+                    Добавить
+                </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="moveButtonLabel" datatype="html">
+        <source>
+                    Move
+                </source>
+        <target state="translated">
+                    Переместить
+                </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="toThisButtonLabel" datatype="html">
+        <source>
+                        To this
+                    </source>
+        <target state="translated">
+                        Сюда
+                    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addNewOnRootButtonLabel" datatype="html">
+        <source>
+                    Add new on root
+                </source>
+        <target state="translated">
+                    Добавить в корень
+                </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="moveToRooButtonLabel" datatype="html">
+        <source>
+                        Move to root
+                    </source>
+        <target state="translated">
+                        Переместить в корень
+                    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">112</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="moveLabel" datatype="html">
+        <source>Move</source>
+        <target state="translated">Переместить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="toLabel" datatype="html">
+        <source>to</source>
+        <target state="translated">на</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="spaceChildrenQuestionLabel" datatype="html">
+        <source> children?</source>
+        <target state="translated">?</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeSelection.component.html</context>
+          <context context-type="linenumber">135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nodeLabel" datatype="html">
+        <source>node</source>
+        <target state="translated">узел</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="parentPortLabel" datatype="html">
+        <source>Parent port</source>
+        <target state="translated">Порт</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ipLabel" datatype="html">
+        <source>IP</source>
+        <target state="translated">IP</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="ipRequiredMessge" datatype="html">
+        <source>IP value required.</source>
+        <target state="translated">Необходимо указать IP.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invalidFormatMessge" datatype="html">
+        <source>Invalid format.</source>
+        <target state="translated">Неверный формат.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="servicesLabel" datatype="html">
+        <source>Services: </source>
+        <target state="translated">Сервисы: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sshLabel" datatype="html">
+        <source>SSH</source>
+        <target state="translated">SSH</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="telnetLabel" datatype="html">
+        <source>Telnet</source>
+        <target state="translated">Telnet</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">92</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="openPingLabel" datatype="html">
+        <source>Open ping</source>
+        <target state="translated">Открытый пинг</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/ntwkNodeForm.component.html</context>
+          <context context-type="linenumber">103</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="setTagsLable" datatype="html">
+        <source>Set</source>
+        <target state="translated">Выбранные</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagsBinding.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="availableTagsLable" datatype="html">
+        <source>Available</source>
+        <target state="translated">Доступные</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagsBinding.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="applyButtonLable" datatype="html">
+        <source>
+                Apply
+            </source>
+        <target state="translated">
+                Применить
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagsBinding.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="noNodeSelectedLabel" datatype="html">
+        <source>
+            No node selected
+        </source>
+        <target state="translated">
+            Узел не выбран
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/tagsBinding.component.html</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">161</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="returnButtonLabel" datatype="html">
+        <source>
+                                        Return
+                                    </source>
+        <target state="translated">
+                                        Вернуться
+                                    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/crudNodeSideSelectorTemplate.component.html</context>
+          <context context-type="linenumber">45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="availableLable" datatype="html">
+        <source>Available</source>
+        <target state="translated">Доступные</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="boundLable" datatype="html">
+        <source>Bound</source>
+        <target state="translated">Привязанные</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="webServiceBindingLabel" datatype="html">
+        <source>web service binding</source>
+        <target state="translated">привязку веб сервиса</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="valueRequiredMessge" datatype="html">
+        <source>Value required.</source>
+        <target state="translated">Необходимо значение.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">90</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">136</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="valueRequiredMessage" datatype="html">
+        <source>Value required.</source>
+        <target state="translated">Необходимо значение.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bindButtonLabel" datatype="html">
+        <source>Bind</source>
+        <target state="translated">Привязать</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/customWebServiceBinding.component.html</context>
+          <context context-type="linenumber">149</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="96a1ef127e444c46a40833ee28c74ab9abcfb8db" datatype="html">
+        <source>
+            --Network Monitor V2--
+        </source>
+        <target state="translated">
+            --Network Monitor V2--
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/hubUI.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <note priority="1" from="description">networkMonitorV2TitleLabel</note>
+      </trans-unit>
+      <trans-unit id="nodesEditorButtonLabel" datatype="html">
+        <source>
+                Nodes
+            </source>
+        <target state="translated">
+                Узлы
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="customWebServicesEditorButtonLabel" datatype="html">
+        <source>
+                Custom web services
+            </source>
+        <target state="translated">
+                Веб сервисы
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="changeSettingsProfileEditorButtonLabel" datatype="html">
+        <source>
+                Change settings profile
+            </source>
+        <target state="translated">
+                Сменить профиль настроек
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="settingsProfilesEditorButtonLabel" datatype="html">
+        <source>
+                Settings profiles
+            </source>
+        <target state="translated">
+                Профили настроек
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tagsEditorButtonLabel" datatype="html">
+        <source>
+                Tags
+            </source>
+        <target state="translated">
+                Тэги
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="webServiceBindingEditorButtonLabel" datatype="html">
+        <source>
+                Web service binding
+            </source>
+        <target state="translated">
+                Привязка веб сервисов
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="tagBindingEditorButtonLabel" datatype="html">
+        <source>
+                Tag binding
+            </source>
+        <target state="translated">
+                Привязка тэгов
+            </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/crud/editor.component.html</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nodesTagFilter" datatype="html">
+        <source>Nodes tag filter</source>
+        <target state="translated">Фильтр узлов по тэгам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/tagFilter.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="listViewLabel" datatype="html">
+        <source>list view</source>
+        <target state="translated">список</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/tagFilter.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="monitorLabel" datatype="html">
+        <source>monitor</source>
+        <target state="translated">монитор</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/tagFilter.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5ca05a53bb18dd64fc379acf42b8a0e7c5b2d0ae" datatype="html">
+        <source>
+                            switch
+                        </source>
+        <target state="translated">
+                            переключить
+                        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/tagFilter.component.html</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <note priority="1" from="description">switchLabel</note>
+      </trans-unit>
+      <trans-unit id="networkNodesFilteredBySetTagsLabel" datatype="html">
+        <source>Network nodes filtered by set tags</source>
+        <target state="translated">Узлы отфильтрованные по заданным тэгам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/tagFilter.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="monitoringLabel" datatype="html">
+        <source>Monitoring</source>
+        <target state="translated">Мониторинг</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="nodesLabel" datatype="html">
+        <source>nodes</source>
+        <target state="translated">узлы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="previousPulseColonSpaceBraceLabel" datatype="html">
+        <source>Prev. pulse: (</source>
+        <target state="translated">Пред. пульс: (</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
+          <context context-type="linenumber">85</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="closebraceSemicolonSpaceNextColonLabel" datatype="html">
+        <source>); next:</source>
+        <target state="translated">); след.:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="endCurrentMonitorSessionQuestionLabel" datatype="html">
+        <source>
+        End current monitor session?
+    </source>
+        <target state="translated">
+        Завершить текущую сессию мониторинга?
+    </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
+          <context context-type="linenumber">101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="currentMonitorSessionLabel" datatype="html">
+        <source>Current monitor session</source>
+        <target state="translated">Текущая сессия мониторинга</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b3dcea94803e39a40986c4f9913529855e39388a" datatype="html">
+        <source> to </source>
+        <target state="translated"> до </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+        <note priority="1" from="description">spaceToSpaceLabel</note>
+      </trans-unit>
+      <trans-unit id="selectedNodesSpaceLabel" datatype="html">
+        <source>Selected nodes </source>
+        <target state="translated">Выбрано узлов </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pulseSpaceLabel" datatype="html">
+        <source>Pulse </source>
+        <target state="translated">Пульс </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pingСolonSpaceLabel" datatype="html">
+        <source>Ping: </source>
+        <target state="translated">Пинг: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="spaceBraceFailedColonSpaceLabel" datatype="html">
+        <source> (Failed: </source>
+        <target state="translated"> (Неудач: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="spaceSkippedСolonSpaceLabel" datatype="html">
+        <source> Skipped: </source>
+        <target state="translated"> Пропущенно: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="canNotEditWhileMonitorIsActive" datatype="html">
+        <source>Can not edit while monitor is active</source>
+        <target state="translated">Редактирование не возможно пока запущен монитор</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorMutabilityBlock.component.html</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="monitoringSessionHistoryLabel" datatype="html">
+        <source>Monitoring sessions history</source>
+        <target state="translated">История сессий монитора</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/historyView.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="selectedMonitoringLabel" datatype="html">
+        <source>Selected monitoring session</source>
+        <target state="translated">Выбранная сессия монитора</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/historyView.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -17,6 +17,7 @@ public class Profile {
     public bool RealTimePingUIUpdate {get; set; }
     
     //Deprecated (sqlite does not support DropColumnOperation)
+    //will maybe rename them and repurpuse for something else
     public int MonitoringStartHour { get; set; } //0-23
     public int MonitoringSessionDuration { get; set; } //1-24
 }
