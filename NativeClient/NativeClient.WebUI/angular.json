@@ -49,9 +49,9 @@
             },
             "ru": {
               "aot": true,
-              "i18nFile": "src/locale/messages.ru.xlf",
+              "i18nFile": "src/i18n/messages.ru-ru.xlf",
               "i18nFormat": "xlf",
-              "i18nLocale": "ru"
+              "i18nLocale": "ru-ru"
             }
           }
         },

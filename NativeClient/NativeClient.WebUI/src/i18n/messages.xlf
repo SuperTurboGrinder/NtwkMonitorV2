@@ -547,15 +547,6 @@
         </context-group>
         <note priority="1" from="description">allAtOnceLabel</note>
       </trans-unit>
-      <trans-unit id="pingFilteredListButtonLabel" datatype="html">
-        <source>
-                        <x id="START_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;i&gt;"/><x id="CLOSE_ITALIC_TEXT" ctype="x-i" equiv-text="&lt;/i&gt;"/>
-                    </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">app/ui/taggedNodeList.component.html</context>
-          <context context-type="linenumber">104</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="showTreeLevelsSpaceLabel" datatype="html">
         <source>Show tree levels </source>
         <context-group purpose="location">
