@@ -25,6 +25,7 @@ export class MonitorSessionViewerComponent {
     } =  ({ session: null, pulses: [] });
     @Input() isCurrentSession = false;
     @Input() currentlyPulsing = false;
+    public messageTypes = MonitoringMessageType;
     private _selectedPulse: MonitoringPulseResult = null;
     public fixedPulse: MonitoringPulseResult = null;
 
@@ -84,18 +85,6 @@ export class MonitorSessionViewerComponent {
     public isMessageDanger(message: MonitoringMessage): boolean {
         return message.messageType !==
             MonitoringMessageType.Warning_InconsistentPing;
-    }
-
-    public formatMessage(message: MonitoringMessage): string {
-        switch (message.messageType) {
-            case MonitoringMessageType.Danger_NoPingReturned:
-                return `No ping returned from ${message.messageSourceNodeName}`;
-            case MonitoringMessageType.Danger_NoPingReturned_SkippedChildren:
-                return `No ping returned from ${message.messageSourceNodeName};
-                Skipped ${message.numSkippedChildren} child nodes`;
-            case MonitoringMessageType.Warning_InconsistentPing:
-                return `Some ping packets lost to ${message.messageSourceNodeName}`;
-        }
     }
 
     public selectPulse(pulse: MonitoringPulseResult) {

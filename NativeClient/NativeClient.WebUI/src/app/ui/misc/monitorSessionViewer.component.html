@@ -87,7 +87,14 @@
                     }"
                     *ngFor="let message of selectedPulseMessages"
                 >
-                    {{formatMessage(message)}}
+                    <!-- for two types of message only, monitor is not using the warning -->
+                    <span i18n="@@NoPingReturned">No ping returned from</span>
+                    {{message.messageSourceNodeName}};
+                    <span *ngIf="message.messageType === messageTypes.Danger_NoPingReturned_SkippedChildren">
+                        <span i18n="@@skippedLabel">Skipped</span>
+                        {{message.numSkippedChildren}}
+                        <span i18n="@@childNodesLabel">child nodes</span>;
+                    </span>
                 </div>
             </div>
         </div>

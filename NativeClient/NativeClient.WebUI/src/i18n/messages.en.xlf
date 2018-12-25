@@ -1343,6 +1343,24 @@
           <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
           <context context-type="linenumber">69</context>
         </context-group>
+      </trans-unit><trans-unit id="NoPingReturned" datatype="html">
+        <source>No ping returned from</source><target state="final">No ping returned from</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit><trans-unit id="skippedLabel" datatype="html">
+        <source>Skipped</source><target state="final">Skipped</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">94</context>
+        </context-group>
+      </trans-unit><trans-unit id="childNodesLabel" datatype="html">
+        <source>child nodes</source><target state="final">child nodes</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="canNotEditWhileMonitorIsActive" datatype="html">
         <source>Can not edit while monitor is active</source><target state="final">Can not edit while monitor is active</target>

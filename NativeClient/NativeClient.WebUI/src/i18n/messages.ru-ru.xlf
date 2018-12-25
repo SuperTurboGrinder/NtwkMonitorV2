@@ -62,7 +62,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="executableServicesColonLabel" datatype="html">
-        <source>Executable services:</source><target state="translated">Выполняемые сервисы:</target>
+        <source>Executable services:</source><target state="translated">Сервисы:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/ui/misc/nodeInfoPopup.component.html</context>
           <context context-type="linenumber">12</context>
@@ -848,7 +848,7 @@
         </context-group>
       </trans-unit>
       <trans-unit id="editorViewEditSpaceHeader" datatype="html">
-        <source>Edit </source><target state="translated">Редактировать </target>
+        <source>Edit </source><target state="translated">Изменить  </target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/ui/crud/crudFormHeader.component.html</context>
           <context context-type="linenumber">5</context>
@@ -1255,14 +1255,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="monitoringLabel" datatype="html">
-        <source>Monitoring</source><target state="translated">Мониторинг</target>
+        <source>Monitoring</source><target state="translated">Наблюдаются</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
           <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="nodesLabel" datatype="html">
-        <source>nodes</source><target state="translated">узлы</target>
+        <source>nodes</source><target state="translated">узлов</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/ui/pingMonitorPanel.component.html</context>
           <context context-type="linenumber">43</context>
@@ -1342,9 +1342,27 @@
           <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
           <context context-type="linenumber">69</context>
         </context-group>
+      </trans-unit><trans-unit id="NoPingReturned" datatype="html">
+        <source>No ping returned from</source><target state="translated">Не получено ответа от</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">91</context>
+        </context-group>
+      </trans-unit><trans-unit id="skippedLabel" datatype="html">
+        <source>Skipped</source><target state="translated">Пропущенно</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">94</context>
+        </context-group>
+      </trans-unit><trans-unit id="childNodesLabel" datatype="html">
+        <source>child nodes</source><target state="translated">подчинённых узлов</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/monitorSessionViewer.component.html</context>
+          <context context-type="linenumber">96</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="canNotEditWhileMonitorIsActive" datatype="html">
-        <source>Can not edit while monitor is active</source><target state="translated">Редактирование не возможно пока запущен монитор</target>
+        <source>Can not edit while monitor is active</source><target state="translated">Редактирование невозможно пока запущен монитор</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/ui/misc/monitorMutabilityBlock.component.html</context>
           <context context-type="linenumber">14</context>

@@ -6,7 +6,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --prod --aot --base-href ./",
-    "extract-x18n": "ng xi18n --output-path i18n --i18n-locale en && xliffmerge --profile xliffmerge.json en ru-ru",
+    "i18n-ext": "ng xi18n --output-path i18n --i18n-locale en",
+    "i18n-merge": "xliffmerge --profile xliffmerge.json en ru-ru",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

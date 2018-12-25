@@ -15,7 +15,7 @@
             *ngFor="let node of dataList"
         >
             <div class="text-left border-bottom"
-                style="flex: 0 0 calc(100% - 250px)"
+                style="flex: auto"
                 (mouseenter)="showNodeInfo(node, $event)"
                 (mouseleave)="hideNodeInfo()"
             >
@@ -27,7 +27,7 @@
             <div
                 *ngIf="isInMoveMode === false; else moveModeButtons"
                 class="border-bottom text-right"
-                style="flex: 0 0 250px"
+                style="flex: content"
             >
                 <button
                     *ngIf="node.depth < 30"
