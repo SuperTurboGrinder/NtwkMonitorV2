@@ -47,7 +47,7 @@
               "vendorChunk": false,
               "buildOptimizer": true
             },
-            "ru": {
+            "ru-ru": {
               "aot": true,
               "i18nFile": "src/i18n/messages.ru-ru.xlf",
               "i18nFormat": "xlf",
@@ -58,11 +58,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "WebUI:build:ru"
+            "browserTarget": "WebUI:build"
           },
           "configurations": {
             "production": {
               "browserTarget": "WebUI:build:production"
+            },
+            "ru-ru": {
+              "browserTarget": "WebUI:build:ru-ru"
             }
           }
         },

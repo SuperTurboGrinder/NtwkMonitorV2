@@ -12,7 +12,7 @@ export class BuildPipeline {
     private webUIAppDir = 'NativeClient.WebUI';
     private dotnetRuntimeID: string = null;
 
-    constructor(platform: string, arch: string) {
+    constructor(private locale: string, platform: string, arch: string) {
         this.dotnetRuntimeID =
             this._packagerPlatformAndArchToDotnetRuntimeID(platform, arch);
     }
@@ -80,7 +80,7 @@ export class BuildPipeline {
 
     private async isUIAppBuilt(): Promise<boolean> {
         const uiDistBase = this.componentsBuildPath+this.webUIAppDir+'/dist/';
-        const result = await this.isPathOK(uiDistBase+'WebUI');
+        const result = await this.isPathOK(uiDistBase+this.locale);
         if (result === true) {
             console.log('Found built UI project.');
         } else {
@@ -119,7 +119,7 @@ export class BuildPipeline {
         return this.runConsoleCommand(
             uiProjectDir,
             this.npmCommand,
-            ['run', 'build']
+            ['run', `build:${this.locale}`]
         );
     }
 
@@ -195,7 +195,7 @@ export class BuildPipeline {
     async copyWebUITo(path: string): Promise<void> {
         console.log('Copying WebUI dir to electron package...');
         await fs.copy(
-            normalize(this.componentsBuildPath+this.webUIAppDir+'/dist/WebUI'),
+            normalize(this.componentsBuildPath+this.webUIAppDir+`/dist/${this.locale}`),
             normalize(path+'/WebUI')
         );
         console.log('Finished copying WebUI dir.');
@@ -203,12 +203,14 @@ export class BuildPipeline {
     
     async copyWebAPITo(path: string): Promise<void> {
         console.log('Copying WebAPI dir to electron package...');
-        const srcPath = this.componentsBuildPath+this.webAPIAppDir
-        +'/bin/release/netcoreapp2.2/'+this.dotnetRuntimeID+'/publish';
+        const srcPath = normalize(this.componentsBuildPath+this.webAPIAppDir
+        +'/bin/release/netcoreapp2.2/'+this.dotnetRuntimeID+'/publish');
+        const destPath = normalize(path+'/WebAPI');
         await fs.copy(
-            normalize(srcPath),
-            normalize(path+'/WebAPI')
+            srcPath,
+            destPath
         );
+        await fs.mkdir(normalize(destPath+'/bin'));
         console.log('Finished copying WebAPI dir.');
     }
 

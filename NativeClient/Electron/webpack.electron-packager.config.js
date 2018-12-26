@@ -10,14 +10,20 @@ fs.readdirSync('node_modules')
   .forEach(function(mod) {
     nodeModules[mod] = 'commonjs ' + mod;
   });
+const locales = ['en', 'ru-ru'];
+const builds = {};
+const baseDir = path.join(__dirname, 'electron-packager-config');
+for (locale of locales) {
+    builds[`build_${locale.replace('-', '_')}`] =
+        path.join(baseDir, `build.${locale}.ts`);
+    builds[`rebuild_${locale.replace('-', '_')}`] =
+        path.join(baseDir, `rebuild.${locale}.ts`);
+}
 
 module.exports = {
     mode: 'production',
     target: 'node',
-    entry: {
-        electron_packager_build: path.join(__dirname, 'electron-packager-config/electron-packager.build.ts'),
-        electron_packager_rebuild: path.join(__dirname, 'electron-packager-config/electron-packager.rebuild.ts')
-    },
+    entry: builds,
     output: {
         path: path.join(__dirname, 'electron-packager-config/js'),
         filename: '[name].js'

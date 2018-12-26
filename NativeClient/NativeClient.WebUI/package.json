@@ -5,7 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod --aot --base-href ./",
+    "build:en": "ng build --prod --aot --base-href ./ --output-path dist/en",
+    "build:ru-ru": "ng build --prod --aot --base-href ./ --output-path dist/ru-ru --i18n-file src/i18n/messages.ru-ru.xlf --i18n-format xlf --i18n-locale ru-ru",
     "i18n-ext": "ng xi18n --output-path i18n --i18n-locale en",
     "i18n-merge": "xliffmerge --profile xliffmerge.json en ru-ru",
     "test": "ng test",

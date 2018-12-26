@@ -8,8 +8,10 @@
     "clean": "gts clean",
     "build": "webpack --config webpack.config.js",
     "prepare-packager": "webpack --config webpack.electron-packager.config.js",
-    "pack": "node electron-packager-config/js/electron_packager_build.js",
-    "rebuild-pack": "node electron-packager-config/js/electron_packager_rebuild.js"
+    "pack:en": "node electron-packager-config/js/build_en.js",
+    "rebuild-pack:en": "node electron-packager-config/js/rebuild_en.js",
+    "pack:ru-ru": "node electron-packager-config/js/build_ru_ru.js",
+    "rebuild-pack:ru-ru": "node electron-packager-config/js/rebuild_ru_ru.js"
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.4",

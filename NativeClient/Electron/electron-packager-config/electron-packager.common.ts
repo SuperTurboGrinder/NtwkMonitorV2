@@ -2,6 +2,7 @@ import * as packager from 'electron-packager';
 import { BuildPipeline } from './buildPipeline';
 
 export function packageElectronApp(
+    locale: string,
     buildFunction: (pipeline: BuildPipeline) => Promise<boolean>
 ) {
     let buildPipeline: BuildPipeline = null;
@@ -13,7 +14,7 @@ export function packageElectronApp(
         asar: true,
         afterExtract: [async (buildPath: string, electronVersion: string,
         platform: string, arch: string, callback: ()=>void) => {
-            buildPipeline = new BuildPipeline(platform, arch);
+            buildPipeline = new BuildPipeline(locale, platform, arch);
             const built = await buildFunction(buildPipeline);
             if (built) {
                 await buildPipeline.copyWebAPITo(buildPath);
