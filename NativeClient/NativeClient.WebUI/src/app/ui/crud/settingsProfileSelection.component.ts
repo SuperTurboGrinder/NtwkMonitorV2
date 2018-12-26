@@ -26,10 +26,10 @@ export class SettingsProfileSelectionComponent
     ) {
         super(messager, settingsService);
         this.pageName = route.snapshot.url[0].path;
-        this.setIfEditorView();
+        this.setIsEditorView();
     }
 
-    private setIfEditorView() {
+    private setIsEditorView() {
         this._isEditorView = this.pageName !== 'profilesSelect'
         && this.pageName !== 'initialProfilesSelect';
     }
@@ -41,6 +41,10 @@ export class SettingsProfileSelectionComponent
         }
     }
 
+    private moveToMakingNewProfile() {
+        this.router.navigateByUrl('/ui/form/profile/new');
+    }
+
     public isCurrentProfile(id: number): boolean {
         return this.settingsService.isCurrentProfileID(id);
     }
@@ -48,10 +52,12 @@ export class SettingsProfileSelectionComponent
     protected updateDataList() {
         this.dataService.getProfiles().subscribe(
             tagsListResult => {
-                this.setIfEditorView();
+                this.setIsEditorView();
                 if (this.isEditorView === false) {
                     this.setNewData(tagsListResult);
-                    if (this.dataList.length === 1) {
+                    if (this.dataList.length === 0) {
+                        this.moveToMakingNewProfile();
+                    } else if (this.dataList.length === 1) {
                         this.setAndContinue(this.dataList[0].id);
                     }
                 } else {
