@@ -24,6 +24,7 @@ export class PingMonitorPanelComponent implements OnDestroy {
         session: MonitoringSession,
         pulses: MonitoringPulseResult[]
     };
+    public resetFixedOnNewValue: {} = null;
     private _displaySessionEndMessage = false;
     private currentDataSubscription: Subscription = null;
     private timerSubscription: Subscription = null;
@@ -69,6 +70,7 @@ export class PingMonitorPanelComponent implements OnDestroy {
     }
 
     public openCloseSwitch() {
+        this.resetFixedOnNewValue = ({});
         if (this.pingMonitorService.isActive === false) {
             this.isOpened = false;
         } else {

@@ -18,7 +18,7 @@
                         <span i18n="spaceToSpaceLabel"> to </span> {{sessionEndTime}}
                     </div>
                     <div class="col-4 p-0 pr-1 m-0 text-right">
-                            <span i18n="@@selectedNodesSpaceLabel">Selected nodes </span> {{session.participatingNodesNum}}
+                        <span i18n="@@selectedNodesSpaceLabel">Selected nodes </span> {{session.participatingNodesNum}}
                     </div>
                 </ng-template>
             </div>
@@ -33,22 +33,22 @@
             style="overflow-y: scroll; scroll-behavior: smooth"
         >
             <div
-                style="width: 20px; height: 20px; margin-top: 1px; margin-left: 1px"
                 *ngFor="let pulse of pulses; trackBy: pulseTrackByFn; let i = index"
                 (mouseenter)="selectPulse(pulse)"
                 (mouseleave)="deselectPulse()"
                 (click)="fixPulse(pulse)"
-                class="float-left p-0 mb-0 mr-0 border border-secondary
+                class="monitor-pulse-square float-left p-0 mb-0 mr-0 border
+                    {{pulse === fixedPulse ? 'border-primary' : 'border-secondary'}}
                     {{pulse.silent === 0 ? 'btn-success rounded' : 'btn-danger'}}
                 "
-            ></div><!--should be faster than ngClass-->
-            <div style="width: 20px; height: 20px; margin-top: 1px; margin-left: 1px"
-                class="float-left p-0 mb-0 mr-0 border border-secondary pulse_animation
+            ></div>
+            <div
+                class="monitor-pulse-square float-left p-0 mb-0 mr-0 border border-secondary pulse_animation
                 {{currentlyPulsing === true ? '' : 'd-none'}}"
             ></div>
         </div>
     </div>
-    <div style="height: 50%"
+    <div class="h-50"
         [ngClass]="{'d-none': isSelected === false}"
     >
         <div class="w-100" style="height: 30px">

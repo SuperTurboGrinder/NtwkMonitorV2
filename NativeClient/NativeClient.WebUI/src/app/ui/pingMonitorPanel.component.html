@@ -13,6 +13,7 @@
         <div class="border-top border-bottom h-100 w-100">
             <div class="w-100 h-100">
                 <app-monitor-session-viewer
+                    [resetFixed]="resetFixedOnNewValue"
                     [data]="sessionData"
                     [isCurrentSession]="true"
                     [currentlyPulsing]="isPulsing"

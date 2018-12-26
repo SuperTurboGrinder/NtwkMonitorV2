@@ -99,3 +99,10 @@
 .blocking-overlay {
     background: rgba(0,0,0, 0.2)
 }
+
+.monitor-pulse-square {
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+    margin-left: 1px
+}
