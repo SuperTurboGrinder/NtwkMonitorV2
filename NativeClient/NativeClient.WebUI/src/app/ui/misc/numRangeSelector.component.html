@@ -1,4 +1,4 @@
-<span>from </span>
+<span i18n="@@rangeSelectorFromLabel">from </span>
 <span class="border bg-white h-100 p-0 m-0">
     <span
         [ngClass]="{
@@ -22,7 +22,7 @@
         (click)="incrValue()"
     ><i class="fa fa-caret-right"></i></span>
 </span>
-<span> to </span>
+<span i18n="@@rangeSelectorToLabel"> to </span>
 <span class="border bg-white h-100 p-0 m-0">
     <span
         [ngClass]="{
@@ -46,4 +46,6 @@
         (click)="incrLength()"
     ><i class="fa fa-caret-right"></i></span>
 </span>
-<span> ({{currentLength()}}) out of {{ofMax()}} </span>
+({{currentLength()}})
+<span i18n="@@rangeSelectorOutOfLabel">out of</span>
+{{ofMax()}}

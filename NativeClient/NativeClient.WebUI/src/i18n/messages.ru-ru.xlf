@@ -46,7 +46,22 @@
           <context context-type="sourcefile">app/ui/crud/crudSelectorTemplate.component.html</context>
           <context context-type="linenumber">45</context>
         </context-group>
-      </trans-unit>
+      </trans-unit><trans-unit id="rangeSelectorFromLabel" datatype="html">
+        <source>from </source><target state="translated">от </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/numRangeSelector.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit><trans-unit id="rangeSelectorToLabel" datatype="html">
+        <source> to </source><target state="translated"> до </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/ui/misc/numRangeSelector.component.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit><trans-unit id="rangeSelectorOutOfLabel" datatype="html">
+        <source>out of</source><target state="translated">из</target>
+        
+      <context-group purpose="location"><context context-type="sourcefile">app/ui/misc/numRangeSelector.component.html</context><context context-type="linenumber">50</context></context-group></trans-unit>
       <trans-unit id="refreshButton" datatype="html">
         <source>Refresh</source><target state="translated">Обновить</target>
         <context-group purpose="location">
