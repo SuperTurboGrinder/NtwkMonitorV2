@@ -23,9 +23,13 @@ app.once('ready', () => {
             console.log('Starting electron app.');
             electronWindow = new BrowserWindow({
                 minWidth: 800,
-                minHeight: 600
+                minHeight: 600,
+                icon: join(__dirname, '../icon.png'),
+                show: false
             });
-            electronWindow.maximize();
+            electronWindow.once('ready-to-show', () => {
+                electronWindow.maximize();
+            });
             electronWindow.once('closed', () => { electronWindow = null; });
             electronWindow.loadURL('file://' + join(__dirname, '../index.html'));
             // window.webContents.openDevTools();

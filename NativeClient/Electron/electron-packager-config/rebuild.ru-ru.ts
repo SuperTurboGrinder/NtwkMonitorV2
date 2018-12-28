@@ -1,7 +1,5 @@
-import { BuildPipeline } from './buildPipeline';
-import { packageElectronApp } from './electron-packager.common';
+import { ElectronPackagerScript, PipelineType } from './electron-packager.common';
 
-packageElectronApp(
-    'ru-ru',
-    (pipeline: BuildPipeline) => pipeline.rebuildAllSubprojects()
-);
+const packagerScript =
+    new ElectronPackagerScript('ru-ru', PipelineType.RebuildAndPack);
+packagerScript.packageElectronApp();

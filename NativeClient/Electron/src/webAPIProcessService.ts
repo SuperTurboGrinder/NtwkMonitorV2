@@ -3,6 +3,7 @@ import { normalize } from 'path';
 
 export class WebAPIProcessService {
     private readonly processName = 'NetMonV2.APIServer';
+    private started = false;
     private ext = '';
     // https://stackoverflow.com/questions/38033127/node-js-how-to-check-a-process-is-running-by-the-process-name
     private checkIfProcessIsRunning(
@@ -66,7 +67,9 @@ export class WebAPIProcessService {
                         apiProcess.stdout.on('data', (data) => {
                             console.log(`API server stdout: ${data}`);
                         });
-                        setTimeout(() => {
+
+                        setTimeout(() => // make it requeset to api for 10 times with 3 sec intervals or until there is response
+
                             callback(true);
                         }, 5000);
                     } else {
@@ -76,5 +79,17 @@ export class WebAPIProcessService {
                 }
             }
         );
+    }
+
+    private setStartedIfResponding(callback: () => void) {
+        const baseApiURL = 'http://localhost:5438/api/';
+        const request = new XMLHttpRequest();
+        request.open('GET', baseApiURL+'nodes', true);
+        request.setRequestHeader("Content-type", "application/json");
+        request.onload = () => {
+            this.started = true;
+            callback();
+        };
+        request.send();
     }
 }
