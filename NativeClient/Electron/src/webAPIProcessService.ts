@@ -1,5 +1,6 @@
 import { exec, spawn } from 'child_process';
 import { normalize } from 'path';
+import { net } from 'electron';
 
 export class WebAPIProcessService {
     private readonly processName = 'NetMonV2.APIServer';
@@ -67,11 +68,20 @@ export class WebAPIProcessService {
                         apiProcess.stdout.on('data', (data) => {
                             console.log(`API server stdout: ${data}`);
                         });
-
-                        setTimeout(() => // make it requeset to api for 10 times with 3 sec intervals or until there is response
-
-                            callback(true);
-                        }, 5000);
+                        let counter = 0;
+                        const check = () => {
+                            console.log('Checking for server response...');
+                            if (this.started || ++counter === 10) {
+                                console.log('Finished waiting for responses.');
+                                callback(this.started);
+                            } else {
+                                setTimeout(
+                                    () => this.setStartedIfResponding(check),
+                                    3000
+                                );
+                            }
+                        };
+                        check();
                     } else {
                         console.log('Monitor API is runnging.');
                         callback(true);
@@ -81,15 +91,24 @@ export class WebAPIProcessService {
         );
     }
 
-    private setStartedIfResponding(callback: () => void) {
-        const baseApiURL = 'http://localhost:5438/api/';
-        const request = new XMLHttpRequest();
-        request.open('GET', baseApiURL+'nodes', true);
-        request.setRequestHeader("Content-type", "application/json");
-        request.onload = () => {
+    private setStartedIfResponding(finished: () => void) {
+        const request = net.request({
+            method: 'GET',
+            protocol: 'http:',
+            hostname: 'localhost',
+            port: 5438,
+            path: '/api/nodes'
+        });
+        request.on('response', (response) => {
+            console.log(`API server responded with status ${response.statusCode}`);
             this.started = true;
-            callback();
-        };
-        request.send();
+            finished();
+        });
+        request.on('error', (error) => {
+            console.log('Request to API server failed:');
+            console.log(error);
+            finished();
+        });
+        request.end();
     }
 }
