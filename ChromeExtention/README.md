@@ -1,6 +1,3 @@
-# NtwkMonitorV2 Chrome borwser extension
+# Chrome borwser extension template
 
-Chrome browser extension that works with [NtwkMonitorV2](https://github.com/SuperTurboGrinder)
-
-## Usage
-
+May be used to easely access main API features from any web page.

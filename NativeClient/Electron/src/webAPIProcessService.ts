@@ -71,7 +71,7 @@ export class WebAPIProcessService {
                         let counter = 0;
                         const check = () => {
                             console.log('Checking for server response...');
-                            if (this.started || ++counter === 10) {
+                            if (this.started || counter++ === 20) {
                                 console.log('Finished waiting for responses.');
                                 callback(this.started);
                             } else {
