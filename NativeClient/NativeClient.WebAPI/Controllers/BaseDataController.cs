@@ -1,41 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-
-using NativeClient.WebAPI.Abstract;
-using Data.Abstract.DataAccessServices;
 using Data.Model.ResultsModel;
+using Microsoft.AspNetCore.Mvc;
+using NativeClient.WebAPI.Abstract;
 
-namespace NativeClient.WebAPI.Controllers {
+namespace NativeClient.WebAPI.Controllers
+{
+    public class BaseDataController : Controller
+    {
+        readonly IErrorReportAssemblerService _errAssembler;
 
-public class BaseDataController : Controller {
-    readonly IErrorReportAssemblerService errAssembler;
-
-    protected  BaseDataController(IErrorReportAssemblerService _errAssembler) {
-        errAssembler = _errAssembler;
-    }
-
-    protected ActionResult ObserveDataOperationResult<T>(
-        DataActionResult<T> dataResult
-    ) {
-        if(dataResult.Status.Failure()) {
-            return BadRequest(errAssembler.AssembleReport(dataResult.Status));
+        protected BaseDataController(IErrorReportAssemblerService errAssembler)
+        {
+            _errAssembler = errAssembler;
         }
-        return Ok(dataResult.Result);
-    }
 
-    protected ActionResult ObserveDataOperationStatus(
-        StatusMessage status
-    ) {
-        if(status.Failure()) {
-            return BadRequest(errAssembler.AssembleReport(status));
+        protected ActionResult ObserveDataOperationResult<T>(
+            DataActionResult<T> dataResult
+        )
+        {
+            if (dataResult.Status.Failure()) return BadRequest(_errAssembler.AssembleReport(dataResult.Status));
+            return Ok(dataResult.Result);
         }
-        return NoContent();
+
+        protected ActionResult ObserveDataOperationStatus(
+            StatusMessage status
+        )
+        {
+            if (status.Failure()) return BadRequest(_errAssembler.AssembleReport(status));
+            return NoContent();
+        }
     }
-
-}
-
 }

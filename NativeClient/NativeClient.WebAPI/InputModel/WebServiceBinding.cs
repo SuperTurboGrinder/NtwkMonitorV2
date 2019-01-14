@@ -1,8 +1,10 @@
-namespace NativeClient.WebAPI.InputModel {
+// ReSharper disable UnassignedField.Global
 
-public class WebServiceBinding {
-    public int nodeID;
-    public string param1, param2, param3;
-}
-
+namespace NativeClient.WebAPI.InputModel
+{
+    public class WebServiceBinding
+    {
+        public int NodeId;
+        public string Param1, Param2, Param3;
+    }
 }

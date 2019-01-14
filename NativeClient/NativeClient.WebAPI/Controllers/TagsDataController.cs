@@ -1,59 +1,59 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-
-using NativeClient.WebAPI.Abstract;
-using Data.Model.ViewModel;
 using Data.Abstract.DataAccessServices;
+using Data.Model.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+using NativeClient.WebAPI.Abstract;
 
-namespace NativeClient.WebAPI.Controllers {
+namespace NativeClient.WebAPI.Controllers
+{
+    [Route("api/nodeTags")]
+    public class TagsDataController : BaseDataController
+    {
+        readonly ITagsDataService _data;
 
-[Route("api/nodeTags")]
-public class TagsDataController : BaseDataController {
-    readonly ITagsDataService data;
+        public TagsDataController(
+            ITagsDataService data,
+            IErrorReportAssemblerService errAssembler
+        ) : base(errAssembler)
+        {
+            _data = data;
+        }
 
-    public TagsDataController(
-        ITagsDataService _data,
-        IErrorReportAssemblerService _errAssembler
-    ) : base(_errAssembler) {
-        data = _data;
+        // GET api/nodeTags
+        [HttpGet]
+        public async Task<ActionResult> GetAllTags()
+        {
+            return ObserveDataOperationResult(
+                await _data.GetAllTags()
+            );
+        }
+
+        // POST api/nodeTags/new
+        [HttpPost("new")]
+        public async Task<ActionResult> CreateTag([FromBody] NodeTag tag)
+        {
+            return ObserveDataOperationResult(
+                await _data.CreateTag(tag)
+            );
+        }
+
+        //PUT api/nodeTags/1/update
+        [HttpPut("{tagID:int}/update")]
+        public async Task<ActionResult> UpdateTag(int tagId, [FromBody] NodeTag tag)
+        {
+            tag.Id = tagId;
+            return ObserveDataOperationStatus(
+                await _data.UpdateTag(tag)
+            );
+        }
+
+        // DELETE api/nodeTags/1/delete
+        [HttpDelete("{tagID:int}/delete")]
+        public async Task<ActionResult> RemoveTag(int tagId)
+        {
+            return ObserveDataOperationResult(
+                await _data.RemoveTag(tagId)
+            );
+        }
     }
-
-    // GET api/nodeTags
-    [HttpGet]
-    public async Task<ActionResult> GetAllTags() {
-        return ObserveDataOperationResult(
-            await data.GetAllTags()
-        );
-    }
-
-    // POST api/nodeTags/new
-    [HttpPost("new")]
-    public async Task<ActionResult> CreateTag([FromBody] NodeTag tag) {
-        return ObserveDataOperationResult(
-            await data.CreateTag(tag)
-        );
-    }
-
-    //PUT api/nodeTags/1/update
-    [HttpPut("{tagID:int}/update")]
-    public async Task<ActionResult> UpdateTag(int tagID, [FromBody] NodeTag tag) {
-        tag.ID = tagID;
-        return ObserveDataOperationStatus(
-            await data.UpdateTag(tag)
-        );
-    }
-
-    // DELETE api/nodeTags/1/delete
-    [HttpDelete("{tagID:int}/delete")]
-    public async Task<ActionResult> RemoveTag(int tagID) {
-        return ObserveDataOperationResult(
-            await data.RemoveTag(tagID)
-        );
-    }
-}
-
 }

@@ -32,7 +32,7 @@ app.once('ready', () => {
             });
             electronWindow.once('closed', () => { electronWindow = null; });
             electronWindow.loadURL('file://' + join(__dirname, '../index.html'));
-            // window.webContents.openDevTools();
+            // electronWindow.webContents.openDevTools();
             powerSaveBlocker.start('prevent-app-suspension');
         } else {
             console.log('Quiting electron app.');

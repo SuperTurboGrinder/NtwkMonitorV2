@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-
 using Data.Abstract.DataAccessServices;
 using Data.Abstract.DbInteraction;
 using Data.Abstract.Validation;
@@ -11,110 +9,129 @@ using Data.Model.ViewModel;
 using EFDbModel = Data.Model.EFDbModel;
 using Data.Model.ResultsModel;
 
-namespace Data.DataServices.Services {
+namespace Data.DataServices.Services
+{
+    public class MonitoringDataService
+        : BaseDataService, IMonitoringDataService
+    {
+        readonly IViewModelValidator _validator;
+        readonly IViewModelToEfModelConverter _viewToEfConverter;
+        readonly IEfModelToViewModelConverter _efToViewConverter;
 
-public class MonitoringDataService
-    : BaseDataService, IMonitoringDataService {
-    readonly IViewModelValidator validator;
-    readonly IViewModelToEFModelConverter viewToEFConverter;
-    readonly IEFModelToViewModelConverter EFToViewConverter;
-
-    public MonitoringDataService(
-        IDataRepository _repo,
-        IViewModelValidator _validator,
-        IViewModelToEFModelConverter _viewToEFConverter,
-        IEFModelToViewModelConverter _EFToViewConverter
-    ) : base(_repo) {
-        validator = _validator;
-        viewToEFConverter = _viewToEFConverter;
-        EFToViewConverter = _EFToViewConverter;
-    }
-    
-    public async Task<DataActionResult<MonitoringSession>> GetNewSession(
-        int profileID
-    ) {
-        StatusMessage profIDValidationStatus =
-            await ValidateProfileID(profileID);
-        if(profIDValidationStatus.Failure()) {
-            return DataActionResult<MonitoringSession>.Failed(profIDValidationStatus);
+        public MonitoringDataService(
+            IDataRepository repo,
+            IViewModelValidator validator,
+            IViewModelToEfModelConverter viewToEfConverter,
+            IEfModelToViewModelConverter efToViewConverter
+        ) : base(repo)
+        {
+            _validator = validator;
+            _viewToEfConverter = viewToEfConverter;
+            _efToViewConverter = efToViewConverter;
         }
-        return FailOrConvert(
-            await repo.GetNewSession(profileID),
-            session => EFToViewConverter.Convert(session)
-        );
-    }
 
-    public async Task<DataActionResult<MonitoringPulseResult>> SavePulseResult(
-        int sessionID,
-        MonitoringPulseResult pulseResult,
-        IEnumerable<MonitoringMessage> messages
-    ) {
-        StatusMessage sessionIDValidationStatus =
-            await ValidateSessionID(sessionID);
-        if(sessionIDValidationStatus.Failure()) {
-            return DataActionResult<MonitoringPulseResult>.Failed(sessionIDValidationStatus);
+        public async Task<DataActionResult<MonitoringSession>> GetNewSession(
+            int profileId
+        )
+        {
+            StatusMessage profIdValidationStatus =
+                await ValidateProfileId(profileId);
+            if (profIdValidationStatus.Failure())
+            {
+                return DataActionResult<MonitoringSession>.Failed(profIdValidationStatus);
+            }
+
+            return FailOrConvert(
+                await Repo.GetNewSession(profileId),
+                session => _efToViewConverter.Convert(session)
+            );
         }
-        StatusMessage messageValidationStatus = StatusMessage.Ok;
-        foreach(MonitoringMessage message in messages) {
-            messageValidationStatus = validator.Validate(message);
-            if(messageValidationStatus.Failure()) {
-                return DataActionResult<MonitoringPulseResult>.Failed(
-                    messageValidationStatus
+
+        public async Task<DataActionResult<MonitoringPulseResult>> SavePulseResult(
+            int sessionId,
+            MonitoringPulseResult pulseResult,
+            IEnumerable<MonitoringMessage> messages
+        )
+        {
+            StatusMessage sessionIdValidationStatus =
+                await ValidateSessionId(sessionId);
+            if (sessionIdValidationStatus.Failure())
+            {
+                return DataActionResult<MonitoringPulseResult>.Failed(sessionIdValidationStatus);
+            }
+
+            IEnumerable<MonitoringMessage> monitoringMessages = messages as MonitoringMessage[] ?? messages.ToArray();
+            foreach (MonitoringMessage message in monitoringMessages)
+            {
+                StatusMessage messageValidationStatus = _validator.Validate(message);
+                if (messageValidationStatus.Failure())
+                {
+                    return DataActionResult<MonitoringPulseResult>.Failed(
+                        messageValidationStatus
+                    );
+                }
+            }
+
+            EFDbModel.MonitoringPulseResult convertedPulseResult =
+                _viewToEfConverter.Convert(pulseResult);
+            IEnumerable<EFDbModel.MonitoringMessage> convertedMessages = monitoringMessages
+                .Select(m => _viewToEfConverter.Convert(m));
+            return FailOrConvert(
+                await Repo.SavePulseResult(sessionId, convertedPulseResult, convertedMessages),
+                ConvertPulseResult
+            );
+        }
+
+        private MonitoringPulseResult ConvertPulseResult(
+            EFDbModel.MonitoringPulseResult pulseResult
+        )
+        {
+            IEnumerable<MonitoringMessage> messages = pulseResult.Messages
+                .Select(m => _efToViewConverter.Convert(m));
+            MonitoringPulseResult pulse = _efToViewConverter.Convert(pulseResult);
+            pulse.Messages = messages;
+            return pulse;
+        }
+
+        public async Task<StatusMessage> ClearEmptySessions()
+        {
+            return await Repo.ClearEmptySessions();
+        }
+
+        public async Task<DataActionResult<IEnumerable<MonitoringSession>>> GetSessionsForProfile(int profileId)
+        {
+            StatusMessage profIdValidationStatus =
+                await ValidateProfileId(profileId);
+            if (profIdValidationStatus.Failure())
+            {
+                return DataActionResult<IEnumerable<MonitoringSession>>.Failed(
+                    profIdValidationStatus
                 );
             }
-        }
-        EFDbModel.MonitoringPulseResult convertedPulseResult =
-            viewToEFConverter.Convert(pulseResult);
-        IEnumerable<EFDbModel.MonitoringMessage> convertedMessages = messages
-            .Select(m => viewToEFConverter.Convert(m));
-        return FailOrConvert(
-            await repo.SavePulseResult(sessionID, convertedPulseResult, convertedMessages),
-            pr => ConvertPulseResult(pr)
-        );
-    }
 
-    private MonitoringPulseResult ConvertPulseResult(
-        EFDbModel.MonitoringPulseResult pulseResult
-    ) {
-        IEnumerable<MonitoringMessage> messages = pulseResult.Messages
-            .Select(m => EFToViewConverter.Convert(m));
-        MonitoringPulseResult pulse = EFToViewConverter.Convert(pulseResult);
-        pulse.Messages = messages;
-        return pulse;
-    }
-    
-    public async Task<StatusMessage> ClearEmptySessions() {
-        return await repo.ClearEmptySessions();
-    }
-
-    public async Task<DataActionResult<IEnumerable<MonitoringSession>>> GetSessionsForProfile(int profileID) {
-        StatusMessage profIDValidationStatus =
-            await ValidateProfileID(profileID);
-        if(profIDValidationStatus.Failure()) {
-            return DataActionResult<IEnumerable<MonitoringSession>>.Failed(
-                profIDValidationStatus
+            return FailOrConvert(
+                await Repo.GetSessionsForProfile(profileId),
+                sessions => sessions.Select(s => _efToViewConverter.Convert(s))
             );
         }
-        return FailOrConvert(
-            await repo.GetSessionsForProfile(profileID),
-            sessions => sessions.Select(s => EFToViewConverter.Convert(s))
-        );
-    }
-    
-    //includes messages
-    public async Task<DataActionResult<IEnumerable<MonitoringPulseResult>>> GetSessionReport(int monitoringSessionID) {
-        StatusMessage sessionIDValidationStatus =
-            await ValidateSessionID(monitoringSessionID);
-        if(sessionIDValidationStatus.Failure()) {
-            return DataActionResult<IEnumerable<MonitoringPulseResult>>.Failed(
-                sessionIDValidationStatus
+
+        //includes messages
+        public async Task<DataActionResult<IEnumerable<MonitoringPulseResult>>> GetSessionReport(
+            int monitoringSessionId)
+        {
+            StatusMessage sessionIdValidationStatus =
+                await ValidateSessionId(monitoringSessionId);
+            if (sessionIdValidationStatus.Failure())
+            {
+                return DataActionResult<IEnumerable<MonitoringPulseResult>>.Failed(
+                    sessionIdValidationStatus
+                );
+            }
+
+            return FailOrConvert(
+                await Repo.GetSessionReport(monitoringSessionId),
+                pulses => pulses.Select(ConvertPulseResult)
             );
         }
-        return FailOrConvert(
-            await repo.GetSessionReport(monitoringSessionID),
-            pulses => pulses.Select(p => ConvertPulseResult(p))
-        );
     }
-}
-
 }

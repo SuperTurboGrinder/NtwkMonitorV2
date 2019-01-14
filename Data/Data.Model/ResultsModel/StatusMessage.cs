@@ -1,66 +1,64 @@
-using System.Runtime.CompilerServices;
+// ReSharper disable IdentifierTypo
 
-namespace Data.Model.ResultsModel {
+namespace Data.Model.ResultsModel
+{
+    public enum StatusMessage
+    {
+        Ok = 0,
 
-public enum StatusMessage {
-    Ok = 0,
+        DatabaseInternalError = 101,
 
-    DatabaseInternalError = 101,
+        //invalid id messages
+        ErrorWhileCheckingIdInDatabase = 201,
+        InvalidProfileId = 202,
+        InvalidTagId = 203,
+        InvalidNodeId = 204,
+        InvalidSessionId = 205,
+        InvalidTagsIDs = 206,
 
-    //invalid id messages
-    ErrorWhileCheckingIDInDatabase = 201,
-    InvalidProfileID = 202,
-    InvalidTagID = 203,
-    InvalidNodeID = 204,
-    InvalidSessionID = 205,
-    InvalidTagsIDs = 206,
+        //other input validation
+        ErrorWhileCheckingNameExistanceInDatabase = 301,
+        NameAlreadyClaimed = 302,
+        ErrorWhileGetingExistanceOfWsBindingFromDatabase = 303,
+        BindingBetweenSpecifiedServiceAndNodeAlreadyExists = 304,
+        ErrorWhileCheckingCwsParamNumberInDatabase = 305,
+        InvalidWebServiceId = 306,
+        ServiceBindingSetParementersValueCanNotBeNull = 307,
+        RedundantParameterValuesInServiceBinding = 308,
+        ErrorWhileCheckingIfNodeIsPartOfSubtree = 309,
+        NodeIsPartOfSpecifiedSubtree = 310,
+        BindingBetweenSpecifiedServiceAndNodeDoesNotExist = 311,
 
-    //other input validation
-    ErrorWhileCheckingNameExistanceInDatabase = 301,
-    NameAlreadyClaimed = 302,
-    ErrorWhileGetingExistanceOfWSBindingFromDatabase = 303,
-    BindingBetweenSpecifiedServiceAndNodeAlreadyExists = 304,
-    ErrorWhileCheckingCWSParamNumberInDatabase = 305,
-    InvalidWebServiceID = 306,
-    ServiceBindingSetParementersValueCanNotBeNull = 307,
-    RedundantParameterValuesInServiceBinding = 308,
-    ErrorWhileCheckingIfNodeIsPartOfSubtree = 309,
-    NodeIsPartOfSpecifiedSubtree = 310,
-    BindingBetweenSpecifiedServiceAndNodeDoesNotExist = 311,
+        //view model validation
+        InvalidName = 401,
+        InvalidCwsParam1Name = 402,
+        InvalidCwsParam2Name = 403,
+        InvalidCwsParam3Name = 404,
+        CwsParameterNamesAreNotInOrder = 405,
+        InvalidWebServiceStringFormat = 406,
+        IpAddressStringIsNull = 407,
+        IpAddressStringFormatIsInvalid = 408,
+        InvalidMonitoringMessageTypeValue = 409,
 
-    //view model validation
-    InvalidName = 401,
-    InvalidCWSParam1Name = 402,
-    InvalidCWSParam2Name = 403,
-    InvalidCWSParam3Name = 404,
-    CWSParameterNamesAreNotInOrder = 405,
-    InvalidWebServiceStringFormat = 406,
-    IpAddressStringIsNull = 407,
-    IpAddressStringFormatIsInvalid = 408,
-    InvalidMonitoringMessageTypeValue = 409,
+        //controllers services errors
+        //executables service
+        NoSpecifiedExecServiceFoundInBinDirectory = 501,
+        TooManyCandidatesForSpecefiedExecServiceInBinDirectory = 502,
+        NotEnoughOsRightsToSearchForExecServices = 503,
+        CouldNotFindBinDirectoryWhileSearchingForExecutableServices = 504,
+        UnknownIoErrorWhileTryingToFindExecutableServices = 505,
+        ExecutableServiceStartError = 506,
 
-    //controllers services errors
-    //executables service
-    NoSpecifiedExecServiceFoundInBinDirectory = 501,
-    TooManyCandidatesForSpecefiedExecServiceInBinDirectory = 502,
-    NotEnoughOSRightsToSearchForExecServices = 503,
-    CouldNotFindBinDirectoryWhileSearchingForExecutableServices = 504,
-    UnknownIOErrorWhileTryingToFindExecutableServices = 505,
-    ExecutableServiceStartError = 506,
-    //ping service
-    PingExecutionServiceError = 507,
-    //web services launcher service
-    CustomWebServiceStartError = 508,
-}
+        //ping service
+        PingExecutionServiceError = 507,
 
-public static class StatusMessageExt {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Success(this StatusMessage message) =>
-        message == StatusMessage.Ok;
-    
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool Failure(this StatusMessage message) =>
-        message != StatusMessage.Ok;
-}
+        //web services launcher service
+        CustomWebServiceStartError = 508,
+    }
 
+    public static class StatusMessageExt
+    {
+        public static bool Failure(this StatusMessage message) =>
+            message != StatusMessage.Ok;
+    }
 }

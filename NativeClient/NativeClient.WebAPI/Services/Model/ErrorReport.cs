@@ -1,10 +1,12 @@
 using Data.Model.ResultsModel;
 
-namespace NativeClient.WebAPI.Services.Model {
-    
-public class ErrorReport {
-    public StatusMessage status { get;set; }
-    public string statusString { get;set; }
-}
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
+namespace NativeClient.WebAPI.Services.Model
+{
+    public class ErrorReport
+    {
+        public StatusMessage Status { get; set; }
+        public string StatusString { get; set; }
+    }
 }

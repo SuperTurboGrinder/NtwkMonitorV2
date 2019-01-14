@@ -1,9 +1,9 @@
-namespace NativeClient.WebAPI.Services.Model {
-    
-public class PingTestData {
-    public int num { get;set; } = 0;
-    public int failed { get;set; } = 0;
-    public long avg { get;set; } = 0;
-}
-
+namespace NativeClient.WebAPI.Services.Model
+{
+    public class PingTestData
+    {
+        public int Num { get; set; }
+        public int Failed { get; set; }
+        public long Avg { get; set; }
+    }
 }

@@ -86,11 +86,11 @@ export class NtwkNodeFormComponent
     protected newEmptyData(): NtwkNode {
         return {
             id: 0,
-            parentID: null,
+            parentId: null,
             parentPort: null,
             name: '',
             ipStr: '',
-            isOpenSSH: false,
+            isOpenSsh: false,
             isOpenTelnet: false,
             isOpenPing: true
         };
@@ -100,7 +100,7 @@ export class NtwkNodeFormComponent
         return obj.parentPort === this.data.parentPort
             && obj.name === this.data.name
             && obj.ipStr === this.data.ipStr
-            && obj.isOpenSSH === this.data.isOpenSSH
+            && obj.isOpenSsh === this.data.isOpenSsh
             && obj.isOpenTelnet === this.data.isOpenTelnet
             && obj.isOpenPing === this.data.isOpenPing;
     }
@@ -108,11 +108,11 @@ export class NtwkNodeFormComponent
     protected makeCopy(orig: NtwkNode): NtwkNode {
         return {
             id: orig.id,
-            parentID: orig.parentID,
+            parentId: orig.parentId,
             parentPort: orig.parentPort,
             name: orig.name,
             ipStr: orig.ipStr,
-            isOpenSSH: orig.isOpenSSH,
+            isOpenSsh: orig.isOpenSsh,
             isOpenTelnet: orig.isOpenTelnet,
             isOpenPing: orig.isOpenPing
         };

@@ -44,10 +44,7 @@ namespace NativeClient.WebAPI.Migrations
                     DepthMonitoring = table.Column<bool>(nullable: false),
                     MonitorInterval = table.Column<int>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Profiles", x => x.ID);
-                });
+                constraints: table => { table.PrimaryKey("PK_Profiles", x => x.ID); });
 
             migrationBuilder.CreateTable(
                 name: "Tags",
@@ -57,10 +54,7 @@ namespace NativeClient.WebAPI.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tags", x => x.ID);
-                });
+                constraints: table => { table.PrimaryKey("PK_Tags", x => x.ID); });
 
             migrationBuilder.CreateTable(
                 name: "WebServices",
@@ -74,10 +68,7 @@ namespace NativeClient.WebAPI.Migrations
                     Parametr2Name = table.Column<string>(nullable: true),
                     Parametr3Name = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_WebServices", x => x.ID);
-                });
+                constraints: table => { table.PrimaryKey("PK_WebServices", x => x.ID); });
 
             migrationBuilder.CreateTable(
                 name: "NodesClosureTable",

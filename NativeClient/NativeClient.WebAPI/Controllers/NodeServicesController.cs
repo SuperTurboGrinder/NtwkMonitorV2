@@ -1,138 +1,144 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using System.Net;
-
-using Data.Model.ViewModel;
+using System.Threading.Tasks;
 using Data.Abstract.DataAccessServices;
 using Data.Model.ResultsModel;
+using Microsoft.AspNetCore.Mvc;
 using NativeClient.WebAPI.Abstract;
 using NativeClient.WebAPI.Services.Model;
 
-namespace NativeClient.WebAPI.Controllers {
+namespace NativeClient.WebAPI.Controllers
+{
+    [Route("api/services")]
+    public class NodeServicesController : BaseDataController
+    {
+        readonly INodesServicesDataService _data;
+        readonly IExecutablesManagerService _execServices;
+        readonly IPingService _pingService;
+        readonly IWebServiceLauncherService _webServices;
 
-[Route("api/services")]
-public class NodeServicesController : BaseDataController {
-    readonly INodesServicesDataService data;
-    readonly IPingService pingService;
-    readonly IExecutablesManagerService execServices;
-    readonly IWebServiceLauncherService webServices;
-
-    public NodeServicesController(
-        INodesServicesDataService _data,
-        IPingService _pingService,
-        IExecutablesManagerService _execServices,
-        IWebServiceLauncherService _webServices,
-        IErrorReportAssemblerService _errAssembler
-    ) : base(_errAssembler) {
-        data = _data;
-        pingService = _pingService;
-        execServices = _execServices;
-        webServices = _webServices;
-    }
-
-    async Task<ActionResult> ObserveAsyncDataOperationResultWithIP<T>(
-        int nodeID,
-        Func<IPAddress, Task<DataActionResult<T>>> operation
-    ) {
-        DataActionResult<IPAddress> nodeIPResult = await data.GetNodeIP(nodeID);
-        return nodeIPResult.Status.Failure()
-            ? BadRequest(nodeIPResult.Status)
-            : ObserveDataOperationResult(
-                await operation(nodeIPResult.Result)
-            );
-    }
-
-    async Task<ActionResult> ObserveAsyncDataOperationResultWithIPList<T>(
-        IEnumerable<int> nodesIDs,
-        Func<IEnumerable<IPAddress>, Task<DataActionResult<T>>> operation
-    ) {
-        DataActionResult<IEnumerable<IPAddress>> nodesIPsResult =
-            await data.GetNodesIPs(nodesIDs);
-        return nodesIPsResult.Status.Failure()
-            ? BadRequest(nodesIPsResult.Status)
-            : ObserveDataOperationResult(
-                await operation(nodesIPsResult.Result)
-            );
-    }
-
-    async Task<ActionResult> ObserveDataOperationStatusWithIP(
-        int nodeID,
-        Func<IPAddress, StatusMessage> operation
-    ) {
-        DataActionResult<IPAddress> nodeIPResult = await data.GetNodeIP(nodeID);
-        return nodeIPResult.Status.Failure()
-            ? BadRequest(nodeIPResult.Status)
-            : ObserveDataOperationStatus(
-                operation(nodeIPResult.Result)
-            );
-    }
-
-    async Task<ActionResult> OpenExecutableService(
-        int nodeID,
-        ExecutableServicesTypes serviceType
-    ) {
-        return await ObserveDataOperationStatusWithIP(
-            nodeID,
-            (IPAddress ip) => execServices.ExecuteService(serviceType, ip)
-        );
-    }
-    
-    // GET api/services/ping/1
-    [HttpGet("ping/{nodeID:int}")]
-    public async Task<ActionResult> GetNodePing(int nodeID) {
-        return await ObserveAsyncDataOperationResultWithIP(
-            nodeID,
-            async (IPAddress ip) => await pingService.TestConnectionAsync(ip)
-        );
-    }
-
-    // POST api/services/pingList
-    [HttpPost("pingList")]
-    public async Task<ActionResult> GetNodesListPing(
-        [FromBody] int[] nodesIDs
-    ) {
-        return await ObserveAsyncDataOperationResultWithIPList(
-            nodesIDs,
-            async (IEnumerable<IPAddress> ips) =>
-                await pingService.TestConnectionListAsync(ips)
-        );
-    }
-
-    //GET api/services/ssh/1
-    [HttpGet("ssh/{nodeID:int}")]
-    public async Task<ActionResult> OpenSSHService(int nodeID) {
-        return await OpenExecutableService(nodeID, ExecutableServicesTypes.SSH);
-    }
-
-    //GET api/services/telnet/1
-    [HttpGet("telnet/{nodeID:int}")]
-    public async Task<ActionResult> OpenTelnetService(int nodeID) {
-        return await OpenExecutableService(nodeID, ExecutableServicesTypes.Telnet);
-    }
-    
-    //GET api/services/customWebService/1/1
-    [HttpGet("customWebService/{nodeID:int}/{cwsID:int}")]
-    public async Task<ActionResult> OpenWebService(int nodeID, int cwsID) {
-        DataActionResult<string> webServiceStringResult =
-            await data.GetCWSBoundingString(nodeID, cwsID);
-        if(webServiceStringResult.Status.Failure()) {
-            return ObserveDataOperationStatus(webServiceStringResult.Status);
+        public NodeServicesController(
+            INodesServicesDataService data,
+            IPingService pingService,
+            IExecutablesManagerService execServices,
+            IWebServiceLauncherService webServices,
+            IErrorReportAssemblerService errAssembler
+        ) : base(errAssembler)
+        {
+            _data = data;
+            _pingService = pingService;
+            _execServices = execServices;
+            _webServices = webServices;
         }
-        return ObserveDataOperationStatus(
-            webServices.Start(webServiceStringResult.Result)
-        );
-    }
 
-    //GET api/services/customWebServiceString/1/1
-    [HttpGet("customWebServiceString/{nodeID:int}/{cwsID:int}")]
-    public async Task<ActionResult> GetWebServiceString(int nodeID, int cwsID) {
-        return ObserveDataOperationResult(
-            await data.GetCWSBoundingString(nodeID, cwsID)
-        );
-    }
-}
+        async Task<ActionResult> ObserveAsyncDataOperationResultWithIp<T>(
+            int nodeId,
+            Func<IPAddress, Task<DataActionResult<T>>> operation
+        )
+        {
+            DataActionResult<IPAddress> nodeIpResult = await _data.GetNodeIp(nodeId);
+            return nodeIpResult.Status.Failure()
+                ? BadRequest(nodeIpResult.Status)
+                : ObserveDataOperationResult(
+                    await operation(nodeIpResult.Result)
+                );
+        }
 
+        async Task<ActionResult> ObserveAsyncDataOperationResultWithIpList<T>(
+            IEnumerable<int> nodesIDs,
+            Func<IEnumerable<IPAddress>, Task<DataActionResult<T>>> operation
+        )
+        {
+            DataActionResult<IEnumerable<IPAddress>> nodesIPsResult =
+                await _data.GetNodesIPs(nodesIDs);
+            return nodesIPsResult.Status.Failure()
+                ? BadRequest(nodesIPsResult.Status)
+                : ObserveDataOperationResult(
+                    await operation(nodesIPsResult.Result)
+                );
+        }
+
+        async Task<ActionResult> ObserveDataOperationStatusWithIp(
+            int nodeId,
+            Func<IPAddress, StatusMessage> operation
+        )
+        {
+            DataActionResult<IPAddress> nodeIpResult = await _data.GetNodeIp(nodeId);
+            return nodeIpResult.Status.Failure()
+                ? BadRequest(nodeIpResult.Status)
+                : ObserveDataOperationStatus(
+                    operation(nodeIpResult.Result)
+                );
+        }
+
+        async Task<ActionResult> OpenExecutableService(
+            int nodeId,
+            ExecutableServicesTypes serviceType
+        )
+        {
+            return await ObserveDataOperationStatusWithIp(
+                nodeId,
+                ip => _execServices.ExecuteService(serviceType, ip)
+            );
+        }
+
+        // GET api/services/ping/1
+        [HttpGet("ping/{nodeID:int}")]
+        public async Task<ActionResult> GetNodePing(int nodeId)
+        {
+            return await ObserveAsyncDataOperationResultWithIp(
+                nodeId,
+                async ip => await _pingService.TestConnectionAsync(ip)
+            );
+        }
+
+        // POST api/services/pingList
+        [HttpPost("pingList")]
+        public async Task<ActionResult> GetNodesListPing(
+            [FromBody] int[] nodesIDs
+        )
+        {
+            return await ObserveAsyncDataOperationResultWithIpList(
+                nodesIDs,
+                async ips => await _pingService.TestConnectionListAsync(ips)
+            );
+        }
+
+        //GET api/services/ssh/1
+        [HttpGet("ssh/{nodeID:int}")]
+        public async Task<ActionResult> OpenSshService(int nodeId)
+        {
+            return await OpenExecutableService(nodeId, ExecutableServicesTypes.Ssh);
+        }
+
+        //GET api/services/telnet/1
+        [HttpGet("telnet/{nodeID:int}")]
+        public async Task<ActionResult> OpenTelnetService(int nodeId)
+        {
+            return await OpenExecutableService(nodeId, ExecutableServicesTypes.Telnet);
+        }
+
+        //GET api/services/customWebService/1/1
+        [HttpGet("customWebService/{nodeID:int}/{cwsID:int}")]
+        public async Task<ActionResult> OpenWebService(int nodeId, int cwsId)
+        {
+            DataActionResult<string> webServiceStringResult =
+                await _data.GetCwsBoundingString(nodeId, cwsId);
+            if (webServiceStringResult.Status.Failure())
+                return ObserveDataOperationStatus(webServiceStringResult.Status);
+            return ObserveDataOperationStatus(
+                _webServices.Start(webServiceStringResult.Result)
+            );
+        }
+
+        //GET api/services/customWebServiceString/1/1
+        [HttpGet("customWebServiceString/{nodeID:int}/{cwsID:int}")]
+        public async Task<ActionResult> GetWebServiceString(int nodeId, int cwsId)
+        {
+            return ObserveDataOperationResult(
+                await _data.GetCwsBoundingString(nodeId, cwsId)
+            );
+        }
+    }
 }

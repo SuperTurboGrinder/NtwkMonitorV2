@@ -4,7 +4,7 @@ export class MonitoringSession {
 
     constructor(
         public id: number,
-        public createdByProfileID: number,
+        public createdByProfileId: number,
         public participatingNodesNum: number,
         public creationTime: number,
         public lastPulseTime: number

@@ -1,17 +1,17 @@
-using System.Threading.Tasks;
-using System.Net;
 using System.Collections.Generic;
-
-using NativeClient.WebAPI.Services.Model;
+using System.Net;
+using System.Threading.Tasks;
 using Data.Model.ResultsModel;
+using NativeClient.WebAPI.Services.Model;
 
-namespace NativeClient.WebAPI.Abstract {
+namespace NativeClient.WebAPI.Abstract
+{
+    public interface IPingService
+    {
+        Task<DataActionResult<PingTestData>> TestConnectionAsync(IPAddress ip);
 
-public interface IPingService {
-    Task<DataActionResult<PingTestData>> TestConnectionAsync(IPAddress ip);
-    Task<DataActionResult<IEnumerable<PingTestData>>> TestConnectionListAsync(
-        IEnumerable<IPAddress> ips
-    );
-}
-
+        Task<DataActionResult<IEnumerable<PingTestData>>> TestConnectionListAsync(
+            IEnumerable<IPAddress> ips
+        );
+    }
 }

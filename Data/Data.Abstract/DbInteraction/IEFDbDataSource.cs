@@ -1,80 +1,85 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
 using Data.Model.EFDbModel;
 
-namespace Data.Abstract.DbInteraction {
-
+namespace Data.Abstract.DbInteraction
+{
 //only raw ef operations
 //no validation
 //no exception handling
-public interface IEFDbDataSource {
-    Task<MonitoringSession> GetNewSession(
-        int profileID
-    );
-    Task<MonitoringPulseResult> SavePulseResult(
-        int sessionID,
-        MonitoringPulseResult pulseResult,
-        IEnumerable<MonitoringMessage> messages
-    );
-    Task ClearEmptySessions();
+    public interface IEfDbDataSource
+    {
+        Task<MonitoringSession> GetNewSession(
+            int profileId
+        );
 
-    Task<IEnumerable<MonitoringSession>> GetSessionsForProfile(int profileID);
-    //includes messages
-    Task<IEnumerable<MonitoringPulseResult>> GetSessionReport(int monitoringSessionID);
+        Task<MonitoringPulseResult> SavePulseResult(
+            int sessionId,
+            MonitoringPulseResult pulseResult,
+            IEnumerable<MonitoringMessage> messages
+        );
 
-    //for input validation
-    Task<bool> HasChildren(int nodeID);
-    Task<bool> CheckIfNodeExists(int nodeID);
-    Task<bool> CheckIfProfileExists(int profileID);
-    Task<bool> CheckIfSessionExists(int sessionID);
-    Task<bool> CheckIfCWSBindingExists(int cwsID, int nodeID);
-    Task<bool> CheckIfTagExists(int tagID);
-    Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
-    Task<bool> CheckIfTagNameExists(string name, int? exceptID);
-    Task<bool> CheckIfNodeNameExists(string name, int? exceptID);
-    Task<bool> CheckIfCWSNameExists(string name, int? exceptID);
-    Task<bool> CheckIfProfileNameExists(string name, int? exceptID);
-    Task<bool> CheckIfNodeInSubtree(int nodeID, int subtreeRootNodeID);
-    Task<int> GetCWSParamNumber(int cwsID); //-1 if cws does not exist
+        Task ClearEmptySessions();
 
-    Task MoveNodesSubtree(int nodeID, int newParentID);
-    Task<IEnumerable<Profile>> GetAllProfiles();
-    Task<Model.IntermediateModel.AllRawNodesData> GetAllNodesData();
-    Task<uint> GetNodeIP(int nodeID);
-    Task<IEnumerable<int>> GetTaggedNodesIDs(int tagID);
-    Task<Model.ViewModel.TagFilterData> GetProfileViewTagFilterData(int profileID);
-    Task<Model.ViewModel.TagFilterData> GetProfileMonitorTagFilterData(int profileID);
-    Task<IEnumerable<NodeTag>> GetAllTags();
-    Task<IEnumerable<CustomWebService>> GetAllCWS();
-    Task<string> GetCWSBoundingString(int nodeID, int cwsID);
+        Task<IEnumerable<MonitoringSession>> GetSessionsForProfile(int profileId);
 
-    Task<Profile> CreateProfile(Profile profile);
-    Task<NtwkNode> CreateNodeOnRoot(NtwkNode node);
-    Task<NtwkNode> CreateNodeWithParent(NtwkNode node, int parentID);
-    Task<NodeTag> CreateTag(NodeTag tag);
-    Task CreateWebServiceBinding(int nodeID, int cwsID,
-        string param1, string param2, string param3);
-    Task<CustomWebService> CreateCustomWebService(CustomWebService cws);
+        //includes messages
+        Task<IEnumerable<MonitoringPulseResult>> GetSessionReport(int monitoringSessionId);
 
-    Task SetNodeTags(int nodeID, IEnumerable<int> tagIDs);
-    Task SetProfileViewTagsSelection(int profileID, IEnumerable<int> tagIDs);
-    Task SetProfileViewTagsSelectionToProfileMonitorTagsSelection(int profileID);
-    Task SetProfileMonitorTagsSelection(int profileID, IEnumerable<int> tagIDs);
-    Task SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileID);
+        //for input validation
+        Task<bool> HasChildren(int nodeId);
+        Task<bool> CheckIfNodeExists(int nodeId);
+        Task<bool> CheckIfProfileExists(int profileId);
+        Task<bool> CheckIfSessionExists(int sessionId);
+        Task<bool> CheckIfCwsBindingExists(int cwsId, int nodeId);
+        Task<bool> CheckIfTagExists(int tagId);
+        Task<bool> CheckIfTagsExist(IEnumerable<int> tagsIDs);
+        Task<bool> CheckIfTagNameExists(string name, int? exceptId);
+        Task<bool> CheckIfNodeNameExists(string name, int? exceptId);
+        Task<bool> CheckIfCwsNameExists(string name, int? exceptId);
+        Task<bool> CheckIfProfileNameExists(string name, int? exceptId);
+        Task<bool> CheckIfNodeInSubtree(int nodeId, int subtreeRootNodeId);
+        Task<int> GetCwsParamNumber(int cwsId); //-1 if cws does not exist
 
-    Task UpdateProfile(Profile profile);
-    Task UpdateTag(NodeTag tag);
-    Task UpdateNode(NtwkNode node);
-    Task UpdateCustomWebService(CustomWebService cws);
-    Task UpdateWebServiceBinding(int nodeID, int cwsID,
-        string param1, string param2, string param3);
+        Task MoveNodesSubtree(int nodeId, int newParentId);
+        Task<IEnumerable<Profile>> GetAllProfiles();
+        Task<Model.IntermediateModel.AllRawNodesData> GetAllNodesData();
+        Task<uint> GetNodeIp(int nodeId);
+        Task<IEnumerable<int>> GetTaggedNodesIDs(int tagId);
+        Task<Model.ViewModel.TagFilterData> GetProfileViewTagFilterData(int profileId);
+        Task<Model.ViewModel.TagFilterData> GetProfileMonitorTagFilterData(int profileId);
+        Task<IEnumerable<NodeTag>> GetAllTags();
+        Task<IEnumerable<CustomWebService>> GetAllCws();
+        Task<string> GetCwsBoundingString(int nodeId, int cwsId);
 
-    Task<Profile> RemoveProfile(int profileID);
-    Task<NtwkNode> RemoveNode(int nodeID);
-    Task<NodeTag> RemoveTag(int nodeID);
-    Task<CustomWebService> RemoveCustomWebService(int cwsID);
-    Task RemoveWebServiceBinding(int nodeID, int cwsID);
-}
+        Task<Profile> CreateProfile(Profile profile);
+        Task<NtwkNode> CreateNodeOnRoot(NtwkNode node);
+        Task<NtwkNode> CreateNodeWithParent(NtwkNode node, int parentId);
+        Task<NodeTag> CreateTag(NodeTag tag);
 
+        Task CreateWebServiceBinding(int nodeId, int cwsId,
+            string param1, string param2, string param3);
+
+        Task<CustomWebService> CreateCustomWebService(CustomWebService cws);
+
+        Task SetNodeTags(int nodeId, IEnumerable<int> tagIDs);
+        Task SetProfileViewTagsSelection(int profileId, IEnumerable<int> tagIDs);
+        Task SetProfileViewTagsSelectionToProfileMonitorTagsSelection(int profileId);
+        Task SetProfileMonitorTagsSelection(int profileId, IEnumerable<int> tagIDs);
+        Task SetProfileMonitorTagsSelectionToProfileViewTagsSelection(int profileId);
+
+        Task UpdateProfile(Profile profile);
+        Task UpdateTag(NodeTag tag);
+        Task UpdateNode(NtwkNode node);
+        Task UpdateCustomWebService(CustomWebService cws);
+
+        Task UpdateWebServiceBinding(int nodeId, int cwsId,
+            string param1, string param2, string param3);
+
+        Task<Profile> RemoveProfile(int profileId);
+        Task<NtwkNode> RemoveNode(int nodeId);
+        Task<NodeTag> RemoveTag(int nodeId);
+        Task<CustomWebService> RemoveCustomWebService(int cwsId);
+        Task RemoveWebServiceBinding(int nodeId, int cwsId);
+    }
 }

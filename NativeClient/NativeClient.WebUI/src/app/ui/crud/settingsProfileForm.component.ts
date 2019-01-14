@@ -60,7 +60,7 @@ export class SettingsProfileFormComponent
             && obj.startMonitoringOnLaunch === this.data.startMonitoringOnLaunch
             && obj.depthMonitoring === this.data.depthMonitoring
             && obj.monitorInterval === this.data.monitorInterval
-            && obj.realTimePingUIUpdate === this.data.realTimePingUIUpdate;
+            && obj.realTimePingUiUpdate === this.data.realTimePingUiUpdate;
     }
 
     protected makeCopy(orig: SettingsProfile): SettingsProfile {
@@ -70,7 +70,7 @@ export class SettingsProfileFormComponent
             orig.startMonitoringOnLaunch,
             orig.depthMonitoring,
             orig.monitorInterval,
-            orig.realTimePingUIUpdate
+            orig.realTimePingUiUpdate
         );
     }
 

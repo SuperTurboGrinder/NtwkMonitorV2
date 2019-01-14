@@ -1,11 +1,11 @@
 export class NtwkNode {
     constructor(
         public id: number,
-        public parentID: number,
+        public parentId: number,
         public parentPort: number,
         public name: string,
         public ipStr: string,
-        public isOpenSSH: boolean,
+        public isOpenSsh: boolean,
         public isOpenTelnet: boolean,
         public isOpenPing: boolean
     ) {}

@@ -1,181 +1,213 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-
 using Data.Abstract.DataAccessServices;
 using Data.Abstract.DbInteraction;
 using Data.Abstract.Validation;
 using Data.Abstract.Converters;
 using Data.Model.ViewModel;
-using EFDbModel = Data.Model.EFDbModel;
 using Data.Model.ResultsModel;
 
-namespace Data.DataServices.Services {
+namespace Data.DataServices.Services
+{
+    public class CustomWebServicesDataService
+        : BaseDataService, ICustomWebServicesDataService
+    {
+        readonly IViewModelValidator _validator;
+        readonly IViewModelToEfModelConverter _viewToEfConverter;
+        readonly IEfModelToViewModelConverter _efToViewConverter;
 
-public class CustomWebServicesDataService
-    : BaseDataService, ICustomWebServicesDataService {
-    readonly IViewModelValidator validator;
-    readonly IViewModelToEFModelConverter viewToEFConverter;
-    readonly IEFModelToViewModelConverter EFToViewConverter;
-
-    public CustomWebServicesDataService(
-        IDataRepository _repo,
-        IViewModelValidator _validator,
-        IViewModelToEFModelConverter _viewToEFConverter,
-        IEFModelToViewModelConverter _EFToViewConverter
-    ) : base(_repo) {
-        validator = _validator;
-        viewToEFConverter = _viewToEFConverter;
-        EFToViewConverter = _EFToViewConverter;
-    }
-    
-    public async Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCWS() {
-        return FailOrConvert(
-            await repo.GetAllCWS(),
-            EnM => EnM.Select(m => EFToViewConverter.Convert(m))
-        );
-    }
-
-    async Task<StatusMessage> CWSBindingValidationRoutine(
-        int nodeID,
-        int cwsID,
-        string param1,
-        string param2,
-        string param3
-    ) {
-        StatusMessage idValidationStatus = await ValidateNodeID(nodeID);
-        if(idValidationStatus.Failure()) {
-            return idValidationStatus;
+        public CustomWebServicesDataService(
+            IDataRepository repo,
+            IViewModelValidator validator,
+            IViewModelToEfModelConverter viewToEfConverter,
+            IEfModelToViewModelConverter efToViewConverter
+        ) : base(repo)
+        {
+            _validator = validator;
+            _viewToEfConverter = viewToEfConverter;
+            _efToViewConverter = efToViewConverter;
         }
-        DataActionResult<int> paramNumResult =
-            await GetCWSParamNumber(cwsID);
-        if(paramNumResult.Status.Failure()) {
-            return paramNumResult.Status;
+
+        public async Task<DataActionResult<IEnumerable<CustomWebService>>> GetAllCws()
+        {
+            return FailOrConvert(
+                await Repo.GetAllCws(),
+                enM => enM.Select(m => _efToViewConverter.Convert(m))
+            );
         }
-        int n = paramNumResult.Result;
-        return (
-            (n != 0 && param1 == null) ||
-            (n > 1 && param2 == null) ||
-            (n == 3 && param3 == null)
+
+        async Task<StatusMessage> CwsBindingValidationRoutine(
+            int nodeId,
+            int cwsId,
+            string param1,
+            string param2,
+            string param3
         )
-            ? StatusMessage.ServiceBindingSetParementersValueCanNotBeNull
-            : (
-                (n < 3 && param3 != null) ||
-                (n < 2 && param2 != null) ||
-                (n == 0 && param1 != null)
+        {
+            StatusMessage idValidationStatus = await ValidateNodeId(nodeId);
+            if (idValidationStatus.Failure())
+            {
+                return idValidationStatus;
+            }
+
+            DataActionResult<int> paramNumResult =
+                await GetCwsParamNumber(cwsId);
+            if (paramNumResult.Status.Failure())
+            {
+                return paramNumResult.Status;
+            }
+
+            int n = paramNumResult.Result;
+            return (
+                (n != 0 && param1 == null) ||
+                (n > 1 && param2 == null) ||
+                (n == 3 && param3 == null)
             )
-                ? StatusMessage.RedundantParameterValuesInServiceBinding
-                : StatusMessage.Ok;
-    }
-    
-    public async Task<StatusMessage> CreateWebServiceBinding(
-        int nodeID,
-        int cwsID,
-        string param1,
-        string param2,
-        string param3
-    ) {
-        StatusMessage wsbValidationStatus = await CWSBindingValidationRoutine(
-            nodeID, cwsID, param1, param2, param3
-        );
-        if(wsbValidationStatus.Failure()) {
-            return wsbValidationStatus;
+                ? StatusMessage.ServiceBindingSetParementersValueCanNotBeNull
+                : (
+                    (n < 3 && param3 != null) ||
+                    (n < 2 && param2 != null) ||
+                    (n == 0 && param1 != null)
+                )
+                    ? StatusMessage.RedundantParameterValuesInServiceBinding
+                    : StatusMessage.Ok;
         }
-        StatusMessage newUniqBindingStatus = await FailIfCWSBindingExists(cwsID, nodeID);
-        if(newUniqBindingStatus.Failure()) {
-            return newUniqBindingStatus;
+
+        public async Task<StatusMessage> CreateWebServiceBinding(
+            int nodeId,
+            int cwsId,
+            string param1,
+            string param2,
+            string param3
+        )
+        {
+            StatusMessage wsbValidationStatus = await CwsBindingValidationRoutine(
+                nodeId, cwsId, param1, param2, param3
+            );
+            if (wsbValidationStatus.Failure())
+            {
+                return wsbValidationStatus;
+            }
+
+            StatusMessage newUniqBindingStatus = await FailIfCwsBindingExists(cwsId, nodeId);
+            if (newUniqBindingStatus.Failure())
+            {
+                return newUniqBindingStatus;
+            }
+
+            return await Repo.CreateWebServiceBinding(nodeId, cwsId, param1, param2, param3);
         }
-        return await repo.CreateWebServiceBinding(nodeID, cwsID, param1, param2, param3);
-    }
-    
-    public async Task<DataActionResult<CustomWebService>> CreateCustomWebService(
-        CustomWebService cws
-    ) {
-        StatusMessage validationStatus = validator.Validate(cws);
-        if(validationStatus.Failure()) {
-            return DataActionResult<CustomWebService>.Failed(validationStatus);
+
+        public async Task<DataActionResult<CustomWebService>> CreateCustomWebService(
+            CustomWebService cws
+        )
+        {
+            StatusMessage validationStatus = _validator.Validate(cws);
+            if (validationStatus.Failure())
+            {
+                return DataActionResult<CustomWebService>.Failed(validationStatus);
+            }
+
+            StatusMessage nameExistsStatus =
+                await FailIfCwsNameExists(cws.Name);
+            if (nameExistsStatus.Failure())
+            {
+                return DataActionResult<CustomWebService>.Failed(nameExistsStatus);
+            }
+
+            return FailOrConvert(
+                await Repo.CreateCustomWebService(_viewToEfConverter.Convert(cws)),
+                created => _efToViewConverter.Convert(created)
+            );
         }
-        StatusMessage nameExistsStatus =
-            await FailIfCWSNameExists(cws.Name);
-        if(nameExistsStatus.Failure()) {
-            return DataActionResult<CustomWebService>.Failed(nameExistsStatus);
-        }
-        return FailOrConvert(
-            await repo.CreateCustomWebService(viewToEFConverter.Convert(cws)),
-            created => EFToViewConverter.Convert(created)
-        );
-    }
-    
-    
-    public async Task<StatusMessage> UpdateCustomWebService(
-        CustomWebService cws
-    ) {
-        StatusMessage idExistsStatus =
-            (await GetCWSParamNumber(cws.ID)).Status;
-        if(idExistsStatus.Failure()) {
-            return idExistsStatus;
-        }
-        StatusMessage validationStatus = validator.Validate(cws);
-        if(validationStatus.Failure()) {
-            return validationStatus;
-        }
-        StatusMessage nameExistsStatus =
-            await FailIfCWSNameExists(cws.Name, updatingCWSID: cws.ID);
-        if(nameExistsStatus.Failure()) {
-            return nameExistsStatus;
-        }
-        return await repo.UpdateCustomWebService(viewToEFConverter.Convert(cws));
-    }
-    
-    public async Task<StatusMessage> UpdateWebServiceBinding(
-        int nodeID,
-        int cwsID,
-        string param1,
-        string param2,
-        string param3
-    ) {
-        StatusMessage validationStatus = await CWSBindingValidationRoutine(
-            nodeID, cwsID, param1, param2, param3
-        );
-        if(validationStatus.Failure()) {
-            return validationStatus;
-        }
-        return await repo.UpdateWebServiceBinding(
-            nodeID, cwsID, param1, param2, param3
-        );
-    }
 
 
-    public async Task<DataActionResult<CustomWebService>> RemoveCustomWebService(
-        int cwsID
-    ) {
-        StatusMessage idExistsStatus =
-            (await GetCWSParamNumber(cwsID)).Status;
-        if(idExistsStatus.Failure()) {
-            return DataActionResult<CustomWebService>.Failed(idExistsStatus);
-        }
-        return FailOrConvert(
-            await repo.RemoveCustomWebService(cwsID),
-            cws => EFToViewConverter.Convert(cws)
-        );
-    }
-    
-    public async Task<StatusMessage> RemoveWebServiceBinding(
-        int nodeID,
-        int cwsID
-    ) {
-        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
-        if(nodeIDValidationStatus.Failure()) {
-            return nodeIDValidationStatus;
-        }
-        StatusMessage cwsIDValidationStatus =
-            (await GetCWSParamNumber(cwsID)).Status;
-        if(cwsIDValidationStatus.Failure()) {
-            return cwsIDValidationStatus;
-        }
-        return await repo.RemoveWebServiceBinding(nodeID, cwsID);
-    }
-}
+        public async Task<StatusMessage> UpdateCustomWebService(
+            CustomWebService cws
+        )
+        {
+            StatusMessage idExistsStatus =
+                (await GetCwsParamNumber(cws.Id)).Status;
+            if (idExistsStatus.Failure())
+            {
+                return idExistsStatus;
+            }
 
+            StatusMessage validationStatus = _validator.Validate(cws);
+            if (validationStatus.Failure())
+            {
+                return validationStatus;
+            }
+
+            StatusMessage nameExistsStatus =
+                await FailIfCwsNameExists(cws.Name, cws.Id);
+            if (nameExistsStatus.Failure())
+            {
+                return nameExistsStatus;
+            }
+
+            return await Repo.UpdateCustomWebService(_viewToEfConverter.Convert(cws));
+        }
+
+        public async Task<StatusMessage> UpdateWebServiceBinding(
+            int nodeId,
+            int cwsId,
+            string param1,
+            string param2,
+            string param3
+        )
+        {
+            StatusMessage validationStatus = await CwsBindingValidationRoutine(
+                nodeId, cwsId, param1, param2, param3
+            );
+            if (validationStatus.Failure())
+            {
+                return validationStatus;
+            }
+
+            return await Repo.UpdateWebServiceBinding(
+                nodeId, cwsId, param1, param2, param3
+            );
+        }
+
+
+        public async Task<DataActionResult<CustomWebService>> RemoveCustomWebService(
+            int cwsId
+        )
+        {
+            StatusMessage idExistsStatus =
+                (await GetCwsParamNumber(cwsId)).Status;
+            if (idExistsStatus.Failure())
+            {
+                return DataActionResult<CustomWebService>.Failed(idExistsStatus);
+            }
+
+            return FailOrConvert(
+                await Repo.RemoveCustomWebService(cwsId),
+                cws => _efToViewConverter.Convert(cws)
+            );
+        }
+
+        public async Task<StatusMessage> RemoveWebServiceBinding(
+            int nodeId,
+            int cwsId
+        )
+        {
+            StatusMessage nodeIdValidationStatus = await ValidateNodeId(nodeId);
+            if (nodeIdValidationStatus.Failure())
+            {
+                return nodeIdValidationStatus;
+            }
+
+            StatusMessage cwsIdValidationStatus =
+                (await GetCwsParamNumber(cwsId)).Status;
+            if (cwsIdValidationStatus.Failure())
+            {
+                return cwsIdValidationStatus;
+            }
+
+            return await Repo.RemoveWebServiceBinding(nodeId, cwsId);
+        }
+    }
 }

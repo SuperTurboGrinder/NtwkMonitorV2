@@ -44,7 +44,7 @@ export class NodeInfoPopupComponent implements OnDestroy {
         if (this.data.node.isOpenTelnet === true) {
             services.push('Telnet');
         }
-        if (this.data.node.isOpenSSH === true) {
+        if (this.data.node.isOpenSsh === true) {
             services.push('SSH');
         }
         if (this.data.node.isOpenPing === true) {

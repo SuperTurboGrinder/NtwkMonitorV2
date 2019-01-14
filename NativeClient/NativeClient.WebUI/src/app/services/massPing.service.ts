@@ -72,7 +72,7 @@ export class MassPingService implements OnDestroy {
     ) {
         this.settingsSubscription = settingsService.subscribeToSettingsChange(
             settings => {
-                this.realTimePingUpdate = settings.profile.realTimePingUIUpdate;
+                this.realTimePingUpdate = settings.profile.realTimePingUiUpdate;
         });
     }
 

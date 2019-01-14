@@ -1,8 +1,8 @@
-namespace Data.Model.ViewModel {
-
-public class NodeTag {
-    public int ID;
-    public string Name;
-}
-
+namespace Data.Model.ViewModel
+{
+    public class NodeTag
+    {
+        public int Id;
+        public string Name;
+    }
 }

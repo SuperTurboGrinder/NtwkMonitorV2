@@ -1,61 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Net;
-
-using Data.Model.ViewModel;
+﻿using System.Threading.Tasks;
 using Data.Abstract.DataAccessServices;
+using Data.Model.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 using NativeClient.WebAPI.Abstract;
 
-namespace NativeClient.WebAPI.Controllers {
+namespace NativeClient.WebAPI.Controllers
+{
+    [Route("api/monitorSessions")]
+    public class MonitoringDataController : BaseDataController
+    {
+        readonly IMonitoringDataService _data;
 
-[Route("api/monitorSessions")]
-public class MonitoringDataController : BaseDataController {
-    readonly IMonitoringDataService data;
+        public MonitoringDataController(
+            IMonitoringDataService data,
+            IErrorReportAssemblerService errAssembler
+        ) : base(errAssembler)
+        {
+            _data = data;
+        }
 
-    public MonitoringDataController(
-        IMonitoringDataService _data,
-        IErrorReportAssemblerService _errAssembler
-    ) : base(_errAssembler) {
-        data = _data;
+        // GET api/monitorSessions/forProfile/1
+        [HttpGet("forProfile/{profileID:int}")]
+        public async Task<ActionResult> GetSessionsForProfile(int profileId)
+        {
+            return ObserveDataOperationResult(
+                await _data.GetSessionsForProfile(profileId)
+            );
+        }
+
+        // GET api/monitorSessions/1/report
+        [HttpGet("{sessionID:int}/report")]
+        public async Task<ActionResult> GetSessionReport(int sessionId)
+        {
+            return ObserveDataOperationResult(
+                await _data.GetSessionReport(sessionId)
+            );
+        }
+
+        // POST api/monitorSessions/newFromProfile/1
+        [HttpPost("newFromProfile/{profileID:int}")]
+        public async Task<ActionResult> GetNewSessions(int profileId)
+        {
+            return ObserveDataOperationResult(
+                await _data.GetNewSession(profileId)
+            );
+        }
+
+        // POST api/monitorSessions/1/addPulse
+        [HttpPost("{sessionID:int}/addPulse")]
+        public async Task<ActionResult> SavePulseResult(
+            int sessionId,
+            [FromBody] MonitoringPulseResult pulseResult
+        )
+        {
+            return ObserveDataOperationResult(
+                await _data.SavePulseResult(sessionId, pulseResult, pulseResult.Messages)
+            );
+        }
     }
-
-    // GET api/monitorSessions/forProfile/1
-    [HttpGet("forProfile/{profileID:int}")]
-    public async Task<ActionResult> GetSessionsForProfile(int profileID) {
-        return ObserveDataOperationResult(
-            await data.GetSessionsForProfile(profileID)
-        );
-    }
-
-    // GET api/monitorSessions/1/report
-    [HttpGet("{sessionID:int}/report")]
-    public async Task<ActionResult> GetSessionReport(int sessionID) {
-        return ObserveDataOperationResult(
-            await data.GetSessionReport(sessionID)
-        );
-    }
-
-    // POST api/monitorSessions/newFromProfile/1
-    [HttpPost("newFromProfile/{profileID:int}")]
-    public async Task<ActionResult> GetNewSessions(int profileID) {
-        return ObserveDataOperationResult(
-            await data.GetNewSession(profileID)
-        );
-    }
-
-    // POST api/monitorSessions/1/addPulse
-    [HttpPost("{sessionID:int}/addPulse")]
-    public async Task<ActionResult> SavePulseResult(
-        int sessionID,
-        [FromBody] MonitoringPulseResult pulseResult
-    ) {
-        return ObserveDataOperationResult(
-            await data.SavePulseResult(sessionID, pulseResult, pulseResult.Messages)
-        );
-    }
-}
-
 }

@@ -1,77 +1,73 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Net;
-
 using Data.Abstract.DataAccessServices;
 using Data.Abstract.DbInteraction;
-using Data.Abstract.Validation;
-using Data.Abstract.Converters;
-using Data.Model.ViewModel;
-using EFDbModel = Data.Model.EFDbModel;
 using Data.Model.ResultsModel;
 
-namespace Data.DataServices.Services {
-
-public class NodesServicesDataService
-    : BaseDataService, INodesServicesDataService {
-    readonly IViewModelValidator validator;
-    readonly IViewModelToEFModelConverter viewToEFConverter;
-    readonly IEFModelToViewModelConverter EFToViewConverter;
-
-    public NodesServicesDataService(
-        IDataRepository _repo,
-        IViewModelValidator _validator,
-        IViewModelToEFModelConverter _viewToEFConverter,
-        IEFModelToViewModelConverter _EFToViewConverter
-    ) : base(_repo) {
-        validator = _validator;
-        viewToEFConverter = _viewToEFConverter;
-        EFToViewConverter = _EFToViewConverter;
-    }
-
-    public async Task<DataActionResult<IPAddress>> GetNodeIP(int nodeID) {
-        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
-        if(nodeIDValidationStatus.Failure()) {
-            return DataActionResult<IPAddress>.Failed(nodeIDValidationStatus);
+namespace Data.DataServices.Services
+{
+    public class NodesServicesDataService
+        : BaseDataService, INodesServicesDataService
+    {
+        public NodesServicesDataService(
+            IDataRepository repo
+        ) : base(repo)
+        {
         }
-        return FailOrConvert(
-            await repo.GetNodeIP(nodeID),
-            nIP => new IPAddress(nIP)
-        );
-    }
 
-    public async Task<DataActionResult<IEnumerable<IPAddress>>> GetNodesIPs(
-        IEnumerable<int> nodesIDs
-    ) {
-        var results = await Task.WhenAll(nodesIDs.Select(id => GetNodeIP(id)));
-        var firstFailure = results.FirstOrDefault(r => r.Status.Failure());
-        return firstFailure != null
-            ? DataActionResult<IEnumerable<IPAddress>>.Failed(firstFailure.Status)
-            : DataActionResult<IEnumerable<IPAddress>>.Successful(results.Select(r => r.Result));
-    }
+        public async Task<DataActionResult<IPAddress>> GetNodeIp(int nodeId)
+        {
+            StatusMessage nodeIdValidationStatus = await ValidateNodeId(nodeId);
+            if (nodeIdValidationStatus.Failure())
+            {
+                return DataActionResult<IPAddress>.Failed(nodeIdValidationStatus);
+            }
 
-    public async Task<DataActionResult<string>> GetCWSBoundingString(
-        int nodeID,
-        int cwsID
-    ) {
-        StatusMessage nodeIDValidationStatus = await ValidateNodeID(nodeID);
-        if(nodeIDValidationStatus.Failure()) {
-            return DataActionResult<string>.Failed(nodeIDValidationStatus);
+            return FailOrConvert(
+                await Repo.GetNodeIp(nodeId),
+                nIp => new IPAddress(nIp)
+            );
         }
-        StatusMessage cwsIDValidationStatus =
-            (await GetCWSParamNumber(cwsID)).Status;
-        if(cwsIDValidationStatus.Failure()) {
-            return DataActionResult<string>.Failed(cwsIDValidationStatus);
-        }
-        StatusMessage cwsBindingExistsStatus =
-            await FailIfCWSBinding_DOES_NOT_Exist(nodeID, cwsID);
-        if(cwsBindingExistsStatus.Failure()) {
-            return DataActionResult<string>.Failed(cwsBindingExistsStatus);
-        }
-        return await repo.GetCWSBoundingString(nodeID, cwsID);
-    }
-}
 
+        public async Task<DataActionResult<IEnumerable<IPAddress>>> GetNodesIPs(
+            IEnumerable<int> nodesIDs
+        )
+        {
+            var results = await Task.WhenAll(nodesIDs.Select(GetNodeIp));
+            var firstFailure = results.FirstOrDefault(r => r.Status.Failure());
+            return firstFailure != null
+                ? DataActionResult<IEnumerable<IPAddress>>.Failed(firstFailure.Status)
+                : DataActionResult<IEnumerable<IPAddress>>.Successful(results.Select(r => r.Result));
+        }
+
+        public async Task<DataActionResult<string>> GetCwsBoundingString(
+            int nodeId,
+            int cwsId
+        )
+        {
+            StatusMessage nodeIdValidationStatus = await ValidateNodeId(nodeId);
+            if (nodeIdValidationStatus.Failure())
+            {
+                return DataActionResult<string>.Failed(nodeIdValidationStatus);
+            }
+
+            StatusMessage cwsIdValidationStatus =
+                (await GetCwsParamNumber(cwsId)).Status;
+            if (cwsIdValidationStatus.Failure())
+            {
+                return DataActionResult<string>.Failed(cwsIdValidationStatus);
+            }
+
+            StatusMessage cwsBindingExistsStatus =
+                await FailIfCWSBinding_DOES_NOT_Exist(nodeId, cwsId);
+            if (cwsBindingExistsStatus.Failure())
+            {
+                return DataActionResult<string>.Failed(cwsBindingExistsStatus);
+            }
+
+            return await Repo.GetCwsBoundingString(nodeId, cwsId);
+        }
+    }
 }

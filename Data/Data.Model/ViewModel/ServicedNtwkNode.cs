@@ -1,14 +1,12 @@
-using System.Collections.Generic;
-
-namespace Data.Model.ViewModel {
-
-public class NtwkNode {
-    public int ID;
-    public int? ParentID;
-    public int? ParentPort;
-    public string Name;
-    public string ipStr;
-    public bool IsOpenSSH, IsOpenTelnet, IsOpenPing;
-}
-
+namespace Data.Model.ViewModel
+{
+    public class NtwkNode
+    {
+        public int Id;
+        public int? ParentId;
+        public int? ParentPort;
+        public string Name;
+        public string IpStr;
+        public bool IsOpenSsh, IsOpenTelnet, IsOpenPing;
+    }
 }

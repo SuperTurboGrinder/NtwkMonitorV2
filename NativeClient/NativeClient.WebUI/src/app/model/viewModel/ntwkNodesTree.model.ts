@@ -27,7 +27,7 @@ export class NtwkNodesTree {
                 const currentLayer = this.treeLayers[lIndex];
                 const groupedByParent = _.groupBy(
                     currentLayer,
-                    n => n.nodeData.node.parentID
+                    n => n.nodeData.node.parentId
                 );
                 for (const parent of prevLayer) {
                     const children = groupedByParent[parent.nodeData.node.id];

@@ -10,9 +10,9 @@
         <strong>T</strong>
     </button>
     <button type="button"
-        [disabled]="node.isOpenSSH == false"
+        [disabled]="node.isOpenSsh == false"
         class="mx-1 btn square text-center p-0 m-0"
-        [ngClass]="{ 'btn-success': node.isOpenSSH, 'btn-secondary': !node.isOpenSSH }"
+        [ngClass]="{ 'btn-success': node.isOpenSsh, 'btn-secondary': !node.isOpenSsh }"
         style="min-width:26px"
         title="SSH"
         (click)="runSSH()"
